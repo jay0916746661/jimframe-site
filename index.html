@@ -422,6 +422,11 @@ button { font: inherit; color: inherit; }
 .event-text h3 { margin: 0 0 4px; font: 700 24px/1.15 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
 .event-text p { margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.86); font-variant-numeric: tabular-nums; }
 .event-tag { display: inline-block; margin-bottom: 8px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; color: #fff; }
+.event-mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.event-mosaic img { width: 100%; height: 100%; object-fit: cover; }
+.event-new { position: absolute; z-index: 1; right: 12px; top: 50px; padding: 4px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.92); color: #1d1d1f; font-size: 11px; font-weight: 700; }
+.event-date.is-tbd b { color: rgba(60, 60, 67, 0.55); }
+.event-activity { margin: 0; padding: 10px 14px 0; font-size: 14px; font-weight: 600; color: var(--label); }
 .event-note { margin: 0; padding: 10px 14px 0; font-size: 13px; color: var(--label-2); }
 .event-actions { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 10px; border-top: 0.5px solid var(--separator); }
 .event-actions > * { display: grid; justify-items: center; gap: 2px; padding: 10px 4px; border: 0; background: none; color: var(--tint); font-size: 12px; font-weight: 500; cursor: pointer; text-decoration: none; }
@@ -562,13 +567,20 @@ renderPopular();
 //   venue: 場地名稱      series: 對應相簿的場地（Flow / Barcade / La Salsa / Odoro / Zouk）
 //                        → 自動用「這個場地上一場的照片」當封面，並出現「上次照片」按鈕
 //   cover: 指定封面照片的 Drive 檔案 ID（可省略）   color: 標籤顏色（可省略）   note: 一行補充（可省略）
+//   tentative: true  → 顯示「預計」（依往常行程推估、還沒確認）
+//   沒有 date → 顯示「日期待公布」，排在最後；沒有 start → 顯示「時間以主辦公告為準」
+//   activity: 當晚的現場企劃（一行）
 const UPCOMING_EVENTS = [
-  // { date: "2026-10-16", start: "21:00", end: "01:00", title: "Bachata Crush", organizer: { name: "Bachata Crush", instagram: "bachata_crush_tw" }, venue: "場地名稱", series: "Barcade", color: "#ff375f" },
+  { date: "2026-10-15", title: "Barcade 週四舞會", organizer: { name: "Barcade" }, venue: "Barcade", series: "Barcade", color: "#ff9f0a", tentative: true },
+  { date: "2026-10-16", title: "Flow 週五舞會", organizer: { name: "Flow" }, venue: "Flow", series: "Flow", color: "#30d158", tentative: true },
+  { date: "2026-10-17", title: "La Salsa 週六舞會", organizer: { name: "La Salsa" }, venue: "La Salsa", series: "La Salsa", color: "#bf5af2", tentative: true },
+  { title: "Bachata Crush", organizer: { name: "Bachata Crush", instagram: "bachata_crush_tw" }, color: "#ff375f", note: "第一次拍 Bachata Crush，日期與場地以主辦 IG 公告為準。" },
 ];
 const weekday = ["日", "一", "二", "三", "四", "五", "六"];
-const eventStart = e => new Date(`${e.date}T${e.start || "20:00"}:00+08:00`);
+const eventStart = e => e.date ? new Date(`${e.date}T${e.start || "20:00"}:00+08:00`) : new Date(8640000000000000);
 const eventEnd = e => {
   const s = eventStart(e);
+  if (!e.date) return s;
   if (!e.end) return new Date(s.getTime() + 4 * 3600e3);
   let end = new Date(`${e.date}T${e.end}:00+08:00`);
   if (end <= s) end = new Date(end.getTime() + 24 * 3600e3);
@@ -578,16 +590,19 @@ const lastAlbumOf = series => albums.find(a => a.venue === series);
 const taipeiParts = d => { const p = new Date(d.toLocaleString("en-US", { timeZone: "Asia/Taipei" })); return { day: p.getDate(), month: p.getMonth() + 1, wd: p.getDay() }; };
 function whenLabel(e) {
   const now = new Date();
+  if (!e.date) return ["日期待公布", false];
   if (now >= eventStart(e) && now < eventEnd(e)) return ["進行中", true];
   const today = new Date(now.toLocaleDateString("en-CA", { timeZone: "Asia/Taipei" }) + "T00:00:00+08:00");
   const days = Math.round((new Date(e.date + "T00:00:00+08:00") - today) / 86400e3);
-  return days <= 0 ? ["今晚", true] : days === 1 ? ["明天", true] : [`${days} 天後`, false];
+  const label = days <= 0 ? "今晚" : days === 1 ? "明天" : `${days} 天後`;
+  return [e.tentative ? `預計 · ${label}` : label, days <= 1];
 }
 function icsFor(e) {
   const fmt = d => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
   const ig = e.organizer && e.organizer.instagram ? `https://www.instagram.com/${e.organizer.instagram}/ ` : "";
   const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Jim Lin Photography//Events//ZH", "BEGIN:VEVENT",
-    `UID:${e.date}-${encodeURIComponent(e.title)}@jimframe`, `DTSTAMP:${fmt(new Date())}`, `DTSTART:${fmt(eventStart(e))}`, `DTEND:${fmt(eventEnd(e))}`,
+    `UID:${e.date}-${encodeURIComponent(e.title)}@jimframe`, `DTSTAMP:${fmt(new Date())}`,
+    ...(e.start ? [`DTSTART:${fmt(eventStart(e))}`, `DTEND:${fmt(eventEnd(e))}`] : [`DTSTART;VALUE=DATE:${e.date.replace(/-/g, "")}`]),
     `SUMMARY:${e.title}`, `LOCATION:${e.venue || ""}`, `DESCRIPTION:${ig}攝影 @jimframe`, "END:VEVENT", "END:VCALENDAR"];
   return new Blob([lines.join("\r\n")], { type: "text/calendar" });
 }
@@ -601,19 +616,22 @@ function renderEvents(source = UPCOMING_EVENTS) {
   document.getElementById("events-row").innerHTML = shownEvents.map((e, i) => {
     const past = e.series ? lastAlbumOf(e.series) : null;
     const cover = e.cover ? drive(e.cover, 900) : past ? past.img(0, 900) : "";
-    const { day, month, wd } = taipeiParts(eventStart(e));
+    // No past album for this series yet: a 2x2 mosaic of the latest nights, so the card is never empty.
+    const mosaic = cover ? "" : `<div class="event-mosaic">${albums.slice(0, 4).map(a => `<img src="${a.img(1, 500)}" alt="" loading="lazy">`).join("")}</div><span class="event-new">首次拍攝</span>`;
+    const parts = e.date ? taipeiParts(eventStart(e)) : null;
     const [label, soon] = whenLabel(e);
-    const time = `${e.start || ""}${e.end ? `–${e.end}` : ""}`;
+    const time = e.start ? `${e.start}${e.end ? `–${e.end}` : ""}` : e.date ? "時間以主辦公告為準" : "日期待公布";
     const org = e.organizer || {};
     return `<article class="event">
-      <div class="event-cover">${cover ? `<img src="${cover}" alt="" loading="lazy">` : ""}
-        <div class="event-date"><small>週${weekday[wd]}</small><b>${day}</b><span>${month} 月</span></div>
+      <div class="event-cover">${cover ? `<img src="${cover}" alt="" loading="lazy">` : mosaic}
+        ${parts ? `<div class="event-date"><small>週${weekday[parts.wd]}</small><b>${parts.day}</b><span>${parts.month} 月</span></div>` : `<div class="event-date is-tbd"><small>即將</small><b>?</b><span>待公布</span></div>`}
         <span class="event-when ${soon ? "is-soon" : ""}">${label}</span>
         <div class="event-text">${org.name ? `<span class="event-tag" style="background:${esc(e.color || "#0a84ff")}">${esc(org.name)}</span>` : ""}<h3>${esc(e.title)}</h3><p>${esc(time)}${e.venue ? ` · ${esc(e.venue)}` : ""}</p></div>
       </div>
+      ${e.activity ? `<p class="event-activity">✨ ${esc(e.activity)}</p>` : ""}
       ${e.note ? `<p class="event-note">${esc(e.note)}</p>` : ""}
       <div class="event-actions">
-        <button type="button" data-ics="${i}">${icon("albums")}加到行事曆</button>
+        ${e.date ? `<button type="button" data-ics="${i}">${icon("albums")}加到行事曆</button>` : `<button type="button" disabled>${icon("albums")}加到行事曆</button>`}
         ${org.instagram ? `<a href="https://www.instagram.com/${encodeURIComponent(org.instagram)}/" target="_blank" rel="noreferrer">${icon("external")}活動 IG</a>` : `<button type="button" disabled>${icon("external")}活動 IG</button>`}
         ${past ? `<button type="button" data-album="${past.key}">${icon("photo")}上次照片</button>` : `<button type="button" disabled>${icon("photo")}上次照片</button>`}
       </div>
