@@ -404,6 +404,30 @@ button { font: inherit; color: inherit; }
   .album-cover .slide:first-child { opacity: 1; }
 }
 
+
+/* ---------- Upcoming events ---------- */
+.events-row { display: grid; grid-auto-flow: column; grid-auto-columns: min(80vw, 330px); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding: 2px var(--gutter) 12px; scroll-padding-inline: var(--gutter); }
+.events-row::-webkit-scrollbar { display: none; }
+.event { scroll-snap-align: start; background: var(--surface); border-radius: var(--radius-l); overflow: hidden; box-shadow: var(--shadow); display: grid; align-content: start; }
+.event-cover { position: relative; aspect-ratio: 4 / 5; background: var(--fill); }
+.event-cover img { width: 100%; height: 100%; object-fit: cover; }
+.event-cover::after { content: ""; position: absolute; inset: 42% 0 0; background: linear-gradient(transparent, rgba(0, 0, 0, 0.84)); }
+.event-date { position: absolute; z-index: 1; left: 12px; top: 12px; width: 62px; padding: 6px 0 8px; border-radius: 14px; background: rgba(255, 255, 255, 0.92); color: #1d1d1f; text-align: center; line-height: 1.05; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.event-date small { display: block; font-size: 11px; font-weight: 700; color: #ff3b30; letter-spacing: 0.04em; }
+.event-date b { display: block; font: 700 28px/1.05 var(--font-display); font-variant-numeric: tabular-nums; }
+.event-date span { display: block; font-size: 12px; color: rgba(60, 60, 67, 0.7); }
+.event-when { position: absolute; z-index: 1; right: 12px; top: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 12px; font-weight: 600; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.event-when.is-soon { background: var(--edit-accent); color: #000; }
+.event-text { position: absolute; z-index: 1; left: 16px; right: 16px; bottom: 14px; color: #fff; }
+.event-text h3 { margin: 0 0 4px; font: 700 24px/1.15 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
+.event-text p { margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.86); font-variant-numeric: tabular-nums; }
+.event-tag { display: inline-block; margin-bottom: 8px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; color: #fff; }
+.event-note { margin: 0; padding: 10px 14px 0; font-size: 13px; color: var(--label-2); }
+.event-actions { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 10px; border-top: 0.5px solid var(--separator); }
+.event-actions > * { display: grid; justify-items: center; gap: 2px; padding: 10px 4px; border: 0; background: none; color: var(--tint); font-size: 12px; font-weight: 500; cursor: pointer; text-decoration: none; }
+.event-actions > * + * { border-left: 0.5px solid var(--separator); }
+.event-actions .icon { width: 20px; height: 20px; }
+.event-actions [disabled] { color: var(--label-3); cursor: default; }
 /* Demo-only additions */
 .demo-banner { width: min(100% - 2 * var(--gutter), var(--content)); margin: 14px auto 0; padding: 10px 14px; border-radius: var(--radius-m); background: var(--tint-soft); color: var(--label); font-size: 14px; line-height: 1.5; }
 .demo-banner b { color: var(--tint); }
@@ -430,8 +454,13 @@ button { font: inherit; color: inherit; }
   <div class="carousel" role="list" aria-label="每週精選照片" id="carousel"></div>
  </section>
 
+ <section class="section" id="events" hidden>
+  <div class="section-head"><div><h2 class="title2">接下來的活動</h2><p class="footnote">拍攝排程 · 現場見！照片會在活動後 24 小時內上線。</p></div></div>
+  <div class="events-row" id="events-row"></div>
+ </section>
+
  <section class="section">
-  <div class="section-head"><div><h2 class="title2">熱門照片</h2><p class="footnote">依累積開啟次數排序，可能包含同一裝置的重複開啟。</p></div></div>
+  <div class="section-head"><div><h2 class="title2">精選照片</h2><p class="footnote">最近幾場活動的精選。</p></div></div>
   <div class="popular-row" id="popular"></div>
  </section>
 
@@ -522,9 +551,76 @@ const demoOnly=what=>toast(`試玩版不提供${what}；正式網站上可以使
 // Hero carousel + popular
 const pool=albums.slice(0,10).flatMap(a=>a.photos.slice(0,6));const heroIds=[];while(heroIds.length<10&&pool.length){heroIds.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);}
 document.getElementById("carousel").innerHTML=heroIds.map((id,i)=>`<button type="button" role="listitem" class="carousel-card" data-open="${id}" aria-label="開啟精選照片 ${i+1}"><img src="${photoSrc(id,i<2?1400:900)}" alt="" ${i>2?"loading=\"lazy\"":""}></button>`).join("");
-const popular=[[albums[0],0,128],[albums[1],0,96],[albums[2],0,71],[albums[3],0,54]];
-const renderPopular=()=>{document.getElementById("popular").innerHTML=popular.map(([a,i,opens],r)=>{const id=a.photos[i];return `<article class="popular-card"><button type="button" class="popular-image" data-open="${id}" aria-label="開啟熱門第 ${r+1} 名照片"><img src="${photoSrc(id,900)}" alt="" loading="lazy"><span class="rank">${r+1}</span></button><div class="popular-meta"><div><b>${dateLabel(a.date)} · ${esc(a.venue)}</b><small>${opens} 次開啟</small></div><div class="icon-row"><button type="button" class="icon-button ${liked.has(id)?"is-liked":""}" data-like="${id}" aria-label="喜歡">${icon(liked.has(id)?"heartFill":"heart")}</button><a class="icon-button" href="https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" target="_blank" rel="noreferrer" aria-label="下載原始照片">${icon("download")}</a><button type="button" class="icon-button" data-share="${id}" aria-label="分享">${icon("share")}</button></div></div></article>`;}).join("");};
+const popular=[[albums[0],0],[albums[1],0],[albums[2],0],[albums[3],0]];
+const renderPopular=()=>{document.getElementById("popular").innerHTML=popular.map(([a,i],r)=>{const id=a.photos[i];return `<article class="popular-card"><button type="button" class="popular-image" data-open="${id}" aria-label="開啟熱門第 ${r+1} 名照片"><img src="${photoSrc(id,900)}" alt="" loading="lazy"></button><div class="popular-meta"><div><b>${dateLabel(a.date)} · ${esc(a.venue)}</b><small>${a.photos.length} 張照片</small></div><div class="icon-row"><button type="button" class="icon-button ${liked.has(id)?"is-liked":""}" data-like="${id}" aria-label="喜歡">${icon(liked.has(id)?"heartFill":"heart")}</button><a class="icon-button" href="https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" target="_blank" rel="noreferrer" aria-label="下載原始照片">${icon("download")}</a><button type="button" class="icon-button" data-share="${id}" aria-label="分享">${icon("share")}</button></div></div></article>`;}).join("");};
 renderPopular();
+
+// ---------- Upcoming events ----------
+// 新增活動：在 UPCOMING_EVENTS 加一筆。活動結束後會自動隱藏；沒有活動時整區不顯示。
+//   date: "2026-10-16"   start: "21:00"   end: "01:00"（可省略，預設 4 小時；跨午夜會自動算到隔天）
+//   title: 活動名稱      organizer: { name: "主辦名稱", instagram: "IG帳號（不含 @）" }
+//   venue: 場地名稱      series: 對應相簿的場地（Flow / Barcade / La Salsa / Odoro / Zouk）
+//                        → 自動用「這個場地上一場的照片」當封面，並出現「上次照片」按鈕
+//   cover: 指定封面照片的 Drive 檔案 ID（可省略）   color: 標籤顏色（可省略）   note: 一行補充（可省略）
+const UPCOMING_EVENTS = [
+  // { date: "2026-10-16", start: "21:00", end: "01:00", title: "Bachata Crush", organizer: { name: "Bachata Crush", instagram: "bachata_crush_tw" }, venue: "場地名稱", series: "Barcade", color: "#ff375f" },
+];
+const weekday = ["日", "一", "二", "三", "四", "五", "六"];
+const eventStart = e => new Date(`${e.date}T${e.start || "20:00"}:00+08:00`);
+const eventEnd = e => {
+  const s = eventStart(e);
+  if (!e.end) return new Date(s.getTime() + 4 * 3600e3);
+  let end = new Date(`${e.date}T${e.end}:00+08:00`);
+  if (end <= s) end = new Date(end.getTime() + 24 * 3600e3);
+  return end;
+};
+const lastAlbumOf = series => albums.find(a => a.venue === series);
+const taipeiParts = d => { const p = new Date(d.toLocaleString("en-US", { timeZone: "Asia/Taipei" })); return { day: p.getDate(), month: p.getMonth() + 1, wd: p.getDay() }; };
+function whenLabel(e) {
+  const now = new Date();
+  if (now >= eventStart(e) && now < eventEnd(e)) return ["進行中", true];
+  const today = new Date(now.toLocaleDateString("en-CA", { timeZone: "Asia/Taipei" }) + "T00:00:00+08:00");
+  const days = Math.round((new Date(e.date + "T00:00:00+08:00") - today) / 86400e3);
+  return days <= 0 ? ["今晚", true] : days === 1 ? ["明天", true] : [`${days} 天後`, false];
+}
+function icsFor(e) {
+  const fmt = d => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const ig = e.organizer && e.organizer.instagram ? `https://www.instagram.com/${e.organizer.instagram}/ ` : "";
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Jim Lin Photography//Events//ZH", "BEGIN:VEVENT",
+    `UID:${e.date}-${encodeURIComponent(e.title)}@jimframe`, `DTSTAMP:${fmt(new Date())}`, `DTSTART:${fmt(eventStart(e))}`, `DTEND:${fmt(eventEnd(e))}`,
+    `SUMMARY:${e.title}`, `LOCATION:${e.venue || ""}`, `DESCRIPTION:${ig}攝影 @jimframe`, "END:VEVENT", "END:VCALENDAR"];
+  return new Blob([lines.join("\r\n")], { type: "text/calendar" });
+}
+let shownEvents = [];
+function renderEvents(source = UPCOMING_EVENTS) {
+  const now = new Date();
+  shownEvents = source.filter(e => eventEnd(e) > now).sort((a, b) => eventStart(a) - eventStart(b)).slice(0, 8);
+  const section = document.getElementById("events");
+  section.hidden = !shownEvents.length;
+  if (!shownEvents.length) return;
+  document.getElementById("events-row").innerHTML = shownEvents.map((e, i) => {
+    const past = e.series ? lastAlbumOf(e.series) : null;
+    const cover = e.cover ? drive(e.cover, 900) : past ? past.img(0, 900) : "";
+    const { day, month, wd } = taipeiParts(eventStart(e));
+    const [label, soon] = whenLabel(e);
+    const time = `${e.start || ""}${e.end ? `–${e.end}` : ""}`;
+    const org = e.organizer || {};
+    return `<article class="event">
+      <div class="event-cover">${cover ? `<img src="${cover}" alt="" loading="lazy">` : ""}
+        <div class="event-date"><small>週${weekday[wd]}</small><b>${day}</b><span>${month} 月</span></div>
+        <span class="event-when ${soon ? "is-soon" : ""}">${label}</span>
+        <div class="event-text">${org.name ? `<span class="event-tag" style="background:${esc(e.color || "#0a84ff")}">${esc(org.name)}</span>` : ""}<h3>${esc(e.title)}</h3><p>${esc(time)}${e.venue ? ` · ${esc(e.venue)}` : ""}</p></div>
+      </div>
+      ${e.note ? `<p class="event-note">${esc(e.note)}</p>` : ""}
+      <div class="event-actions">
+        <button type="button" data-ics="${i}">${icon("albums")}加到行事曆</button>
+        ${org.instagram ? `<a href="https://www.instagram.com/${encodeURIComponent(org.instagram)}/" target="_blank" rel="noreferrer">${icon("external")}活動 IG</a>` : `<button type="button" disabled>${icon("external")}活動 IG</button>`}
+        ${past ? `<button type="button" data-album="${past.key}">${icon("photo")}上次照片</button>` : `<button type="button" disabled>${icon("photo")}上次照片</button>`}
+      </div>
+    </article>`;
+  }).join("");
+}
+renderEvents();
 
 // Albums grid with filter + date search
 const venues=["全部","Flow","Barcade","La Salsa","Odoro","Zouk"];let filter=store.get("demo_filter","全部");let query="";
@@ -646,6 +742,7 @@ document.addEventListener("click",e=>{
  if(d.venue){filter=d.venue;store.set("demo_filter",filter);renderAlbums();return;}
  if(d.like){liked.has(d.like)?liked.delete(d.like):liked.add(d.like);store.set("demo_liked",[...liked]);renderPopular();if(st.photo)renderSheet();return;}
  if(d.demo){e.preventDefault();demoOnly(d.demo);return;}
+ if(d.ics){const ev=shownEvents[Number(d.ics)];if(ev){const url=URL.createObjectURL(icsFor(ev));const a=document.createElement("a");a.href=url;a.download=`${ev.date}-${ev.title}.ics`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}return;}
  if(d.share){shareLinks([d.share]);return;}
  if("export" in d){exportGraded();return;}
  if("batchShare" in d){shareLinks([...st.selected]);return;}
