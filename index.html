@@ -433,6 +433,18 @@ button { font: inherit; color: inherit; }
 .event-actions > * + * { border-left: 0.5px solid var(--separator); }
 .event-actions .icon { width: 20px; height: 20px; }
 .event-actions [disabled] { color: var(--label-3); cursor: default; }
+
+/* Credit / support sheet */
+.credit-backdrop { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, 0.42); animation: fade-in 0.2s ease both; }
+.credit-sheet { width: min(100%, 460px); display: grid; gap: 12px; padding: 10px 20px calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--surface); color: var(--label); border-radius: 16px 16px 0 0; box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25); animation: sheet-up 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@media (min-width: 721px) { .credit-backdrop { align-items: center; } .credit-sheet { border-radius: 16px; padding-bottom: 18px; } }
+.credit-grabber { justify-self: center; width: 38px; height: 5px; border-radius: 3px; background: var(--fill-strong); }
+.credit-sheet h2 { margin: 4px 0 0; font: 700 20px/1.3 var(--font-display); }
+.credit-sheet p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--label); }
+.credit-sheet .credit-sub { color: var(--label-2); font-size: 14px; }
+.credit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.credit-row .button { font-size: 15px; }
+.credit-cancel { justify-self: center; color: var(--label-2); }
 /* Demo-only additions */
 .demo-banner { width: min(100% - 2 * var(--gutter), var(--content)); margin: 14px auto 0; padding: 10px 14px; border-radius: var(--radius-m); background: var(--tint-soft); color: var(--label); font-size: 14px; line-height: 1.5; }
 .demo-banner b { color: var(--tint); }
@@ -515,6 +527,7 @@ button { font: inherit; color: inherit; }
  </nav>
 </main>
 <div id="sheet-root"></div>
+<div id="credit-root"></div>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script>
@@ -557,7 +570,7 @@ const demoOnly=what=>toast(`試玩版不提供${what}；正式網站上可以使
 const pool=albums.slice(0,10).flatMap(a=>a.photos.slice(0,6));const heroIds=[];while(heroIds.length<10&&pool.length){heroIds.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);}
 document.getElementById("carousel").innerHTML=heroIds.map((id,i)=>`<button type="button" role="listitem" class="carousel-card" data-open="${id}" aria-label="開啟精選照片 ${i+1}"><img src="${photoSrc(id,i<2?1400:900)}" alt="" ${i>2?"loading=\"lazy\"":""}></button>`).join("");
 const popular=[[albums[0],0],[albums[1],0],[albums[2],0],[albums[3],0]];
-const renderPopular=()=>{document.getElementById("popular").innerHTML=popular.map(([a,i],r)=>{const id=a.photos[i];return `<article class="popular-card"><button type="button" class="popular-image" data-open="${id}" aria-label="開啟熱門第 ${r+1} 名照片"><img src="${photoSrc(id,900)}" alt="" loading="lazy"></button><div class="popular-meta"><div><b>${dateLabel(a.date)} · ${esc(a.venue)}</b><small>${a.photos.length} 張照片</small></div><div class="icon-row"><button type="button" class="icon-button ${liked.has(id)?"is-liked":""}" data-like="${id}" aria-label="喜歡">${icon(liked.has(id)?"heartFill":"heart")}</button><a class="icon-button" href="https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" target="_blank" rel="noreferrer" aria-label="下載原始照片">${icon("download")}</a><button type="button" class="icon-button" data-share="${id}" aria-label="分享">${icon("share")}</button></div></div></article>`;}).join("");};
+const renderPopular=()=>{document.getElementById("popular").innerHTML=popular.map(([a,i],r)=>{const id=a.photos[i];return `<article class="popular-card"><button type="button" class="popular-image" data-open="${id}" aria-label="開啟熱門第 ${r+1} 名照片"><img src="${photoSrc(id,900)}" alt="" loading="lazy"></button><div class="popular-meta"><div><b>${dateLabel(a.date)} · ${esc(a.venue)}</b><small>${a.photos.length} 張照片</small></div><div class="icon-row"><button type="button" class="icon-button ${liked.has(id)?"is-liked":""}" data-like="${id}" aria-label="喜歡">${icon(liked.has(id)?"heartFill":"heart")}</button><button type="button" class="icon-button" data-download="${id}" aria-label="下載原始照片">${icon("download")}</button><button type="button" class="icon-button" data-share="${id}" aria-label="分享">${icon("share")}</button></div></div></article>`;}).join("");};
 renderPopular();
 
 // ---------- Upcoming events ----------
@@ -708,7 +721,7 @@ function renderSheet(){
    :`<div class="adjust-list">${adjLabels.map(([k,l])=>`<label class="slider"><span>${l}</span><input id="adjust-${k}" data-adj="${k}" type="range" min="-100" max="100" step="1" value="${st.adj[k]}"><output>${st.adj[k]>0?"+":""}${st.adj[k]}</output></label>`).join("")}<button type="button" class="text-button" data-reset-adj ${Object.values(st.adj).some(v=>v)?"":"disabled"}>全部重設</button></div>`}
    <div class="presets"><div class="presets-head"><b>我的調色</b><span class="sim-note">存在這台裝置</span></div><div class="preset-row">${presets.map(p=>`<span class="preset"><button type="button" data-preset="${p.id}">${esc(p.name)}</button><button type="button" aria-label="刪除 ${esc(p.name)}" data-del-preset="${p.id}">${icon("close")}</button></span>`).join("")}<span class="preset-new"><input id="preset-name" maxlength="36" placeholder="命名目前設定"><button type="button" data-save-preset ${hasEdits(st.grade,st.adj)?"":"disabled"}>儲存</button></span></div></div>
    <div class="editor-actions"><button type="button" class="button button-dark" data-compare>按住比較原圖</button><button type="button" class="button button-filled" data-export>儲存調色版</button></div>
-  </div>`:`<footer class="viewer-toolbar"><a class="tool" href="https://drive.google.com/file/d/${st.photo}/view" target="_blank" rel="noreferrer" aria-label="在 Drive 開啟">${icon("share")}</a><button type="button" class="tool ${lk?"is-liked":""}" data-like="${st.photo}" aria-label="喜歡">${icon(lk?"heartFill":"heart")}</button><button type="button" class="tool" data-edit aria-label="調色">${icon("sliders")}</button><a class="tool" href="https://drive.usercontent.google.com/download?id=${st.photo}&export=download&confirm=t" target="_blank" rel="noreferrer" aria-label="下載原始照片">${icon("download")}</a></footer>`;
+  </div>`:`<footer class="viewer-toolbar"><a class="tool" href="https://drive.google.com/file/d/${st.photo}/view" target="_blank" rel="noreferrer" aria-label="在 Drive 開啟">${icon("share")}</a><button type="button" class="tool ${lk?"is-liked":""}" data-like="${st.photo}" aria-label="喜歡">${icon(lk?"heartFill":"heart")}</button><button type="button" class="tool" data-edit aria-label="調色">${icon("sliders")}</button><button type="button" class="tool" data-download="${st.photo}" aria-label="下載原始照片">${icon("download")}</button></footer>`;
   root.innerHTML=`<div class="sheet-backdrop" data-backdrop><div class="sheet is-viewer" role="dialog" aria-modal="true" aria-label="${esc(a.venue)} 照片"><div class="viewer ${st.editing?"is-editing":""}">
    <header class="viewer-bar"><button type="button" class="bar-button" data-leave>${icon("back")}相簿</button><div class="bar-title"><b>${esc(a.venue)}</b><span>2026.${dateLabel(a.date)} · ${i+1} / ${a.photos.length}</span></div><button type="button" class="bar-button ${st.editing?"is-strong":""}" data-edit>${st.editing?"完成":"編輯"}</button></header>
    <div class="viewer-stage"><button type="button" class="stage-arrow prev" data-step="-1" aria-label="上一張">${icon("back")}</button><img src="${photoSrc(st.photo)}" alt="${esc(a.venue)} 照片"><button type="button" class="stage-arrow next" data-step="1" aria-label="下一張">${icon("chevron")}</button>${st.showOriginal?`<span class="stage-label">原圖</span>`:""}</div>
@@ -751,6 +764,28 @@ async function exportGraded(){
   toast("已儲存調色版，分享時請標記 @jimframe");
  }catch{toast("這張照片無法在瀏覽器輸出調色版，請改用「下載原始照片」");}
 }
+
+// ---------- Credit & support reminder (once per visit, then a short toast) ----------
+const LINE_SUPPORT="https://line.me/ti/p/~jim0916746661";
+let creditAck=false;try{creditAck=sessionStorage.getItem("jf_credit_ack")==="1";}catch{}
+const openDownload=id=>{const a=document.createElement("a");a.href=`https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t`;a.target="_blank";a.rel="noreferrer";document.body.appendChild(a);a.click();a.remove();};
+function withCredit(action){
+ if(creditAck){action();toast("下載中 · 分享時記得標記 @jimframe 🙏");return;}
+ const root=document.getElementById("credit-root");
+ root.innerHTML=`<div class="credit-backdrop" data-credit-close><div class="credit-sheet" role="dialog" aria-modal="true" aria-labelledby="credit-title">
+  <span class="credit-grabber" aria-hidden="true"></span>
+  <h2 id="credit-title">下載前的小提醒 📷</h2>
+  <p>分享或使用照片時，請標記攝影師 <b>@jimframe</b>。每場活動從拍攝到整理都需要不少時間，你的標記能讓我繼續記錄舞池。</p>
+  <p class="credit-sub">喜歡這些照片，也歡迎自由贊助下一場拍攝（自願，不影響下載）。</p>
+  <div class="credit-row"><button type="button" class="button button-gray" data-credit-copy>${icon("tag")}複製帳號</button><a class="button button-gray" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">${icon("heart")}LINE 贊助</a></div>
+  <button type="button" class="button button-filled button-large" data-credit-go>繼續下載</button>
+  <button type="button" class="text-button credit-cancel" data-credit-close>取消</button>
+ </div></div>`;
+ const close=()=>{root.innerHTML="";};
+ root.querySelector("[data-credit-go]").addEventListener("click",()=>{creditAck=true;try{sessionStorage.setItem("jf_credit_ack","1");}catch{}close();action();});
+ root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
+ root.querySelector("[data-credit-copy]").addEventListener("click",async e=>{try{await navigator.clipboard.writeText("@jimframe");e.currentTarget.lastChild.textContent="已複製 ✓";}catch{toast("請手動輸入 @jimframe");}});
+}
 // ---------- Events (delegated) ----------
 document.addEventListener("click",e=>{
  const t=e.target.closest("button,a,[data-backdrop]");if(!t)return;const d=t.dataset;
@@ -762,9 +797,10 @@ document.addEventListener("click",e=>{
  if(d.demo){e.preventDefault();demoOnly(d.demo);return;}
  if(d.ics){const ev=shownEvents[Number(d.ics)];if(ev){const url=URL.createObjectURL(icsFor(ev));const a=document.createElement("a");a.href=url;a.download=`${ev.date}-${ev.title}.ics`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}return;}
  if(d.share){shareLinks([d.share]);return;}
- if("export" in d){exportGraded();return;}
+ if(d.download){withCredit(()=>openDownload(d.download));return;}
+ if("export" in d){withCredit(exportGraded);return;}
  if("batchShare" in d){shareLinks([...st.selected]);return;}
- if("batchDownload" in d){batchDownload([...st.selected]);return;}
+ if("batchDownload" in d){const ids=[...st.selected];withCredit(()=>batchDownload(ids));return;}
  if("close" in d){closeAlbum();return;}
  if("batch" in d){st.batch=!st.batch;st.selected=new Set();renderSheet();return;}
  if(d.photo){if(st.batch){st.selected.has(d.photo)?st.selected.delete(d.photo):st.selected.add(d.photo);renderSheet();}else{st.photo=d.photo;st.editing=false;st.grade="original";st.adj=zeroAdj();renderSheet();}return;}
