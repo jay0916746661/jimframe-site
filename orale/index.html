@@ -385,6 +385,7 @@ function stOf(w){if(w.inErr)return['err','錯題'];if(!w.seen)return['new','新�
 function statsW(){const ws=Object.values(S.words),t=dkey();return{total:ws.length,mast:ws.filter(w=>(w.box||0)>=4).length,learn:ws.filter(w=>w.seen&&(w.box||0)<4).length,fresh:ws.filter(w=>!w.seen).length,due:ws.filter(w=>w.seen&&w.due<=t).length,err:ws.filter(w=>w.inErr).length}}
 function streak(){let n=0,k=dkey();if((S.log.days[k]?.sec||0)<600)k=addDays(k,-1);while((S.log.days[k]?.sec||0)>=600){n++;k=addDays(k,-1)}return n}
 const heat=n=>n?`<span class="heat" title="辣度 ${n}/3">${[1,2,3].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')}</span>`:'';
+const rateLabel=()=>({0.65:'很慢',0.8:'自然',0.92:'標準',1.05:'快'})[VS.rate]||'自然';
 const aiOK=()=>!!S.sample&&!S.aiBlocked;
 const aiNeed=()=>S.standalone?'AI 功能要先到右上角「我」輸入 Anthropic API 金鑰':'AI 功能要在 Claude App 裡打開這頁，並允許使用 Claude';
 /* standalone (no Claude app): call Anthropic API with the visitor's own key */
@@ -686,7 +687,7 @@ function vChat(){if(CH.report)return vReport();const ms=CH.ms,mine=CH.msgs.filte
   <div id="callbox" hidden></div>
   <div class="chatlog" id="chatlog"></div>
   <div id="hintbox"></div>
-  <div class="voicebar"><button class="chip ${S.autoSay?'on':''}" data-act="autosay">自動朗讀：${S.autoSay?'開':'關'}</button><button class="btn ghost" data-act="hint">卡住了？給我提示</button>${CH.call?'':'<button class="btn primary" data-act="callstart">開始語音通話</button>'}</div>
+  <div class="voicebar"><button class="chip ${S.autoSay?'on':''}" data-act="autosay">自動朗讀：${S.autoSay?'開':'關'}</button><button class="btn ghost" data-act="vrateq">語速：${rateLabel()}</button><button class="btn ghost" data-act="go" data-v="yo">換聲音</button><button class="btn ghost" data-act="hint">卡住了？給我提示</button>${CH.call?'':'<button class="btn primary" data-act="callstart">開始語音通話</button>'}</div>
   <div class="chatin"><button class="mic" data-act="mic" data-for="chatin">說西文</button><textarea id="chatin" rows="2" placeholder="按「說西文」用講的，或打字"></textarea><button class="btn primary" data-act="send">送出</button></div>
   <div class="help" id="michelp" hidden></div></section>`}
 function paintGoals(){const g=$('#goals');if(!g||!CH.ms)return;const all=CH.ms.goals.every((_,i)=>CH.done.includes(i));
@@ -881,6 +882,12 @@ function vYo(){const m=S.me||{},lv=m.level||'A2';
    <div class="seg" role="group" aria-label="西文程度">${['A0','A1','A2','B1','B2'].map(x=>`<button data-act="melv" data-l="${x}" class="${lv===x?'on':''}">${x}</button>`).join('')}</div>
    <p class="note">A0 完全新手 · A1 會打招呼 · A2 能聊日常 · B1 能聊經驗和想法 · B2 能流暢討論</p>
    <div><button class="btn primary" data-act="mesave">儲存</button></div></section>
+  <section class="panel"><h2>朗讀聲音</h2><p class="muted">聲音來自你手機內建的語音。挑一個聽起來最自然的，越靠上面的越推薦（墨西哥腔、品質較好的排前面）。</p>
+   <select id="voicesel" aria-label="朗讀聲音"></select>
+   <label class="f">語速</label>
+   <div class="seg" role="group" aria-label="語速">${[[.65,'很慢'],[.8,'自然'],[.92,'標準'],[1.05,'快']].map(([v,l])=>`<button data-act="vrate" data-r="${v}" class="${Math.abs(VS.rate-v)<.01?'on':''}">${l}</button>`).join('')}</div>
+   <div class="row"><button class="btn primary" data-act="vtest">試聽</button></div>
+   <p class="note">如果每個聲音都很機械：Android 到「設定 → 文字轉語音輸出」選 Google 引擎，下載「西班牙文（美國）」並選高品質語音；iPhone 到「設定 → 輔助使用 → 朗讀內容 → 聲音 → 西班牙文」，下載「Paulina（加強版）」，墨西哥腔、最自然。下載後重新打開這頁。</p></section>
   ${S.standalone?`<section class="panel"><h2>AI 功能（選用）</h2><p class="muted">出題、批改、真人對話、情境任務、日記批改要用 AI。貼上你自己的 Anthropic API 金鑰就能用，費用算在你自己的 Anthropic 帳號，大約每次對話幾毛到一兩塊台幣。</p>
    <input id="apikey" type="password" placeholder="sk-ant-..." value="${getKey()?'••••••••••••':''}" autocomplete="off">
    <div class="row"><button class="btn primary" data-act="keysave">儲存金鑰</button>${getKey()?'<button class="btn bad" data-act="keydel">移除金鑰</button>':''}</div>
@@ -961,13 +968,31 @@ function mindmap(){const ts=themeStats(),W=380,H=380,cx=W/2,cy=H/2,R1=136,s=stat
 
 /* ---------- speech (Mexican / Latin American Spanish only, never Chinese) ---------- */
 let VOICE=null;
-function pickVoice(){try{const vs=speechSynthesis.getVoices(),L=v=>v.lang.replace('_','-').toLowerCase();
-  VOICE=vs.find(v=>L(v)==='es-mx')||vs.find(v=>L(v)==='es-us')||vs.find(v=>L(v)==='es-419')||vs.find(v=>/^es-(?!es)/.test(L(v)))||null}catch(e){}}
+const VS=(()=>{try{return JSON.parse(localStorage.getItem('orale-voice')||'null')||{}}catch(e){return{}}})();
+if(!VS.rate)VS.rate=.8;
+function saveVS(){try{localStorage.setItem('orale-voice',JSON.stringify(VS))}catch(e){}}
+const LANG=v=>v.lang.replace('_','-').toLowerCase();
+function esVoices(){try{return speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang))}catch(e){return[]}}
+function voiceScore(v){const l=LANG(v),n=v.name;let s=0;
+  if(l==='es-mx')s+=6;else if(l==='es-us'||l==='es-419')s+=4;else if(l==='es-es')s-=3;else s+=2;
+  if(/natural|neural|online|premium|enhanced|mejorad/i.test(n))s+=4;
+  if(/paulina|dalia|jorge|google/i.test(n))s+=2;
+  if(/compact|eloquence|espeak/i.test(n))s-=4;
+  if(v.localService===false)s+=1;return s}
+function pickVoice(){const vs=esVoices();if(!vs.length){VOICE=null;return}
+  VOICE=(VS.name&&vs.find(v=>v.name===VS.name))||[...vs].sort((a,b)=>voiceScore(b)-voiceScore(a))[0];fillVoiceSel()}
 try{if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}}catch(e){}
+function fillVoiceSel(){const sel=document.getElementById('voicesel');if(!sel)return;const vs=esVoices().sort((a,b)=>voiceScore(b)-voiceScore(a));
+  sel.innerHTML=vs.length?vs.map(v=>`<option value="${esc(v.name)}" ${VOICE&&v.name===VOICE.name?'selected':''}>${esc(v.name)}（${esc(v.lang)}）${LANG(v)==='es-es'?'・西班牙腔':''}</option>`).join(''):'<option>這台裝置沒有西班牙文語音</option>'}
+// make text sound natural: drop emoji/markdown, read sentence by sentence with small pauses
+function speechText(t){return String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu,'').replace(/[*_~#`>]/g,'').replace(/\([^)]*\)/g,'').replace(/\s*—\s*/g,', ').replace(/\s+/g,' ').trim()}
 function speak(t,rate,onend){let done=false;const fin=()=>{if(!done){done=true;onend&&onend()}};
   try{if(!('speechSynthesis' in window)){if(!onend)toast('這台裝置不支援朗讀');fin();return}if(!VOICE)pickVoice();speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t);u.lang=VOICE?VOICE.lang:'es-MX';if(VOICE)u.voice=VOICE;u.rate=rate||.88;u.onend=fin;u.onerror=fin;speechSynthesis.speak(u);
-  if(onend)setTimeout(fin,Math.max(4000,t.length*120))}catch(e){fin()}}
+  const text=speechText(t);if(!text){fin();return}
+  const parts=text.match(/[^.!?…]+[.!?…]*/g)||[text],r=rate?rate*(VS.rate/.8):VS.rate;
+  parts.map(x=>x.trim()).filter(Boolean).forEach((p,i,arr)=>{const u=new SpeechSynthesisUtterance(p);u.lang=VOICE?VOICE.lang:'es-MX';if(VOICE)u.voice=VOICE;u.rate=Math.max(.5,Math.min(1.2,r));u.pitch=1;
+    if(i===arr.length-1){u.onend=fin;u.onerror=fin}speechSynthesis.speak(u)});
+  if(onend)setTimeout(fin,Math.max(5000,text.length*150/r))}catch(e){fin()}}
 
 /* ---------- voice input ---------- */
 let REC=null;
@@ -1038,7 +1063,7 @@ Reply with only JSON: {"corrected":"the full entry corrected, all in Spanish","n
   catch(err){$('#dmsg').textContent=aiErr(err)+' 你的日記先存起來了。';saveDiary(Object.assign(old||{},e));b.disabled=false}}
 
 /* ---------- render & actions ---------- */
-function render(){paintMe();const v=S.view,m=$('#main');
+function render(){paintMe();setTimeout(fillVoiceSel,0);const v=S.view,m=$('#main');
   m.innerHTML=v==='hoy'?vHoy():v==='palabras'?vPalabras():v==='practicar'?vPracticar():v==='lecciones'?vLecciones():v==='diario'?vDiario():v==='yo'?vYo():vSemana();
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.v===v||(v==='yo'&&false)));
   if(v==='palabras')paintList();if(v==='practicar'&&P.active&&P.mode==='chat')paintChat();paintMini()}
@@ -1064,7 +1089,7 @@ const ACT={
    else if(b.dataset.src==='due')items=Object.values(S.words).filter(w=>w.inErr||(w.seen&&w.due<=t0)).map(w=>w.es);
    else items=[...document.querySelectorAll('#wlist .wmain .say')].map(x=>x.dataset.t);
    playList(items,b)},
- sayslow:b=>speak(b.dataset.t,.6),
+ sayslow:b=>speak(b.dataset.t,.55),
  shcheck:()=>shadowGrade(),
  bpick:b=>{const k=+b.dataset.k;P.b.pick.push(P.b.pool.splice(k,1)[0]);render()},
  bpop:b=>{const k=+b.dataset.k;P.b.pool.push(P.b.pick.splice(k,1)[0]);render()},
@@ -1083,6 +1108,9 @@ const ACT={
  drill:b=>drillCheck(+b.dataset.i),
  keysave:()=>{const v=($('#apikey')?.value||'').trim();if(!v||v.startsWith('•')){toast('請貼上金鑰');return}if(!/^sk-ant-/.test(v)){toast('金鑰應該是 sk-ant- 開頭');return}try{localStorage.setItem('orale-key',v)}catch(e){toast('這個瀏覽器不能儲存');return}S.sample=apiSample();S.aiBlocked=false;toast('金鑰已儲存，AI 功能開啟');render()},
  keydel:()=>{try{localStorage.removeItem('orale-key')}catch(e){}S.sample=null;toast('已移除金鑰');render()},
+ vrate:b=>{VS.rate=+b.dataset.r;saveVS();document.querySelectorAll('[data-act=vrate]').forEach(x=>x.classList.toggle('on',x===b));speak('Hola, ¿qué onda? ¿Cómo estuvo tu día?')},
+ vtest:()=>speak('¡Hola! Soy Lupita, de Oaxaca. Ahorita estoy planeando un viaje. ¿Tú prefieres viajar en camión o en avión?'),
+ vrateq:()=>{const order=[.65,.8,.92,1.05];const i=order.findIndex(v=>Math.abs(v-VS.rate)<.01);VS.rate=order[(i+1)%order.length];saveVS();const b=document.querySelector('[data-act=vrateq]');if(b)b.textContent='語速：'+rateLabel();},
  melv:b=>{S.me=Object.assign({},S.me,{level:b.dataset.l});document.querySelectorAll('[data-act=melv]').forEach(x=>x.classList.toggle('on',x===b))},
  mesave:()=>{saveMe();toast('已儲存');go('hoy')},
  mmgo:b=>{S.ptheme=b.dataset.t;const n=pool(b.dataset.t).length;if(!n){go('lecciones');toast('先加入「'+THEMES[b.dataset.t]+'」的單字');return}startMode(statsW().err&&pool(b.dataset.t).some(w=>w.inErr)?'trans':'flash')},
@@ -1148,6 +1176,7 @@ ${cur.fixes.slice(-15).join('\n')||'無'}
    catch(e){$('#repbox').innerHTML=`<p class="note">${esc(aiErr(e))}</p>`;b.disabled=false}}
 };
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b,e)}});
+document.addEventListener('change',e=>{if(e.target.id==='voicesel'){VS.name=e.target.value;saveVS();pickVoice();speak('Hola, así suena mi voz. ¿Te gusta?')}});
 document.addEventListener('input',e=>{if(e.target.id==='wq'){S.f.q=e.target.value;paintList()}});
 document.addEventListener('keydown',e=>{if(e.key!=='Enter'||e.isComposing)return;const id=e.target.id;
   if(id==='chatin'&&!e.shiftKey){e.preventDefault();chatSend();return}
