@@ -38,3 +38,10 @@ node scripts/smoke.mjs http://localhost:8000/
 - `index.html`：整個網站。重要區塊：`ALBUM_DATA`（相簿資料）、`UPCOMING_EVENTS`（近期活動）、`renderAlbums`、`renderEvents`、`renderSheet`（相簿頁）、`withCredit`（下載前的致謝提示）。
 - `tasks/`：任務板。`tasks/README.md` 說明格式。
 - `scripts/smoke.mjs`：冒煙測試。
+
+## 主站程式 `site-source/`（ChatGPT Sites 版）
+- 上面的「單一靜態頁、無建置」規則只適用根目錄 `index.html`。
+- `site-source/` 是主站 https://jimframe.jay0916746661.chatgpt.site/ 的完整程式（vinext／Next、`app/api/*`、人臉搜尋、`app/studio` IG 素材工作室），可以用它自己的 `package.json` 與既有依賴。
+- 改主站：只動 `site-source/`，同樣開分支 `codex/<任務編號>` → PR 合回 `main`。不要動根目錄 `index.html`，除非任務要求。
+- 在 ChatGPT Sites 上線前，以 `main` 的 `site-source/` 為準；上線後如果在 Sites 那邊有直接改動，要把改動同步回 `site-source/` 並開 PR，讓 GitHub 永遠是最新版。
+- 驗證：`cd site-source && npm ci && npm run build`（可能需要 Linux 環境），做不到就在 PR 說明。
