@@ -431,7 +431,7 @@ function vHoy(){const s=statsW(),t=today(),min=Math.floor(t.sec/60),acc=pct(t.ri
     <div class="stat ok"><b>${s.mast}</b><span>已熟悉</span></div>
     <div class="stat due"><b>${s.due}</b><span>今天要複習</span></div>
     <div class="stat err"><b>${s.err}</b><span>錯題</span></div></section>`;
-  if(dueW.length)h+=`<section class="panel"><h2>等你複習的字</h2><div class="chips">${dueW.map(w=>`<span class="wchip ${w.inErr?'err':''}">${esc(w.es)}</span>`).join('')}</div></section>`;
+  if(dueW.length)h+=`<section class="panel"><div class="row" style="justify-content:space-between"><h2>等你複習的字</h2><button class="btn ghost" data-act="playlist" data-src="due">全部播放</button></div><div class="chips">${dueW.map(w=>`<button class="wchip ${w.inErr?'err':''}" style="border:0;cursor:pointer" data-act="say" data-t="${esc(w.es)}">${esc(w.es)} ▸</button>`).join('')}</div></section>`;
   return h}
 
 function vPalabras(){const opts=Object.entries(THEMES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
@@ -451,7 +451,7 @@ function vPalabras(){const opts=Object.entries(THEMES).map(([k,v])=>`<option val
     <div class="row"><button class="btn primary" data-act="aibulk" ${aiOK()?'':'disabled'}>AI 整理後加入</button><button class="btn" data-act="plainbulk">直接加入（西文 = 中文）</button></div>
     <p id="bulkmsg" class="note"></p>
   </section>
-  <section class="panel"><div class="row" style="justify-content:space-between"><h2>我的單字</h2><span class="note" id="wcount"></span></div>
+  <section class="panel"><div class="row" style="justify-content:space-between"><h2>我的單字</h2><span class="row"><span class="note" id="wcount"></span><button class="btn ghost" data-act="playlist" data-src="list">全部播放</button></span></div>
     <input id="wq" placeholder="搜尋西文或中文" value="${esc(S.f.q)}" autocomplete="off">
     <div class="chips">${['all',...Object.keys(THEMES)].map(k=>`<button class="chip ${S.f.theme===k?'on':''}" data-act="ftheme" data-t="${k}">${k==='all'?'全部':THEMES[k]}</button>`).join('')}</div>
     <div class="chips">${[['all','全部狀態'],['new','新字'],['learn','學習中'],['ok','熟悉'],['err','錯題']].map(([k,l])=>`<button class="chip ${S.f.st===k?'on':''}" data-act="fst" data-s="${k}">${l}</button>`).join('')}</div>
@@ -460,14 +460,14 @@ function vPalabras(){const opts=Object.entries(THEMES).map(([k,v])=>`<option val
 function paintList(){const el=$('#wlist');if(!el)return;const q=clean(S.f.q);
   const ws=Object.values(S.words).filter(w=>(S.f.theme==='all'||w.theme===S.f.theme)&&(S.f.st==='all'||stOf(w)[0]===S.f.st)&&(!q||clean(w.es).includes(q)||String(w.zh).includes(S.f.q.trim())||clean(w.en).includes(q))).sort((a,b)=>(b.added||'').localeCompare(a.added||'')||a.es.localeCompare(b.es));
   $('#wcount').textContent=`${ws.length} 個`;
-  el.innerHTML=ws.length?ws.map(w=>{const[c,l]=stOf(w);return `<li class="wrow"><div class="wmain"><b>${esc(w.es)} ${heat(w.heat)}</b><span>${esc(w.zh)}${w.en?' · '+esc(w.en):''}</span></div><span class="pill ${c}">${l}${w.inErr?` ${w.errOk||0}/3`:''}</span><button class="x" data-act="del" data-id="${esc(w.id)}">刪除</button><span class="tchip" style="grid-column:1/-1">${THEMES[w.theme]||''}${w.seen?` · 練過 ${w.seen} 次 · 對 ${w.right||0} 錯 ${w.wrong||0}`:''}</span></li>`}).join(''):`<li class="note" style="padding:12px 0">${Object.keys(S.words).length?'沒有符合的字。':'還沒有單字。上面新增，或到「課程」一鍵加入主題單字。'}</li>`}
+  el.innerHTML=ws.length?ws.map(w=>{const[c,l]=stOf(w);return `<li class="wrow"><div class="wmain"><b>${esc(w.es)} ${heat(w.heat)} <button class="say" data-act="say" data-t="${esc(w.es)}">聽</button></b><span>${esc(w.zh)}${w.en?' · '+esc(w.en):''}</span></div><span class="pill ${c}">${l}${w.inErr?` ${w.errOk||0}/3`:''}</span><button class="x" data-act="del" data-id="${esc(w.id)}">刪除</button><span class="tchip" style="grid-column:1/-1">${THEMES[w.theme]||''}${w.seen?` · 練過 ${w.seen} 次 · 對 ${w.right||0} 錯 ${w.wrong||0}`:''}</span></li>`}).join(''):`<li class="note" style="padding:12px 0">${Object.keys(S.words).length?'沒有符合的字。':'還沒有單字。上面新增，或到「課程」一鍵加入主題單字。'}</li>`}
 
 function vLecciones(){const have=new Set(Object.values(S.words).map(w=>clean(w.es)));
   const pack=(k,intro,extra='')=>{const items=PACKS[k],left=items.filter(p=>!have.has(clean(p[0]))).length;
     return `<details class="panel pack"><summary><div><p class="eyebrow">${k.toUpperCase()}</p><h2>${THEMES[k]}</h2></div><span class="note">${items.length-left}/${items.length} 已加入</span></summary>
       <p class="muted">${intro}</p>${extra}
-      <ul class="plist">${items.map((p,i)=>`<li><div><b>${esc(p[0])}</b> ${heat(p[5])} <span class="muted">· ${esc(p[1])}</span></div>${have.has(clean(p[0]))?'<span class="note">已加入</span>':`<button class="x" data-act="addp" data-k="${k}" data-i="${i}">＋加入</button>`}<small>${esc(p[3])}</small></li>`).join('')}</ul>
-      <div class="row">${left?`<button class="btn primary" data-act="addpack" data-k="${k}">全部加入（${left}）</button>`:''}<button class="btn" data-act="chat" data-t="${k}" ${aiOK()?'':'disabled'}>用這個主題聊天</button></div></details>`};
+      <ul class="plist">${items.map((p,i)=>`<li><div><b>${esc(p[0])}</b> <button class="say" data-act="say" data-t="${esc(p[0])}">聽</button> ${heat(p[5])} <span class="muted">· ${esc(p[1])}</span></div>${have.has(clean(p[0]))?'<span class="note">已加入</span>':`<button class="x" data-act="addp" data-k="${k}" data-i="${i}">＋加入</button>`}<small>${esc(p[3])} <button class="say" data-act="say" data-t="${esc(p[3])}">聽</button></small></li>`).join('')}</ul>
+      <div class="row"><button class="btn" data-act="playlist" data-src="pack" data-k="${k}">整組播放</button>${left?`<button class="btn primary" data-act="addpack" data-k="${k}">全部加入（${left}）</button>`:''}<button class="btn" data-act="chat" data-t="${k}" ${aiOK()?'':'disabled'}>用這個主題聊天</button></div></details>`};
   return `<section class="panel"><h1>主題課程</h1><p class="muted">每一課都是墨西哥說法。加入後會進到你的單字庫，閃卡、翻譯、問答、對話都會用到。</p></section>`+
   pack('viaje','在墨西哥搭客運、找住宿、吃路邊攤會用到的字。注意：墨西哥的 camión 是公車或客運，不是卡車。')+
   pack('bachata','舞會上跟舞伴、老師溝通的字。')+
@@ -497,14 +497,14 @@ function vMusica(){const tab=S.mtab||'bachata';
   return `<section class="panel" id="musica"><p class="eyebrow">MÚSICA</p><h1>從音樂學西文</h1><div class="chips">${tabs}</div>${body}<div id="songbox">${songHTML()}</div>
     ${pack0('musica')}<div class="row"><button class="btn" data-act="chat" data-t="musica" ${aiOK()?'':'disabled'}>跟 Vale 聊音樂</button></div></section>`}
 function pack0(k){const have=new Set(Object.values(S.words).map(w=>clean(w.es))),left=PACKS[k].filter(p=>!have.has(clean(p[0]))).length;
-  return `<div class="rule"><b>歌裡最常出現的字（${PACKS[k].length} 個）</b><span>${PACKS[k].map(p=>`${esc(p[0])} ${esc(p[1])}`).join(' · ')}</span>${left?`<div><button class="btn mid" data-act="addpack" data-k="${k}">全部加入（${left}）</button></div>`:'<span class="note">已全部加入</span>'}</div>`}
+  return `<div class="rule"><b>歌裡最常出現的字（${PACKS[k].length} 個）</b><span>${PACKS[k].map(p=>`<button class="wchip" style="border:0;cursor:pointer;margin:2px" data-act="say" data-t="${esc(p[0])}">${esc(p[0])} ▸</button> ${esc(p[1])}`).join(' · ')}</span>${left?`<div><button class="btn mid" data-act="addpack" data-k="${k}">全部加入（${left}）</button></div>`:'<span class="note">已全部加入</span>'}</div>`}
 function songHTML(){const s=S.song;if(!s)return '';
   if(s.loading)return `<div class="rule"><b>${esc(s.title)}</b><p class="thinking">Claude 正在講解這首歌</p></div>`;
   if(s.err)return `<div class="rule"><b>${esc(s.title)}</b><span>${esc(s.err)}</span></div>`;
   const r=s.r;
   return `<div class="rule"><b>${esc(s.title)} · ${esc(s.artist)}</b><span>${esc(r.about_zh)}</span>
     ${r.accent_zh?`<span><b>口音與唱法：</b>${esc(r.accent_zh)}</span>`:''}${r.mx_zh?`<span><b>墨西哥人會怎麼說：</b>${esc(r.mx_zh)}</span>`:''}
-    <ul class="plist">${(r.words||[]).map(w=>`<li style="grid-template-columns:1fr"><div><b>${esc(w.es)}</b> <span class="muted">· ${esc(w.zh)}</span></div>${w.note?`<small>${esc(w.note)}</small>`:''}</li>`).join('')}</ul>
+    <ul class="plist">${(r.words||[]).map(w=>`<li style="grid-template-columns:1fr"><div><b>${esc(w.es)}</b> <button class="say" data-act="say" data-t="${esc(w.es)}">聽</button> <span class="muted">· ${esc(w.zh)}</span></div>${w.note?`<small>${esc(w.note)}</small>`:''}</li>`).join('')}</ul>
     ${(r.sing_tips||[]).length?`<span><b>練唱步驟</b></span><ol style="margin:0;padding-left:1.2em">${r.sing_tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ol>`:''}
     <div class="row"><button class="btn mid" data-act="songadd">把這些字加入單字庫</button></div></div>`}
 
@@ -621,11 +621,11 @@ Reply with only JSON: {"q":"the question in Spanish","q_zh":"繁體中文翻譯"
   catch(e){if(P.cur!==id)return;P.q={cloze:cloze(w)};P.qerr=aiErr(e)}
   render();setTimeout(()=>{const a=$('#ans');if(a)a.focus()},40)}
 function askCard(w){const q=P.q||{loading:true};
-  if(q.loading)return `<section class="card"><span class="tchip">目標字：<b>${esc(w.es)}</b> · ${esc(w.zh)}</span><p class="thinking">Claude 正在出題</p></section>`;
+  if(q.loading)return `<section class="card"><span class="tchip">目標字：<b>${esc(w.es)}</b> <button class="say" data-act="say" data-t="${esc(w.es)}">聽</button> · ${esc(w.zh)}</span><p class="thinking">Claude 正在出題</p></section>`;
   if(!q.q){const cz=q.cloze;return `<section class="card">${P.qerr?`<p class="note">${esc(P.qerr)} 先改用例句填空。</p>`:''}<span class="tchip">${esc(w.zh)}</span>${cz?`<div class="prompt-zh" style="font-size:1.15rem">${esc(cz)}</div><p class="muted">${esc(w.exZh)}</p>`:`<div class="prompt-zh">${esc(w.zh)}</div>`}
     ${P.fb?fbBox(P.fb,w):`<input id="ans" placeholder="填入西文" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="btn primary grow" data-act="tcheck">檢查</button><button class="btn ghost" data-act="tskip">不知道</button></div>`}</section>`}
   const g=P.fb;
-  return `<section class="card"><span class="tchip">目標字：<b>${esc(w.es)}</b> · ${esc(w.zh)}</span><div class="prompt-zh" style="font-size:1.25rem">${esc(q.q)} <button class="say" data-act="say" data-t="${esc(q.q)}">聽</button></div><details><summary class="note">看中文</summary><p class="muted">${esc(q.q_zh)}</p></details>
+  return `<section class="card"><span class="tchip">目標字：<b>${esc(w.es)}</b> <button class="say" data-act="say" data-t="${esc(w.es)}">聽</button> · ${esc(w.zh)}</span><div class="prompt-zh" style="font-size:1.25rem">${esc(q.q)} <button class="say" data-act="say" data-t="${esc(q.q)}">聽</button></div><details><summary class="note">看中文</summary><p class="muted">${esc(q.q_zh)}</p></details>
    ${g?(g.loading?`<div class="ex">${esc(g.you)}</div><p class="thinking">Claude 正在批改</p>`:g.err?`<p class="note">${esc(g.err)}</p><button class="btn" data-act="regrade">再批改一次</button>`:
      `<div class="ex">${esc(g.you)}</div><div class="fb ${g.score>=1?'ok':'no'}"><b class="h">${g.score===2?'¡Perfecto!':g.score===1?'看得懂，小地方修一下':'這句要再改'}</b>${g.corrected&&clean(g.corrected)!==clean(g.you)?`<span><b>修正：</b>${esc(g.corrected)}</span>`:''}${g.natural?`<span><b>墨西哥人會說：</b>${esc(g.natural)}</span>`:''}${g.note?`<span>${esc(g.note)}</span>`:''}</div><button class="btn primary" data-act="next" id="nextbtn">下一題</button>`)
    :`<textarea id="ans" rows="2" placeholder="${esc(q.hint||'用西文回答')}"></textarea><div class="row"><button class="mic" data-act="mic" data-for="ans">說西文</button><button class="btn primary grow" data-act="askcheck">送出</button><button class="btn ghost" data-act="tskip">不會</button></div><div class="help" id="michelp" hidden></div>`}</section>`}
@@ -983,6 +983,14 @@ function listen(b){const SR=window.SpeechRecognition||window.webkitSpeechRecogni
     r.onend=()=>{REC=null;b.classList.remove('on');b.textContent='說西文';if(got)el.focus()};
     r.start()}catch(e){REC=null;b.classList.remove('on');b.textContent='說西文';micHelp();el.focus()}}
 
+/* ---------- play a list of words one after another ---------- */
+let PL=null;
+function stopList(){if(PL){PL.stop=true;if(PL.btn)PL.btn.textContent=PL.label;PL=null;try{speechSynthesis.cancel()}catch(e){}}}
+function playList(items,btn){items=items.filter(Boolean).slice(0,60);if(!items.length){toast('沒有可以播放的字');return}
+  const me={stop:false,btn,label:btn.textContent};PL=me;btn.textContent='停止播放';let i=0;
+  const step=()=>{if(me.stop)return;if(i>=items.length){if(PL===me){btn.textContent=me.label;PL=null}return}
+    speak(items[i++],.8,()=>{if(!me.stop)setTimeout(step,700)})};step()}
+
 /* ---------- diary ---------- */
 const DPROMPTS=[
  ["今天吃了什麼？","Hoy comí..."],["介紹一個台灣夜市小吃給墨西哥朋友","En los mercados nocturnos de Taiwán hay..."],["今天工作發生什麼事？","Hoy en el trabajo..."],["你最愛的一首巴恰塔，為什麼？","Mi bachata favorita es..."],
@@ -1050,7 +1058,12 @@ const ACT={
  tcheck:()=>{const v=$('#ans').value;if(!v.trim())return;const w=curW();const target=w.es;const c=check(v,target);grade(w,c.ok,v,c.note)},
  tskip:()=>{if(P.mode==='coach'){P.done++;P.wrong++;requeue(P.cur);next();return}const w=curW();if(P.mode==='build'||P.mode==='sent'){record(w,'bad');P.done++;P.wrong++;requeue(w.id);P.fb=P.mode==='build'?{ok:false}:Object.assign(lcsMark(w.ex,''),{you:''});render();return}grade(w,false,'',null)},
  next:()=>next(),
- say:b=>speak(b.dataset.t),
+ say:b=>{stopList();speak(b.dataset.t)},
+ playlist:b=>{if(PL){stopList();return}let items=[];const t0=dkey();
+   if(b.dataset.src==='pack')items=PACKS[b.dataset.k].map(p=>p[0]);
+   else if(b.dataset.src==='due')items=Object.values(S.words).filter(w=>w.inErr||(w.seen&&w.due<=t0)).map(w=>w.es);
+   else items=[...document.querySelectorAll('#wlist .wmain .say')].map(x=>x.dataset.t);
+   playList(items,b)},
  sayslow:b=>speak(b.dataset.t,.6),
  shcheck:()=>shadowGrade(),
  bpick:b=>{const k=+b.dataset.k;P.b.pick.push(P.b.pool.splice(k,1)[0]);render()},
