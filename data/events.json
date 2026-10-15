@@ -1,0 +1,44 @@
+[
+  {
+    "date": "2026-10-15",
+    "title": "Barcade 週四舞會",
+    "organizer": {
+      "name": "Barcade"
+    },
+    "venue": "Barcade",
+    "series": "Barcade",
+    "color": "#ff9f0a",
+    "tentative": true
+  },
+  {
+    "date": "2026-10-16",
+    "title": "Flow 週五舞會",
+    "organizer": {
+      "name": "Flow"
+    },
+    "venue": "Flow",
+    "series": "Flow",
+    "color": "#30d158",
+    "tentative": true
+  },
+  {
+    "date": "2026-10-17",
+    "title": "La Salsa 週六舞會",
+    "organizer": {
+      "name": "La Salsa"
+    },
+    "venue": "La Salsa",
+    "series": "La Salsa",
+    "color": "#bf5af2",
+    "tentative": true
+  },
+  {
+    "title": "Bachata Crush",
+    "organizer": {
+      "name": "Bachata Crush",
+      "instagram": "bachata_crush_tw"
+    },
+    "color": "#ff375f",
+    "note": "第一次拍 Bachata Crush，日期與場地以主辦 IG 公告為準。"
+  }
+]
