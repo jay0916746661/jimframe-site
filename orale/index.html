@@ -228,6 +228,16 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:.8rem;color:var(--m
 .tok.ans button{background:var(--cobalt);color:var(--on-cobalt)}
 .listen-row{display:flex;flex-wrap:wrap;gap:6px;grid-column:1/-1}
 .listen-row a{display:inline-flex;align-items:center;gap:4px;background:var(--sunk);border-radius:999px;padding:5px 12px;font-size:.84rem;font-weight:600;min-height:32px}
+.alarm{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.alarm[hidden]{display:none!important}
+.alarm .panel{max-width:360px;width:100%;text-align:center}
+.lyl{padding:8px 10px;border-radius:10px;transition:background .2s}
+.lyl.on{background:var(--cobalt-soft)}
+.gapin{width:auto;display:inline-block;padding:4px 6px;font-size:1rem;margin:2px 0;max-width:100%}
+.tl{list-style:none;margin:0 0 0 6px;padding:0;border-left:2px solid var(--line)}
+.tl li{position:relative;padding:0 0 16px 16px;display:flex;flex-direction:column;gap:2px}
+.tl li::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--cobalt)}
+.tl b.y{color:var(--cobalt);font-variant-numeric:tabular-nums}
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--sunk);border-radius:9px;padding:2px;gap:2px}
 .seg button{border:0;background:transparent;border-radius:7px;padding:6px 4px;font-size:.9rem;font-weight:500;cursor:pointer}
 .seg button.on{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.12);font-weight:600}
@@ -252,10 +262,11 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:.8rem;color:var(--m
   <button class="tab" data-act="go" data-v="semana"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-8M12 20V5M19 20v-5"/></svg><span>週報</span></button>
 </div></nav>
 <div id="toast" class="toast" hidden></div>
+<div id="alarm" class="alarm" hidden></div>
 
 <script>
 /* ---------- content ---------- */
-const THEMES={viaje:'旅行',bachata:'巴恰塔',buceo:'潛水',chino:'教中文',banco:'銀行往事',calle:'街頭口語',comida:'墨西哥美食',fiestas:'節日',cultura:'文化',musica:'音樂',taiwan:'台灣文化',general:'一般'};
+const THEMES={viaje:'旅行',bachata:'巴恰塔',buceo:'潛水',chino:'教中文',banco:'銀行往事',calle:'街頭口語',comida:'墨西哥美食',fiestas:'節日',cultura:'文化',musica:'音樂',taiwan:'台灣文化',historia:'墨西哥歷史',clase:'上課筆記',general:'一般'};
 // 歌單：[歌名, 歌手, 備註]
 const SONGS={
  bachata:[["Obsesión","Aventura"],["Dile al Amor","Aventura"],["Un Beso","Aventura"],["Los Infieles","Aventura"],["Mi Corazoncito","Aventura"],["Cuando Volverás","Aventura"],["Volví","Aventura & Bad Bunny","巴恰塔和 Bad Bunny 的交集"],["Propuesta Indecente","Romeo Santos","舞會必放"],["Eres Mía","Romeo Santos"],["Imitadora","Romeo Santos"],["Odio","Romeo Santos ft. Drake"],["Necio","Romeo Santos ft. Santana"],["Sobredosis","Romeo Santos ft. Ozuna"],["Promise","Romeo Santos ft. Usher","西英混唱"],["Bebo","Romeo Santos"],["Héroe Favorito","Romeo Santos"],["La Diabla","Romeo Santos"],["Stand by Me","Prince Royce","西英混唱，入門好唱"],["Corazón Sin Cara","Prince Royce","歌詞慢、咬字清楚"],["Darte un Beso","Prince Royce"],["Las Cosas Pequeñas","Prince Royce"],["Carita de Inocente","Prince Royce"],["Bachata Rosa","Juan Luis Guerra","詩意、用字優雅"],["Burbujas de Amor","Juan Luis Guerra"],["Bachata en Fukuoka","Juan Luis Guerra"],["Hoja en Blanco","Monchy & Alexandra","男女對唱"],["Me Emborracharé","Grupo Extra"],["Te Extraño","Xtreme"],["Tengo un Amor","Toby Love ft. Rakim & Ken-Y"],["Voy Pa' Allá","Antony Santos","傳統吉他巴恰塔"]],
@@ -268,7 +279,11 @@ const SING=[
   ["Ay, ay, ay, ay,","哎、哎、哎、哎，","每個 ay 拉長，大家一起喊"],["canta y no llores,","唱吧，別哭，","canta‿y 連成 can-tai"],["porque cantando se alegran,","因為一唱歌，","se‿a 連音：sea-le-gran"],["cielito lindo, los corazones.","我可愛的心肝，心就快樂了。",""]]},
  {t:"Las Mañanitas",by:"墨西哥傳統生日歌",note:"墨西哥朋友生日時唱，比 Happy Birthday 更常用，常在清晨或蛋糕前唱。",lines:[
   ["Estas son las mañanitas","這是清晨之歌","ma-ña-ni-tas 的 ñ 像「捏」"],["que cantaba el rey David,","大衛王曾經唱過，","cantaba‿el 連音"],["hoy por ser día de tu santo","今天是你的日子","de‿tu 不連，día 重音在 í"],["te las cantamos a ti.","我們唱給你聽。",""],
-  ["Despierta, mi bien, despierta,","醒來吧，親愛的，醒來，",""],["mira que ya amaneció,","你看天已經亮了，","que‿ya 連音"],["ya los pajarillos cantan,","小鳥們都在唱歌，","pa-ja-ri-llos 的 ll 在墨西哥唸 y"],["la luna ya se metió.","月亮已經下山了。",""]]}
+  ["Despierta, mi bien, despierta,","醒來吧，親愛的，醒來，",""],["mira que ya amaneció,","你看天已經亮了，","que‿ya 連音"],["ya los pajarillos cantan,","小鳥們都在唱歌，","pa-ja-ri-llos 的 ll 在墨西哥唸 y"],["la luna ya se metió.","月亮已經下山了。",""]]},
+ {t:"De Colores",by:"墨西哥傳統民謠",note:"墨西哥和整個拉丁美洲都會唱的傳統歌，旋律簡單，很適合當第一首完整學會的歌。",lines:[
+  ["De colores, de colores se visten los campos en la primavera.","春天，田野穿上了繽紛的顏色。","de colores 要連著唱"],["De colores, de colores son los pajaritos que vienen de afuera.","從遠方飛來的小鳥五顏六色。","pajaritos 的 j 是喉音 ㄏ"],["De colores, de colores es el arco iris que vemos lucir.","我們看見閃耀的彩虹也是五顏六色。","arco‿iris 連音"],["Y por eso los grandes amores de muchos colores me gustan a mí.","所以我喜歡那些五彩繽紛的偉大愛情。","gustan‿a 連音"],["Y por eso los grandes amores de muchos colores me gustan a mí.","（重複一次）",""]]},
+ {t:"La Bamba",by:"韋拉克魯斯傳統 son jarocho",note:"1958 年 Ritchie Valens 的搖滾版讓它紅遍全世界；這裡是傳統歌詞。傳統跳法裡，舞伴會邊跳邊用腳把緞帶綁成蝴蝶結。",lines:[
+  ["Para bailar la bamba,","要跳 La Bamba，",""],["para bailar la bamba se necesita una poca de gracia,","要跳 La Bamba，需要一點優雅，","necesita‿una 連音"],["una poca de gracia pa' mí, pa' ti,","給我一點，給你一點，","pa' 是 para 的口語"],["y arriba y arriba,","往上、往上，","arriba 的 rr 要彈舌"],["y arriba y arriba, por ti seré, por ti seré, por ti seré.","往上、往上，我會為你、為你、為你。",""],["Yo no soy marinero,","我不是水手，",""],["yo no soy marinero, soy capitán, soy capitán, soy capitán.","我不是水手，我是船長、船長、船長。",""],["Bamba, bamba.","Bamba、bamba。",""]]}
 ];
 // [es, 中文, English, example, 例句中文, 辣度]
 const PACKS={
@@ -282,7 +297,8 @@ comida:[["los tacos al pastor","牧師塔可（烤肉塔可）","al pastor tacos
 fiestas:[["el Día de Muertos","亡靈節（11/1–2）","Day of the Dead","El Día de Muertos recordamos a los que se fueron.","亡靈節我們懷念離開的人。"],["la ofrenda","祭壇供品","altar offering","Pusimos pan de muerto en la ofrenda.","我們在祭壇放了亡靈麵包。"],["el cempasúchil","萬壽菊（亡靈花）","marigold","Las flores de cempasúchil guían a las almas.","萬壽菊為亡靈引路。"],["la calaverita","糖骷髏／打油詩","sugar skull / funny poem","Le escribí una calaverita a mi jefe.","我寫了首亡靈打油詩給老闆。"],["el pan de muerto","亡靈麵包","bread of the dead","El pan de muerto sabe a azahar.","亡靈麵包有橙花香。"],["el Grito","獨立吶喊（9/15 夜）","the Cry of Independence","La noche del 15 damos el Grito: ¡Viva México!","15 號晚上大家喊：墨西哥萬歲！"],["las posadas","聖誕前九夜聚會（12/16–24）","Christmas posadas","En las posadas rompemos piñatas.","在 posadas 聚會我們打 piñata。"],["la piñata","皮納塔彩罐","piñata","¡Dale, dale, dale a la piñata!","打啊打啊打 piñata！"],["la Rosca de Reyes","三王節麵包（1/6）","Kings' cake","Me salió el muñequito en la rosca.","我在三王麵包裡吃到小娃娃。"],["los tamales","粽子般的玉米蒸糕","tamales","Si te sale el muñequito, pagas los tamales el 2 de febrero.","吃到娃娃的人 2/2 要請吃 tamales。"],["la Guelaguetza","瓦哈卡民族舞蹈節（7 月）","Guelaguetza festival","Fuimos a la Guelaguetza en Oaxaca.","我們去了瓦哈卡的民族舞蹈節。"],["el puente","連假","long weekend","Este puente nos vamos a la playa.","這個連假我們去海邊。"]],
 cultura:[["chilango / chilanga","墨西哥城人","person from Mexico City","Mi amigo es chilango de toda la vida.","我朋友是土生土長的墨西哥城人。"],["el tianguis","露天市集","street market","Los domingos hay tianguis en mi colonia.","我家那區週日有市集。"],["la lucha libre","墨西哥蒙面摔角","Mexican wrestling","Fuimos a la lucha libre en la Arena México.","我們去墨西哥競技場看摔角。"],["los mariachis","街頭樂隊","mariachi band","Contratamos mariachis para la serenata.","我們請了樂隊來唱小夜曲。"],["la serenata","小夜曲（窗下唱情歌）","serenade","Le llevó serenata a su novia.","他去女友窗下唱情歌。"],["la Virgen de Guadalupe","瓜達露佩聖母（12/12）","Our Lady of Guadalupe","El 12 de diciembre millones visitan a la Virgen de Guadalupe.","12/12 上百萬人去朝聖。"],["el compadre / la comadre","教父母之間的稱呼、好友","close family friend","Mi compadre me invitó a la fiesta.","我的老兄邀我去派對。"],["la quinceañera","十五歲成年禮","15th birthday party","Fui a la quinceañera de mi sobrina.","我去了姪女的十五歲成年禮。"],["la mordida","賄賂（口語）","bribe","No le des mordida al policía.","別塞錢給警察。"],["la trajinera","霍奇米爾科彩船","decorated boat","Rentamos una trajinera en Xochimilco.","我們在霍奇米爾科租了一艘彩船。"],["¿Mande?","什麼？（禮貌的「蛤？」）","pardon?","—Oye. —¿Mande?","—欸。—是？"],["el sobremesa","飯後聊天時光","after-meal chat","La sobremesa duró tres horas.","飯後聊了三小時。"]],
 musica:[["extrañar","想念（墨西哥最常用）","to miss","Te extraño cada noche.","我每晚都想你。"],["el desamor","失戀、愛的傷","heartbreak","La bachata habla mucho de desamor.","巴恰塔很常唱失戀。"],["la traición","背叛","betrayal","Esa canción es de traición.","那首歌在講背叛。"],["el despecho","被甩後的怨氣","spite after a breakup","Pon música de despecho.","放點失戀怨歌。"],["perrear","跳雷鬼動（貼身扭）","to dance reggaeton","Vamos a perrear toda la noche.","整晚跳雷鬼動。"],["el perreo","雷鬼動舞風","reggaeton dancing","El perreo es parte de la fiesta.","貼身舞是派對的一部分。"],["la letra","歌詞","lyrics","No entiendo la letra de esta canción.","我聽不懂這首歌詞。"],["el coro","副歌","chorus","El coro es lo más fácil de cantar.","副歌最好唱。"],["cantar","唱歌","to sing","Quiero cantar en el karaoke.","我想去 KTV 唱歌。"],["corear","大合唱","to sing along","Todos coreaban la canción.","大家一起大合唱。"],["el bellaqueo","（波多黎各）調情跳舞","flirty dancing (PR)","Bad Bunny usa mucho la palabra bellaqueo.","Bad Bunny 很常用這個字。",2],["janguear","（波多黎各）出去玩","to hang out (PR)","¿Vamos a janguear?","要出去玩嗎？",1]],
-taiwan:[["el mercado nocturno","夜市","night market","En Taiwán cenamos en el mercado nocturno.","在台灣我們去夜市吃晚餐。"],["el té de burbujas","珍珠奶茶","bubble tea","El té de burbujas nació en Taichung.","珍珠奶茶起源於台中。"],["el tofu apestoso","臭豆腐","stinky tofu","El tofu apestoso huele feo pero sabe rico.","臭豆腐聞起來臭，吃起來香。"],["la sopa de fideos con res","牛肉麵","beef noodle soup","La sopa de fideos con res es mi comida favorita.","牛肉麵是我最愛的食物。"],["la tienda de conveniencia","便利商店","convenience store","Hay una tienda de conveniencia en cada cuadra.","每個街口都有便利商店。"],["la moto / el scooter","機車","scooter","En Taipéi mucha gente va en moto al trabajo.","在台北很多人騎機車上班。"],["el MRT","捷運","Taipei metro","En el MRT no se puede comer ni tomar agua.","捷運上不能吃東西也不能喝水。"],["el Año Nuevo Lunar","農曆新年","Lunar New Year","En el Año Nuevo Lunar toda la familia cena junta.","過年全家人一起吃年夜飯。"],["el sobre rojo","紅包","red envelope","Los abuelos les dan sobres rojos a los nietos.","阿公阿嬤會給孫子紅包。"],["la Fiesta de los Faroles","元宵節（放天燈）","Lantern Festival","En Pingxi soltamos faroles al cielo.","我們在平溪放天燈。"],["el Festival del Bote del Dragón","端午節","Dragon Boat Festival","En el Festival del Bote del Dragón comemos zongzi.","端午節我們吃粽子。"],["el Festival de Medio Otoño","中秋節","Mid-Autumn Festival","En el Medio Otoño los taiwaneses hacen carne asada en la calle.","中秋節台灣人會在路邊烤肉。"],["el templo","廟","temple","Fuimos al templo a pedir buena suerte.","我們去廟裡拜拜求好運。"],["el tifón","颱風","typhoon","Hubo tifón y no fuimos a trabajar.","颱風來了，放颱風假。"],["el karaoke","KTV","karaoke","Después de la cena fuimos al karaoke.","吃完晚餐我們去唱 KTV。"],["los caracteres tradicionales","繁體字","traditional characters","En Taiwán usamos caracteres tradicionales.","台灣用繁體字。"]]
+taiwan:[["el mercado nocturno","夜市","night market","En Taiwán cenamos en el mercado nocturno.","在台灣我們去夜市吃晚餐。"],["el té de burbujas","珍珠奶茶","bubble tea","El té de burbujas nació en Taichung.","珍珠奶茶起源於台中。"],["el tofu apestoso","臭豆腐","stinky tofu","El tofu apestoso huele feo pero sabe rico.","臭豆腐聞起來臭，吃起來香。"],["la sopa de fideos con res","牛肉麵","beef noodle soup","La sopa de fideos con res es mi comida favorita.","牛肉麵是我最愛的食物。"],["la tienda de conveniencia","便利商店","convenience store","Hay una tienda de conveniencia en cada cuadra.","每個街口都有便利商店。"],["la moto / el scooter","機車","scooter","En Taipéi mucha gente va en moto al trabajo.","在台北很多人騎機車上班。"],["el MRT","捷運","Taipei metro","En el MRT no se puede comer ni tomar agua.","捷運上不能吃東西也不能喝水。"],["el Año Nuevo Lunar","農曆新年","Lunar New Year","En el Año Nuevo Lunar toda la familia cena junta.","過年全家人一起吃年夜飯。"],["el sobre rojo","紅包","red envelope","Los abuelos les dan sobres rojos a los nietos.","阿公阿嬤會給孫子紅包。"],["la Fiesta de los Faroles","元宵節（放天燈）","Lantern Festival","En Pingxi soltamos faroles al cielo.","我們在平溪放天燈。"],["el Festival del Bote del Dragón","端午節","Dragon Boat Festival","En el Festival del Bote del Dragón comemos zongzi.","端午節我們吃粽子。"],["el Festival de Medio Otoño","中秋節","Mid-Autumn Festival","En el Medio Otoño los taiwaneses hacen carne asada en la calle.","中秋節台灣人會在路邊烤肉。"],["el templo","廟","temple","Fuimos al templo a pedir buena suerte.","我們去廟裡拜拜求好運。"],["el tifón","颱風","typhoon","Hubo tifón y no fuimos a trabajar.","颱風來了，放颱風假。"],["el karaoke","KTV","karaoke","Después de la cena fuimos al karaoke.","吃完晚餐我們去唱 KTV。"],["los caracteres tradicionales","繁體字","traditional characters","En Taiwán usamos caracteres tradicionales.","台灣用繁體字。"]],
+historia:[["la conquista","征服","conquest","La conquista de Tenochtitlan terminó en 1521.","征服特諾奇提特蘭在 1521 年結束。"],["la independencia","獨立","independence","México celebra su independencia el 16 de septiembre.","墨西哥在 9 月 16 日慶祝獨立。"],["la revolución","革命","revolution","La Revolución mexicana empezó en 1910.","墨西哥革命在 1910 年開始。"],["la pirámide","金字塔","pyramid","Subimos la pirámide del Sol en Teotihuacán.","我們爬了特奧蒂瓦坎的太陽金字塔。"],["el mural","壁畫","mural","En el Palacio Nacional hay murales de Diego Rivera.","國家宮裡有迪亞哥·里維拉的壁畫。"],["la bandera","國旗","flag","En la bandera hay un águila sobre un nopal.","國旗上有一隻站在仙人掌上的老鷹。"],["indígena","原住民的","indigenous","En México se hablan muchas lenguas indígenas.","墨西哥有很多原住民語言。"],["el presidente / la presidenta","總統","president","La presidenta da el Grito la noche del 15 de septiembre.","9 月 15 日晚上總統會帶大家吶喊。"],["el siglo","世紀","century","Los mexicas fundaron Tenochtitlan en el siglo XIV.","墨西加人在 14 世紀建立特諾奇提特蘭。"],["el náhuatl","納瓦特語","Nahuatl","Más de un millón de personas hablan náhuatl hoy.","今天有超過一百萬人說納瓦特語。"]]
 };
 // 過去式特訓：[句子, 原形, 答案, 時態, 理由]
 const PAST=[
@@ -312,6 +328,7 @@ const TOPICS={
  fiestas:{p:"Ximena, una amiga de Oaxaca que te explica las fiestas mexicanas (Día de Muertos, el Grito, posadas, Guelaguetza) y te invita a celebrarlas"},
  cultura:{p:"Arturo, un amigo chilango que te cuenta la cultura, costumbres y vida diaria de México: tianguis, lucha libre, mariachis, compadres"},
  taiwan:{p:"Paola, una amiga de Guadalajara que acaba de mudarse a Taipéi y le pide al alumno que le explique la cultura taiwanesa: comida, fiestas, costumbres, el MRT, las motos, los templos. Compara siempre con México"},
+ historia:{p:"Don Rafa, un profesor de historia jubilado de Puebla que platica la historia y la cultura de México con anécdotas y de forma sencilla"},
  musica:{p:"Vale, una amiga mexicana fan de la bachata y de Bad Bunny que platica de canciones, artistas y cómo cantarlas (nunca cita letras completas, solo habla de ellas)"}
 };
 const INT=[0,1,2,4,8,16,30];
@@ -373,7 +390,7 @@ function record(w,r){const t=today();t.items++;w.seen=(w.seen||0)+1;w.last=dkey(
 /* ---------- timer: counts seconds while practicing ---------- */
 let lastAct=0;
 ['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,()=>lastAct=Date.now(),true));
-setInterval(()=>{if(((S.view==='practicar'&&P.active)||S.view==='diario')&&document.visibilityState==='visible'&&Date.now()-lastAct<60000){const t=today();t.sec++;if(t.sec%30===0)scheduleFlush(500);paintMini()}},1000);
+setInterval(()=>{if(((S.view==='practicar'&&P.active)||S.view==='diario'||S.view==='listen'||S.view==='social'||(S.view==='lecciones'&&S.ltab&&S.ltab!=='words'))&&document.visibilityState==='visible'&&Date.now()-lastAct<60000){const t=today();t.sec++;if(t.sec%30===0)scheduleFlush(500);paintMini()}},1000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&logDirty)flushLog()});
 
 /* ---------- shared bits ---------- */
@@ -420,10 +437,11 @@ function vHoy(){const s=statsW(),t=today(),min=Math.floor(t.sec/60),acc=pct(t.ri
     <div class="ringbox"><svg id="bigring" width="120" height="120" viewBox="0 0 36 36">${ring(t.sec/600,120,4)}</svg><div class="t"><b id="bigmin">${min}</b><span>/ 10 分鐘</span></div></div>
     <div class="hero-side"><p class="eyebrow">HOY · ${d.getMonth()+1} 月 ${d.getDate()} 日</p>
       <h1>${t.sec>=600?'¡A huevo! 今天達標了':'今天的 10 分鐘'}</h1>
-      <p class="muted">連續達標 ${streak()} 天 · 今日 ${t.items} 題${t.items?` · 正確率 ${acc}%`:''}</p>
+      <p class="muted">連續達標 ${streak()} 天 · 今日 ${t.items} 題${t.items?` · 正確率 ${acc}%`:''}${t.xp?` · ${t.xp} XP`:''}${AL.on&&AL.times.length?` · 提醒 ${nextAlarm()}`:''}</p>
       ${missionList()}
       <div class="row"><button class="btn primary" data-act="quick">${dailyBtn()}</button>${s.err?`<button class="btn bad" data-act="start" data-mode="err">錯題本 ${s.err}</button>`:''}</div></div>
   </section>
+  ${classDueToday()?`<section class="panel"><h2>今天的課上完了嗎？</h2><p class="muted">把新單字和老師糾正你的句子填進來，馬上出題複習。</p><div><button class="btn primary" data-act="go" data-v="clase">填上課筆記</button></div></section>`:''}
   ${diaryCard()}
   <section class="panel"><div class="row" style="justify-content:space-between"><h2>本週</h2><span class="note">藍色 = 當天練滿 10 分鐘</span></div><div class="weekstrip">${wk}</div></section>`;
   if(!S.me||!S.me.tested)h=`<section class="panel"><h2>先做 3 分鐘程度測驗</h2><p class="muted">14 題選擇題，測出你在 A1–B2 哪一級，自動幫你挑適合的課，AI 也會用你的程度跟你說話。</p><div class="row"><button class="btn primary" data-act="test">開始測驗</button>${S.me&&S.me.tested?'':'<button class="btn ghost" data-act="testskip">先不要</button>'}</div></section>`+h;
@@ -438,7 +456,8 @@ function vHoy(){const s=statsW(),t=today(),min=Math.floor(t.sec/60),acc=pct(t.ri
   return h}
 
 function vPalabras(){const opts=Object.entries(THEMES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
-  return `<section class="panel"><h2>新增單字</h2>
+  return `<section class="panel"><div class="row" style="justify-content:space-between"><div><h2>剛上完課？</h2><p class="note">把課上學的單字、老師糾正一次填進來，馬上出題。</p></div><button class="btn primary" data-act="go" data-v="clase">上課筆記</button></div></section>
+  <section class="panel"><h2>新增單字</h2>
     <div class="formgrid">
       <label class="f">西文<input id="n-es" placeholder="例：la cuadra" autocomplete="off"></label>
       <label class="f">中文<input id="n-zh" placeholder="例：一個街口" autocomplete="off"></label>
@@ -465,12 +484,12 @@ function paintList(){const el=$('#wlist');if(!el)return;const q=clean(S.f.q);
   $('#wcount').textContent=`${ws.length} 個`;
   el.innerHTML=ws.length?ws.map(w=>{const[c,l]=stOf(w);return `<li class="wrow"><div class="wmain"><b>${esc(w.es)} ${heat(w.heat)} <button class="say" data-act="say" data-t="${esc(w.es)}">聽</button></b><span>${esc(w.zh)}${w.en?' · '+esc(w.en):''}</span></div><span class="pill ${c}">${l}${w.inErr?` ${w.errOk||0}/3`:''}</span><button class="x" data-act="del" data-id="${esc(w.id)}">刪除</button><span class="tchip" style="grid-column:1/-1">${THEMES[w.theme]||''}${w.seen?` · 練過 ${w.seen} 次 · 對 ${w.right||0} 錯 ${w.wrong||0}`:''}</span></li>`}).join(''):`<li class="note" style="padding:12px 0">${Object.keys(S.words).length?'沒有符合的字。':'還沒有單字。上面新增，或到「課程」一鍵加入主題單字。'}</li>`}
 
-function vLecciones(){const have=new Set(Object.values(S.words).map(w=>clean(w.es)));
-  const pack=(k,intro,extra='')=>{const items=PACKS[k],left=items.filter(p=>!have.has(clean(p[0]))).length;
+function packHTML(k,intro,extra=''){const have=new Set(Object.values(S.words).map(w=>clean(w.es)));const items=PACKS[k],left=items.filter(p=>!have.has(clean(p[0]))).length;
     return `<details class="panel pack"><summary><div><p class="eyebrow">${k.toUpperCase()}</p><h2>${THEMES[k]}</h2></div><span class="note">${items.length-left}/${items.length} 已加入</span></summary>
       <p class="muted">${intro}</p>${extra}
       <ul class="plist">${items.map((p,i)=>`<li><div><b>${esc(p[0])}</b> <button class="say" data-act="say" data-t="${esc(p[0])}">聽</button> ${heat(p[5])} <span class="muted">· ${esc(p[1])}</span></div>${have.has(clean(p[0]))?'<span class="note">已加入</span>':`<button class="x" data-act="addp" data-k="${k}" data-i="${i}">＋加入</button>`}<small>${esc(p[3])} <button class="say" data-act="say" data-t="${esc(p[3])}">聽</button></small></li>`).join('')}</ul>
-      <div class="row"><button class="btn" data-act="playlist" data-src="pack" data-k="${k}">整組播放</button>${left?`<button class="btn primary" data-act="addpack" data-k="${k}">全部加入（${left}）</button>`:''}<button class="btn" data-act="chat" data-t="${k}" ${aiOK()?'':'disabled'}>用這個主題聊天</button></div></details>`};
+      <div class="row"><button class="btn" data-act="playlist" data-src="pack" data-k="${k}">整組播放</button>${left?`<button class="btn primary" data-act="addpack" data-k="${k}">全部加入（${left}）</button>`:''}<button class="btn" data-act="chat" data-t="${k}" ${aiOK()?'':'disabled'}>用這個主題聊天</button></div></details>`}
+function vWordLessons(){const pack=packHTML;
   return `<section class="panel"><h1>主題課程</h1><p class="muted">每一課都是墨西哥說法。加入後會進到你的單字庫，閃卡、翻譯、問答、對話都會用到。</p></section>`+
   pack('viaje','在墨西哥搭客運、找住宿、吃路邊攤會用到的字。注意：墨西哥的 camión 是公車或客運，不是卡車。')+
   pack('bachata','舞會上跟舞伴、老師溝通的字。')+
@@ -478,7 +497,6 @@ function vLecciones(){const have=new Set(Object.values(S.words).map(w=>clean(w.e
   pack('chino','聊你的中文教學工作。')+
   pack('banco','銀行工作往事，專門拿來練過去式。',`<div class="rule"><b>Pretérito（簡單過去）＝ 一次、完成、有範圍</b><span>Renuncié en marzo. 我三月辭職了。 · Un cliente gritó. 有位客人大叫。</span><b>Imperfecto（未完成過去）＝ 背景、習慣、描述</b><span>Trabajaba en el centro. 我以前在市中心上班。 · Teníamos junta los lunes. 以前週一都開會。</span><span class="note">口訣：電影鏡頭裡，imperfecto 是布景，pretérito 是突然發生的動作。Mientras contaba el dinero（布景）, sonó la alarma（動作）.</span></div><div class="row"><button class="btn mid" data-act="start" data-mode="past">開始過去式特訓（${PAST.length} 題）</button></div>`)+
   pack('calle','教科書不教、墨西哥人天天講的口語和髒話。圓點代表粗度。',`<div class="warn">粗度 3 的字只在熟朋友之間用。güey、no mames 朋友間超常用；對長輩、客人、第一次見面的人不要講。pendejo、cabrón 語氣一錯就是吵架。</div>`)+
-  vMusica()+
   `<section class="panel"><p class="eyebrow">MÉXICO</p><h1>認識墨西哥</h1><p class="muted">美食、節日、文化三課。每課都可以直接跟墨西哥朋友聊天練習。</p></section>`+
   pack('comida','點塔可、吃路邊攤、喝梅斯卡爾。墨西哥人說「pica」可能真的很辣，要小心。')+
   pack('fiestas','一年中的大節日。11 月 1–2 日就是亡靈節，正好可以跟墨西哥朋友聊。',`<div class="rule"><b>一年行事曆</b><span>1/6 三王節（Rosca de Reyes）→ 2/2 聖燭節吃 tamales → 7 月 Guelaguetza → 9/15 夜 el Grito、9/16 獨立日 → 11/1–2 亡靈節 → 12/12 瓜達露佩聖母 → 12/16–24 posadas</span></div>`)+
@@ -486,13 +504,9 @@ function vLecciones(){const have=new Set(Object.values(S.words).map(w=>clean(w.e
   `<section class="panel"><p class="eyebrow">TAIWÁN</p><h1>用西文介紹台灣</h1><p class="muted">墨西哥朋友一定會問你台灣的事。這課教你用西文講夜市、珍奶、機車、過年、中秋烤肉，聊天時 Paola 會一直問你台灣的事。</p></section>`+
   pack('taiwan','介紹台灣時，先講台灣的說法，再跟墨西哥比：夜市就像 tianguis 加上 antojitos。')}
 function vMusica(){const tab=S.mtab||'bachata';
-  const tabs=[['bachata','巴恰塔 30 首'],['bb','Bad Bunny 30 首'],['sing','跟著唱（完整歌詞）']].map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="mtab" data-t="${k}">${l}</button>`).join('');
+  const tabs=[['bachata','巴恰塔 30 首'],['bb','Bad Bunny 30 首'],['sing','練唱歌詞']].map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="mtab" data-t="${k}">${l}</button>`).join('');
   let body='';
-  if(tab==='sing'){const s=SING[S.singIdx||0];
-    body=`<div class="chips">${SING.map((x,i)=>`<button class="chip ${(S.singIdx||0)===i?'on':''}" data-act="singpick" data-i="${i}">${esc(x.t)}</button>`).join('')}</div>
-    <div class="rule"><b>${esc(s.t)}</b><span class="note">${esc(s.by)} · 公版傳統歌曲</span><span>${esc(s.note)}</span></div>
-    <ol class="plist" style="padding-left:0">${s.lines.map(l=>`<li style="grid-template-columns:1fr"><div><b style="font-size:1.05rem">${esc(l[0])}</b> <button class="say" data-act="say" data-t="${esc(l[0])}">聽</button></div><small style="grid-column:1/-1">${esc(l[1])}${l[2]?` · <span style="color:var(--cobalt)">${esc(l[2])}</span>`:''}</small></li>`).join('')}</ol>
-    <p class="note">練唱方法：先跟著念一次（不用唱），把連音標記的地方連起來念順；再用一半速度唱；最後整首合唱。</p>`}
+  if(tab==='sing'){body=lyricHTML()}
   else{const list=SONGS[tab];
     body=`<p class="muted">${tab==='bachata'?'巴恰塔來自多明尼加，歌手多半是多明尼加或紐約多明尼加裔口音：字尾 s 常吞掉、r 變 l。學唱時這樣模仿沒問題，跟墨西哥朋友講話則用墨西哥說法。':'Bad Bunny 是波多黎各人，口音和用字跟墨西哥差很多（例如 janguear、bellaqueo、r 唸成 l）。學這些歌時，課程會告訴你墨西哥人怎麼說。'}</p>
     <p class="note">經典與熱門精選（不是即時排行榜）。點「▶ YouTube 聽」直接聽歌；歌詞有版權，這裡不放全文，點「歌詞」看、點「填空玩」到 LyricsTraining 邊聽邊填。「學這首」會講解口音、用字和唱法${aiOK()?'，AI 會再講解這首的歌意和重點字':'；開啟 AI 後還會講解這首的歌意'}。</p>
@@ -530,13 +544,14 @@ function vSemana(){const wk=weekStart(dkey()),cur=sumRange(wk,7),prev=sumRange(a
     </tbody></table></div>
     ${cur.miss.length?`<div><p class="note">本週錯最多的字</p><div class="chips">${topMiss(cur.miss).map(w=>`<span class="wchip err">${esc(w)}</span>`).join('')}</div></div>`:''}
   </section>
+  ${weakHTML(cur)}
   ${mindmap()}
   <section class="panel"><h2>最近 14 天練習分鐘</h2><div class="chart">${bars14()}</div><p class="note">虛線是每日 10 分鐘目標，藍色長條代表那天達標。</p></section>
   <section class="panel"><div class="row" style="justify-content:space-between"><h2>AI 程度分析</h2><button class="btn primary" data-act="weekai" ${aiOK()?'':'disabled'}>${S.log.reports?.[wk]?'重新分析本週':'分析本週'}</button></div>
     <div id="repbox">${rep?repHTML(rep):`<p class="muted">按下分析，Claude 會比較你這週和上週的數字、錯題和對話糾錯，估計目前程度並給下週三個重點。${aiOK()?'':'（${aiNeed()}）'}</p>`}</div></section>`}
 function topMiss(arr){const c={};arr.forEach(w=>c[w]=(c[w]||0)+1);return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,10).map(e=>e[0])}
-function sumRange(start,n){const o={sec:0,right:0,wrong:0,unsure:0,items:0,newW:0,mastered:0,active:0,diary:0,miss:[],fixes:[]};
-  for(let i=0;i<n;i++){const d=S.log.days[addDays(start,i)];if(!d)continue;for(const f of['sec','right','wrong','unsure','items','newW'])o[f]+=d[f]||0;if((d.sec||0)>=600)o.active++;if(d.diary)o.diary++;o.mastered=Math.max(o.mastered,d.mastered||0);o.miss.push(...(d.miss||[]));o.fixes.push(...(d.fixes||[]))}return o}
+function sumRange(start,n){const o={sec:0,right:0,wrong:0,unsure:0,items:0,newW:0,mastered:0,active:0,diary:0,miss:[],fixes:[],cat:{}};
+  for(let i=0;i<n;i++){const d=S.log.days[addDays(start,i)];if(!d)continue;for(const f of['sec','right','wrong','unsure','items','newW'])o[f]+=d[f]||0;if((d.sec||0)>=600)o.active++;if(d.diary)o.diary++;o.mastered=Math.max(o.mastered,d.mastered||0);o.miss.push(...(d.miss||[]));o.fixes.push(...(d.fixes||[]));for(const[c,v]of Object.entries(d.cat||{}))o.cat[c]=(o.cat[c]||0)+v}return o}
 function bars14(){const end=dkey(),days=[...Array(14)].map((_,i)=>addDays(end,i-13)),vals=days.map(k=>Math.round((S.log.days[k]?.sec||0)/60)),mx=Math.max(15,...vals),top=Math.ceil(mx/5)*5;
   const W=360,H=160,L=28,R=6,T=10,B=24,bw=(W-L-R)/14,y=v=>T+(H-T-B)*(1-v/top);
   let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="最近 14 天每日練習分鐘">`;
@@ -555,6 +570,7 @@ function vPracticar(){if(P.active)return P.mode==='chat'?vChat():vSession();
   const m=(mode,lv,title,desc,dis)=>`<button class="mode ${dis?'lock':''}" data-act="start" data-mode="${mode}"><span class="lv">${lv}</span><h3>${title}</h3><p>${desc}</p></button>`;
   return `<section class="panel"><p class="eyebrow">PRACTICAR</p><h1>選一種練習</h1><p class="muted">今天要複習 ${s.due} 個 · 新字 ${s.fresh} 個 · 錯題 ${s.err} 個。答錯或不確定的字，同一輪會一直跳回來，直到你答對。</p><div class="chips">${themeChips}</div></section>
   <div class="modes">
+   ${m('mix','綜合','綜合測驗（像 Duolingo）','選意思、聽音選字、配對、打字翻譯混在一起；答對拿 XP，連對有加成，錯的最後再考一次。')}
    ${m('flash','閃卡','閃卡複習','看西文想意思，自己按「記得／不確定／忘了」。')}
    ${m('trans','第一階','翻譯單字','看中文和英文，打出西文。重音寫錯也會提醒你。')}
    ${m('build','句子','句子重組','看中文，把打亂的西文字依序點回正確的句子。')}
@@ -565,6 +581,9 @@ function vPracticar(){if(P.active)return P.mode==='chat'?vChat():vSession();
    ${m('err','錯題本',`錯題 ${s.err} 個`,'錯過的字要連續答對 3 次才會畢業。')}
    ${m('shadow','口說','跟讀發音評分','先聽墨西哥腔例句，再用鍵盤語音念一次，系統比對你念的字，給清楚度分數。')}
    ${m('past','特訓','過去式：工作往事','pretérito 和 imperfecto 一次搞懂，錯的會自動進錯題本。')}
+   ${m('conj','文法','動詞變化','ser、estar、tener、ir 等 17 個常用動詞的現在式、過去式、未來式；墨西哥用 ustedes，不教 vosotros。')}
+   ${m('listen','聽力','聽力小劇場','市集、舞會、天坑、問公車 4 段墨西哥日常對話，先聽再看字，附聽力題。')}
+   ${m('social','舞會','舞會前 5 分鐘','出門前把 12 句舞會必備句聽一遍、念一遍。')}
   </div>${vMissions()}`}
 function pool(theme){let ws=Object.values(S.words);if(theme&&theme!=='all')ws=ws.filter(w=>w.theme===theme);return ws}
 function buildQueue(mode,theme){const t=dkey();let ws=pool(theme);
@@ -574,13 +593,18 @@ function buildQueue(mode,theme){const t=dkey();let ws=pool(theme);
   if(mode==='build')ws=ws.filter(w=>w.ex&&w.ex.split(' ').length>=4&&w.ex.split(' ').length<=12);
   const err=shuffle(ws.filter(w=>w.inErr)),due=shuffle(ws.filter(w=>!w.inErr&&w.seen&&w.due<=t)),fresh=ws.filter(w=>!w.seen).sort((a,b)=>(a.added||'').localeCompare(b.added||'')),rest=shuffle(ws.filter(w=>!w.inErr&&w.seen&&w.due>t)).sort((a,b)=>(a.box||0)-(b.box||0));
   return[...err.slice(0,5),...due,...fresh,...rest].slice(0,mode==='ask'?8:15).map(w=>w.id)}
-function startMode(mode,limit){
+function startMode(mode,limit,daily){
+  if(mode==='mix'){startMix(null,limit,daily);return}
+  if(mode==='conj'){startConj();return}
+  if(mode==='listen'){S.LS=null;go('listen');return}
+  if(mode==='social'){go('social');return}
+  if(mode==='sound'){S.ltab='sounds';go('lecciones');return}
   if(mode==='chat'){if(!aiOK()){toast(aiNeed());return}chatStart(S.ptheme==='all'||S.ptheme==='general'?'viaje':S.ptheme);return}
   if(mode==='coach'){P={active:true,mode:'coach',queue:shuffle(PATTERNS.map((_,i)=>i)).slice(0,6),total:6,done:0,right:0,wrong:0};S.view='practicar';next();return}
   if(mode==='past'){P={active:true,mode:'past',queue:shuffle(PAST.map((_,i)=>i)),total:PAST.length,done:0,right:0,wrong:0};S.view='practicar';next();return}
   const theme=mode==='err'?'all':S.ptheme,q=buildQueue(mode,theme);
   if(!q.length){toast(mode==='err'?'目前沒有錯題，讚！':mode==='shadow'?'這個主題還沒有帶例句的單字，先到「課程」加入。':'這個主題還沒有單字，先到「課程」加入。');if(mode!=='err')go('lecciones');return}
-  const qq=limit?q.slice(0,limit):q;P={active:true,mode,queue:qq,total:qq.length,done:0,right:0,wrong:0,daily:!!limit};S.view='practicar';next()}
+  const qq=limit?q.slice(0,limit):q;P={active:true,mode,queue:qq,total:qq.length,done:0,right:0,wrong:0,daily:!!daily};S.view='practicar';next()}
 function requeue(item){P.queue.splice(Math.min(3,P.queue.length),0,item)}
 function next(){P.fb=null;P.reveal=false;P.q=null;P.qerr='';
   if(!P.queue.length){P.stage='done';flushLog();render();return}
@@ -588,15 +612,21 @@ function next(){P.fb=null;P.reveal=false;P.q=null;P.qerr='';
   render();
   if(P.mode==='ask')loadQuestion();
   if(P.mode==='shadow'&&S.autoSay&&curW())speak(curW().ex);
+  if(P.mode==='sound'&&S.autoSay&&P.cur)speak(P.cur,.8);
+  if(P.mode==='mix'&&P.cur&&P.cur.type==='listen'&&S.words[P.cur.id])speak(S.words[P.cur.id].es,.85);
   setTimeout(()=>{const a=$('#ans');if(a)a.focus()},40)}
 const curW=()=>S.words[P.cur];
-function vSession(){const labels={build:'句子重組',sent:'句子翻譯',coach:'句型教練',shadow:'跟讀發音評分',flash:'閃卡複習',trans:'第一階・翻譯',ask:'第二階・回答問題',err:'錯題本',past:'過去式特訓'};
+function vSession(){const labels={mix:'綜合測驗',conj:'動詞變化',sound:'發音跟讀',build:'句子重組',sent:'句子翻譯',coach:'句型教練',shadow:'跟讀發音評分',flash:'閃卡複習',trans:'第一階・翻譯',ask:'第二階・回答問題',err:'錯題本',past:'過去式特訓'};
   const head=`<div class="prog"><span><b>${labels[P.mode]}</b> · 完成 ${P.done} · 剩 ${P.queue.length+(P.stage==='done'?0:1)}</span><button class="btn ghost" data-act="quit">結束</button></div>`;
   if(P.stage==='done'&&P.daily)return head+dailyStepDone();
+  if(P.stage==='done'&&P.mode==='mix')return head+mixDone();
   if(P.stage==='done'){const acc=pct(P.right,P.right+P.wrong);return head+`<section class="card done"><p class="eyebrow">¡ÓRALE!</p><b class="n">${acc}%</b><p>這輪 ${P.done} 題，答對 ${P.right}，錯 ${P.wrong}。${P.wrong?'錯的字已進錯題本，會一直出現直到你連對 3 次。':''}</p>
     <div class="row" style="justify-content:center"><button class="btn primary" data-act="start" data-mode="${P.mode}">再來一輪</button>${P.mode==='flash'?'<button class="btn" data-act="start" data-mode="trans">升級：翻譯</button>':P.mode==='trans'?'<button class="btn" data-act="start" data-mode="build">升級：句子重組</button>':P.mode==='build'?'<button class="btn" data-act="start" data-mode="sent">升級：句子翻譯</button>':P.mode==='sent'?'<button class="btn" data-act="start" data-mode="coach">升級：句型教練</button>':P.mode==='ask'&&aiOK()?'<button class="btn" data-act="start" data-mode="chat">升級：真人對話</button>':''}${statsW().err&&P.mode!=='err'?'<button class="btn bad" data-act="start" data-mode="err">練錯題</button>':''}<button class="btn ghost" data-act="quit">回選單</button></div></section>`}
   if(P.mode==='past')return head+pastCard();
   if(P.mode==='coach')return head+coachCard();
+  if(P.mode==='conj')return head+conjCard();
+  if(P.mode==='mix')return head+mixCard();
+  if(P.mode==='sound')return head+soundCard();
   const w=curW();if(!w){next();return head}
   if(P.mode==='flash')return head+flashCard(w);
   if(P.mode==='shadow')return head+shadowCard(w);
@@ -612,7 +642,7 @@ function flashCard(w){return `<section class="card"><span class="tchip">${THEMES
 function transCard(w){return `<section class="card"><span class="tchip">${THEMES[w.theme]||''}${w.inErr?` · 錯題 ${w.errOk||0}/3`:''}</span><div class="prompt-zh">${esc(w.zh)}</div>${w.en?`<p class="muted">${esc(w.en)}</p>`:''}
   ${P.fb?fbBox(P.fb,w):`<input id="ans" placeholder="用西文寫" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="btn primary grow" data-act="tcheck">檢查</button><button class="btn ghost" data-act="tskip">不知道</button></div>`}</section>`}
 function fbBox(fb,w){return `<div class="fb ${fb.ok?'ok':'no'}"><b class="h">${fb.ok?'¡Bien!':'答案是'}</b><div class="big" style="font-size:1.4rem">${esc(w.es)} <button class="say" data-act="say" data-t="${esc(w.es)}">聽</button></div>${fb.you&&!fb.ok?`<span class="note">你寫：${esc(fb.you)}</span>`:''}${fb.note?`<span>${esc(fb.note)}</span>`:''}</div>${exBox(w)}<button class="btn primary" data-act="next" id="nextbtn">下一題</button>`}
-function grade(w,ok,you,note){const r=ok?'good':'bad';record(w,r);P.done++;ok?P.right++:P.wrong++;if(!ok)requeue(w.id);P.fb={ok,you,note};render();setTimeout(()=>{const b=$('#nextbtn');if(b)b.focus()},30)}
+function grade(w,ok,you,note){const r=ok?'good':'bad';if(!ok)addCat('vocabulario');else if(note)addCat(/冠詞/.test(note)?'genero':'acentos');record(w,r);P.done++;ok?P.right++:P.wrong++;if(!ok)requeue(w.id);P.fb={ok,you,note};render();setTimeout(()=>{const b=$('#nextbtn');if(b)b.focus()},30)}
 /* ask: AI question or cloze fallback */
 function cloze(w){if(!w.ex)return null;const c=core(w.es.split('/')[0]);if(!c)return null;
   const plain=strip(w.ex),idx=plain.toLowerCase().search(new RegExp(strip(c).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i'));if(idx<0)return null;return w.ex.slice(0,idx)+'_____'+w.ex.slice(idx+strip(c).length)}
@@ -651,7 +681,7 @@ function pastCard(){const it=PAST[P.cur],fb=P.fb;
   return `<section class="card"><span class="tchip">銀行往事 · ${esc(it[1])}</span><div class="prompt-zh" style="font-size:1.25rem">${esc(it[0])}</div><p class="note">括號裡是原形和主詞，填入正確的過去式。</p>
   ${fb?`<div class="fb ${fb.ok?'ok':'no'}"><b class="h">${fb.ok?'¡Bien!':'答案是'}</b><div class="big" style="font-size:1.4rem">${esc(it[2])}</div>${!fb.ok&&fb.you?`<span class="note">你寫：${esc(fb.you)}</span>`:''}${fb.note?`<span>${esc(fb.note)}</span>`:''}<span><b>${it[3]}</b>：${esc(it[4])}</span></div><div class="ex">${esc(it[0].replace('___',it[2]))} <button class="say" data-act="say" data-t="${esc(it[0].replace('___',it[2]))}">聽</button></div><button class="btn primary" data-act="next" id="nextbtn">下一題</button>`
   :`<input id="ans" placeholder="例：trabajaba" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="btn primary grow" data-act="pcheck">檢查</button><button class="btn ghost" data-act="pskip">不知道</button></div>`}</section>`}
-function pastGrade(you){const i=P.cur,it=PAST[i],c=check(you,it[2]),ok=c.ok,id='past-'+i;
+function pastGrade(you){const i=P.cur,it=PAST[i],c=check(you,it[2]),ok=c.ok,id='past-'+i;if(!ok)addCat('pasado');
   let w=S.words[id];
   if(!ok&&!w){w=newWord({id,es:it[2],zh:`${it[0]}（${it[1]}）`,en:it[3],theme:'banco',ex:it[0].replace('___',it[2]),exZh:it[4]});S.words[id]=w}
   if(w)record(w,ok?'good':'bad');else{const t=today();t.items++;t.right++;scheduleFlush(2500)}
@@ -676,7 +706,7 @@ ${learner()} ${MX}
 Tema: ${THEMES[topic]||'general'}.${(ms?ms.past:tp.past)?' Haz preguntas que obliguen al alumno a usar pretérito e imperfecto, y corrige esos tiempos con cuidado.':''}
 ${ms?`Esto es un juego de rol con misión. Quédate siempre en tu papel y dale oportunidades naturales al alumno para cumplir sus metas, sin decírselas directamente. Metas del alumno (en chino): ${ms.goals.map((g,i)=>i+': '+g).join(' | ')}. Una meta cuenta solo si el alumno la logró en español de forma entendible.`:`Palabras objetivo que el alumno está practicando: ${words.join(', ')}.`}
 Reglas: frases cortas (2–4 oraciones), nivel ${S.me?.level||'A2'}, ${ms?'':'usa 1–2 palabras objetivo por turno, '}termina siempre con una pregunta. Corrige cada mensaje del alumno: gramática, conjugación, género, y palabras que un mexicano no usaría.
-Responde SOLO con JSON: {"reply":"tu respuesta en español","reply_zh":"traducción al chino tradicional (台灣用語)","corrected":"el último mensaje del alumno corregido; cadena vacía si estaba bien o si todavía no ha escrito","note_zh":"explicación breve en chino tradicional (台灣用語) de los errores; cadena vacía si no hubo"${ms?',"goals_done":[índices de TODAS las metas que el alumno ya cumplió en toda la conversación]':''}}`}
+Responde SOLO con JSON: {"reply":"tu respuesta en español","reply_zh":"traducción al chino tradicional (台灣用語)","corrected":"el último mensaje del alumno corregido; cadena vacía si estaba bien o si todavía no ha escrito","note_zh":"explicación breve en chino tradicional (台灣用語) de los errores; cadena vacía si no hubo",${CAT_PROMPT}${ms?',"goals_done":[índices de TODAS las metas que el alumno ya cumplió en toda la conversación]':''}}`}
 function chatStart(topic,mid){const ms=MISSIONS.find(m=>m.id===mid)||null;if(ms)topic=ms.topic;
   const pri=pool(topic).sort((a,b)=>(b.inErr-a.inErr)||((a.due||'').localeCompare(b.due||''))).slice(0,6).map(w=>w.es);
   const words=pri.length>=4?pri:[...pri,...(PACKS[topic]||[]).map(p=>p[0]).filter(x=>!pri.includes(x)).slice(0,6-pri.length)];
@@ -709,7 +739,7 @@ async function chatCall(){CH.busy=true;CH.err='';CH.hint=null;paintChat();const 
     const lu=[...me.msgs].reverse().find(m=>m.who==='me'&&!m.graded);
     if(lu){lu.graded=true;const t=today();t.items++;
       const fixed=String(r.corrected||'').trim();
-      if(fixed&&clean(fixed)!==clean(lu.text)){lu.fix={corrected:fixed,note:String(r.note_zh||'')};t.wrong++;t.fixes.push(`${lu.text} → ${fixed}`);if(t.fixes.length>30)t.fixes.shift()}else{lu.ok=true;t.right++}
+      if(fixed&&clean(fixed)!==clean(lu.text)){lu.fix={corrected:fixed,note:String(r.note_zh||'')};t.wrong++;addCat(normCat(r.err_type)||'vocabulario');t.fixes.push(`${lu.text} → ${fixed}`);if(t.fixes.length>30)t.fixes.shift()}else{lu.ok=true;t.right++}
       const used=me.words.filter(es=>clean(lu.text).includes(core(es.split('/')[0])));
       used.forEach(es=>{const w=Object.values(S.words).find(x=>clean(x.es)===clean(es));if(w)record(w,lu.fix?'unsure':'good')});
       scheduleFlush(2000)}
@@ -741,7 +771,7 @@ function callListen(){const c=CH&&CH.call;if(!c||!c.on||CH.busy||REC)return;cons
     c.miss=(c.miss||0)+1;if(c.miss<2){callListen();return}c.state='idle';paintCall()};
   try{r.start()}catch(e){c.noMic=true;callListen()}}
 function callStart(){if(!CH)return;CH.call={on:true,state:'idle',cap:'',miss:0,sub:true};render();callListen()}
-function callEnd(){const c=CH&&CH.call;if(c)c.on=false;try{REC&&REC.stop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}if(CH)CH.call=null;render()}
+function callEnd(){const c=CH&&CH.call;if(c)c.on=false;try{REC&&REC.stop()}catch(e){}hush();if(CH)CH.call=null;render()}
 
 /* hint */
 function paintHint(){const h=$('#hintbox');if(!h||!CH)return;const x=CH.hint;
@@ -835,8 +865,8 @@ async function coachGrade(){const p=PATTERNS[P.cur],you=($('#ans')?.value||'').t
 Target sentence pattern: "${p[0]}" (meaning: ${p[1]}). Example: "${p[2]}".
 The learner wrote their own sentence: "${you}"
 Check if they used the pattern correctly and if the sentence is correct, natural Mexican Spanish.
-Reply with only JSON: {"ok":true or false (true if the pattern is used correctly and any errors are minor),"corrected":"corrected sentence keeping their meaning","natural":"how a Mexican would casually say it","note_zh":"台灣繁體中文 1–2 句：錯在哪或哪裡用得好"}`,{modelTier:'default',cache:false});
-    if(P.cur!==id)return;if(r.corrected&&clean(r.corrected)!==clean(you)){const t=today();t.fixes.push(`${you} → ${r.corrected}`);if(t.fixes.length>30)t.fixes.shift()}
+Reply with only JSON: {"ok":true or false (true if the pattern is used correctly and any errors are minor),"corrected":"corrected sentence keeping their meaning","natural":"how a Mexican would casually say it","note_zh":"台灣繁體中文 1–2 句：錯在哪或哪裡用得好",${CAT_PROMPT}}`,{modelTier:'default',cache:false});
+    if(P.cur!==id)return;if(!r.ok)addCat(normCat(r.err_type));if(r.corrected&&clean(r.corrected)!==clean(you)){const t=today();t.fixes.push(`${you} → ${r.corrected}`);if(t.fixes.length>30)t.fixes.shift()}
     fin(!!r.ok,{corrected:String(r.corrected||''),natural:String(r.natural||''),note:String(r.note_zh||'')})}
   catch(e){if(P.cur!==id)return;fin(hasKey,{note:aiErr(e)+'（先用關鍵字檢查：'+(hasKey?'有用到句型':'沒用到句型')+'）'})}
   setTimeout(()=>{const b=$('#nextbtn');if(b)b.focus()},30)}
@@ -872,7 +902,7 @@ ${lines.map(l=>'- '+l).join('\n')}
 Reply with only a JSON array, one object per line, in order: [{"es":"Spanish (nouns with el/la)","zh":"繁體中文意思","en":"English","theme":"one of viaje|bachata|buceo|chino|banco|calle|general","ex":"short natural Mexican Spanish example sentence","exZh":"例句的繁體中文翻譯","heat":0 (or 1–3 if it is slang/vulgar: 1 mild, 3 very vulgar)}]`,{modelTier:'default',cache:false})}
 
 /* ---------- daily mission: one button, 10 minutes ---------- */
-const DSTEPS=[{k:'rev',t:'複習 5 個字',mode:'flash',n:5},{k:'sen',t:'3 句句子練習',mode:'build',alt:'sent',n:3},{k:'out',t:'寫一句日記或聊一輪'}];
+const DSTEPS=[{k:'rev',t:'5 題綜合測驗',mode:'mix',n:5},{k:'sen',t:'3 句句子練習',mode:'build',alt:'sent',n:3},{k:'out',t:'寫一句日記或聊一輪'}];
 function mstate(){const t=today();if(!t.mission||typeof t.mission!=='object')t.mission={done:[]};if(!Array.isArray(t.mission.done))t.mission.done=[];return t.mission}
 function missionList(){const m=mstate();return `<div class="stack" style="gap:4px">${DSTEPS.map((st,i)=>{const d=m.done.includes(st.k)||(st.k==='out'&&today().diary);return `<span style="font-size:.92rem;${d?'color:var(--nopal);font-weight:600':'color:var(--muted)'}">${d?'✓':'○'} ${i+1}. ${st.t}</span>`}).join('')}</div>`}
 function dailyLeft(){const m=mstate();return DSTEPS.filter(st=>!(m.done.includes(st.k)||(st.k==='out'&&today().diary)))}
@@ -884,7 +914,7 @@ function startDaily(){S.ptheme='all';ensureWords();const l=dailyLeft();
 function runStep(st){
   if(st.k==='out'){if(aiOK()&&today().diary){chatStart(S.ptheme==='all'?'viaje':S.ptheme);return}go('diario');toast('最後一步：寫一句西文日記就完成');return}
   let mode=st.mode;if(st.alt&&!buildQueue(mode,'all').length)mode=st.alt;if(!buildQueue(mode,'all').length)mode='trans';
-  startMode(mode,st.n)}
+  startMode(mode,st.n,true)}
 function markStep(){const m=mstate(),l=dailyLeft();if(l.length&&l[0].k!=='out'&&!m.done.includes(l[0].k))m.done.push(l[0].k);scheduleFlush(800)}
 function dailyStepDone(){markStep();const l=dailyLeft(),acc=pct(P.right,P.right+P.wrong);
   return `<section class="card done"><p class="eyebrow">今日任務 ${DSTEPS.length-l.length}/${DSTEPS.length}</p><b class="n">${acc}%</b><p>這一步完成了${P.wrong?`，錯的 ${P.wrong} 題已進錯題本`:''}。</p>
@@ -938,9 +968,318 @@ function importCode(code){const raw=code.replace(/\s+/g,'').replace(/^ORALE1:/,'
   const L=d.log||{};Object.entries(L.days||{}).forEach(([k,v])=>{const cur=S.log.days[k];if(v&&(v.sec||v.items||v.diary))n.days++;if(!cur){S.log.days[k]=v;return}
     ['sec','right','wrong','unsure','items','newW','mastered','diary'].forEach(f=>cur[f]=Math.max(cur[f]||0,v[f]||0));['miss','fixes'].forEach(f=>cur[f]=[...new Set([...(cur[f]||[]),...(v[f]||[])])].slice(-40))});
   S.log.reports=Object.assign({},L.reports||{},S.log.reports||{});
+  {const seen=new Set(classesList().map(c=>c.date+'|'+c.topic));S.log.classes=[...classesList(),...(L.classes||[]).filter(c=>!seen.has(c.date+'|'+c.topic))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,80)}
   const mi=Object.assign({},S.log.missions||{});Object.entries(L.missions||{}).forEach(([k,v])=>{if(!mi[k]||(v.stars||0)>(mi[k].stars||0))mi[k]=v});S.log.missions=mi;
   if((!S.me||!S.me.name)&&d.me&&d.me.name){S.me=d.me;try{localStorage.setItem('orale-me',JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{})}
   saveLocal();scheduleFlush(500);return n}
+
+/* ===================== upgrade C ===================== */
+/* --- weak points --- */
+const CATS={pasado:'過去式',conjugacion:'動詞變化',serestar:'ser／estar',genero:'陰陽性與冠詞',preposicion:'介系詞',acentos:'重音與拼字',vocabulario:'用字',orden:'語序'};
+const CAT_FIX={pasado:'past',conjugacion:'conj',serestar:'conj',genero:'trans',acentos:'trans',preposicion:'coach',vocabulario:'flash',orden:'build'};
+const CAT_PROMPT='"err_type":"main error type, one of: pasado, serestar, conjugacion, genero, preposicion, acentos, vocabulario, orden, ninguno"';
+function addCat(c){if(!CATS[c])return;const t=today();if(!t.cat||typeof t.cat!=='object')t.cat={};t.cat[c]=(t.cat[c]||0)+1;scheduleFlush(2000)}
+function normCat(x){x=strip(String(x||'').toLowerCase()).replace(/[^a-z]/g,'');if(!x||/ningun/.test(x))return'';if(/serestar/.test(x))return'serestar';if(/pasad|preter|imperf|tiempo/.test(x))return'pasado';if(/conjug/.test(x))return'conjugacion';if(/genero|articul/.test(x))return'genero';if(/prepos/.test(x))return'preposicion';if(/acent|ortogra/.test(x))return'acentos';if(/orden/.test(x))return'orden';if(/vocab|palabra/.test(x))return'vocabulario';return''}
+function weakHTML(cur){const arr=Object.entries(cur.cat||{}).filter(([k])=>CATS[k]).sort((a,b)=>b[1]-a[1]);
+  if(!arr.length)return `<section class="panel"><h2>弱點分析</h2><p class="muted">這週還沒有足夠的錯誤紀錄。多做句子練習、動詞變化、對話和日記，這裡會自動統計你最常錯的類型。</p></section>`;
+  const mx=arr[0][1];
+  return `<section class="panel"><h2>弱點分析</h2><p class="note">本週錯誤依類型統計，來源是練習、對話和日記批改。點「練這類」直接針對練。</p>
+   <div class="stack" style="gap:8px">${arr.slice(0,6).map(([k,v])=>`<div style="display:grid;grid-template-columns:6.8em 1fr auto;gap:10px;align-items:center"><span>${CATS[k]}</span><div style="height:8px;border-radius:4px;background:var(--sunk);overflow:hidden"><div style="height:100%;width:${Math.round(v/mx*100)}%;background:var(--chile)"></div></div><button class="btn ghost" style="min-height:32px;padding:4px 8px" data-act="weakfix" data-c="${k}">練這類（${v}）</button></div>`).join('')}</div></section>`}
+
+/* --- verb conjugation (offline, Mexico: ustedes, no vosotros) --- */
+const PERS=['yo','tú','él / ella / usted','nosotros','ustedes'];
+const TENSES={pres:'現在式',pret:'簡單過去 pretérito',imp:'未完成過去 imperfecto',fut:'未來式'};
+const IRR={
+ ser:{zh:'是',pres:'soy eres es somos son',pret:'fui fuiste fue fuimos fueron',imp:'era eras era éramos eran',fut:'seré serás será seremos serán'},
+ estar:{zh:'在、處於（狀態）',pres:'estoy estás está estamos están',pret:'estuve estuviste estuvo estuvimos estuvieron',imp:'estaba estabas estaba estábamos estaban',fut:'estaré estarás estará estaremos estarán'},
+ tener:{zh:'有',pres:'tengo tienes tiene tenemos tienen',pret:'tuve tuviste tuvo tuvimos tuvieron',imp:'tenía tenías tenía teníamos tenían',fut:'tendré tendrás tendrá tendremos tendrán'},
+ ir:{zh:'去',pres:'voy vas va vamos van',pret:'fui fuiste fue fuimos fueron',imp:'iba ibas iba íbamos iban',fut:'iré irás irá iremos irán'},
+ hacer:{zh:'做',pres:'hago haces hace hacemos hacen',pret:'hice hiciste hizo hicimos hicieron',imp:'hacía hacías hacía hacíamos hacían',fut:'haré harás hará haremos harán'},
+ poder:{zh:'能夠',pres:'puedo puedes puede podemos pueden',pret:'pude pudiste pudo pudimos pudieron',imp:'podía podías podía podíamos podían',fut:'podré podrás podrá podremos podrán'},
+ querer:{zh:'想要、愛',pres:'quiero quieres quiere queremos quieren',pret:'quise quisiste quiso quisimos quisieron',imp:'quería querías quería queríamos querían',fut:'querré querrás querrá querremos querrán'}};
+const REG={hablar:'說',bailar:'跳舞',trabajar:'工作',enseñar:'教',bucear:'潛水',viajar:'旅行',comer:'吃',aprender:'學',vivir:'住',escribir:'寫'};
+const ENDS={ar:{pres:'o as a amos an',pret:'é aste ó amos aron',imp:'aba abas aba ábamos aban'},er:{pres:'o es e emos en',pret:'í iste ió imos ieron',imp:'ía ías ía íamos ían'},ir:{pres:'o es e imos en',pret:'í iste ió imos ieron',imp:'ía ías ía íamos ían'}};
+function conj(v,t){if(IRR[v])return IRR[v][t].split(' ');if(t==='fut')return'é ás á emos án'.split(' ').map(x=>v+x);const st=v.slice(0,-2);return ENDS[v.slice(-2)][t].split(' ').map(x=>st+x)}
+const vzh=v=>IRR[v]?IRR[v].zh:REG[v];
+function startConj(only){const lv=(S.me&&S.me.level)||'A2';const tl=/A0|A1/.test(lv)?['pres','pres','fut']:lv==='A2'?['pres','pret','pret','imp','fut']:['pres','pret','imp','imp','fut','pret'];
+  const verbs=only||[...Object.keys(IRR),...Object.keys(REG)];const items=[];
+  for(let i=0;i<10;i++){const v=verbs[Math.floor(Math.random()*verbs.length)],t=tl[Math.floor(Math.random()*tl.length)],p=Math.floor(Math.random()*5);items.push({v,t,p})}
+  P={active:true,mode:'conj',queue:items,total:10,done:0,right:0,wrong:0};S.view='practicar';next()}
+function conjCard(){const it=P.cur,ans=conj(it.v,it.t)[it.p],fb=P.fb;
+  return `<section class="card"><span class="tchip">${TENSES[it.t]}</span><div class="prompt-zh" style="font-size:1.4rem">${esc(it.v)} <span class="muted" style="font-size:1rem">（${esc(vzh(it.v))}）</span></div>
+   <p class="big" style="font-size:1.5rem">${esc(PERS[it.p])} ＿＿＿</p>
+   ${fb?`<div class="fb ${fb.ok?'ok':'no'}"><b class="h">${fb.ok?'¡Bien!':'答案是'}</b><span class="big" style="font-size:1.3rem">${esc(PERS[it.p].split(' / ')[0])} ${esc(ans)} <button class="say" data-act="say" data-t="${esc(PERS[it.p].split(' / ')[0]+' '+ans)}">聽</button></span>${fb.you&&!fb.ok?`<span class="note">你寫：${esc(fb.you)}</span>`:''}${fb.note?`<span class="note">${esc(fb.note)}</span>`:''}</div>
+    <table class="cmp" style="font-size:.9rem"><tbody>${conj(it.v,it.t).map((f,i)=>`<tr><td>${PERS[i]}</td><td style="${i===it.p?'font-weight:700;color:var(--cobalt)':''}">${esc(f)}</td></tr>`).join('')}</tbody></table>
+    <button class="btn primary" data-act="next" id="nextbtn">下一題</button>`
+   :`<input id="ans" placeholder="寫出變化後的動詞" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="btn primary grow" data-act="kcheck">檢查</button><button class="btn ghost" data-act="tskip">不會</button></div>`}</section>`}
+function conjGrade(you){const it=P.cur,ans=conj(it.v,it.t)[it.p],c=you?check(you,ans):{ok:false};
+  P.done++;c.ok?P.right++:P.wrong++;const t=today();t.items++;c.ok?t.right++:t.wrong++;
+  if(!c.ok){requeue(it);addCat(it.v==='ser'||it.v==='estar'?'serestar':(it.t==='pret'||it.t==='imp')?'pasado':'conjugacion')}else if(c.note)addCat('acentos');
+  scheduleFlush(2000);P.fb={ok:c.ok,you,note:c.note};render();setTimeout(()=>{const b=$('#nextbtn');if(b)b.focus()},30)}
+
+/* --- listening dramas --- */
+const DRAMAS=[
+ {t:'在市集買芒果',lines:[['A','¡Pásele, güero! ¿Qué le damos?','來看看喔！要買什麼？'],['B','Buenas. ¿A cómo está el mango?','你好，芒果怎麼賣？'],['A','A cuarenta el kilo. Está bien dulce, ¿eh?','一公斤 40 披索，很甜喔。'],['B','Ok, deme un kilo, por favor. ¿Me regala una bolsita?','好，給我一公斤。可以給我一個小袋子嗎？'],['A','Claro que sí. Son cuarenta pesos.','當然，總共 40 披索。'],['B','Aquí tiene. ¡Gracias!','給你，謝謝！'],['A','A usted. ¡Que le vaya bien!','謝謝你，慢走！']],
+  qs:[['芒果一公斤多少錢？',['20 披索','40 披索','50 披索','14 披索'],1],['買家還要了什麼？',['發票','另一種水果','一個袋子','找零'],2],['「¡Pásele!」是什麼意思？',['快走開','請進來看看','太貴了','謝謝光臨'],1]]},
+ {t:'舞會邀舞',lines:[['A','Hola, ¿bailas?','嗨，要跳舞嗎？'],['B','¡Claro! Pero soy principiante, ¿eh?','好啊！不過我是新手喔。'],['A','No te preocupes, yo te llevo. ¿De dónde eres?','別擔心，我來帶你。你從哪裡來？'],['B','Soy de Taiwán. Llevo un año bailando bachata.','我來自台灣，跳巴恰塔一年了。'],['A','¡Qué padre! Bailas muy bien para un año.','好厲害！才一年就跳得很好。'],['B','Gracias. Esta canción me encanta.','謝謝，我超愛這首歌。']],
+  qs:[['B 跳巴恰塔多久了？',['一個月','半年','一年','十年'],2],['B 從哪裡來？',['墨西哥','台灣','西班牙','日本'],1],['「yo te llevo」在舞會的意思？',['我載你回家','我來帶你跳','我幫你拿東西','我請你喝酒'],1]]},
+ {t:'天坑潛水前',lines:[['A','¿Ya te pusiste el chaleco?','你穿好浮力背心了嗎？'],['B','Sí, ya. ¿Cuánta visibilidad hay hoy?','穿好了。今天能見度多少？'],['A','Como veinte metros. Hay poca corriente.','大概 20 米，水流很小。'],['B','Perfecto. ¿Cuánto tiempo vamos a estar abajo?','太好了，我們會在水下多久？'],['A','Unos cuarenta y cinco minutos. Si tienes problemas, me haces la señal.','大約 45 分鐘。有問題就跟我打手勢。']],
+  qs:[['今天能見度多少？',['2 米','12 米','20 米','45 米'],2],['會在水下多久？',['15 分鐘','25 分鐘','45 分鐘','一小時'],2],['今天的水流怎樣？',['很強','很弱','沒提到','會越來越強'],1]]},
+ {t:'問公車怎麼搭',lines:[['A','Disculpe, ¿este camión va al centro?','不好意思，這台公車有到市中心嗎？'],['B','No, joven. Tiene que tomar el que dice «Zócalo».','沒有喔年輕人，你要搭寫著「Zócalo」的那台。'],['A','¿Y dónde lo tomo?','那要在哪裡搭？'],['B','Allá en la esquina, a dos cuadras. Pasa cada diez minutos.','那邊轉角，兩個街口外，每 10 分鐘一班。'],['A','Muchas gracias.','非常謝謝。'],['B','De nada, que le vaya bien.','不客氣，慢走。']],
+  qs:[['要搭寫著什麼的公車？',['Centro','Zócalo','Roma','Coyoacán'],1],['在哪裡搭？',['就在這裡','兩個街口外的轉角','地鐵站','對面'],1],['多久一班？',['5 分鐘','10 分鐘','20 分鐘','半小時'],1]]}];
+function speakLines(lines,onLine,onend,rate){stopList();const me={stop:false};PL=me;let i=0;
+  const vs=esVoices(),alt=vs.find(v=>VOICE&&v.name!==VOICE.name&&LANG(v)!=='es-es')||null;
+  const step=()=>{if(me.stop)return;if(i>=lines.length){if(PL===me)PL=null;onLine&&onLine(-1);onend&&onend();return}const [who,txt]=lines[i];onLine&&onLine(i);i++;
+    speak(txt,rate||null,()=>{if(!me.stop)setTimeout(step,450)},who==='B'?{who:'B',voice:alt,pitch:alt?1:1.2}:{who:'A',pitch:alt?1:.9})};step()}
+function vListen(){const L=S.LS||(S.LS={i:0,show:false,ans:{}}),d=L.ai||DRAMAS[L.i%DRAMAS.length];
+  return `<section class="panel"><div class="prog"><span><b>聽力小劇場</b> · ${L.ai?'AI 新劇本':`${L.i%DRAMAS.length+1}/${DRAMAS.length}`}</span><button class="btn ghost" data-act="go" data-v="practicar">離開</button></div>
+   <h2>${esc(d.t)}</h2><p class="muted">先不看字，聽完兩遍再作答。兩個人會用不同的聲音或音高。</p>
+   <div class="row"><button class="btn primary" data-act="lsplay">${PL?'停止':'播放對話'}</button><button class="btn" data-act="lsslow">慢速播放</button><button class="btn ghost" data-act="lsshow">${L.show?'隱藏逐字稿':'看逐字稿'}</button></div>
+   ${L.show?`<div class="stack" style="gap:6px">${d.lines.map((l,i)=>`<div class="lyl" id="lsl${i}"><b>${l[0]==='A'?'甲':'乙'}：</b>${esc(l[1])} <button class="say" data-act="say" data-t="${esc(l[1])}">聽</button><br><span class="note">${esc(l[2]||'')}</span></div>`).join('')}</div>`:''}</section>
+  <section class="panel"><h2>聽力題</h2>${d.qs.map((q,qi)=>{const a=L.ans[qi];return `<div class="entry"><b>${qi+1}. ${esc(q[0])}</b><div class="stack" style="gap:6px">${q[1].map((o,oi)=>`<button class="btn" style="text-align:left;justify-content:flex-start;${a!=null?(oi===q[2]?'background:var(--nopal-soft);color:var(--nopal)':oi===a?'background:var(--chile-soft);color:var(--chile)':''):''}" data-act="lsans" data-q="${qi}" data-o="${oi}" ${a!=null?'disabled':''}>${esc(o)}</button>`).join('')}</div></div>`}).join('')}
+   <div class="row"><button class="btn" data-act="lsnext">下一段</button>${aiOK()?'<button class="btn primary" data-act="lsai">AI 寫一段新的</button>':''}</div><p class="note" id="lsmsg"></p></section>`}
+async function lsAI(b){b.disabled=true;$('#lsmsg').innerHTML='<span class="thinking">Claude 正在寫新劇本</span>';
+  try{const r=await S.sample.json(`Write a short everyday listening dialogue in Mexican Spanish for a learner. ${learner()} ${MX}
+Setting: pick one from Mexico City street life, a bachata social, a cenote dive, a taquería, a tianguis, a Día de Muertos visit, or a Taiwanese night market with a Mexican friend. 6–8 short lines, two speakers A and B, natural Mexican expressions.
+Reply with only JSON: {"title_zh":"台灣繁體中文標題","lines":[{"who":"A or B","es":"Spanish","zh":"台灣繁體中文翻譯"}],"questions":[3 items {"q_zh":"台灣中文問題","options_zh":["4 個選項"],"answer":index}]}`,{modelTier:'default',cache:false});
+    const d={t:String(r.title_zh||'新劇本'),lines:(r.lines||[]).map(l=>[l.who==='B'?'B':'A',String(l.es||''),String(l.zh||'')]).filter(l=>l[1]),qs:(r.questions||[]).slice(0,3).map(q=>[String(q.q_zh||''),(q.options_zh||[]).map(String).slice(0,4),Number(q.answer)||0])};
+    if(!d.lines.length)throw{code:'empty_completion'};S.LS={ai:d,i:S.LS.i,show:false,ans:{}};render()}
+  catch(e){$('#lsmsg').textContent=aiErr(e);b.disabled=false}}
+
+/* --- social warm-up --- */
+const SOCIAL=[['¿Bailamos?','我們跳舞吧？'],['¿Quieres bailar esta bachata?','要跳這首巴恰塔嗎？'],['Soy principiante, ¿me tienes paciencia?','我是新手，可以多包涵嗎？'],['¡Qué bien bailas!','你跳得真好！'],['Perdón, me equivoqué.','抱歉，我跳錯了。'],['¿Otra?','再跳一首？'],['Gracias por la pieza.','謝謝你陪我跳這首。'],['Esta canción me encanta.','我超愛這首歌。'],['¿Dónde aprendiste a bailar?','你在哪裡學跳舞的？'],['¿Vienes seguido a este social?','你常來這個舞會嗎？'],['Ahorita regreso, voy por agua.','我等一下回來，去拿個水。'],['¿Me pasas tu Instagram?','可以給我你的 IG 嗎？']];
+function vSocial(){return `<section class="panel"><div class="prog"><span><b>舞會前 5 分鐘</b></span><button class="btn ghost" data-act="go" data-v="practicar">離開</button></div>
+  <p class="muted">出門前聽一遍、念一遍。最常用的 12 句，點字就會唸。</p>
+  <div class="row"><button class="btn primary" data-act="playlist" data-src="social">全部播放</button><button class="btn" data-act="socflash">快速複習 6 個舞會單字</button>${aiOK()?'<button class="btn" data-act="mission" data-m="social">邀舞情境任務</button>':''}</div>
+  <ul class="plist">${SOCIAL.map(s=>`<li><div><b>${esc(s[0])}</b></div><button class="say" data-act="say" data-t="${esc(s[0])}">聽</button><small>${esc(s[1])}</small></li>`).join('')}</ul></section>`}
+
+/* --- natural voice (web version, OpenAI key) --- */
+const oaKey=()=>{try{return localStorage.getItem('orale-oakey')||''}catch(e){return''}};
+const AUD={};let curAudio=null;
+function hush(){try{speechSynthesis.cancel()}catch(e){}if(curAudio){try{curAudio.pause()}catch(e){}curAudio=null}}
+async function speakAI(text,rate,fin,opt,fallback){try{
+  const voice=opt&&opt.who==='B'?(VS.oavoice==='ash'?'coral':'ash'):(VS.oavoice||'coral');const key=voice+'|'+text;let url=AUD[key];
+  if(!url){const r=await fetch('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+oaKey()},body:JSON.stringify({model:'gpt-4o-mini-tts',voice,input:text,response_format:'mp3',instructions:'Habla en español de México (Ciudad de México), con voz cálida, natural y relajada, como platicando con un amigo. Pronuncia con claridad.'})});
+    if(!r.ok)throw r.status;url=AUD[key]=URL.createObjectURL(await r.blob())}
+  hush();const a=new Audio(url);curAudio=a;a.playbackRate=Math.max(.6,Math.min(1.3,rate/.9));a.onended=()=>{if(curAudio===a)curAudio=null;fin()};a.onerror=fallback;await a.play()}
+  catch(e){if(e===401)toast('OpenAI 金鑰不正確，先改用手機語音');fallback()}}
+
+/* --- online alarm (works while the page is open) --- */
+const AL0=(()=>{try{return JSON.parse(localStorage.getItem('orale-alarm')||'null')}catch(e){return null}})()||{on:true,times:['21:00'],days:[0,1,2,3,4,5,6]};
+const AL=Object.assign({classes:[]},AL0);
+function saveAL(){try{localStorage.setItem('orale-alarm',JSON.stringify(AL))}catch(e){}}
+let snoozeAt=0,snoozeKind='';const fired={};
+function chime(){try{const C=window.AudioContext||window.webkitAudioContext;const ac=chime.ac||(chime.ac=new C());if(ac.resume)ac.resume();const t=ac.currentTime;
+  [[659,0],[784,.18],[988,.36],[1319,.6]].forEach(([f,d])=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.25,t+d+.03);g.gain.exponentialRampToValueAtTime(.001,t+d+.5);o.connect(g);g.connect(ac.destination);o.start(t+d);o.stop(t+d+.55)})}catch(e){}}
+document.addEventListener('pointerdown',()=>{try{const C=window.AudioContext||window.webkitAudioContext;if(C&&!chime.ac)chime.ac=new C()}catch(e){}},{once:true,capture:true});
+function alarmFire(msg,kind){chime();setTimeout(chime,1300);try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}
+  try{if('Notification' in window&&Notification.permission==='granted')new Notification('¡Órale! 練西文時間到',{body:msg})}catch(e){}
+  const b=$('#alarm');if(!b)return;b.innerHTML=`<div class="panel" role="alertdialog" aria-label="練習提醒"><p class="eyebrow">練習提醒</p><h1>${kind==='class'?'下課了！把今天學的存起來':'¡Órale! 練西文時間到'}</h1><p class="muted">${esc(msg)}</p>
+    <div class="stack" style="gap:8px">${kind==='class'?'<button class="btn primary" data-act="alclass">現在填上課筆記</button>':'<button class="btn primary" data-act="alstart">開始今日任務</button>'}<button class="btn" data-act="alsnooze" data-k="${kind||''}">10 分鐘後再提醒</button><button class="btn ghost" data-act="aloff">今天先不要</button></div></div>`;b.hidden=false;
+  const ot=document.title;let n=0;const iv=setInterval(()=>{document.title=n++%2?'練西文時間到':ot;if(b.hidden||n>60){clearInterval(iv);document.title=ot}},1000)}
+function alarmTick(){if(!AL.on)return;const d=new Date(),hm=pad(d.getHours())+':'+pad(d.getMinutes()),k=dkey();
+  if(snoozeAt&&Date.now()>=snoozeAt){snoozeAt=0;alarmFire(snoozeKind==='class'?'稍後提醒：上課筆記還沒填':'稍後提醒：今天的 10 分鐘還沒練完',snoozeKind);return}
+  for(const c of AL.classes||[])if(c.d===d.getDay()&&c.t===hm&&!fired[k+'c'+hm]){fired[k+'c'+hm]=1;if(!classToday()){alarmFire('剛上完課？花 2 分鐘把今天的新單字和老師的糾正填進來，馬上幫你出題複習。','class');return}}
+  if(!AL.days.includes(d.getDay()))return;
+  for(const t of AL.times)if(t===hm&&!fired[k+t]){fired[k+t]=1;if(today().sec<600)alarmFire(`現在 ${t}，今天還差 ${Math.max(1,10-Math.floor(today().sec/60))} 分鐘就達標`)}}
+setInterval(alarmTick,15000);
+function nextAlarm(){if(!AL.on||!AL.times.length)return'';const d=new Date(),hm=pad(d.getHours())+':'+pad(d.getMinutes()),ts=[...AL.times].sort();const n=ts.find(t=>t>hm&&AL.days.includes(d.getDay()));return n?'今天 '+n:'明天 '+ts[0]}
+function alarmHTML(){const DN=[[1,'一'],[2,'二'],[3,'三'],[4,'四'],[5,'五'],[6,'六'],[0,'日']];
+  return `<section class="panel"><h2>練習提醒（線上鬧鐘）</h2><p class="muted">頁面開著時，時間到會響鈴、震動、跳出提醒；今天已經練滿 10 分鐘就不吵你。</p>
+   <div class="seg"><button data-act="alon" data-v="1" class="${AL.on?'on':''}">開</button><button data-act="alon" data-v="0" class="${AL.on?'':'on'}">關</button></div>
+   <div class="stack" style="gap:8px">${AL.times.map((t,i)=>`<div class="row"><input type="time" id="al-t${i}" value="${t}" style="width:auto"><button class="x" data-act="aldel" data-i="${i}">刪除</button></div>`).join('')}</div>
+   <div><button class="btn" data-act="aladd">加一個時間</button></div>
+   <div class="chips">${DN.map(([d,l])=>`<button class="chip ${AL.days.includes(d)?'on':''}" data-act="alday" data-d="${d}">${l}</button>`).join('')}</div>
+   <div class="row"><button class="btn" data-act="altest">測試提醒</button>${'Notification' in window&&S.standalone&&Notification.permission!=='granted'?'<button class="btn" data-act="alnotif">允許手機通知</button>':''}</div>
+   <p class="note">頁面關掉就不會響。建議睡前把網頁版留在一個分頁，或另外用手機鬧鐘當備援。</p></section>`}
+
+/* --- lessons tabs --- */
+const LTABS=[['words','單字'],['sounds','發音'],['mx','歷史文化'],['bachata','Bachata'],['songs','歌曲']];
+function vLecciones(){const t=S.ltab||'words';
+  const seg=`<div class="seg" role="tablist" aria-label="課程分類">${LTABS.map(([k,l])=>`<button data-act="ltab" data-t="${k}" class="${t===k?'on':''}">${l}</button>`).join('')}</div>`;
+  return seg+(t==='sounds'?vSounds():t==='mx'?vHistory():t==='bachata'?vBachataHist():t==='songs'?vMusica():vWordLessons())}
+
+/* --- pronunciation --- */
+const SOUNDS=[
+ {t:'五個母音 a e i o u',d:'西文只有 5 個母音，永遠短而乾淨，不拖長、不變成雙母音。e 不是「欸咿」，o 不是「歐烏」，像注音 ㄚ ㄝ 一 ㄛ ㄨ 一樣短。',w:['casa','mesa','piso','todo','luna']},
+ {t:'單 r：彈一下',d:'字中間的 r，舌尖輕彈上牙齦一次，很像快速說「ㄉ」或台語的 r。',w:['pero','caro','para','hora','cara']},
+ {t:'rr 和開頭的 r：連續彈舌',d:'rr 和字首 r 要舌尖連續顫動。練不出來就先說「得兒」，或從 tr、dr 帶出來：tres、drama。',w:['perro','carro','rojo','Roma','arriba']},
+ {t:'j、ge、gi：喉嚨的 ㄏ',d:'像輕輕清喉嚨的「ㄏ」，比英文 h 用力一點；墨西哥唸得比西班牙輕柔。',w:['jefe','joven','gente','Jalisco','Guadalajara']},
+ {t:'墨西哥地名的 x 和 tl',d:'México、Oaxaca 的 x 唸 ㄏ；Xochimilco 的 x 唸 s；納瓦特語的 tl 照字面唸 t 加 l。',w:['México','Oaxaca','Xochimilco','Tlaquepaque','Tláloc']},
+ {t:'ll 和 y（墨西哥唸法）',d:'墨西哥的 ll 和 y 唸法一樣，介於「一」和「ㄐ」之間，不是英文 l。pollo 和 poyo 聽起來相同。',w:['calle','pollo','llave','yo','playa']},
+ {t:'ñ',d:'像「ㄋ一」連在一起：niño 唸「ㄋㄧ ㄋㄧㄛ」。',w:['niño','mañana','año','español','piña']},
+ {t:'b 和 v 完全一樣',d:'西文 b、v 同音。字首用力像 ㄅ；兩個母音中間雙唇輕碰、不閉緊。',w:['vino','boleto','uva','cabeza','nuevo']},
+ {t:'軟 d',d:'母音中間的 d 舌尖輕碰上牙，很像英文 the 的 th；cansado、ciudad 的 d 墨西哥唸得很輕。',w:['cada','todo','nada','cansado','ciudad']},
+ {t:'不發音的 h、qu、gu',d:'h 永遠不發音；que、qui 的 u 不唸；gue、gui 的 u 也不唸，加兩點的 ü 才唸。',w:['hola','hora','queso','guitarra','pingüino']},
+ {t:'c、z、s：墨西哥全唸 s',d:'墨西哥沒有西班牙的咬舌音，ce、ci、z 全部唸 s。',w:['cerveza','cinco','zapato','gracias','plaza']},
+ {t:'連音',d:'前一字結尾的母音會跟下一字開頭的母音連著唸，說話和唱歌都這樣。',w:['¿Qué es eso?','mi amigo','la otra','va a ir','todo el día']}];
+const PAIRS=[['pero','perro'],['caro','carro'],['para','parra'],['cero','cerro'],['coro','corro'],['moro','morro']];
+const STRESS=[['ca·mión',1],['ár·bol',0],['ha·blan',0],['ha·blar',1],['te·lé·fo·no',1],['ciu·dad',1],['lá·piz',0],['co·mi·da',1],['pa·pá',1],['ma·ña·na',1],['Mé·xi·co',0],['bai·lar',1],['re·loj',1],['jo·ven',0],['a·zú·car',1],['pá·ja·ro',0]];
+function vSounds(){const MP=S.MP,ST=S.STQ;
+  return `<section class="panel"><h1>發音</h1><p class="muted">台灣人最常卡的 12 個發音重點。每個字都可以聽、可以慢速，按「跟讀這組」會給你清楚度分數。</p>
+   <div class="rule"><b>重音規則</b><span>有重音符號就照標的唸。沒標時：結尾是母音、n、s，重音在倒數第二個音節；其他子音結尾，重音在最後一個音節。</span></div></section>
+  <section class="panel"><h2>聽辨：r 還是 rr？</h2><p class="note">按「考我」會唸一個字，選你聽到的是哪一個。</p>
+   ${MP?`<div class="row"><button class="btn" data-act="mpagain">再聽一次</button></div><div class="btns3" style="grid-template-columns:1fr 1fr">${MP.pair.map((w,i)=>`<button class="btn ${MP.res!=null?(i===MP.ans?'good':i===MP.res?'bad':''):''}" data-act="mppick" data-i="${i}" ${MP.res!=null?'disabled':''}>${esc(w)}</button>`).join('')}</div>${MP.res!=null?`<p>${MP.res===MP.ans?'¡Bien! 聽對了。':'答案是 '+esc(MP.pair[MP.ans])+'。'}</p>`:''}`:''}
+   <div class="row"><button class="btn primary" data-act="mpnew">${MP?'下一題':'考我'}</button><span class="note">${S.mpScore?`已答 ${S.mpScore[1]} 題，對 ${S.mpScore[0]} 題`:''}</span></div></section>
+  <section class="panel"><h2>重音在哪？</h2><p class="note">點出唸得最重的那個音節。</p>
+   ${ST?(()=>{const q=STRESS[ST.i%STRESS.length],sy=q[0].split('·');return `<div class="row">${sy.map((x,i)=>`<button class="btn ${ST.res!=null?(i===q[1]?'good':i===ST.res?'bad':''):''}" style="font-size:1.3rem" data-act="stpick" data-i="${i}" ${ST.res!=null?'disabled':''}>${esc(x)}</button>`).join('')}<button class="say" data-act="say" data-t="${esc(sy.join(''))}">聽</button></div>${ST.res!=null?`<p>${ST.res===q[1]?'¡Bien!':'重音在「'+esc(sy[q[1]])+'」。'}</p>`:''}`})():''}
+   <div class="row"><button class="btn primary" data-act="stnew">${ST?'下一個字':'開始'}</button></div></section>
+  ${SOUNDS.map((s,i)=>`<details class="panel pack"><summary><h2>${esc(s.t)}</h2></summary><p class="muted">${esc(s.d)}</p>
+   <div class="chips">${s.w.map(w=>`<button class="wchip" style="border:0;cursor:pointer" data-act="say" data-t="${esc(w)}">${esc(w)} ▸</button>`).join('')}</div>
+   <div class="row"><button class="btn" data-act="sndslow" data-i="${i}">慢速全部</button><button class="btn primary" data-act="snddrill" data-i="${i}">跟讀這組</button></div></details>`).join('')}`}
+function soundCard(){const w=P.cur,fb=P.fb;
+  return `<section class="card"><span class="tchip">跟讀：先聽，再念</span><div class="big">${fb?fb.T.map((x,k)=>`<span style="${fb.ok[k]?'color:var(--nopal)':'color:var(--chile)'}">${esc(x)}</span>`).join(' '):esc(w)}</div>
+   <div class="row"><button class="btn" data-act="say" data-t="${esc(w)}">聽</button><button class="btn" data-act="sayslow" data-t="${esc(w)}">慢速</button></div>
+   ${fb?`<div class="fb ${fb.score>=80?'ok':'no'}"><b class="h">清楚度 ${fb.score} 分</b><span class="note">系統聽到：${esc(fb.you||'（沒有內容）')}</span></div><button class="btn primary" data-act="next" id="nextbtn">下一個</button>`
+   :`<div class="chatin"><button class="mic" data-act="mic" data-for="ans">說西文</button><textarea id="ans" rows="1" placeholder="念出來（或用鍵盤麥克風）"></textarea></div><div class="row"><button class="btn primary grow" data-act="sdcheck">評分</button><button class="btn ghost" data-act="tskip">跳過</button></div><div class="help" id="michelp" hidden></div>`}</section>`}
+
+/* --- Mexican history & culture --- */
+const HIST=[
+ ['約前 1200','奧爾梅克文明','Los olmecas tallaron cabezas colosales de piedra.','雕出巨大石頭頭像的奧爾梅克人，被稱為中美洲的「母文明」。'],
+ ['約 100–550','特奧蒂瓦坎','En Teotihuacán están las pirámides del Sol y de la Luna.','墨西哥城北邊的古城，太陽金字塔和月亮金字塔都在這裡。'],
+ ['約 250–900','馬雅古典期','Los mayas tenían escritura y un calendario muy preciso.','馬雅人在猶加敦半島和中美洲建城，有自己的文字和精準曆法。'],
+ ['1325','特諾奇提特蘭建城','Los mexicas fundaron Tenochtitlan en una isla del lago de Texcoco.','墨西加人（阿茲特克）在湖中島上建城，就是今天的墨西哥城；國旗上老鷹站在仙人掌上吃蛇，就是建城傳說。'],
+ ['1521','西班牙征服','Hernán Cortés y sus aliados indígenas tomaron Tenochtitlan en 1521.','科爾特斯和原住民盟軍攻下特諾奇提特蘭，之後約 300 年是「新西班牙」殖民地。'],
+ ['1531','瓜達露佩聖母','Según la tradición, la Virgen de Guadalupe se le apareció a Juan Diego.','傳說聖母向原住民胡安·迪亞哥顯現，成為墨西哥最重要的宗教象徵，每年 12/12 大朝聖。'],
+ ['1810','獨立吶喊','El cura Miguel Hidalgo dio el Grito de Dolores en 1810.','伊達爾戈神父在多洛雷斯號召起義；所以每年 9/15 晚上總統會在陽台重現「吶喊」。'],
+ ['1821','獨立','México consumó su independencia de España en 1821.','打了 11 年，1821 年正式脫離西班牙。'],
+ ['1846–1848','美墨戰爭','Después de la guerra, México perdió gran parte de su territorio.','戰敗後割讓加州、新墨西哥、亞利桑那等地，加上先前失去的德州，國土少了約一半。'],
+ ['1862','普埃布拉戰役','El 5 de mayo de 1862 el ejército mexicano venció a los franceses en Puebla.','墨西哥軍在普埃布拉打敗法軍。注意：5 月 5 日不是獨立日（獨立日是 9/16），這天反而在美國過得比較盛大。'],
+ ['1858–1872','貝尼托·華雷斯','Benito Juárez fue un presidente de origen zapoteco.','薩波特克原住民出身的總統，推動政教分離改革，名言：「尊重他人的權利，就是和平。」'],
+ ['1876–1911','波費里奧時期','Porfirio Díaz gobernó durante más de treinta años.','迪亞斯掌權三十多年，蓋鐵路、發展工業，但貧富差距很大，引爆革命。'],
+ ['1910–1920','墨西哥革命','Emiliano Zapata y Pancho Villa son héroes de la Revolución.','南方的薩帕塔喊出「土地屬於耕作的人」，北方的潘喬·比亞也家喻戶曉。'],
+ ['1917','憲法','La Constitución de 1917 sigue vigente hoy.','革命後制定的憲法，到今天還在使用。'],
+ ['1938','石油國有化','Lázaro Cárdenas expropió el petróleo en 1938.','卡德納斯總統把石油收歸國有，之後成立國營石油公司 Pemex。'],
+ ['1968','奧運與特拉特洛爾科','En 1968 la Ciudad de México fue sede de los Juegos Olímpicos.','奧運開幕前十天，政府在特拉特洛爾科廣場鎮壓學生，至今每年 10/2 都有紀念遊行。'],
+ ['1985','墨西哥城大地震','El sismo del 19 de septiembre de 1985 cambió a la ciudad.','9/19 大地震，市民自發救援；2017 年同一天又發生大地震。'],
+ ['1994','北美自由貿易協定','En 1994 entró en vigor el Tratado de Libre Comercio con Estados Unidos y Canadá.','和美加的自由貿易協定生效；同一天，恰帕斯州的薩帕塔民族解放軍起義。'],
+ ['2000','政黨輪替','En el año 2000 el PRI perdió la presidencia después de 71 años.','執政 71 年的革命制度黨首次失去總統大位，福克斯當選。'],
+ ['2024','第一位女總統','En 2024 Claudia Sheinbaum fue elegida la primera presidenta de México.','克勞迪婭·辛鮑姆當選墨西哥第一位女總統。']];
+const CULT=[
+ ['Frida Kahlo','芙烈達·卡蘿','Frida Kahlo pintó muchos autorretratos.','以自畫像聞名的畫家，故居「藍屋」在科約阿坎，是墨西哥城必去景點。'],
+ ['El muralismo','壁畫運動','Diego Rivera pintó murales sobre la historia de México.','革命後，里維拉、奧羅斯科、西凱羅斯用公共壁畫講墨西哥歷史，國家宮就看得到。'],
+ ['Día de Muertos','亡靈節','El Día de Muertos es Patrimonio de la Humanidad desde 2008.','11/1–2 迎接過世親人回家，2008 年列入聯合國教科文組織非物質文化遺產。'],
+ ['El mariachi','墨西哥街頭樂隊','El mariachi nació en el occidente de México, sobre todo en Jalisco.','發源於西部，尤其是哈利斯科州，2011 年列入非物質文化遺產。'],
+ ['La cocina mexicana','墨西哥料理','La cocina tradicional mexicana es Patrimonio de la Humanidad.','2010 年以米喬阿坎傳統料理為代表列入非物質文化遺產，玉米、豆子、辣椒是基礎。'],
+ ['El maíz','玉米','Para muchos pueblos de México, el maíz es sagrado.','玉米是墨西哥文化的根，馬雅神話裡人是用玉米做成的。'],
+ ['La lucha libre','蒙面摔角','Los luchadores casi nunca se quitan la máscara.','面具是摔角手的身分，輸掉「面具賭局」才要當眾摘下。'],
+ ['Palabras del náhuatl','來自納瓦特語的字','Chocolate, tomate, aguacate y chile vienen del náhuatl.','阿茲特克人的語言送給全世界很多字：chocolate、tomate、aguacate、chile、elote、cacahuate。']];
+const BHIST=[
+ ['1960 年代初','誕生','La bachata nació en los barrios humildes y el campo de República Dominicana.','在多明尼加的鄉村和貧窮社區誕生，混合了 bolero、son 等拉丁曲風。'],
+ ['1962','第一張唱片','José Manuel Calderón grabó «Borracho de amor» en 1962.','荷西·曼努埃爾·卡德隆的這首歌，一般被視為最早的巴恰塔錄音。'],
+ ['1960–1980 年代','被看不起的「苦澀音樂」','Por años la llamaron «música de amargue».','長期被上流社會看不起、電台不太播；歌在唱失戀、喝酒、窮困，所以叫「苦澀音樂」。'],
+ ['1980 年代','電吉他','Blas Durán fue de los primeros en usar guitarra eléctrica.','布拉斯·杜蘭等人開始用電吉他，聲音更亮，巴恰塔走進城市。'],
+ ['1990','走向世界','Juan Luis Guerra lanzó el álbum «Bachata Rosa» en 1990.','胡安·路易斯·格拉的《Bachata Rosa》大賣並得到葛萊美獎，讓巴恰塔被全世界看見。'],
+ ['1990 年代','經典歌手','Antony Santos y Luis Vargas dominaron los noventa.','安東尼·桑托斯、路易斯·巴爾加斯、Raulín Rodríguez 撐起 90 年代的傳統巴恰塔。'],
+ ['2000 年代','紐約的 Aventura','Aventura, un grupo del Bronx, mezcló la bachata con R&B y hip hop.','紐約布朗克斯的多明尼加裔樂團，〈Obsesión〉紅遍歐洲和拉丁美洲。'],
+ ['2010 年代','流行巨星','Romeo Santos y Prince Royce llevaron la bachata a los estadios.','羅密歐·桑托斯單飛後在洋基球場連開兩場；王子·羅伊斯用〈Stand by Me〉打進主流。'],
+ ['2000–2010 年代','舞蹈分支','En Europa nacieron la bachata moderna y la bachata sensual.','歐洲舞者發展出加入轉圈與身體波浪的 moderna，以及西班牙 Korke 與 Judith 推廣的 sensual；多明尼加原本的跳法以快腳步為主。'],
+ ['2019','聯合國教科文組織','En 2019 la UNESCO declaró la bachata Patrimonio Cultural Inmaterial.','巴恰塔的音樂與舞蹈列入人類非物質文化遺產。']];
+const BINST=[['el requinto','主奏吉他','彈旋律和招牌的高音裝飾音'],['la segunda','節奏吉他','刷和弦、打底'],['el bajo','貝斯','巴恰塔的貝斯常在拍子前面一點，帶出搖擺感'],['el bongó','邦哥鼓','慢段落用；高潮時改成牛鈴（el cencerro）'],['la güira','金屬刮器','多明尼加特有的刮擦樂器，帶出細碎節奏']];
+function timelineHTML(arr){return `<ul class="tl">${arr.map(h=>`<li><b class="y">${esc(h[0])}</b>　<b>${esc(h[1])}</b><div>${esc(h[2])} <button class="say" data-act="say" data-t="${esc(h[2])}">聽</button></div><span class="note">${esc(h[3])}</span></li>`).join('')}</ul>`}
+function quizHTML(src){const Q=S.HQ&&S.HQ.src===src?S.HQ:null;if(!Q)return `<div class="row"><button class="btn primary" data-act="hqstart" data-s="${src}">年代小測驗（5 題）</button></div>`;
+  if(Q.i>=Q.qs.length)return `<div class="fb ok"><b class="h">測驗完成：${Q.ok}/${Q.qs.length}</b></div><div class="row"><button class="btn" data-act="hqstart" data-s="${src}">再考一次</button></div>`;
+  const q=Q.qs[Q.i];return `<div class="rule"><b>${Q.i+1}/${Q.qs.length}　「${esc(q.t)}」是哪個時間？</b><div class="stack" style="gap:6px">${q.opts.map((o,i)=>`<button class="btn" style="justify-content:flex-start;${Q.res!=null?(o===q.a?'background:var(--nopal-soft);color:var(--nopal)':i===Q.res?'background:var(--chile-soft);color:var(--chile)':''):''}" data-act="hqpick" data-i="${i}" ${Q.res!=null?'disabled':''}>${esc(o)}</button>`).join('')}</div>${Q.res!=null?`<span class="note">${esc(q.note)}</span><div><button class="btn primary" data-act="hqnext">下一題</button></div>`:''}</div>`}
+function hqStart(src){const arr=src==='b'?BHIST:HIST,pick=shuffle(arr.map((_,i)=>i)).slice(0,5);
+  S.HQ={src,i:0,ok:0,res:null,qs:pick.map(i=>{const h=arr[i],others=shuffle([...new Set(arr.map(x=>x[0]).filter(y=>y!==h[0]))]).slice(0,3);return{t:h[1],a:h[0],note:h[3],opts:shuffle([h[0],...others])}})}}
+function vHistory(){return `<section class="panel"><h1>墨西哥歷史文化</h1><p class="muted">跟墨西哥朋友聊天最常提到的歷史和文化。每句西文都能聽，看完可以考自己，也可以找退休歷史老師 Don Rafa 用西文聊。</p>
+   ${quizHTML('h')}<div class="row"><button class="btn" data-act="chat" data-t="historia" ${aiOK()?'':'disabled'}>跟 Don Rafa 聊歷史</button></div></section>
+  <section class="panel"><h2>3000 年時間軸</h2>${timelineHTML(HIST)}</section>
+  <section class="panel"><h2>文化關鍵字</h2><ul class="plist">${CULT.map(c=>`<li style="grid-template-columns:1fr"><div><b>${esc(c[0])}</b> <span class="muted">· ${esc(c[1])}</span></div><small>${esc(c[2])} <button class="say" data-act="say" data-t="${esc(c[2])}">聽</button><br>${esc(c[3])}</small></li>`).join('')}</ul></section>
+  ${packHTML('historia','歷史課常用的字，加入後會進到閃卡和句子練習。')}`}
+function vBachataHist(){return `<section class="panel"><h1>Bachata 的歷史</h1><p class="muted">從多明尼加鄉下被看不起的「苦澀音樂」，到聯合國非物質文化遺產。跳舞時知道這些，跟舞伴聊天更有料。</p>${quizHTML('b')}
+   <div class="row"><button class="btn" data-act="go" data-v="social">舞會前 5 分鐘</button><button class="btn" data-act="chat" data-t="bachata" ${aiOK()?'':'disabled'}>跟 Toño 聊巴恰塔</button></div></section>
+  <section class="panel"><h2>時間軸</h2>${timelineHTML(BHIST)}</section>
+  <section class="panel"><h2>樂團裡有什麼樂器</h2><ul class="plist">${BINST.map(b=>`<li><div><b>${esc(b[0])}</b> <span class="muted">· ${esc(b[1])}</span></div><button class="say" data-act="say" data-t="${esc(b[0])}">聽</button><small>${esc(b[2])}</small></li>`).join('')}</ul></section>
+  <section class="panel"><h2>節奏：數到 8</h2><p>巴恰塔是 4 拍一組：走三步，第 4 拍點一下（tap），常配一個小小的胯部動作；兩組合起來就是 8 拍。用西文數：</p>
+   <div class="chips">${['uno','dos','tres','toque','cinco','seis','siete','toque'].map(x=>`<button class="wchip" style="border:0;cursor:pointer" data-act="say" data-t="${x}">${x} ▸</button>`).join('')}</div>
+   <p class="note">三種跳法：dominicana（多明尼加，腳步快、花樣多）、moderna（加轉圈和造型）、sensual（身體波浪、貼近）。</p></section>
+  ${packHTML('bachata','舞會上跟舞伴、老師溝通的字。')}`}
+
+/* --- lyric practice: public-domain songs + your own pasted lyrics --- */
+const mySongs=()=>{try{return JSON.parse(localStorage.getItem('orale-mysongs')||'[]')}catch(e){return[]}};
+function saveMySongs(a){try{localStorage.setItem('orale-mysongs',JSON.stringify(a))}catch(e){toast('這個瀏覽器不能儲存')}}
+function songsAll(){return[...SING.map((s,i)=>({k:'pd'+i,t:s.t,by:s.by,note:s.note,lines:s.lines.map(l=>({es:l[0],zh:l[1],tip:l[2]}))})),
+  ...mySongs().map((s,i)=>({k:'my'+i,mine:i,t:s.t,by:'我貼的歌詞',note:'只存在這台裝置，不會上傳。',lines:s.lines.map(x=>({es:x,zh:'',tip:''}))}))]}
+function gapIdx(line){const ws=line.split(/\s+/);const c=ws.map((w,i)=>[i,strip(clean(w)).length]).filter(x=>x[1]>=4).sort((a,b)=>b[1]-a[1]);return c.slice(0,ws.length>=5?2:1).map(x=>x[0])}
+function lyricHTML(){const all=songsAll();const L=S.LY||(S.LY={k:all[0].k,mode:'read',i:0});let s=all.find(x=>x.k===L.k);if(!s){s=all[0];L.k=s.k}L.i=Math.min(L.i,s.lines.length-1);
+  const modes=[['read','看歌詞'],['line','逐句跟唱'],['gap','填空'],['kara','朗讀卡拉 OK']];
+  const ln=s.lines[L.i];let body='';
+  if(L.mode==='read')body=`<ol class="plist" style="padding-left:0">${s.lines.map(l=>`<li style="grid-template-columns:1fr"><div><b style="font-size:1.05rem">${esc(l.es)}</b> <button class="say" data-act="say" data-t="${esc(l.es)}">聽</button></div>${l.zh||l.tip?`<small>${esc(l.zh)}${l.tip?` · <span style="color:var(--cobalt)">${esc(l.tip)}</span>`:''}</small>`:''}</li>`).join('')}</ol>`;
+  else if(L.mode==='kara')body=`<div class="row"><button class="btn primary" data-act="karaplay">${PL?'停止':'從頭朗讀'}</button><span class="note">手機語音是用「念」的，不會唱；用來對節奏和咬字。</span></div><div class="stack" style="gap:4px">${s.lines.map((l,i)=>`<div class="lyl" id="lyk${i}" style="font-size:1.05rem">${esc(l.es)}</div>`).join('')}</div>`;
+  else{const prog=`<div class="prog"><span>第 ${L.i+1} / ${s.lines.length} 句</span><span><button class="btn ghost" data-act="lyprev" ${L.i?'':'disabled'}>上一句</button><button class="btn ghost" data-act="lynext" ${L.i<s.lines.length-1?'':'disabled'}>下一句</button></span></div>`;
+    if(L.mode==='line'){const fb=L.fb;body=prog+`<div class="prompt-zh" style="font-size:1.25rem">${fb?fb.T.map((x,k)=>`<span style="${fb.ok[k]?'':'color:var(--chile);text-decoration:underline'}">${esc(x)}</span>`).join(' '):esc(ln.es)}</div>${ln.zh?`<p class="muted">${esc(ln.zh)}</p>`:''}${ln.tip?`<p class="note" style="color:var(--cobalt)">${esc(ln.tip)}</p>`:''}
+      <div class="row"><button class="btn" data-act="say" data-t="${esc(ln.es)}">聽</button><button class="btn" data-act="sayslow" data-t="${esc(ln.es)}">慢速</button>${s.mine!=null&&aiOK()?'<button class="btn ghost" data-act="lyexplain">解釋這句</button>':''}</div><div id="lyex"></div>
+      ${fb?`<div class="fb ${fb.score>=80?'ok':'no'}"><b class="h">清楚度 ${fb.score} 分</b><span class="note">系統聽到：${esc(fb.you)}</span></div><div class="row"><button class="btn" data-act="lyretry">再唱一次</button>${L.i<s.lines.length-1?'<button class="btn primary" data-act="lynext">下一句</button>':'<span style="color:var(--nopal);font-weight:600">整首唱完了！</span>'}</div>`
+      :`<div class="chatin"><button class="mic" data-act="mic" data-for="lyans">唱／念出來</button><textarea id="lyans" rows="2" placeholder="跟著唱或念這一句"></textarea></div><div class="row"><button class="btn primary grow" data-act="lycheck">評分</button></div><div class="help" id="michelp" hidden></div>`}`}
+    else{const ws=ln.es.split(/\s+/),gi=gapIdx(ln.es),fb=L.fb;
+      body=prog+`<div class="prompt-zh" style="font-size:1.2rem;line-height:2.2">${ws.map((w,j)=>gi.includes(j)?(fb?`<b style="color:${fb.r[j]?'var(--nopal)':'var(--chile)'}">${esc(w)}</b>`:`<input class="gapin" id="gap${j}" placeholder="${esc(strip(clean(w))[0]||'')}${'_'.repeat(Math.max(1,strip(clean(w)).length-1))}" size="${Math.max(4,w.length)}" autocomplete="off" autocapitalize="off" spellcheck="false">`):esc(w)).join(' ')}</div>
+      ${ln.zh?`<p class="muted">${esc(ln.zh)}</p>`:''}<div class="row"><button class="btn" data-act="say" data-t="${esc(ln.es)}">聽這句</button>${fb?(L.i<s.lines.length-1?'<button class="btn primary" data-act="lynext">下一句</button>':'<span style="color:var(--nopal);font-weight:600">整首完成！</span>'):'<button class="btn primary" data-act="gapcheck">檢查</button>'}</div>`}}
+  return `<div class="chips">${all.map(x=>`<button class="chip ${x.k===s.k?'on':''}" data-act="lypick" data-k="${x.k}">${esc(x.t)}</button>`).join('')}</div>
+   <div class="rule"><b>${esc(s.t)}</b><span class="note">${esc(s.by)}</span><span>${esc(s.note||'')}</span>${s.mine!=null?`<div><button class="x" data-act="mydel" data-i="${s.mine}">刪除這首</button></div>`:''}</div>
+   <div class="seg">${modes.map(([k,l])=>`<button data-act="lymode" data-m="${k}" class="${L.mode===k?'on':''}">${l}</button>`).join('')}</div>${body}
+   <details class="pack" style="margin-top:8px"><summary><b>加入我自己的歌詞（例如巴恰塔、Bad Bunny）</b></summary><div class="stack" style="gap:8px;margin-top:8px">
+    <p class="note">從 Genius 或 Spotify 複製歌詞貼上，每行一句。只存在你的裝置，就可以用逐句跟唱、填空、卡拉 OK 練整首。</p>
+    <input id="mytitle" placeholder="歌名，例如 Propuesta Indecente" autocomplete="off"><textarea id="mylyrics" rows="5" placeholder="貼上歌詞，每行一句"></textarea><div><button class="btn primary" data-act="myadd">加入</button></div></div></details>`}
+
+/* --- Duolingo-style mixed lesson --- */
+function startMix(ids,limit,daily){let ws=ids?ids.map(id=>S.words[id]).filter(Boolean):buildQueue('flash',S.ptheme||'all').map(id=>S.words[id]).filter(Boolean);
+  const all=Object.values(S.words);if(all.length<4){toast('單字庫至少要 4 個字，先到「課程」加入一組');go('lecciones');return}
+  const n=limit||10;ws=ws.slice(0,Math.min(n,8));if(!ws.length)ws=shuffle(all).slice(0,Math.min(n,8));
+  const types=['mc','listen','type'],qs=ws.map((w,i)=>({type:types[i%3],id:w.id}));
+  if(n>=6&&ws.length>=4){const pool=shuffle(ws).slice(0,Math.min(5,ws.length));qs.splice(Math.min(4,qs.length),0,{type:'match',ids:pool.map(w=>w.id)})}
+  const fin=qs.slice(0,n).map(q=>{if(q.type==='mc'||q.type==='listen'){const w=S.words[q.id],f=q.type==='mc'?'zh':'es',others=shuffle(all.filter(x=>x.id!==w.id&&x[f]&&x[f]!==w[f])).slice(0,3).map(x=>x[f]);q.ans=w[f];q.opts=shuffle([w[f],...others])}
+    if(q.type==='match'){q.left=q.ids.slice();q.right=shuffle(q.ids.slice());q.done=[];q.sel=null;q.miss=0}return q});
+  P={active:true,mode:'mix',queue:fin,total:fin.length,done:0,right:0,wrong:0,xp:0,combo:0,best:0,daily:!!daily};S.view='practicar';next()}
+function mixCard(){const q=P.cur,fb=P.fb,w=q.id?S.words[q.id]:null;
+  const top=`<div class="row" style="justify-content:space-between"><span class="tchip">${{mc:'選出意思',listen:'聽音選字',type:'打字翻譯',match:'配對'}[q.type]}</span><span class="pill ok">${P.xp} XP${P.combo>=3?` · 連對 ${P.combo}`:''}</span></div>`;
+  const fbH=fb?`<div class="fb ${fb.ok?'ok':'no'}"><b class="h">${fb.ok?(P.combo>=3?`¡Increíble! 連對 ${P.combo} 題 +15 XP`:'¡Bien! +10 XP'):'答案是'}</b>${w?`<span class="big" style="font-size:1.3rem">${esc(w.es)} <button class="say" data-act="say" data-t="${esc(w.es)}">聽</button></span><span class="muted">${esc(w.zh)}</span>`:''}${fb.note?`<span class="note">${esc(fb.note)}</span>`:''}</div><button class="btn primary" data-act="next" id="nextbtn">繼續</button>`:'';
+  if(q.type==='mc')return `<section class="card">${top}<div class="big">${esc(w.es)} <button class="say" data-act="say" data-t="${esc(w.es)}">聽</button></div><div class="stack" style="gap:8px">${q.opts.map((o,i)=>`<button class="btn" style="justify-content:flex-start;text-align:left;${fb?(o===q.ans?'background:var(--nopal-soft);color:var(--nopal)':i===fb.pick?'background:var(--chile-soft);color:var(--chile)':''):''}" data-act="mxpick" data-i="${i}" ${fb?'disabled':''}>${esc(o)}</button>`).join('')}</div>${fbH}</section>`;
+  if(q.type==='listen')return `<section class="card">${top}<div class="row" style="justify-content:center"><button class="orb speak" style="width:88px;height:88px;font-size:1.3rem" data-act="mxplay" aria-label="播放">聽</button><button class="btn ghost" data-act="sayslow" data-t="${esc(w.es)}">慢速</button></div><div class="stack" style="gap:8px">${q.opts.map((o,i)=>`<button class="btn" style="justify-content:flex-start;${fb?(o===q.ans?'background:var(--nopal-soft);color:var(--nopal)':i===fb.pick?'background:var(--chile-soft);color:var(--chile)':''):''}" data-act="mxpick" data-i="${i}" ${fb?'disabled':''}>${esc(o)}</button>`).join('')}</div>${fbH}</section>`;
+  if(q.type==='type')return `<section class="card">${top}<div class="prompt-zh">${esc(w.zh)}</div>${w.en?`<p class="muted">${esc(w.en)}</p>`:''}${fb?fbH:`<input id="ans" placeholder="用西文寫" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="btn primary grow" data-act="mxtype">檢查</button><button class="btn ghost" data-act="mxskip">不會</button></div>`}</section>`;
+  const cell=(id,side)=>{const x=S.words[id],d=q.done.includes(id),sel=q.sel&&q.sel.side===side&&q.sel.id===id;return `<button class="btn" style="${d?'background:var(--nopal-soft);color:var(--nopal);opacity:.6':sel?'background:var(--cobalt);color:var(--on-cobalt)':''}" data-act="mxmatch" data-s="${side}" data-id="${esc(id)}" ${d?'disabled':''}>${esc(side==='l'?x.es:x.zh)}</button>`};
+  return `<section class="card">${top}<p class="muted">把西文和中文配成一對。</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div class="stack" style="gap:8px">${q.left.map(id=>cell(id,'l')).join('')}</div><div class="stack" style="gap:8px">${q.right.map(id=>cell(id,'r')).join('')}</div></div>${q.done.length===q.left.length?`<div class="fb ok"><b class="h">配對完成${q.miss?`（錯 ${q.miss} 次）`:'，全對！'} +${q.miss?10:20} XP</b></div><button class="btn primary" data-act="next" id="nextbtn">繼續</button>`:''}</section>`}
+function mixResult(ok,pick,note){const q=P.cur,w=q.id&&S.words[q.id];P.done++;
+  if(ok){P.right++;P.combo++;P.best=Math.max(P.best,P.combo);P.xp+=P.combo>=3?15:10}else{P.wrong++;P.combo=0;if(!q.retry){const r=Object.assign({},q,{retry:true});P.queue.push(r)}}
+  if(w)record(w,ok?'good':'bad');const t=today();t.xp=(t.xp||0)+(ok?(P.combo>=3?15:10):0);scheduleFlush(2000);
+  P.fb={ok,pick,note};render();setTimeout(()=>{const b=$('#nextbtn');if(b)b.focus()},30)}
+function mixDone(){const acc=pct(P.right,P.right+P.wrong);
+  return `<section class="card done"><p class="eyebrow">綜合測驗完成</p><b class="n">+${P.xp} XP</b><p>正確率 ${acc}% · 最長連對 ${P.best} 題${P.wrong?` · 錯的字已進錯題本`:''}</p>
+   <div class="row" style="justify-content:center"><button class="btn primary" data-act="start" data-mode="mix">再來一輪</button>${statsW().err?'<button class="btn bad" data-act="start" data-mode="err">練錯題</button>':''}<button class="btn ghost" data-act="quit">回選單</button></div></section>`}
+
+/* --- after-class log --- */
+function classesList(){return Array.isArray(S.log.classes)?S.log.classes:[]}
+function classToday(){return classesList().some(c=>c.date===dkey())}
+function classDueToday(){const d=new Date(),hm=pad(d.getHours())+':'+pad(d.getMinutes());return(AL.classes||[]).some(c=>c.d===d.getDay()&&c.t<=hm)&&!classToday()}
+function vClase(){const C=S.CL;
+  if(C)return `<section class="panel"><p class="eyebrow">上課筆記已存好</p><h1>${esc(C.topic||C.date)}</h1><p>新單字 ${C.n} 個、老師糾正 ${C.f} 句，都放進單字庫了（主題：上課筆記）。糾正的句子直接進錯題本，連對 3 次才畢業。</p>
+    <div class="row"><button class="btn primary" data-act="clmix">馬上綜合測驗</button><button class="btn" data-act="go" data-v="hoy">回首頁</button></div></section>`;
+  const list=classesList();
+  return `<section class="panel"><p class="eyebrow">上完課就填</p><h1>上課筆記</h1><p class="muted">花 2 分鐘把今天課上學的東西放進來，馬上幫你出題，之後也會自動排進複習。</p>
+   <div class="formgrid">
+    <label class="f">日期<input id="cl-date" type="date" value="${dkey()}"></label>
+    <label class="f">這堂課的主題<input id="cl-topic" placeholder="例：過去式、在餐廳點餐" autocomplete="off"></label>
+    <label class="f full">新單字或片語（每行一個；可寫「西文 = 中文」，或只寫一種${aiOK()?'，AI 會幫你補齊':''}）<textarea id="cl-words" rows="4" placeholder="la propina = 小費&#10;ahorita&#10;寄放行李"></textarea></label>
+    <label class="f full">老師糾正我的句子（每行：我說的 → 正確的）<textarea id="cl-fix" rows="3" placeholder="Yo soy cansado → Yo estoy cansado"></textarea></label>
+    <label class="f full">文法重點（選填）<textarea id="cl-gram" rows="2" placeholder="例：estar + 形容詞表示狀態"></textarea></label>
+    <label class="f full">作業（選填）<input id="cl-hw" placeholder="例：寫 5 句過去式" autocomplete="off"></label>
+   </div>
+   <div class="row"><button class="btn primary" data-act="clsave">儲存並出題</button></div><p class="note" id="clmsg"></p></section>
+  ${list.length?`<section class="panel"><h2>以前的課</h2><ul class="plist">${list.slice(0,12).map((c,i)=>`<li><div><b>${esc(c.date.slice(5).replace('-','/'))}　${esc(c.topic||'（沒寫主題）')}</b></div><button class="x" data-act="clreview" data-i="${i}">複習這堂</button><small>${(c.words||[]).length} 個字 · ${(c.fixes||[]).length} 句糾正${c.grammar?` · 文法：${esc(c.grammar)}`:''}${c.hw?` · 作業：${esc(c.hw)}`:''}</small></li>`).join('')}</ul></section>`:''}`}
+async function clSave(b){const g=id=>($('#'+id)?.value||'').trim();const date=g('cl-date')||dkey(),topic=g('cl-topic'),lines=g('cl-words').split('\n').map(x=>x.trim()).filter(Boolean).slice(0,40),fixL=g('cl-fix').split('\n').map(x=>x.trim()).filter(Boolean).slice(0,20);
+  if(!lines.length&&!fixL.length){toast('至少填一個單字或一句糾正');return}
+  b.disabled=true;let items=[];
+  if(lines.length){if(aiOK()){$('#clmsg').innerHTML='<span class="thinking">Claude 正在整理單字</span>';try{const r=await aiWords(lines);items=(Array.isArray(r)?r:[]).map(o=>({es:String(o.es||'').trim(),zh:String(o.zh||''),en:String(o.en||''),ex:String(o.ex||''),exZh:String(o.exZh||''),heat:Math.max(0,Math.min(3,Number(o.heat)||0))}))}catch(e){$('#clmsg').textContent=aiErr(e)+' 先用你寫的內容存。'}}
+    if(!items.length)items=lines.map(l=>{const m=l.split(/\s*[=＝]\s*/);return m.length>=2?{es:m[0],zh:m.slice(1).join(' ')}:{es:l,zh:'（上課學的，待補中文）'}})}
+  items.forEach(o=>o.theme='clase');addWords(items);
+  const byEs={};Object.values(S.words).forEach(w=>byEs[clean(w.es)]=w);const ids=items.map(o=>byEs[clean(o.es)]?.id).filter(Boolean);
+  const fixes=[];fixL.forEach(l=>{const m=l.split(/\s*(?:→|->|=>|＝>)\s*/);if(m.length<2||!m[1])return;const w=newWord({es:m[1],zh:'上課糾正：我原本說「'+m[0]+'」',theme:'clase',ex:m[1],exZh:'我原本說：'+m[0]});w.inErr=true;saveWord(w);ids.push(w.id);fixes.push(m[0]+' → '+m[1]);const t=today();t.fixes.push(m[0]+' → '+m[1])});
+  S.log.classes=[{date,topic,words:items.map(o=>o.es),fixes,grammar:g('cl-gram'),hw:g('cl-hw'),ids},...classesList()].slice(0,80);today().newW+=fixes.length;scheduleFlush(300);
+  S.CL={date,topic,n:items.length,f:fixes.length,ids};render()}
+function classAlarmHTML(){const DN=[[1,'一'],[2,'二'],[3,'三'],[4,'四'],[5,'五'],[6,'六'],[0,'日']],cl=AL.classes||[];
+  return `<section class="panel"><h2>上課後提醒</h2><p class="muted">設定每週上課的「下課時間」，時間到會提醒你把學到的東西填進「上課筆記」，填完馬上出題。</p>
+   <div class="stack" style="gap:8px">${cl.map((c,i)=>`<div class="row"><select id="cl-d${i}" style="width:auto">${DN.map(([d,l])=>`<option value="${d}" ${c.d===d?'selected':''}>星期${l}</option>`).join('')}</select><input type="time" id="cl-t${i}" value="${c.t}" style="width:auto"><button class="x" data-act="cldel" data-i="${i}">刪除</button></div>`).join('')||'<p class="note">還沒設定上課時間。</p>'}</div>
+   <div class="row"><button class="btn" data-act="cladd">加一堂課</button><button class="btn" data-act="go" data-v="clase">現在填上課筆記</button></div></section>`}
 
 /* ---------- profile ---------- */
 function vYo(){const m=S.me||{},lv=m.level||'A2';
@@ -956,11 +1295,17 @@ function vYo(){const m=S.me||{},lv=m.level||'A2';
    <div class="seg" role="group" aria-label="西文程度">${['A0','A1','A2','B1','B2'].map(x=>`<button data-act="melv" data-l="${x}" class="${lv===x?'on':''}">${x}</button>`).join('')}</div>
    <p class="note">A0 完全新手 · A1 會打招呼 · A2 能聊日常 · B1 能聊經驗和想法 · B2 能流暢討論</p>
    <div><button class="btn primary" data-act="mesave">儲存</button></div></section>
+  ${alarmHTML()}
+  ${classAlarmHTML()}
   <section class="panel"><h2>朗讀聲音</h2><p class="muted">聲音來自你手機內建的語音。挑一個聽起來最自然的，越靠上面的越推薦（墨西哥腔、品質較好的排前面）。</p>
    <select id="voicesel" aria-label="朗讀聲音"></select>
    <label class="f">語速</label>
    <div class="seg" role="group" aria-label="語速">${[[.65,'很慢'],[.8,'自然'],[.92,'標準'],[1.05,'快']].map(([v,l])=>`<button data-act="vrate" data-r="${v}" class="${Math.abs(VS.rate-v)<.01?'on':''}">${l}</button>`).join('')}</div>
    <div class="row"><button class="btn primary" data-act="vtest">試聽</button></div>
+   ${S.standalone?`<div class="rule"><b>AI 自然語音（選用）</b><span>貼上 OpenAI API 金鑰，就改用 AI 語音：墨西哥腔、有語氣起伏，最像真人。費用算在你自己的 OpenAI 帳號，每句大約台幣幾分錢。</span>
+    <div class="seg"><button data-act="vengine" data-e="sys" class="${VS.engine==='openai'?'':'on'}">手機語音</button><button data-act="vengine" data-e="openai" class="${VS.engine==='openai'?'on':''}">AI 自然語音</button></div>
+    ${VS.engine==='openai'?`<input id="oakey" type="password" placeholder="sk-..." value="${oaKey()?'••••••••':''}" autocomplete="off"><select id="oavoicesel" aria-label="AI 聲音">${[['coral','Coral（女聲，溫暖）'],['nova','Nova（女聲，明亮）'],['sage','Sage（女聲，沉穩）'],['ash','Ash（男聲）'],['verse','Verse（男聲）']].map(([v,l])=>`<option value="${v}" ${(VS.oavoice||'coral')===v?'selected':''}>${l}</option>`).join('')}</select><div><button class="btn" data-act="oakeysave">儲存金鑰並試聽</button></div><span class="note">金鑰只存在這台裝置的瀏覽器。</span>`:''}</div>`
+   :`<p class="note">想要更像真人的 AI 語音，請用網頁版 jay0916746661.github.io/jimframe-site/orale/ 。Claude App 裡的頁面不能連到外部語音服務。</p>`}
    <p class="note">如果每個聲音都很機械：Android 到「設定 → 文字轉語音輸出」選 Google 引擎，下載「西班牙文（美國）」並選高品質語音；iPhone 到「設定 → 輔助使用 → 朗讀內容 → 聲音 → 西班牙文」，下載「Paulina（加強版）」，墨西哥腔、最自然。下載後重新打開這頁。</p></section>
   ${S.standalone?`<section class="panel"><h2>AI 功能（選用）</h2><p class="muted">出題、批改、真人對話、情境任務、日記批改要用 AI。貼上你自己的 Anthropic API 金鑰就能用，費用算在你自己的 Anthropic 帳號，大約每次對話幾毛到一兩塊台幣。</p>
    <input id="apikey" type="password" placeholder="sk-ant-..." value="${getKey()?'••••••••••••':''}" autocomplete="off">
@@ -1018,7 +1363,7 @@ function vCompare(){const tag={done:['ok','已加入'],add:['learn','可以加']
 function themeStats(){const t0=dkey();return Object.keys(THEMES).map(k=>{const ws=Object.values(S.words).filter(w=>w.theme===k);
   const n=ws.length,mast=ws.filter(w=>(w.box||0)>=4).length,err=ws.filter(w=>w.inErr).length,seen=ws.filter(w=>w.seen).length,right=ws.reduce((a,w)=>a+(w.right||0),0),wrong=ws.reduce((a,w)=>a+(w.wrong||0),0),due=ws.filter(w=>w.seen&&w.due<=t0).length;
   const score=n?Math.round((mast*1+(seen-mast)*0.45)/n*100):0;
-  return{k,label:THEMES[k],n,mast,err,seen,due,acc:pct(right,right+wrong),score}}).filter(x=>x.k!=='general'||x.n)}
+  return{k,label:THEMES[k],n,mast,err,seen,due,acc:pct(right,right+wrong),score}}).filter(x=>!['general','historia','clase'].includes(x.k)||x.n)}
 function mmColor(t){if(!t.n)return'var(--line)';if(t.err>=Math.max(2,t.n*.25))return'var(--chile)';if(t.score>=60)return'var(--nopal)';if(t.score>=25)return'var(--cobalt)';return'var(--marigold)'}
 function mindmap(){const ts=themeStats(),W=380,H=380,cx=W/2,cy=H/2,R1=136,s=statsW(),wk=sumRange(weekStart(dkey()),7);
   let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="學習方向心智圖">`;
@@ -1067,13 +1412,15 @@ function fillVoiceSel(){const sel=document.getElementById('voicesel');if(!sel)re
   sel.innerHTML=vs.length?vs.map(v=>`<option value="${esc(v.name)}" ${VOICE&&v.name===VOICE.name?'selected':''}>${esc(v.name)}（${esc(v.lang)}）${LANG(v)==='es-es'?'・西班牙腔':''}</option>`).join(''):'<option>這台裝置沒有西班牙文語音</option>'}
 // make text sound natural: drop emoji/markdown, read sentence by sentence with small pauses
 function speechText(t){return String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu,'').replace(/[*_~#`>]/g,'').replace(/\([^)]*\)/g,'').replace(/\s*—\s*/g,', ').replace(/\s+/g,' ').trim()}
-function speak(t,rate,onend){let done=false;const fin=()=>{if(!done){done=true;onend&&onend()}};
-  try{if(!('speechSynthesis' in window)){if(!onend)toast('這台裝置不支援朗讀');fin();return}if(!VOICE)pickVoice();speechSynthesis.cancel();
-  const text=speechText(t);if(!text){fin();return}
-  const parts=text.match(/[^.!?…]+[.!?…]*/g)||[text],r=rate?rate*(VS.rate/.8):VS.rate;
-  parts.map(x=>x.trim()).filter(Boolean).forEach((p,i,arr)=>{const u=new SpeechSynthesisUtterance(p);u.lang=VOICE?VOICE.lang:'es-MX';if(VOICE)u.voice=VOICE;u.rate=Math.max(.5,Math.min(1.2,r));u.pitch=1;
-    if(i===arr.length-1){u.onend=fin;u.onerror=fin}speechSynthesis.speak(u)});
-  if(onend)setTimeout(fin,Math.max(5000,text.length*150/r))}catch(e){fin()}}
+function speak(t,rate,onend,opt){let done=false;const fin=()=>{if(!done){done=true;onend&&onend()}};
+  const text=speechText(t);if(!text){fin();return}const r=rate?rate*(VS.rate/.8):VS.rate;
+  const sys=()=>{try{if(!('speechSynthesis' in window)){if(!onend)toast('這台裝置不支援朗讀');fin();return}if(!VOICE)pickVoice();speechSynthesis.cancel();
+    const vv=(opt&&opt.voice)||VOICE,parts=text.match(/[^.!?…]+[.!?…]*/g)||[text];
+    parts.map(x=>x.trim()).filter(Boolean).forEach((p,i,arr)=>{const u=new SpeechSynthesisUtterance(p);u.lang=vv?vv.lang:'es-MX';if(vv)u.voice=vv;u.rate=Math.max(.5,Math.min(1.2,r));u.pitch=(opt&&opt.pitch)||1;
+      if(i===arr.length-1){u.onend=fin;u.onerror=fin}speechSynthesis.speak(u)});
+    if(onend)setTimeout(fin,Math.max(5000,text.length*150/r))}catch(e){fin()}};
+  if(S.standalone&&VS.engine==='openai'&&oaKey()){speakAI(text,r,fin,opt,sys);return}
+  sys()}
 
 /* ---------- voice input ---------- */
 let REC=null;
@@ -1091,11 +1438,11 @@ function listen(b){const SR=window.SpeechRecognition||window.webkitSpeechRecogni
 
 /* ---------- play a list of words one after another ---------- */
 let PL=null;
-function stopList(){if(PL){PL.stop=true;if(PL.btn)PL.btn.textContent=PL.label;PL=null;try{speechSynthesis.cancel()}catch(e){}}}
-function playList(items,btn){items=items.filter(Boolean).slice(0,60);if(!items.length){toast('沒有可以播放的字');return}
+function stopList(){if(PL){PL.stop=true;if(PL.btn)PL.btn.textContent=PL.label;PL=null;hush();}}
+function playList(items,btn,rate){items=items.filter(Boolean).slice(0,60);if(!items.length){toast('沒有可以播放的字');return}
   const me={stop:false,btn,label:btn.textContent};PL=me;btn.textContent='停止播放';let i=0;
   const step=()=>{if(me.stop)return;if(i>=items.length){if(PL===me){btn.textContent=me.label;PL=null}return}
-    speak(items[i++],.8,()=>{if(!me.stop)setTimeout(step,700)})};step()}
+    speak(items[i++],rate||.8,()=>{if(!me.stop)setTimeout(step,700)})};step()}
 
 /* ---------- diary ---------- */
 const DPROMPTS=[
@@ -1137,20 +1484,20 @@ async function diarySubmit(useAI,b){const ta=$('#diary'),text=(ta?.value||'').tr
 Today's prompt: ${p[0]}
 Diary entry (may mix Chinese where the learner got stuck): "${text}"
 Correct it and translate any Chinese parts into natural Mexican Spanish, keeping the learner's meaning.
-Reply with only JSON: {"corrected":"the full entry corrected, all in Spanish","natural":"how a Mexican friend would write the same thing casually","note_zh":"用台灣繁體中文 2–3 句說明主要錯誤和原因；全對就說哪裡用得好","praise_zh":"一句具體的鼓勵（台灣繁體中文）","words":[up to 3 useful words from the corrected text the learner may not know, {"es":"Spanish with article if noun","zh":"台灣繁體中文"}],"next_es":"one short follow-up question in Spanish to write about tomorrow"}`,{modelTier:'default',cache:false});
+Reply with only JSON: {"corrected":"the full entry corrected, all in Spanish","natural":"how a Mexican friend would write the same thing casually","note_zh":"用台灣繁體中文 2–3 句說明主要錯誤和原因；全對就說哪裡用得好","praise_zh":"一句具體的鼓勵（台灣繁體中文）","words":[up to 3 useful words from the corrected text the learner may not know, {"es":"Spanish with article if noun","zh":"台灣繁體中文"}],"next_es":"one short follow-up question in Spanish to write about tomorrow","err_types":["main error types if any, each one of: pasado, serestar, conjugacion, genero, preposicion, acentos, vocabulario, orden"]}`,{modelTier:'default',cache:false});
     Object.assign(e,{corrected:String(r.corrected||''),natural:String(r.natural||''),note:String(r.note_zh||''),praise:String(r.praise_zh||''),words:(r.words||[]).slice(0,3).map(w=>({es:String(w.es||''),zh:String(w.zh||'')})).filter(w=>w.es),next:String(r.next_es||'')});
-    if(e.corrected&&clean(e.corrected)!==clean(text)){t.fixes.push(`${text} → ${e.corrected}`);if(t.fixes.length>30)t.fixes.shift()}
+    if(e.corrected&&clean(e.corrected)!==clean(text)){t.fixes.push(`${text} → ${e.corrected}`);if(t.fixes.length>30)t.fixes.shift()}(Array.isArray(r.err_types)?r.err_types:[]).slice(0,3).forEach(x=>addCat(normCat(x)));
     saveDiary(e);S.dEdit=false;render()}
   catch(err){$('#dmsg').textContent=aiErr(err)+' 你的日記先存起來了。';saveDiary(Object.assign(old||{},e));b.disabled=false}}
 
 /* ---------- render & actions ---------- */
 function render(){paintMe();setTimeout(fillVoiceSel,0);const v=S.view,m=$('#main');
-  m.innerHTML=v==='hoy'?vHoy():v==='palabras'?vPalabras():v==='practicar'?vPracticar():v==='lecciones'?vLecciones():v==='diario'?vDiario():v==='yo'?vYo():v==='test'?vTest():vSemana();
+  m.innerHTML=v==='hoy'?vHoy():v==='palabras'?vPalabras():v==='practicar'?vPracticar():v==='lecciones'?vLecciones():v==='diario'?vDiario():v==='yo'?vYo():v==='test'?vTest():v==='listen'?vListen():v==='clase'?vClase():v==='social'?vSocial():vSemana();
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.v===v||(v==='yo'&&false)));
   if(v==='palabras')paintList();if(v==='practicar'&&P.active&&P.mode==='chat')paintChat();paintMini()}
 function keepOpen(){const open=[...document.querySelectorAll('details.pack')].map(d=>d.open),y=window.scrollY;render();document.querySelectorAll('details.pack').forEach((d,i)=>d.open=!!open[i]);window.scrollTo({top:y})}
 function renderSoft(){const ae=document.activeElement;if(S.view==='palabras'){paintList();paintMini();return}
-  if((S.view==='practicar'&&P.active)||S.view==='diario'){paintMini();return}
+  if((S.view==='practicar'&&P.active)||['diario','listen','social','lecciones','test','clase'].includes(S.view)){paintMini();return}
   if(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)){paintMini();return}render()}
 function go(v){if(S.view==='practicar'&&P.active&&v!=='practicar'){/* keep session alive */}S.view=v;render();window.scrollTo({top:0})}
 const ACT={
@@ -1166,15 +1513,77 @@ const ACT={
  bkimport:()=>{const v=($('#bkin')?.value||'').trim();if(!v){toast('先貼上備份代碼');return}try{const n=importCode(v);toast(`匯入完成：${n.w} 個新字、${n.d} 篇日記、${n.days} 天紀錄`);render()}catch(e){toast('代碼不完整或格式不對，請重新複製一次')}},
  start:b=>startMode(b.dataset.mode),
  ptheme:b=>{S.ptheme=b.dataset.t;render()},
- quit:()=>{if(CH&&CH.call){CH.call.on=false;try{REC&&REC.stop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}P={active:false};CH=null;flushLog();render()},
+ quit:()=>{if(CH&&CH.call){CH.call.on=false;try{REC&&REC.stop()}catch(e){}hush();}P={active:false};CH=null;flushLog();render()},
  flip:()=>{P.reveal=true;render()},
  fgrade:b=>{const w=curW(),r=b.dataset.r;record(w,r);P.done++;if(r==='good')P.right++;else{P.wrong+=r==='bad'?1:0;requeue(w.id)}next()},
  tcheck:()=>{const v=$('#ans').value;if(!v.trim())return;const w=curW();const target=w.es;const c=check(v,target);grade(w,c.ok,v,c.note)},
- tskip:()=>{if(P.mode==='coach'){P.done++;P.wrong++;requeue(P.cur);next();return}const w=curW();if(P.mode==='build'||P.mode==='sent'){record(w,'bad');P.done++;P.wrong++;requeue(w.id);P.fb=P.mode==='build'?{ok:false}:Object.assign(lcsMark(w.ex,''),{you:''});render();return}grade(w,false,'',null)},
+ tskip:()=>{if(P.mode==='conj'){conjGrade('');return}if(P.mode==='sound'){P.done++;P.wrong++;next();return}if(P.mode==='coach'){P.done++;P.wrong++;requeue(P.cur);next();return}const w=curW();if(P.mode==='build'||P.mode==='sent'){record(w,'bad');P.done++;P.wrong++;requeue(w.id);P.fb=P.mode==='build'?{ok:false}:Object.assign(lcsMark(w.ex,''),{you:''});render();return}grade(w,false,'',null)},
  next:()=>next(),
  say:b=>{stopList();speak(b.dataset.t)},
+ weakfix:b=>{const c=b.dataset.c,m=CAT_FIX[c];if(m==='conj'){startConj(c==='serestar'?['ser','estar']:null);return}S.ptheme='all';startMode(m)},
+ mxpick:b=>{const q=P.cur,i=+b.dataset.i;mixResult(q.opts[i]===q.ans,i)},
+ mxplay:()=>{const q=P.cur;if(q&&S.words[q.id])speak(S.words[q.id].es,.85)},
+ mxtype:()=>{const q=P.cur,w=S.words[q.id],v=($('#ans')?.value||'').trim();if(!v)return;const c=check(v,w.es);mixResult(c.ok,null,c.ok?c.note:'你寫：'+v)},
+ mxskip:()=>mixResult(false,null,''),
+ mxmatch:b=>{const q=P.cur,side=b.dataset.s,id=b.dataset.id;if(!q.sel||q.sel.side===side){q.sel={side,id};render();return}
+   if(q.sel.id===id){q.done.push(id);if(side==='l'||q.sel.side==='l')speak(S.words[id].es,.9);q.sel=null;if(q.done.length===q.left.length){P.done++;const ok=q.miss===0;ok?P.right++:P.wrong++;P.xp+=ok?20:10;const t=today();t.xp=(t.xp||0)+(ok?20:10);t.items++;ok?t.right++:t.wrong++;scheduleFlush(1500)}}
+   else{q.miss++;const w=S.words[side==='l'?id:q.sel.id];if(w)record(w,'unsure');q.sel=null;toast('不對喔，再試一次')}render()},
+ clsave:b=>clSave(b),
+ clmix:()=>{const ids=S.CL&&S.CL.ids;S.CL=null;startMix(ids&&ids.length>=1?ids:null)},
+ clreview:b=>{const c=classesList()[+b.dataset.i];const byEs={};Object.values(S.words).forEach(w=>byEs[clean(w.es)]=w);const ids=[...(c.ids||[]),...(c.words||[]).map(e=>byEs[clean(e)]?.id)].filter((x,i,a)=>x&&S.words[x]&&a.indexOf(x)===i);startMix(ids.length?ids:null)},
+ cladd:()=>{AL.classes=AL.classes||[];AL.classes.push({d:new Date().getDay(),t:'20:00'});saveAL();render()},
+ cldel:b=>{AL.classes.splice(+b.dataset.i,1);saveAL();render()},
+ alclass:()=>{$('#alarm').hidden=true;S.CL=null;go('clase')},
+ kcheck:()=>{const v=($('#ans')?.value||'').trim();if(v)conjGrade(v)},
+ lsplay:()=>{if(PL){stopList();render();return}const L=S.LS,d=L.ai||DRAMAS[L.i%DRAMAS.length];speakLines(d.lines,i=>{document.querySelectorAll('.lyl').forEach(x=>x.classList.remove('on'));const e=i>=0&&$('#lsl'+i);if(e)e.classList.add('on')},()=>render());render()},
+ lsslow:()=>{const L=S.LS,d=L.ai||DRAMAS[L.i%DRAMAS.length];speakLines(d.lines,null,()=>render(),.6);render()},
+ lsshow:()=>{S.LS.show=!S.LS.show;render()},
+ lsans:b=>{const L=S.LS,d=L.ai||DRAMAS[L.i%DRAMAS.length],q=+b.dataset.q,o=+b.dataset.o;if(L.ans[q]!=null)return;L.ans[q]=o;const ok=o===d.qs[q][2],t=today();t.items++;ok?t.right++:t.wrong++;scheduleFlush(1500);render()},
+ lsnext:()=>{stopList();S.LS={i:(S.LS?S.LS.i:0)+1,show:false,ans:{}};render();window.scrollTo({top:0})},
+ lsai:b=>lsAI(b),
+ socflash:()=>{addWords(PACKS.bachata.map(p=>({es:p[0],zh:p[1],en:p[2],ex:p[3],exZh:p[4],theme:'bachata'})));S.ptheme='bachata';startMode('flash',6)},
+ alstart:()=>{$('#alarm').hidden=true;startDaily()},
+ alsnooze:b=>{snoozeKind=b.dataset.k||'';snoozeAt=Date.now()+600000;$('#alarm').hidden=true;toast('10 分鐘後再提醒你')},
+ aloff:()=>{$('#alarm').hidden=true},
+ alon:b=>{AL.on=b.dataset.v==='1';saveAL();render()},
+ aladd:()=>{AL.times.push('12:30');saveAL();render()},
+ aldel:b=>{AL.times.splice(+b.dataset.i,1);saveAL();render()},
+ alday:b=>{const d=+b.dataset.d;AL.days=AL.days.includes(d)?AL.days.filter(x=>x!==d):[...AL.days,d];saveAL();render()},
+ altest:()=>alarmFire('這是測試提醒，正式提醒會在你設定的時間出現'),
+ alnotif:()=>{try{Notification.requestPermission().then(()=>render())}catch(e){toast('這個瀏覽器不支援通知')}},
+ ltab:b=>{S.ltab=b.dataset.t;stopList();render();window.scrollTo({top:0})},
+ mpnew:()=>{const pair=PAIRS[Math.floor(Math.random()*PAIRS.length)],ans=Math.random()<.5?0:1;S.MP={pair,ans,res:null};render();speak(pair[ans],.8)},
+ mpagain:()=>{if(S.MP)speak(S.MP.pair[S.MP.ans],.7)},
+ mppick:b=>{const M=S.MP;M.res=+b.dataset.i;S.mpScore=S.mpScore||[0,0];S.mpScore[1]++;if(M.res===M.ans)S.mpScore[0]++;render()},
+ stnew:()=>{S.STQ={i:S.STQ?S.STQ.i+1:Math.floor(Math.random()*STRESS.length),res:null};render()},
+ stpick:b=>{S.STQ.res=+b.dataset.i;const q=STRESS[S.STQ.i%STRESS.length];if(S.STQ.res!==q[1])addCat('acentos');render()},
+ sndslow:b=>{if(PL){stopList();return}playList(SOUNDS[+b.dataset.i].w,b,.55)},
+ snddrill:b=>{const w=SOUNDS[+b.dataset.i].w;P={active:true,mode:'sound',queue:[...w],total:w.length,done:0,right:0,wrong:0};S.view='practicar';next()},
+ sdcheck:()=>{const you=($('#ans')?.value||'').trim();if(!you){toast('先念一次，系統要聽到才能評分');return}const r=lcsMark(P.cur,you),t=today();t.items++;P.done++;if(r.score>=80){P.right++;t.right++}else{P.wrong++;t.wrong++;requeue(P.cur)}scheduleFlush(1500);P.fb=Object.assign(r,{you});render()},
+ hqstart:b=>{hqStart(b.dataset.s);render()},
+ hqpick:b=>{const Q=S.HQ,q=Q.qs[Q.i];Q.res=+b.dataset.i;if(q.opts[Q.res]===q.a)Q.ok++;render()},
+ hqnext:()=>{S.HQ.i++;S.HQ.res=null;render()},
+ lypick:b=>{stopList();S.LY={k:b.dataset.k,mode:S.LY?S.LY.mode:'read',i:0};render()},
+ lymode:b=>{stopList();S.LY.mode=b.dataset.m;S.LY.fb=null;render()},
+ lyprev:()=>{S.LY.i=Math.max(0,S.LY.i-1);S.LY.fb=null;render()},
+ lynext:()=>{S.LY.i++;S.LY.fb=null;render()},
+ lyretry:()=>{S.LY.fb=null;render()},
+ lycheck:()=>{const s=songsAll().find(x=>x.k===S.LY.k),ln=s.lines[S.LY.i],you=($('#lyans')?.value||'').trim();if(!you){toast('先唱或念一次');return}const r=lcsMark(ln.es,you),t=today();t.items++;r.score>=80?t.right++:t.wrong++;scheduleFlush(1500);S.LY.fb=Object.assign(r,{you});render()},
+ gapcheck:()=>{const s=songsAll().find(x=>x.k===S.LY.k),ln=s.lines[S.LY.i],ws=ln.es.split(/\s+/),gi=gapIdx(ln.es),r={};let all=true;gi.forEach(j=>{r[j]=strip(clean($('#gap'+j)?.value||''))===strip(clean(ws[j]));if(!r[j])all=false});const t=today();t.items++;all?t.right++:(t.wrong++,addCat('vocabulario'));scheduleFlush(1500);S.LY.fb={r};render()},
+ karaplay:()=>{if(PL){stopList();render();return}const s=songsAll().find(x=>x.k===S.LY.k);speakLines(s.lines.map(l=>['A',l.es]),i=>{document.querySelectorAll('.lyl').forEach(x=>x.classList.remove('on'));const e=i>=0&&$('#lyk'+i);if(e){e.classList.add('on');e.scrollIntoView({block:'nearest',behavior:'smooth'})}},()=>render());render()},
+ myadd:()=>{const t=($('#mytitle')?.value||'').trim()||'我的歌',lines=($('#mylyrics')?.value||'').split('\n').map(x=>x.trim()).filter(Boolean).slice(0,150);if(!lines.length){toast('先貼上歌詞，每行一句');return}const a=mySongs();a.push({t,lines});saveMySongs(a);S.LY={k:'my'+(a.length-1),mode:'line',i:0};toast('已加入「'+t+'」');render()},
+ mydel:b=>{const a=mySongs();a.splice(+b.dataset.i,1);saveMySongs(a);S.LY=null;render()},
+ lyexplain:async b=>{const s=songsAll().find(x=>x.k===S.LY.k),ln=s.lines[S.LY.i].es,box=$('#lyex');b.disabled=true;box.innerHTML='<p class="thinking">Claude 正在解釋這一句</p>';
+   try{const r=await S.sample.json(`Explain ONE line from a Spanish song for a learner. ${learner()} ${MX}
+Line: "${ln}"
+Only discuss this single line. Do not quote or continue any other lyrics.
+Reply with only JSON: {"zh":"這一句的台灣繁體中文意思","words":[up to 4 {"es":"word or slang from the line","zh":"台灣繁體中文"}],"note_zh":"口音、俚語或墨西哥說法的差異，1–2 句"}`,{modelTier:'quick',cache:{gcTime:86400000}});
+     box.innerHTML=`<div class="rule"><b>${esc(String(r.zh||''))}</b>${(r.words||[]).slice(0,4).map(w=>`<span>${esc(String(w.es||''))} · ${esc(String(w.zh||''))}</span>`).join('')}${r.note_zh?`<span class="note">${esc(String(r.note_zh))}</span>`:''}</div>`}
+   catch(e){box.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`}b.disabled=false},
+ vengine:b=>{VS.engine=b.dataset.e;saveVS();render()},
+ oakeysave:()=>{const v=($('#oakey')?.value||'').trim();if(!v||v.startsWith('•')){speak('¡Hola! Soy tu voz natural. ¿Platicamos un rato?');return}if(!/^sk-/.test(v)){toast('OpenAI 金鑰應該是 sk- 開頭');return}try{localStorage.setItem('orale-oakey',v)}catch(e){toast('這個瀏覽器不能儲存');return}toast('已儲存');speak('¡Hola! Soy tu voz natural. ¿Platicamos un rato?')},
  playlist:b=>{if(PL){stopList();return}let items=[];const t0=dkey();
-   if(b.dataset.src==='pack')items=PACKS[b.dataset.k].map(p=>p[0]);
+   if(b.dataset.src==='social')items=SOCIAL.map(x=>x[0]);else if(b.dataset.src==='pack')items=PACKS[b.dataset.k].map(p=>p[0]);
    else if(b.dataset.src==='due')items=Object.values(S.words).filter(w=>w.inErr||(w.seen&&w.due<=t0)).map(w=>w.es);
    else items=[...document.querySelectorAll('#wlist .wmain .say')].map(x=>x.dataset.t);
    playList(items,b)},
@@ -1189,7 +1598,7 @@ const ACT={
  hint:()=>getHint(),
  callstart:()=>callStart(),
  callend:()=>callEnd(),
- calltap:()=>{const c=CH&&CH.call;if(!c)return;if(c.state==='speak'){try{speechSynthesis.cancel()}catch(e){}return}if(c.state==='listen'){try{REC&&REC.stop()}catch(e){}return}if(c.state==='type'){const el=$('#chatin');if(el)el.focus();return}if(c.state==='idle'){c.miss=0;callListen()}},
+ calltap:()=>{const c=CH&&CH.call;if(!c)return;if(c.state==='speak'){hush();return}if(c.state==='listen'){try{REC&&REC.stop()}catch(e){}return}if(c.state==='type'){const el=$('#chatin');if(el)el.focus();return}if(c.state==='idle'){c.miss=0;callListen()}},
  autosay2:()=>{const c=CH&&CH.call;if(!c)return;c.sub=c.sub===false;paintCall()},
  usehint:b=>{const o=CH?.hint?.opts?.[+b.dataset.i];const el=$('#chatin');if(o&&el){el.value=o.es;el.focus()}},
  report:()=>{if(CH){const m=mstate();if(!m.done.includes('out')){m.done.push('out');scheduleFlush(800)}makeReport()}},
@@ -1203,7 +1612,7 @@ const ACT={
  melv:b=>{S.me=Object.assign({},S.me,{level:b.dataset.l});document.querySelectorAll('[data-act=melv]').forEach(x=>x.classList.toggle('on',x===b))},
  mesave:()=>{saveMe();toast('已儲存');go('hoy')},
  mmgo:b=>{S.ptheme=b.dataset.t;const n=pool(b.dataset.t).length;if(!n){go('lecciones');toast('先加入「'+THEMES[b.dataset.t]+'」的單字');return}startMode(statsW().err&&pool(b.dataset.t).some(w=>w.inErr)?'trans':'flash')},
- autosay:()=>{S.autoSay=!S.autoSay;try{localStorage.setItem('orale-autosay',S.autoSay?'1':'0')}catch(e){}if(!S.autoSay)try{speechSynthesis.cancel()}catch(e){}const b=document.querySelector('[data-act=autosay]');if(b){b.classList.toggle('on',S.autoSay);b.textContent='自動朗讀：'+(S.autoSay?'開':'關')}},
+ autosay:()=>{S.autoSay=!S.autoSay;try{localStorage.setItem('orale-autosay',S.autoSay?'1':'0')}catch(e){}if(!S.autoSay)hush();const b=document.querySelector('[data-act=autosay]');if(b){b.classList.toggle('on',S.autoSay);b.textContent='自動朗讀：'+(S.autoSay?'開':'關')}},
  mic:b=>listen(b),
  dsave:b=>diarySubmit(false,b),
  dai:b=>diarySubmit(true,b),
@@ -1265,12 +1674,14 @@ ${cur.fixes.slice(-15).join('\n')||'無'}
    catch(e){$('#repbox').innerHTML=`<p class="note">${esc(aiErr(e))}</p>`;b.disabled=false}}
 };
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const f=ACT[b.dataset.act];if(f){e.preventDefault();f(b,e)}});
-document.addEventListener('change',e=>{if(e.target.id==='voicesel'){VS.name=e.target.value;saveVS();pickVoice();speak('Hola, así suena mi voz. ¿Te gusta?')}});
+document.addEventListener('change',e=>{const id=e.target.id;if(/^cl-[dt]\d+$/.test(id)){const i=+id.slice(4),c=AL.classes[i];if(c){if(id[3]==='d')c.d=+e.target.value;else c.t=e.target.value;saveAL()}return}if(/^al-t\d+$/.test(id)){AL.times[+id.slice(4)]=e.target.value;saveAL();return}if(id==='oavoicesel'){VS.oavoice=e.target.value;saveVS();speak('Hola, así suena mi voz. ¿Te gusta?');return}if(e.target.id==='voicesel'){VS.name=e.target.value;saveVS();pickVoice();speak('Hola, así suena mi voz. ¿Te gusta?')}});
 document.addEventListener('input',e=>{if(e.target.id==='wq'){S.f.q=e.target.value;paintList()}});
 document.addEventListener('keydown',e=>{if(e.key!=='Enter'||e.isComposing)return;const id=e.target.id;
   if(id==='chatin'&&!e.shiftKey){e.preventDefault();chatSend();return}
-  if(id==='ans'&&e.target.tagName==='INPUT'){e.preventDefault();if(P.mode==='past')ACT.pcheck();else ACT.tcheck();return}
-  if(id==='ans'&&e.target.tagName==='TEXTAREA'&&!e.shiftKey){e.preventDefault();P.mode==='shadow'?shadowGrade():P.mode==='sent'?ACT.scheck():P.mode==='coach'?coachGrade():ACT.askcheck();return}
+  if(id==='ans'&&e.target.tagName==='INPUT'){e.preventDefault();if(P.mode==='past')ACT.pcheck();else if(P.mode==='conj')ACT.kcheck();else if(P.mode==='mix')ACT.mxtype();else ACT.tcheck();return}
+  if(id==='ans'&&e.target.tagName==='TEXTAREA'&&!e.shiftKey){e.preventDefault();P.mode==='shadow'?shadowGrade():P.mode==='sound'?ACT.sdcheck():P.mode==='sent'?ACT.scheck():P.mode==='coach'?coachGrade():ACT.askcheck();return}
+  if(id==='lyans'&&!e.shiftKey){e.preventDefault();ACT.lycheck();return}
+  if(/^gap\d+$/.test(id)){e.preventDefault();ACT.gapcheck();return}
   if(/^drill\d$/.test(id)){e.preventDefault();drillCheck(+id.slice(5));return}
   if(id==='nextbtn'){e.preventDefault();next()}});
 // keep exZh/heat from single AI fill
@@ -1291,7 +1702,7 @@ async function boot(){loadLocal();render();
         for(const k in wlatest)o[k]=wlatest[k];
         if(!migrated&&!q.metadata.fromCache){migrated=true;if(q.empty&&Object.keys(S.words).length){Object.values(S.words).forEach(saveWord);return}}
         S.words=o;saveLocal();renderSoft()},()=>{});
-      logRef.onSnapshot(s=>{if(!s.exists||logDirty||logWriting)return;const d=JSON.parse(JSON.stringify(s.data()));S.log={days:d.days||{},reports:d.reports||{},missions:d.missions||{}};saveLocal();renderSoft()},()=>{});}}
+      logRef.onSnapshot(s=>{if(!s.exists||logDirty||logWriting)return;const d=JSON.parse(JSON.stringify(s.data()));S.log={days:d.days||{},reports:d.reports||{},missions:d.missions||{},classes:d.classes||[]};saveLocal();renderSoft()},()=>{});}}
   render()}
 boot();
 </script>
