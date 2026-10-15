@@ -265,6 +265,11 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:.8rem;color:var(--m
 <div id="alarm" class="alarm" hidden></div>
 
 <script>
+/* ---------- users on this device: each profile has its own records ---------- */
+const PROF=(()=>{try{return JSON.parse(localStorage.getItem('orale-profiles')||'null')}catch(e){return null}})()||{cur:'default',list:[{id:'default',name:'我'}]};
+const K=n=>PROF.cur==='default'?n:n+'@'+PROF.cur;
+function saveProf(){try{localStorage.setItem('orale-profiles',JSON.stringify(PROF))}catch(e){}}
+const OWNED=['orale-es-v1','orale-me','orale-mysongs','orale-alarm','orale-voice','orale-autosay','orale-key','orale-oakey'];
 /* ---------- content ---------- */
 const THEMES={viaje:'旅行',bachata:'巴恰塔',buceo:'潛水',chino:'教中文',banco:'銀行往事',calle:'街頭口語',comida:'墨西哥美食',fiestas:'節日',cultura:'文化',musica:'音樂',taiwan:'台灣文化',historia:'墨西哥歷史',clase:'上課筆記',general:'一般'};
 // 歌單：[歌名, 歌手, 備註]
@@ -358,11 +363,11 @@ function check(input,target){
 let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
 
 /* ---------- state & storage ---------- */
-const S={me:(()=>{try{return JSON.parse(localStorage.getItem('orale-me')||'null')||{}}catch(e){return{}}})(),cloud:false,autoSay:(()=>{try{return localStorage.getItem('orale-autosay')!=='0'}catch(e){return true}})(),diary:{},words:{},log:{days:{},reports:{}},sample:null,aiBlocked:false,view:'hoy',f:{q:'',theme:'all',st:'all'},ptheme:'all'};
+const S={me:(()=>{try{return JSON.parse(localStorage.getItem(K('orale-me'))||'null')||{}}catch(e){return{}}})(),cloud:false,autoSay:(()=>{try{return localStorage.getItem(K('orale-autosay'))!=='0'}catch(e){return true}})(),diary:{},words:{},log:{days:{},reports:{}},sample:null,aiBlocked:false,view:'hoy',f:{q:'',theme:'all',st:'all'},ptheme:'all'};
 const LS='orale-es-v1';
 let diaryCol=null,wordsCol=null,logRef=null,logDirty=false,logWriting=false,migrated=false;
-function loadLocal(){try{const j=JSON.parse(localStorage.getItem(LS)||'null');if(j){S.diary=j.diary||{};S.words=j.words||{};S.log=Object.assign({days:{},reports:{}},j.log||{})}}catch(e){}}
-function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({words:S.words,log:S.log,diary:S.diary}))}catch(e){}}
+function loadLocal(){try{const j=JSON.parse(localStorage.getItem(K(LS))||'null');if(j){S.diary=j.diary||{};S.words=j.words||{};S.log=Object.assign({days:{},reports:{}},j.log||{})}}catch(e){}}
+function saveLocal(){if(S.locked)return;try{localStorage.setItem(K(LS),JSON.stringify({words:S.words,log:S.log,diary:S.diary}))}catch(e){}}
 const wq={},wlatest={};
 function saveWord(w){S.words[w.id]=w;saveLocal();if(!wordsCol)return;wlatest[w.id]=w;if(wq[w.id])return;
   wq[w.id]=(async()=>{try{while(wlatest[w.id]){const d=wlatest[w.id];delete wlatest[w.id];await wordsCol.doc(d.id).set(JSON.parse(JSON.stringify(d)))}}catch(e){toast(e&&e.code==='quota_exceeded'?'單字庫已滿，請刪掉一些不用的字。':'同步沒成功，資料先存在這台裝置。')}finally{delete wq[w.id]}})()}
@@ -406,7 +411,7 @@ const rateLabel=()=>({0.65:'很慢',0.8:'自然',0.92:'標準',1.05:'快'})[VS.r
 const aiOK=()=>!!S.sample&&!S.aiBlocked;
 const aiNeed=()=>S.standalone?'AI 功能要先到右上角「我」輸入 Anthropic API 金鑰':'AI 功能要在 Claude App 裡打開這頁，並允許使用 Claude';
 /* standalone (no Claude app): call Anthropic API with the visitor's own key */
-const getKey=()=>{try{return localStorage.getItem('orale-key')||''}catch(e){return''}};
+const getKey=()=>{try{return localStorage.getItem(K('orale-key'))||''}catch(e){return''}};
 function parseJSON(t){try{return JSON.parse(t)}catch(e){}const m=t.match(/```(?:json)?\s*([\s\S]*?)```/);if(m){try{return JSON.parse(m[1])}catch(e){}}
   const a=t.search(/[\[{]/),b=Math.max(t.lastIndexOf('}'),t.lastIndexOf(']'));if(a>=0&&b>a){try{return JSON.parse(t.slice(a,b+1))}catch(e){}}throw{code:'invalid_json',text:t}}
 function apiSample(){
@@ -944,7 +949,7 @@ function testLevel(ans){const w={A1:1,A2:1.2,B1:1.5,B2:1.8};let sc=0,mx=0;const 
   const packs={A0:['viaje','comida','calle'],A1:['viaje','comida','calle'],A2:['viaje','bachata','buceo','calle'],B1:['banco','fiestas','cultura','bachata'],B2:['banco','fiestas','cultura','musica']}[lv];
   return{lv,pct:Math.round(sc/mx*100),by,tot,packs}}
 function vTest(){const T=S.T||(S.T={i:0,ans:[]});
-  if(T.i>=TEST.length){if(!T.res){T.res=testLevel(T.ans);S.me=Object.assign({},S.me,{level:T.res.lv==='A0'?'A1':T.res.lv,tested:dkey(),packs:T.res.packs});try{localStorage.setItem('orale-me',JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{})}
+  if(T.i>=TEST.length){if(!T.res){T.res=testLevel(T.ans);S.me=Object.assign({},S.me,{level:T.res.lv==='A0'?'A1':T.res.lv,tested:dkey(),packs:T.res.packs});try{localStorage.setItem(K('orale-me'),JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{})}
     const r=T.res,desc={A0:'剛起步：先學打招呼、點餐、問路。',A1:'入門：會簡單句子，先把現在式和日常單字打穩。',A2:'基礎：能聊日常，下一步是過去式和更長的句子。',B1:'中級：能聊經驗和想法，可以多練真人對話和虛擬式。',B2:'中高級：已經能流暢溝通，多練口語、俚語和聽力。'}[r.lv];
     const missed=TEST.map((q,i)=>T.ans[i]===q[3]?null:i).filter(x=>x!==null);
     return `<section class="panel"><p class="eyebrow">程度測驗結果</p><div class="row"><span class="lvl">${r.lv}</span><span class="pill learn">${r.pct} 分</span></div><p>${desc}</p>
@@ -970,7 +975,7 @@ function importCode(code){const raw=code.replace(/\s+/g,'').replace(/^ORALE1:/,'
   S.log.reports=Object.assign({},L.reports||{},S.log.reports||{});
   {const seen=new Set(classesList().map(c=>c.date+'|'+c.topic));S.log.classes=[...classesList(),...(L.classes||[]).filter(c=>!seen.has(c.date+'|'+c.topic))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,80)}
   const mi=Object.assign({},S.log.missions||{});Object.entries(L.missions||{}).forEach(([k,v])=>{if(!mi[k]||(v.stars||0)>(mi[k].stars||0))mi[k]=v});S.log.missions=mi;
-  if((!S.me||!S.me.name)&&d.me&&d.me.name){S.me=d.me;try{localStorage.setItem('orale-me',JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{})}
+  if((!S.me||!S.me.name)&&d.me&&d.me.name){S.me=d.me;try{localStorage.setItem(K('orale-me'),JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{})}
   saveLocal();scheduleFlush(500);return n}
 
 /* ===================== upgrade C ===================== */
@@ -1054,7 +1059,7 @@ function vSocial(){return `<section class="panel"><div class="prog"><span><b>舞
   <ul class="plist">${SOCIAL.map(s=>`<li><div><b>${esc(s[0])}</b></div><button class="say" data-act="say" data-t="${esc(s[0])}">聽</button><small>${esc(s[1])}</small></li>`).join('')}</ul></section>`}
 
 /* --- natural voice (web version, OpenAI key) --- */
-const oaKey=()=>{try{return localStorage.getItem('orale-oakey')||''}catch(e){return''}};
+const oaKey=()=>{try{return localStorage.getItem(K('orale-oakey'))||''}catch(e){return''}};
 const AUD={};let curAudio=null;
 function hush(){try{speechSynthesis.cancel()}catch(e){}if(curAudio){try{curAudio.pause()}catch(e){}curAudio=null}}
 async function speakAI(text,rate,fin,opt,fallback){try{
@@ -1065,9 +1070,9 @@ async function speakAI(text,rate,fin,opt,fallback){try{
   catch(e){if(e===401)toast('OpenAI 金鑰不正確，先改用手機語音');fallback()}}
 
 /* --- online alarm (works while the page is open) --- */
-const AL0=(()=>{try{return JSON.parse(localStorage.getItem('orale-alarm')||'null')}catch(e){return null}})()||{on:true,times:['21:00'],days:[0,1,2,3,4,5,6]};
+const AL0=(()=>{try{return JSON.parse(localStorage.getItem(K('orale-alarm'))||'null')}catch(e){return null}})()||{on:true,times:['21:00'],days:[0,1,2,3,4,5,6]};
 const AL=Object.assign({classes:[]},AL0);
-function saveAL(){try{localStorage.setItem('orale-alarm',JSON.stringify(AL))}catch(e){}}
+function saveAL(){try{localStorage.setItem(K('orale-alarm'),JSON.stringify(AL))}catch(e){}}
 let snoozeAt=0,snoozeKind='';const fired={};
 function chime(){try{const C=window.AudioContext||window.webkitAudioContext;const ac=chime.ac||(chime.ac=new C());if(ac.resume)ac.resume();const t=ac.currentTime;
   [[659,0],[784,.18],[988,.36],[1319,.6]].forEach(([f,d])=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.25,t+d+.03);g.gain.exponentialRampToValueAtTime(.001,t+d+.5);o.connect(g);g.connect(ac.destination);o.start(t+d);o.stop(t+d+.55)})}catch(e){}}
@@ -1197,8 +1202,8 @@ function vBachataHist(){return `<section class="panel"><h1>Bachata 的歷史</h1
   ${packHTML('bachata','舞會上跟舞伴、老師溝通的字。')}`}
 
 /* --- lyric practice: public-domain songs + your own pasted lyrics --- */
-const mySongs=()=>{try{return JSON.parse(localStorage.getItem('orale-mysongs')||'[]')}catch(e){return[]}};
-function saveMySongs(a){try{localStorage.setItem('orale-mysongs',JSON.stringify(a))}catch(e){toast('這個瀏覽器不能儲存')}}
+const mySongs=()=>{try{return JSON.parse(localStorage.getItem(K('orale-mysongs'))||'[]')}catch(e){return[]}};
+function saveMySongs(a){try{localStorage.setItem(K('orale-mysongs'),JSON.stringify(a))}catch(e){toast('這個瀏覽器不能儲存')}}
 function songsAll(){return[...SING.map((s,i)=>({k:'pd'+i,t:s.t,by:s.by,note:s.note,lines:s.lines.map(l=>({es:l[0],zh:l[1],tip:l[2]}))})),
   ...mySongs().map((s,i)=>({k:'my'+i,mine:i,t:s.t,by:'我貼的歌詞',note:'只存在這台裝置，不會上傳。',lines:s.lines.map(x=>({es:x,zh:'',tip:''}))}))]}
 function gapIdx(line){const ws=line.split(/\s+/);const c=ws.map((w,i)=>[i,strip(clean(w)).length]).filter(x=>x[1]>=4).sort((a,b)=>b[1]-a[1]);return c.slice(0,ws.length>=5?2:1).map(x=>x[0])}
@@ -1281,6 +1286,12 @@ function classAlarmHTML(){const DN=[[1,'一'],[2,'二'],[3,'三'],[4,'四'],[5,'
    <div class="stack" style="gap:8px">${cl.map((c,i)=>`<div class="row"><select id="cl-d${i}" style="width:auto">${DN.map(([d,l])=>`<option value="${d}" ${c.d===d?'selected':''}>星期${l}</option>`).join('')}</select><input type="time" id="cl-t${i}" value="${c.t}" style="width:auto"><button class="x" data-act="cldel" data-i="${i}">刪除</button></div>`).join('')||'<p class="note">還沒設定上課時間。</p>'}</div>
    <div class="row"><button class="btn" data-act="cladd">加一堂課</button><button class="btn" data-act="go" data-v="clase">現在填上課筆記</button></div></section>`}
 
+/* ---------- device users (web version) ---------- */
+function profileHTML(){return `<section class="panel"><h2>這台裝置的使用者</h2><p class="muted">家人朋友用同一支手機或電腦時，各自建一個使用者。單字、日記、進度、提醒、金鑰都分開存，切換就換成那個人的紀錄。</p>
+   <div class="stack" style="gap:8px">${PROF.list.map(p=>`<div class="row" style="justify-content:space-between"><span><b>${esc(p.name)}</b>${p.id===PROF.cur?' <span class="pill ok">使用中</span>':''}</span><span>${p.id===PROF.cur?'':`<button class="btn" style="min-height:36px;padding:6px 12px" data-act="profsw" data-id="${esc(p.id)}">切換</button>`}${p.id==='default'||p.id===PROF.cur?'':`<button class="x" data-act="profdel" data-id="${esc(p.id)}">刪除</button>`}</span></div>`).join('')}</div>
+   <div class="row"><input id="profname" placeholder="新使用者的名字" autocomplete="off" style="flex:1;min-width:0"><button class="btn primary" data-act="profadd">新增並切換</button></div>
+   <p class="note">網頁版不用帳號，紀錄存在這個瀏覽器裡；換手機請用下面的「備份與搬家」。</p></section>`}
+
 /* ---------- profile ---------- */
 function vYo(){const m=S.me||{},lv=m.level||'A2';
   return `<section class="panel"><h1>我的資料</h1><p class="muted">AI 會用這些資料出題、聊天、批改日記。只有你自己看得到。</p>
@@ -1311,6 +1322,7 @@ function vYo(){const m=S.me||{},lv=m.level||'A2';
    <input id="apikey" type="password" placeholder="sk-ant-..." value="${getKey()?'••••••••••••':''}" autocomplete="off">
    <div class="row"><button class="btn primary" data-act="keysave">儲存金鑰</button>${getKey()?'<button class="btn bad" data-act="keydel">移除金鑰</button>':''}</div>
    <p class="note">金鑰只存在這台裝置的瀏覽器，不會上傳到任何地方。到 console.anthropic.com 申請。沒有金鑰也能用：單字庫、閃卡、翻譯、例句填空、跟讀、過去式特訓、日記（不批改）、課程、心智圖、週報都可以。</p></section>`:''}
+  ${S.standalone?profileHTML():`<section class="panel"><h2>誰的紀錄</h2><p class="muted">每個人用自己的 Claude 帳號打開這個頁面，單字、日記、進度都自動分開，彼此看不到。同一支手機換帳號登入也不會混在一起。</p></section>`}
   <section class="panel"><h2>資料存在哪裡</h2><p class="muted">${S.standalone?'存在這台裝置的瀏覽器裡，不用登入。換手機或清除瀏覽器資料會不見。':S.cloud?'已登入，單字、日記和進度會同步到你的 Claude 帳號，手機電腦都能接著用。每個人的資料都是分開、私人的。':'目前存在這台裝置的瀏覽器裡。用 Claude 帳號登入並開啟這個頁面，就能跨裝置同步。'}</p>
    <p class="note">AI 功能（出題、批改、聊天、日記）會用到你自己的 Claude 用量，第一次使用時會先問你同不同意。</p></section>
   <section class="panel"><h2>程度</h2><p class="muted">${S.me&&S.me.tested&&S.me.tested!=='skip'?`上次測驗：${esc(S.me.tested)}，目前設定 ${esc(S.me.level||'A2')}。`:'還沒做過程度測驗。'}</p><div><button class="btn" data-act="test">${S.me&&S.me.tested&&S.me.tested!=='skip'?'重新測驗':'做程度測驗（3 分鐘）'}</button></div></section>
@@ -1322,7 +1334,7 @@ function vYo(){const m=S.me||{},lv=m.level||'A2';
    <p class="note">代碼裡有你的日記內容，只貼給自己，不要公開分享。</p></section>
   ${vCompare()}`}
 function saveMe(){const g=i=>($('#'+i)?.value||'').trim();S.me={name:g('me-name'),from:g('me-from')||'台灣',job:g('me-job'),past:g('me-past'),likes:g('me-likes'),level:S.me?.level||'A2'};
-  try{localStorage.setItem('orale-me',JSON.stringify(S.me))}catch(e){}
+  try{localStorage.setItem(K('orale-me'),JSON.stringify(S.me))}catch(e){}
   if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{});paintMe()}
 function paintMe(){const b=$('#mebtn');if(b)b.textContent=(S.me?.name||'我').trim().slice(0,1).toUpperCase()}
 
@@ -1394,9 +1406,9 @@ function mindmap(){const ts=themeStats(),W=380,H=380,cx=W/2,cy=H/2,R1=136,s=stat
 
 /* ---------- speech (Mexican / Latin American Spanish only, never Chinese) ---------- */
 let VOICE=null;
-const VS=(()=>{try{return JSON.parse(localStorage.getItem('orale-voice')||'null')||{}}catch(e){return{}}})();
+const VS=(()=>{try{return JSON.parse(localStorage.getItem(K('orale-voice'))||'null')||{}}catch(e){return{}}})();
 if(!VS.rate)VS.rate=.8;
-function saveVS(){try{localStorage.setItem('orale-voice',JSON.stringify(VS))}catch(e){}}
+function saveVS(){try{localStorage.setItem(K('orale-voice'),JSON.stringify(VS))}catch(e){}}
 const LANG=v=>v.lang.replace('_','-').toLowerCase();
 function esVoices(){try{return speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang))}catch(e){return[]}}
 function voiceScore(v){const l=LANG(v),n=v.name;let s=0;
@@ -1505,7 +1517,7 @@ const ACT={
  quick:()=>startDaily(),
  dnext:()=>dailyNext(),
  test:()=>{S.T={i:0,ans:[]};go('test')},
- testskip:()=>{S.me=Object.assign({},S.me,{tested:'skip'});try{localStorage.setItem('orale-me',JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{});render()},
+ testskip:()=>{S.me=Object.assign({},S.me,{tested:'skip'});try{localStorage.setItem(K('orale-me'),JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{});render()},
  tans:b=>{S.T.ans[S.T.i]=+b.dataset.o;S.T.i++;render();window.scrollTo({top:0})},
  tback:()=>{if(S.T.i>0){S.T.i--;render()}},
  tapply:()=>{const r=S.T.res;r.packs.forEach(k=>addWords(PACKS[k].map(p=>({es:p[0],zh:p[1],en:p[2],ex:p[3],exZh:p[4],heat:p[5]||0,theme:k}))));toast('已加入推薦課程');go('hoy')},
@@ -1581,7 +1593,7 @@ Reply with only JSON: {"zh":"這一句的台灣繁體中文意思","words":[up t
      box.innerHTML=`<div class="rule"><b>${esc(String(r.zh||''))}</b>${(r.words||[]).slice(0,4).map(w=>`<span>${esc(String(w.es||''))} · ${esc(String(w.zh||''))}</span>`).join('')}${r.note_zh?`<span class="note">${esc(String(r.note_zh))}</span>`:''}</div>`}
    catch(e){box.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`}b.disabled=false},
  vengine:b=>{VS.engine=b.dataset.e;saveVS();render()},
- oakeysave:()=>{const v=($('#oakey')?.value||'').trim();if(!v||v.startsWith('•')){speak('¡Hola! Soy tu voz natural. ¿Platicamos un rato?');return}if(!/^sk-/.test(v)){toast('OpenAI 金鑰應該是 sk- 開頭');return}try{localStorage.setItem('orale-oakey',v)}catch(e){toast('這個瀏覽器不能儲存');return}toast('已儲存');speak('¡Hola! Soy tu voz natural. ¿Platicamos un rato?')},
+ oakeysave:()=>{const v=($('#oakey')?.value||'').trim();if(!v||v.startsWith('•')){speak('¡Hola! Soy tu voz natural. ¿Platicamos un rato?');return}if(!/^sk-/.test(v)){toast('OpenAI 金鑰應該是 sk- 開頭');return}try{localStorage.setItem(K('orale-oakey'),v)}catch(e){toast('這個瀏覽器不能儲存');return}toast('已儲存');speak('¡Hola! Soy tu voz natural. ¿Platicamos un rato?')},
  playlist:b=>{if(PL){stopList();return}let items=[];const t0=dkey();
    if(b.dataset.src==='social')items=SOCIAL.map(x=>x[0]);else if(b.dataset.src==='pack')items=PACKS[b.dataset.k].map(p=>p[0]);
    else if(b.dataset.src==='due')items=Object.values(S.words).filter(w=>w.inErr||(w.seen&&w.due<=t0)).map(w=>w.es);
@@ -1604,15 +1616,18 @@ Reply with only JSON: {"zh":"這一句的台灣繁體中文意思","words":[up t
  report:()=>{if(CH){const m=mstate();if(!m.done.includes('out')){m.done.push('out');scheduleFlush(800)}makeReport()}},
  backchat:()=>{if(CH){CH.report=null;render()}},
  drill:b=>drillCheck(+b.dataset.i),
- keysave:()=>{const v=($('#apikey')?.value||'').trim();if(!v||v.startsWith('•')){toast('請貼上金鑰');return}if(!/^sk-ant-/.test(v)){toast('金鑰應該是 sk-ant- 開頭');return}try{localStorage.setItem('orale-key',v)}catch(e){toast('這個瀏覽器不能儲存');return}S.sample=apiSample();S.aiBlocked=false;toast('金鑰已儲存，AI 功能開啟');render()},
- keydel:()=>{try{localStorage.removeItem('orale-key')}catch(e){}S.sample=null;toast('已移除金鑰');render()},
+ keysave:()=>{const v=($('#apikey')?.value||'').trim();if(!v||v.startsWith('•')){toast('請貼上金鑰');return}if(!/^sk-ant-/.test(v)){toast('金鑰應該是 sk-ant- 開頭');return}try{localStorage.setItem(K('orale-key'),v)}catch(e){toast('這個瀏覽器不能儲存');return}S.sample=apiSample();S.aiBlocked=false;toast('金鑰已儲存，AI 功能開啟');render()},
+ keydel:()=>{try{localStorage.removeItem(K('orale-key'))}catch(e){}S.sample=null;toast('已移除金鑰');render()},
  vrate:b=>{VS.rate=+b.dataset.r;saveVS();document.querySelectorAll('[data-act=vrate]').forEach(x=>x.classList.toggle('on',x===b));speak('Hola, ¿qué onda? ¿Cómo estuvo tu día?')},
  vtest:()=>speak('¡Hola! Soy Lupita, de Oaxaca. Ahorita estoy planeando un viaje. ¿Tú prefieres viajar en camión o en avión?'),
  vrateq:()=>{const order=[.65,.8,.92,1.05];const i=order.findIndex(v=>Math.abs(v-VS.rate)<.01);VS.rate=order[(i+1)%order.length];saveVS();const b=document.querySelector('[data-act=vrateq]');if(b)b.textContent='語速：'+rateLabel();},
+ profadd:()=>{const n=($('#profname')?.value||'').trim();if(!n){toast('先輸入名字');return}const id='p'+Date.now().toString(36);PROF.list.push({id,name:n});saveLocal();S.locked=true;PROF.cur=id;saveProf();location.reload()},
+ profsw:b=>{saveLocal();S.locked=true;PROF.cur=b.dataset.id;saveProf();location.reload()},
+ profdel:b=>{if(!b.classList.contains('arm')){b.classList.add('arm');b.textContent='確定刪除？紀錄會一起刪掉';return}const id=b.dataset.id;try{Object.keys(localStorage).filter(k=>k.endsWith('@'+id)).forEach(k=>localStorage.removeItem(k))}catch(e){}PROF.list=PROF.list.filter(p=>p.id!==id);saveProf();render()},
  melv:b=>{S.me=Object.assign({},S.me,{level:b.dataset.l});document.querySelectorAll('[data-act=melv]').forEach(x=>x.classList.toggle('on',x===b))},
  mesave:()=>{saveMe();toast('已儲存');go('hoy')},
  mmgo:b=>{S.ptheme=b.dataset.t;const n=pool(b.dataset.t).length;if(!n){go('lecciones');toast('先加入「'+THEMES[b.dataset.t]+'」的單字');return}startMode(statsW().err&&pool(b.dataset.t).some(w=>w.inErr)?'trans':'flash')},
- autosay:()=>{S.autoSay=!S.autoSay;try{localStorage.setItem('orale-autosay',S.autoSay?'1':'0')}catch(e){}if(!S.autoSay)hush();const b=document.querySelector('[data-act=autosay]');if(b){b.classList.toggle('on',S.autoSay);b.textContent='自動朗讀：'+(S.autoSay?'開':'關')}},
+ autosay:()=>{S.autoSay=!S.autoSay;try{localStorage.setItem(K('orale-autosay'),S.autoSay?'1':'0')}catch(e){}if(!S.autoSay)hush();const b=document.querySelector('[data-act=autosay]');if(b){b.classList.toggle('on',S.autoSay);b.textContent='自動朗讀：'+(S.autoSay?'開':'關')}},
  mic:b=>listen(b),
  dsave:b=>diarySubmit(false,b),
  dai:b=>diarySubmit(true,b),
@@ -1693,7 +1708,10 @@ async function boot(){loadLocal();render();
   const [db,user,sample]=await Promise.all([C.use('db'),C.use('user'),C.use('sample')].map(p=>Promise.resolve(p).catch(()=>null)));
   S.sample=sample||null;
   if(db&&user){let id=null;try{id=await user.id()}catch(e){}
-    if(id){const profRef=db.doc(`data/users/${id}/profile`);
+    if(id){let owner=null;try{owner=localStorage.getItem('orale-owner')}catch(e){}
+      if(owner!==id){S.locked=!!owner;try{OWNED.forEach(k=>{if(owner){const v=localStorage.getItem(k);if(v!=null)localStorage.setItem(k+'@acct-'+owner,v)}const mine=localStorage.getItem(k+'@acct-'+id);if(mine!=null)localStorage.setItem(k,mine);else if(owner)localStorage.removeItem(k)});localStorage.setItem('orale-owner',id)}catch(e){}
+        if(owner){location.reload();return}}
+      const profRef=db.doc(`data/users/${id}/profile`);
       try{const snap=await profRef.get();const d=snap.exists?JSON.parse(JSON.stringify(snap.data())):{};if(d.me&&Object.keys(d.me).length)S.me=d.me;else if(S.me&&S.me.name)d.me=S.me;d.lastOpen=dkey();await profRef.set(d);S.profRef=profRef}
       catch(e){render();return}
       S.cloud=true;wordsCol=profRef.collection('words');logRef=db.doc(`data/users/${id}/log`);diaryCol=db.doc(`data/users/${id}/profile`).collection('diary');
