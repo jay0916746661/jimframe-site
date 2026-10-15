@@ -1,7 +1,7 @@
 ---
 id: T001
 title: 把相簿與活動資料搬到獨立 JSON 檔
-status: open
+status: review
 size: M
 ---
 
@@ -29,4 +29,8 @@ size: M
 - 照片 ID、日期、場地名稱
 
 ## 實作紀錄
-（Codex 完成後填寫）
+- 新增 data/albums.json、data/events.json、data/README.md；index.html 改為並行 fetch，完成後渲染各資料區塊。
+- 逐筆比對原資料：54 本相簿、3,528 張照片、4 場活動，所有日期、場地、資料夾及照片 ID 與順序完全保留。
+- Playwright 比對原版與新版相簿、輪播、熱門、活動卡片及相簿頁 DOM；1280px／390px、亮色／深色均一致且無水平捲動。
+- 已驗證空活動陣列、活動失敗、相簿失敗與兩者失敗；無 JS 錯誤，篩選操作不會清掉相簿失敗提示。
+- node --check 與原 scripts/smoke.mjs 桌機／手機皆通過；CSS 與原版完全一致，無未完成項目。
