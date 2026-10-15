@@ -421,10 +421,12 @@ function vHoy(){const s=statsW(),t=today(),min=Math.floor(t.sec/60),acc=pct(t.ri
     <div class="hero-side"><p class="eyebrow">HOY · ${d.getMonth()+1} 月 ${d.getDate()} 日</p>
       <h1>${t.sec>=600?'¡A huevo! 今天達標了':'今天的 10 分鐘'}</h1>
       <p class="muted">連續達標 ${streak()} 天 · 今日 ${t.items} 題${t.items?` · 正確率 ${acc}%`:''}</p>
-      <div class="row"><button class="btn primary" data-act="quick">${t.sec>=600?'再練一輪':'開始今日練習'}</button>${s.err?`<button class="btn bad" data-act="start" data-mode="err">錯題本 ${s.err}</button>`:''}</div></div>
+      ${missionList()}
+      <div class="row"><button class="btn primary" data-act="quick">${dailyBtn()}</button>${s.err?`<button class="btn bad" data-act="start" data-mode="err">錯題本 ${s.err}</button>`:''}</div></div>
   </section>
   ${diaryCard()}
   <section class="panel"><div class="row" style="justify-content:space-between"><h2>本週</h2><span class="note">藍色 = 當天練滿 10 分鐘</span></div><div class="weekstrip">${wk}</div></section>`;
+  if(!S.me||!S.me.tested)h=`<section class="panel"><h2>先做 3 分鐘程度測驗</h2><p class="muted">14 題選擇題，測出你在 A1–B2 哪一級，自動幫你挑適合的課，AI 也會用你的程度跟你說話。</p><div class="row"><button class="btn primary" data-act="test">開始測驗</button>${S.me&&S.me.tested?'':'<button class="btn ghost" data-act="testskip">先不要</button>'}</div></section>`+h;
   if(!S.me||!S.me.name)h=`<section class="panel"><h2>第一次使用？</h2><p class="muted">花 30 秒告訴我你的工作和興趣，AI 出題、聊天和日記批改都會圍繞你的生活。</p><div><button class="btn primary" data-act="go" data-v="yo">設定我的資料</button></div></section>`+h;
   if(!s.total){h+=`<section class="panel"><h2>單字庫還是空的</h2><p class="muted">從主題課程一鍵加入整組單字（旅行、巴恰塔、潛水、教中文、銀行往事、街頭髒話），或自己輸入最近學的字。</p><div class="row"><button class="btn primary" data-act="go" data-v="lecciones">去課程加單字</button><button class="btn" data-act="go" data-v="palabras">自己新增</button></div></section>`;return h}
   h+=`<section class="stats">
@@ -572,13 +574,13 @@ function buildQueue(mode,theme){const t=dkey();let ws=pool(theme);
   if(mode==='build')ws=ws.filter(w=>w.ex&&w.ex.split(' ').length>=4&&w.ex.split(' ').length<=12);
   const err=shuffle(ws.filter(w=>w.inErr)),due=shuffle(ws.filter(w=>!w.inErr&&w.seen&&w.due<=t)),fresh=ws.filter(w=>!w.seen).sort((a,b)=>(a.added||'').localeCompare(b.added||'')),rest=shuffle(ws.filter(w=>!w.inErr&&w.seen&&w.due>t)).sort((a,b)=>(a.box||0)-(b.box||0));
   return[...err.slice(0,5),...due,...fresh,...rest].slice(0,mode==='ask'?8:15).map(w=>w.id)}
-function startMode(mode){
+function startMode(mode,limit){
   if(mode==='chat'){if(!aiOK()){toast(aiNeed());return}chatStart(S.ptheme==='all'||S.ptheme==='general'?'viaje':S.ptheme);return}
   if(mode==='coach'){P={active:true,mode:'coach',queue:shuffle(PATTERNS.map((_,i)=>i)).slice(0,6),total:6,done:0,right:0,wrong:0};S.view='practicar';next();return}
   if(mode==='past'){P={active:true,mode:'past',queue:shuffle(PAST.map((_,i)=>i)),total:PAST.length,done:0,right:0,wrong:0};S.view='practicar';next();return}
   const theme=mode==='err'?'all':S.ptheme,q=buildQueue(mode,theme);
   if(!q.length){toast(mode==='err'?'目前沒有錯題，讚！':mode==='shadow'?'這個主題還沒有帶例句的單字，先到「課程」加入。':'這個主題還沒有單字，先到「課程」加入。');if(mode!=='err')go('lecciones');return}
-  P={active:true,mode,queue:q,total:q.length,done:0,right:0,wrong:0};S.view='practicar';next()}
+  const qq=limit?q.slice(0,limit):q;P={active:true,mode,queue:qq,total:qq.length,done:0,right:0,wrong:0,daily:!!limit};S.view='practicar';next()}
 function requeue(item){P.queue.splice(Math.min(3,P.queue.length),0,item)}
 function next(){P.fb=null;P.reveal=false;P.q=null;P.qerr='';
   if(!P.queue.length){P.stage='done';flushLog();render();return}
@@ -590,6 +592,7 @@ function next(){P.fb=null;P.reveal=false;P.q=null;P.qerr='';
 const curW=()=>S.words[P.cur];
 function vSession(){const labels={build:'句子重組',sent:'句子翻譯',coach:'句型教練',shadow:'跟讀發音評分',flash:'閃卡複習',trans:'第一階・翻譯',ask:'第二階・回答問題',err:'錯題本',past:'過去式特訓'};
   const head=`<div class="prog"><span><b>${labels[P.mode]}</b> · 完成 ${P.done} · 剩 ${P.queue.length+(P.stage==='done'?0:1)}</span><button class="btn ghost" data-act="quit">結束</button></div>`;
+  if(P.stage==='done'&&P.daily)return head+dailyStepDone();
   if(P.stage==='done'){const acc=pct(P.right,P.right+P.wrong);return head+`<section class="card done"><p class="eyebrow">¡ÓRALE!</p><b class="n">${acc}%</b><p>這輪 ${P.done} 題，答對 ${P.right}，錯 ${P.wrong}。${P.wrong?'錯的字已進錯題本，會一直出現直到你連對 3 次。':''}</p>
     <div class="row" style="justify-content:center"><button class="btn primary" data-act="start" data-mode="${P.mode}">再來一輪</button>${P.mode==='flash'?'<button class="btn" data-act="start" data-mode="trans">升級：翻譯</button>':P.mode==='trans'?'<button class="btn" data-act="start" data-mode="build">升級：句子重組</button>':P.mode==='build'?'<button class="btn" data-act="start" data-mode="sent">升級：句子翻譯</button>':P.mode==='sent'?'<button class="btn" data-act="start" data-mode="coach">升級：句型教練</button>':P.mode==='ask'&&aiOK()?'<button class="btn" data-act="start" data-mode="chat">升級：真人對話</button>':''}${statsW().err&&P.mode!=='err'?'<button class="btn bad" data-act="start" data-mode="err">練錯題</button>':''}<button class="btn ghost" data-act="quit">回選單</button></div></section>`}
   if(P.mode==='past')return head+pastCard();
@@ -868,6 +871,77 @@ Lines:
 ${lines.map(l=>'- '+l).join('\n')}
 Reply with only a JSON array, one object per line, in order: [{"es":"Spanish (nouns with el/la)","zh":"繁體中文意思","en":"English","theme":"one of viaje|bachata|buceo|chino|banco|calle|general","ex":"short natural Mexican Spanish example sentence","exZh":"例句的繁體中文翻譯","heat":0 (or 1–3 if it is slang/vulgar: 1 mild, 3 very vulgar)}]`,{modelTier:'default',cache:false})}
 
+/* ---------- daily mission: one button, 10 minutes ---------- */
+const DSTEPS=[{k:'rev',t:'複習 5 個字',mode:'flash',n:5},{k:'sen',t:'3 句句子練習',mode:'build',alt:'sent',n:3},{k:'out',t:'寫一句日記或聊一輪'}];
+function mstate(){const t=today();if(!t.mission||typeof t.mission!=='object')t.mission={done:[]};if(!Array.isArray(t.mission.done))t.mission.done=[];return t.mission}
+function missionList(){const m=mstate();return `<div class="stack" style="gap:4px">${DSTEPS.map((st,i)=>{const d=m.done.includes(st.k)||(st.k==='out'&&today().diary);return `<span style="font-size:.92rem;${d?'color:var(--nopal);font-weight:600':'color:var(--muted)'}">${d?'✓':'○'} ${i+1}. ${st.t}</span>`}).join('')}</div>`}
+function dailyLeft(){const m=mstate();return DSTEPS.filter(st=>!(m.done.includes(st.k)||(st.k==='out'&&today().diary)))}
+function dailyBtn(){const l=dailyLeft();return !l.length?'今日任務完成，再練一輪':l.length===DSTEPS.length?'開始今日任務':'繼續：'+l[0].t}
+function ensureWords(){if(Object.keys(S.words).length)return;const pk=(S.me&&S.me.packs)||['viaje'];pk.forEach(k=>addWords(PACKS[k].map(p=>({es:p[0],zh:p[1],en:p[2],ex:p[3],exZh:p[4],heat:p[5]||0,theme:k}))));toast('先幫你加入「'+pk.map(k=>THEMES[k]).join('、')+'」的單字')}
+function startDaily(){S.ptheme='all';ensureWords();const l=dailyLeft();
+  if(!l.length){startMode(statsW().err?'err':'flash');return}
+  runStep(l[0])}
+function runStep(st){
+  if(st.k==='out'){if(aiOK()&&today().diary){chatStart(S.ptheme==='all'?'viaje':S.ptheme);return}go('diario');toast('最後一步：寫一句西文日記就完成');return}
+  let mode=st.mode;if(st.alt&&!buildQueue(mode,'all').length)mode=st.alt;if(!buildQueue(mode,'all').length)mode='trans';
+  startMode(mode,st.n)}
+function markStep(){const m=mstate(),l=dailyLeft();if(l.length&&l[0].k!=='out'&&!m.done.includes(l[0].k))m.done.push(l[0].k);scheduleFlush(800)}
+function dailyStepDone(){markStep();const l=dailyLeft(),acc=pct(P.right,P.right+P.wrong);
+  return `<section class="card done"><p class="eyebrow">今日任務 ${DSTEPS.length-l.length}/${DSTEPS.length}</p><b class="n">${acc}%</b><p>這一步完成了${P.wrong?`，錯的 ${P.wrong} 題已進錯題本`:''}。</p>
+   ${missionList()}
+   <div class="row" style="justify-content:center">${l.length?`<button class="btn primary" data-act="dnext">下一步：${l[0].t}</button>`:'<p style="color:var(--nopal);font-weight:600">今日任務全部完成 ¡Bien hecho!</p>'}<button class="btn ghost" data-act="quit">先休息</button></div></section>`}
+function dailyNext(){const l=dailyLeft();P={active:false};if(!l.length){go('hoy');return}runStep(l[0])}
+
+/* ---------- level test (offline, 14 questions) ---------- */
+const TEST=[
+ ['A1','「Hola, ¿cómo estás?」的意思是？',['你好嗎？','你叫什麼名字？','你從哪裡來？','你幾歲？'],0],
+ ['A1','Yo ___ de Taiwán.',['estoy','soy','es','eres'],1],
+ ['A1','「¿Me trae la cuenta?」是在要什麼？',['菜單','帳單','一杯水','計程車'],1],
+ ['A1','「¿Cuántos años tienes?」的意思是？',['你有幾個小孩？','你幾歲？','現在幾點？','你住多久了？'],1],
+ ['A2','Ayer yo ___ tacos al pastor.',['como','comeré','comí','comiendo'],2],
+ ['A2','Me ___ bailar bachata.',['gusto','gusta','gustan','gustas'],1],
+ ['A2','Ahora estoy ___ en Cozumel.',['bucear','buceado','buceo','buceando'],3],
+ ['A2','墨西哥人說「ahorita voy」，通常是什麼意思？',['我已經到了','我等一下就去（可能很久）','我不去了','我昨天去過'],1],
+ ['B1','Cuando era niño, ___ en Tainan.',['viví','vivía','vivo','viviré'],1],
+ ['B1','Ojalá que mañana no ___.',['llueve','llovió','llueva','llover'],2],
+ ['B1','Hace dos años que ___ español.',['estudio','estudié','estudiaré','estudiado'],0],
+ ['B1','Mientras ___ la tele, sonó el teléfono.',['vi','veía','veo','veré'],1],
+ ['B2','Si tuviera más tiempo, ___ a México.',['voy','iré','iría','fui'],2],
+ ['B2','Me pidió que ___ temprano.',['llego','llegara','llegué','llegando'],1]];
+function testLevel(ans){const w={A1:1,A2:1.2,B1:1.5,B2:1.8};let sc=0,mx=0;const by={A1:0,A2:0,B1:0,B2:0},tot={A1:0,A2:0,B1:0,B2:0};
+  TEST.forEach((q,i)=>{mx+=w[q[0]];tot[q[0]]++;if(ans[i]===q[3]){sc+=w[q[0]];by[q[0]]++}});
+  const lv=by.A1<2?'A0':by.A1<3||by.A2<2?'A1':by.A2<3||by.B1<2?'A2':by.B1<3||by.B2<1?'B1':'B2';
+  const packs={A0:['viaje','comida','calle'],A1:['viaje','comida','calle'],A2:['viaje','bachata','buceo','calle'],B1:['banco','fiestas','cultura','bachata'],B2:['banco','fiestas','cultura','musica']}[lv];
+  return{lv,pct:Math.round(sc/mx*100),by,tot,packs}}
+function vTest(){const T=S.T||(S.T={i:0,ans:[]});
+  if(T.i>=TEST.length){if(!T.res){T.res=testLevel(T.ans);S.me=Object.assign({},S.me,{level:T.res.lv==='A0'?'A1':T.res.lv,tested:dkey(),packs:T.res.packs});try{localStorage.setItem('orale-me',JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{})}
+    const r=T.res,desc={A0:'剛起步：先學打招呼、點餐、問路。',A1:'入門：會簡單句子，先把現在式和日常單字打穩。',A2:'基礎：能聊日常，下一步是過去式和更長的句子。',B1:'中級：能聊經驗和想法，可以多練真人對話和虛擬式。',B2:'中高級：已經能流暢溝通，多練口語、俚語和聽力。'}[r.lv];
+    const missed=TEST.map((q,i)=>T.ans[i]===q[3]?null:i).filter(x=>x!==null);
+    return `<section class="panel"><p class="eyebrow">程度測驗結果</p><div class="row"><span class="lvl">${r.lv}</span><span class="pill learn">${r.pct} 分</span></div><p>${desc}</p>
+     <div class="stack" style="gap:6px">${['A1','A2','B1','B2'].map(l=>`<div style="display:grid;grid-template-columns:2.5em 1fr 3em;gap:10px;align-items:center"><b>${l}</b><div style="height:8px;border-radius:4px;background:var(--sunk);overflow:hidden"><div style="height:100%;width:${pct(r.by[l],r.tot[l])}%;background:var(--cobalt)"></div></div><span class="note">${r.by[l]}/${r.tot[l]}</span></div>`).join('')}</div>
+     <div class="rule"><b>推薦先學</b><span>${r.packs.map(k=>THEMES[k]).join('、')}</span></div>
+     <div class="row"><button class="btn primary" data-act="tapply">加入推薦課程並回首頁</button><button class="btn ghost" data-act="go" data-v="hoy">只看結果</button><button class="btn ghost" data-act="test">重測</button></div></section>
+     ${missed.length?`<section class="panel"><h2>答錯的題目</h2><ul class="plist">${missed.map(i=>{const q=TEST[i];return `<li style="grid-template-columns:1fr"><div><b>${esc(q[1])}</b></div><small>正確：${esc(q[2][q[3]])}${T.ans[i]!=null?`　你選：${esc(q[2][T.ans[i]])}`:''}</small></li>`}).join('')}</ul></section>`:''}`}
+  const q=TEST[T.i];
+  return `<section class="panel"><div class="prog"><span><b>程度測驗</b> · ${T.i+1}/${TEST.length}</span><button class="btn ghost" data-act="go" data-v="hoy">離開</button></div>
+   <div style="height:6px;border-radius:3px;background:var(--sunk);overflow:hidden"><div style="height:100%;width:${Math.round(T.i/TEST.length*100)}%;background:var(--cobalt)"></div></div>
+   <span class="tchip">${q[0]}</span><div class="prompt-zh" style="font-size:1.25rem">${esc(q[1])}${/[a-záéíóúñ]/i.test(q[1])&&!/[一-鿿]/.test(q[1])?` <button class="say" data-act="say" data-t="${esc(q[1].replace('___','…'))}">聽</button>`:''}</div>
+   <div class="stack" style="gap:8px">${q[2].map((o,i)=>`<button class="btn" style="text-align:left;justify-content:flex-start" data-act="tans" data-o="${i}">${esc(o)}</button>`).join('')}<button class="btn ghost" data-act="tans" data-o="-1">不知道</button></div>
+   ${T.i?'<div><button class="btn ghost" data-act="tback">上一題</button></div>':''}</section>`}
+
+/* ---------- backup & move between versions ---------- */
+function exportCode(){const d={v:1,at:new Date().toISOString(),me:S.me||{},words:S.words,diary:S.diary,log:S.log};return 'ORALE1:'+btoa(unescape(encodeURIComponent(JSON.stringify(d))))}
+function importCode(code){const raw=code.replace(/\s+/g,'').replace(/^ORALE1:/,'');const d=JSON.parse(decodeURIComponent(escape(atob(raw))));if(!d||d.v!==1)throw 0;const n={w:0,d:0,days:0};
+  const byEs={};Object.values(S.words).forEach(w=>byEs[clean(w.es)]=w);
+  Object.values(d.words||{}).forEach(w=>{if(!w||!w.es)return;const cur=byEs[clean(w.es)];if(!cur){saveWord(Object.assign(newWord(w),w));n.w++}else if((w.seen||0)>(cur.seen||0))saveWord(Object.assign({},w,{id:cur.id}))});
+  Object.entries(d.diary||{}).forEach(([k,e])=>{const cur=S.diary[k];if(!cur||(!cur.corrected&&e.corrected)||(e.text||'').length>(cur.text||'').length){saveDiary(Object.assign({},e,{date:k}));if(!cur)n.d++}});
+  const L=d.log||{};Object.entries(L.days||{}).forEach(([k,v])=>{const cur=S.log.days[k];if(v&&(v.sec||v.items||v.diary))n.days++;if(!cur){S.log.days[k]=v;return}
+    ['sec','right','wrong','unsure','items','newW','mastered','diary'].forEach(f=>cur[f]=Math.max(cur[f]||0,v[f]||0));['miss','fixes'].forEach(f=>cur[f]=[...new Set([...(cur[f]||[]),...(v[f]||[])])].slice(-40))});
+  S.log.reports=Object.assign({},L.reports||{},S.log.reports||{});
+  const mi=Object.assign({},S.log.missions||{});Object.entries(L.missions||{}).forEach(([k,v])=>{if(!mi[k]||(v.stars||0)>(mi[k].stars||0))mi[k]=v});S.log.missions=mi;
+  if((!S.me||!S.me.name)&&d.me&&d.me.name){S.me=d.me;try{localStorage.setItem('orale-me',JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{})}
+  saveLocal();scheduleFlush(500);return n}
+
 /* ---------- profile ---------- */
 function vYo(){const m=S.me||{},lv=m.level||'A2';
   return `<section class="panel"><h1>我的資料</h1><p class="muted">AI 會用這些資料出題、聊天、批改日記。只有你自己看得到。</p>
@@ -894,6 +968,13 @@ function vYo(){const m=S.me||{},lv=m.level||'A2';
    <p class="note">金鑰只存在這台裝置的瀏覽器，不會上傳到任何地方。到 console.anthropic.com 申請。沒有金鑰也能用：單字庫、閃卡、翻譯、例句填空、跟讀、過去式特訓、日記（不批改）、課程、心智圖、週報都可以。</p></section>`:''}
   <section class="panel"><h2>資料存在哪裡</h2><p class="muted">${S.standalone?'存在這台裝置的瀏覽器裡，不用登入。換手機或清除瀏覽器資料會不見。':S.cloud?'已登入，單字、日記和進度會同步到你的 Claude 帳號，手機電腦都能接著用。每個人的資料都是分開、私人的。':'目前存在這台裝置的瀏覽器裡。用 Claude 帳號登入並開啟這個頁面，就能跨裝置同步。'}</p>
    <p class="note">AI 功能（出題、批改、聊天、日記）會用到你自己的 Claude 用量，第一次使用時會先問你同不同意。</p></section>
+  <section class="panel"><h2>程度</h2><p class="muted">${S.me&&S.me.tested&&S.me.tested!=='skip'?`上次測驗：${esc(S.me.tested)}，目前設定 ${esc(S.me.level||'A2')}。`:'還沒做過程度測驗。'}</p><div><button class="btn" data-act="test">${S.me&&S.me.tested&&S.me.tested!=='skip'?'重新測驗':'做程度測驗（3 分鐘）'}</button></div></section>
+  <section class="panel"><h2>備份與搬家</h2><p class="muted">把單字、日記、練習紀錄變成一段代碼。貼到另一個版本（Claude 裡的版本 ⇄ 網頁版）或新手機的「匯入」，進度就接上了。重複的字會自動合併，不會變兩份。</p>
+   <div class="row"><button class="btn primary" data-act="bkcopy">複製我的備份代碼</button></div>
+   <textarea id="bkout" rows="3" hidden readonly></textarea>
+   <label class="f">從別的版本匯入<textarea id="bkin" rows="3" placeholder="貼上 ORALE1: 開頭的代碼"></textarea></label>
+   <div><button class="btn" data-act="bkimport">匯入</button></div>
+   <p class="note">代碼裡有你的日記內容，只貼給自己，不要公開分享。</p></section>
   ${vCompare()}`}
 function saveMe(){const g=i=>($('#'+i)?.value||'').trim();S.me={name:g('me-name'),from:g('me-from')||'台灣',job:g('me-job'),past:g('me-past'),likes:g('me-likes'),level:S.me?.level||'A2'};
   try{localStorage.setItem('orale-me',JSON.stringify(S.me))}catch(e){}
@@ -1064,7 +1145,7 @@ Reply with only JSON: {"corrected":"the full entry corrected, all in Spanish","n
 
 /* ---------- render & actions ---------- */
 function render(){paintMe();setTimeout(fillVoiceSel,0);const v=S.view,m=$('#main');
-  m.innerHTML=v==='hoy'?vHoy():v==='palabras'?vPalabras():v==='practicar'?vPracticar():v==='lecciones'?vLecciones():v==='diario'?vDiario():v==='yo'?vYo():vSemana();
+  m.innerHTML=v==='hoy'?vHoy():v==='palabras'?vPalabras():v==='practicar'?vPracticar():v==='lecciones'?vLecciones():v==='diario'?vDiario():v==='yo'?vYo():v==='test'?vTest():vSemana();
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.v===v||(v==='yo'&&false)));
   if(v==='palabras')paintList();if(v==='practicar'&&P.active&&P.mode==='chat')paintChat();paintMini()}
 function keepOpen(){const open=[...document.querySelectorAll('details.pack')].map(d=>d.open),y=window.scrollY;render();document.querySelectorAll('details.pack').forEach((d,i)=>d.open=!!open[i]);window.scrollTo({top:y})}
@@ -1074,7 +1155,15 @@ function renderSoft(){const ae=document.activeElement;if(S.view==='palabras'){pa
 function go(v){if(S.view==='practicar'&&P.active&&v!=='practicar'){/* keep session alive */}S.view=v;render();window.scrollTo({top:0})}
 const ACT={
  go:b=>go(b.dataset.v),
- quick:()=>{S.ptheme='all';const s=statsW();startMode(s.due+s.fresh+s.err||s.total?'flash':'flash')},
+ quick:()=>startDaily(),
+ dnext:()=>dailyNext(),
+ test:()=>{S.T={i:0,ans:[]};go('test')},
+ testskip:()=>{S.me=Object.assign({},S.me,{tested:'skip'});try{localStorage.setItem('orale-me',JSON.stringify(S.me))}catch(e){}if(S.profRef)S.profRef.update({me:S.me}).catch(()=>{});render()},
+ tans:b=>{S.T.ans[S.T.i]=+b.dataset.o;S.T.i++;render();window.scrollTo({top:0})},
+ tback:()=>{if(S.T.i>0){S.T.i--;render()}},
+ tapply:()=>{const r=S.T.res;r.packs.forEach(k=>addWords(PACKS[k].map(p=>({es:p[0],zh:p[1],en:p[2],ex:p[3],exZh:p[4],heat:p[5]||0,theme:k}))));toast('已加入推薦課程');go('hoy')},
+ bkcopy:()=>{const ta=$('#bkout');if(!ta)return;ta.value=exportCode();ta.hidden=false;ta.select();try{navigator.clipboard.writeText(ta.value).then(()=>toast('已複製，貼到另一個版本的「匯入」'),()=>toast('已選取，請長按複製'))}catch(e){toast('已選取，請長按複製')}},
+ bkimport:()=>{const v=($('#bkin')?.value||'').trim();if(!v){toast('先貼上備份代碼');return}try{const n=importCode(v);toast(`匯入完成：${n.w} 個新字、${n.d} 篇日記、${n.days} 天紀錄`);render()}catch(e){toast('代碼不完整或格式不對，請重新複製一次')}},
  start:b=>startMode(b.dataset.mode),
  ptheme:b=>{S.ptheme=b.dataset.t;render()},
  quit:()=>{if(CH&&CH.call){CH.call.on=false;try{REC&&REC.stop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}P={active:false};CH=null;flushLog();render()},
@@ -1103,7 +1192,7 @@ const ACT={
  calltap:()=>{const c=CH&&CH.call;if(!c)return;if(c.state==='speak'){try{speechSynthesis.cancel()}catch(e){}return}if(c.state==='listen'){try{REC&&REC.stop()}catch(e){}return}if(c.state==='type'){const el=$('#chatin');if(el)el.focus();return}if(c.state==='idle'){c.miss=0;callListen()}},
  autosay2:()=>{const c=CH&&CH.call;if(!c)return;c.sub=c.sub===false;paintCall()},
  usehint:b=>{const o=CH?.hint?.opts?.[+b.dataset.i];const el=$('#chatin');if(o&&el){el.value=o.es;el.focus()}},
- report:()=>{if(CH)makeReport()},
+ report:()=>{if(CH){const m=mstate();if(!m.done.includes('out')){m.done.push('out');scheduleFlush(800)}makeReport()}},
  backchat:()=>{if(CH){CH.report=null;render()}},
  drill:b=>drillCheck(+b.dataset.i),
  keysave:()=>{const v=($('#apikey')?.value||'').trim();if(!v||v.startsWith('•')){toast('請貼上金鑰');return}if(!/^sk-ant-/.test(v)){toast('金鑰應該是 sk-ant- 開頭');return}try{localStorage.setItem('orale-key',v)}catch(e){toast('這個瀏覽器不能儲存');return}S.sample=apiSample();S.aiBlocked=false;toast('金鑰已儲存，AI 功能開啟');render()},
