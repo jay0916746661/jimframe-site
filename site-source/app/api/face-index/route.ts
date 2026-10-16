@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import { forbidden, isSameOriginRequest } from "../same-origin";
+import { allowedCrossOrigin, corsPreflight, forbidden, isSameOriginRequest, withCors } from "../same-origin";
 
 type FaceIndexRow={photo_id:string;album_key:string;descriptors:string;image_hash:string};
 const photoPattern=/^[A-Za-z0-9_-]{10,120}$/;
@@ -23,8 +23,16 @@ const ensureTable=()=>tableReady??=env.DB.batch([
  env.DB.prepare(`CREATE INDEX IF NOT EXISTS \`${TABLE}_album_idx\` ON \`${TABLE}\` (\`album_key\`)`),
 ]).catch(error=>{tableReady=null;throw error;});
 
+export const OPTIONS=(request:Request)=>corsPreflight(request,"POST");
+
 export async function POST(request:Request){
- if(!isSameOriginRequest(request))return forbidden();
+ // The GitHub Pages copy may search (read) the index; only this site may write to it.
+ const crossOrigin=isSameOriginRequest(request)?null:allowedCrossOrigin(request);
+ if(!isSameOriginRequest(request)&&!crossOrigin)return forbidden();
+ return withCors(await handle(request,Boolean(crossOrigin)),crossOrigin);
+}
+
+async function handle(request:Request,readOnly:boolean){
  const body=await request.json().catch(()=>null) as {model?:unknown;items?:unknown;queryDescriptors?:unknown;queryHashes?:unknown}|null;
  // Reject data from pages still running the old face-api build (stale tabs / caches).
  if(!body||body.model!==MODEL)return Response.json({error:"Outdated page, please reload",matches:[],indexed:0},{status:409});
@@ -47,6 +55,7 @@ export async function POST(request:Request){
   }catch{return [];}}).sort((a,b)=>Number(Boolean(b.exact))-Number(Boolean(a.exact))||a.distance-b.distance).slice(0,48);
   return Response.json({matches,indexed:rows.length},{headers:{"cache-control":"no-store"}});
  }
+ if(readOnly)return forbidden();
  if(!body||!Array.isArray(body.items)||body.items.length<1||body.items.length>40)return Response.json({error:"Invalid batch"},{status:400});
  const items=body.items.filter((item):item is {id:string;albumKey:string;descriptors:number[][];imageHash:string}=>Boolean(item)&&typeof item==="object"&&photoPattern.test(String((item as Record<string,unknown>).id??""))&&albumPattern.test(String((item as Record<string,unknown>).albumKey??""))&&hashPattern.test(String((item as Record<string,unknown>).imageHash??""))&&validDescriptors((item as Record<string,unknown>).descriptors));
  if(!items.length)return Response.json({error:"No valid records"},{status:400});
