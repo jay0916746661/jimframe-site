@@ -494,7 +494,9 @@ export default function Home(){
   const token=++albumLoadToken.current;
   const preview={...album,images:album.images.filter(id=>!hiddenPhotoIds.has(id))};
   setSelectedAlbum(preview);setAlbumLoading(true);setActiveAlbumPhoto(null);setActiveGrade("original");setFilterMix(80);setShowOriginal(false);setAdjustments(defaultAdjustments);setBatchMode(false);setSelectedPhotos(new Set());setBatchStatus("");
-  void fetch(`/api/folder-photos?folder=${encodeURIComponent(album.folder)}`).then(response=>response.ok?response.json():Promise.reject()).then((payload:{images?:unknown})=>{
+  const useCuratedPhotoList=album.date==="1015"&&album.venue==="Bachata Crush";
+  if(useCuratedPhotoList){setAlbumLoading(false);}
+  else void fetch(`/api/folder-photos?folder=${encodeURIComponent(album.folder)}`).then(response=>response.ok?response.json():Promise.reject()).then((payload:{images?:unknown})=>{
    if(token!==albumLoadToken.current||!Array.isArray(payload.images))return;
    const images=[...new Set(payload.images.filter((id):id is string=>typeof id==="string"&&!hiddenPhotoIds.has(id)))];
    if(images.length)setSelectedAlbum({...album,images});
