@@ -539,7 +539,7 @@ button { font: inherit; color: inherit; }
 .finder-photo img { width: 100%; height: 100%; object-fit: cover; }
 .finder-photo .badge { position: absolute; left: 6px; top: 6px; bottom: auto; height: auto; line-height: 1.5; padding: 2px 8px; border-radius: 999px; background: rgba(0,0,0,.6); color: #fff; font-size: 11px; font-weight: 700; }
 .finder-photo .badge-strong { background: var(--tint); }
-.finder-match-actions { display: grid; grid-template-columns: 1fr 1fr; }
+.finder-match-actions { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
 .finder-match-actions button { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 8px 4px; border: 0; background: none; color: var(--tint); font-size: 13px; font-weight: 600; cursor: pointer; }
 .finder-match-actions .icon { width: 16px; height: 16px; }
 .segmented small { opacity: .6; font-variant-numeric: tabular-nums; }
@@ -974,10 +974,8 @@ const finder=document.createElement("section");finder.className="section";finder
 // 人臉搜尋：比對邏輯移植自主站 site-source/app/page.tsx 與 face-engine.ts（SFace）。
 // 每個人可放 1–3 張參考照（主站作法：最清楚的一張佔 75%，其餘當佐證），
 // 原圖指紋相同直接命中；小臉或低信心的臉要「很像」門檻才算。
-let FS={people:[],results:null,tab:"all",status:"",progress:0,busy:false};
+let FS={people:[],hidden:new Set(),results:null,tab:"all",status:"",progress:0,busy:false};
 let faceIndex=null;
-// 0.35 在舞會照片太鬆（實測會認錯人），靜態版提高到 0.42。
-const LIKELY_CUTOFF=0.42;
 const decodeVec=(b64,div)=>{const s=atob(b64);const v=new Float32Array(128);for(let i=0;i<128;i++){let x=s.charCodeAt(i);if(x>127)x-=256;v[i]=x/div;}let n=0;for(const x of v)n+=x*x;n=Math.sqrt(n)||1;for(let i=0;i<128;i++)v[i]/=n;return v;};
 const dot=(a,b)=>{let d=0;for(let i=0;i<128;i++)d+=a[i]*b[i];return d;};
 // 主站 referenceScore：最高分佔 75%，其他參考照平均佔 25%，避免一張暗或側臉的照片拖垮正確結果。
@@ -996,10 +994,10 @@ function renderFinder(){
  finder.innerHTML=`<div class="finder-card">
   <div class="finder-head"><span class="finder-icon">${icon("search")}</span><div><h2 class="title2">${T("找自己和朋友")}</h2><p class="footnote">${L("每個框代表一個人（最多 3 人）。同一個人可以再加 1–2 張不同角度的照片，會更準。照片只在你的手機裡比對，不會上傳。","Each tile is one person (up to 3). Add 1–2 more photos of the same person for better accuracy. Matching runs on your device — nothing is uploaded.","한 칸이 한 사람이에요 (최대 3명). 같은 사람 사진을 1–2장 더 넣으면 더 정확해요. 기기 안에서만 비교하며 업로드되지 않아요.")}</p></div></div>
   <div class="finder-people">${[0,1,2].map(i=>{const p=people[i];if(p)return `<figure class="finder-person"><img src="${p.urls[0]}" alt=""><figcaption>${personLabel(i)}${p.urls.length>1?` · ${p.urls.length}${L("張"," photos","장")}`:""}${personState(p)}</figcaption><button type="button" class="finder-remove" data-remove-person="${i}" aria-label="${L("移除","Remove","삭제")}">✕</button>${p.urls.length<3?`<label class="finder-more" aria-label="${L("同一人再加一張","Add another photo of this person","같은 사람 사진 추가")}"><input type="file" accept="image/*" multiple data-more-person="${i}">＋</label>`:""}</figure>`;return i===people.length?`<label class="finder-add"><input type="file" accept="image/*" multiple data-add-person>${icon("plus")}<span>${i===0?T("上傳自拍"):`${T("朋友")} ${i}`}</span></label>`:"";}).join("")}</div>
-  <div class="finder-actions"><button type="button" class="button button-filled" data-face-search ${!people.length||FS.busy?"disabled":""}>${FS.busy?L("比對中…","Searching…","찾는 중…"):T("開始找")}</button><p class="footnote finder-status" aria-live="polite">${FS.status}</p></div>
+  <div class="finder-actions"><button type="button" class="button button-filled" data-face-search ${!people.length||FS.busy?"disabled":""}>${FS.busy?L("比對中…","Searching…","찾는 중…"):T("開始找")}</button><p class="footnote finder-status" aria-live="polite">${FS.status}</p>${r&&!FS.busy&&!FS.extended?`<button type="button" class="button" data-face-extend>${L("延伸搜尋其他相簿","Search other albums","다른 앨범 검색")}</button>`:""}</div>
   ${FS.busy?`<div class="finder-progress"><span style="width:${FS.progress}%"></span></div>`:""}
   ${r?`<div class="segmented-wrap"><div class="segmented" role="tablist">${tabs.map(([k,l])=>`<button type="button" role="tab" class="${FS.tab===k?"is-selected":""}" data-face-tab="${k}">${l} <small>${k==="all"?r.all.length:k==="together"?r.together.length:(r.per[+k.slice(1)]||[]).length}</small></button>`).join("")}</div></div>
-   ${list.length?`<div class="finder-grid">${list.map(m=>`<article class="finder-match"><button type="button" class="finder-photo" data-open="${m.id}"><img src="${photoSrc(m.id,600)}" alt="" loading="lazy"><span class="badge ${m.exact||m.score>=JimFace.MATCH_STRONG?"badge-strong":""}">${badge(m)}${m.who.length>1?" · "+m.who.length+L("人","",""):""}</span></button><div class="finder-match-actions"><button type="button" data-photo-story="${m.id}">${icon("photo")}${T("限動")}</button><button type="button" data-download="${m.id}">${icon("download")}${T("下載")}</button></div></article>`).join("")}</div>`:`<p class="footnote">${L("這一類沒有找到照片。為了避免認錯人，低信心的結果不會顯示；可以換一張臉更近、光線更好、或接近當晚造型的照片再試。","Nothing here. Low-confidence results are hidden to avoid mix-ups — try a closer, brighter photo, or one with a similar look to that night.","결과가 없어요. 오인식을 막기 위해 신뢰도가 낮은 결과는 숨겨요. 더 가깝고 밝은 사진으로 다시 시도해 보세요.")}</p>`}`:""}
+   ${list.length?`<div class="finder-grid">${list.map(m=>`<article class="finder-match"><button type="button" class="finder-photo" data-open="${m.id}"><img src="${photoSrc(m.id,600)}" alt="" loading="lazy"><span class="badge ${m.exact||m.score>=JimFace.MATCH_STRONG?"badge-strong":""}">${badge(m)}${m.who.length>1?" · "+m.who.length+L("人","",""):""}</span></button><div class="finder-match-actions"><button type="button" data-photo-story="${m.id}">${icon("photo")}${T("限動")}</button><button type="button" data-download="${m.id}">${icon("download")}${T("下載")}</button>${m.exact?"":`<button type="button" data-not-me="${m.id}">${L("不是我","Not me","제가 아니에요")}</button>`}</div></article>`).join("")}</div>`:`<p class="footnote">${L("這一類沒有找到照片。為了避免認錯人，低信心的結果不會顯示；可以換一張臉更近、光線更好、或接近當晚造型的照片再試。","Nothing here. Low-confidence results are hidden to avoid mix-ups — try a closer, brighter photo, or one with a similar look to that night.","결과가 없어요. 오인식을 막기 위해 신뢰도가 낮은 결과는 숨겨요. 더 가깝고 밝은 사진으로 다시 시도해 보세요.")}</p>`}`:""}
  </div>`;
 }
 const addFiles=(person,files)=>{for(const f of files){if(person.files.length>=3)break;person.files.push(f);person.urls.push(URL.createObjectURL(f));}person.checked=false;person.vecs=[];};
@@ -1014,10 +1012,29 @@ finder.addEventListener("click",async e=>{
  const rm=e.target.closest("[data-remove-person]");if(rm){const i=+rm.dataset.removePerson;FS.people[i].urls.forEach(u=>URL.revokeObjectURL(u));FS.people.splice(i,1);FS.results=null;FS.tab="all";renderFinder();return;}
  const tb=e.target.closest("[data-face-tab]");if(tb){FS.tab=tb.dataset.faceTab;renderFinder();return;}
  if(e.target.closest("[data-face-search]"))runFaceSearch();
+ if(e.target.closest("[data-face-extend]"))extendFaceSearch();
+ const nm=e.target.closest("[data-not-me]");if(nm){FS.hidden.add(nm.dataset.notMe);buildFaceResults();renderFinder();}
 });
 const loadIndex=async()=>{const idx=await fetch("face/index-1015.json").then(r=>r.json());const div=idx.div||127*4;const photos=Object.entries(idx.faces).map(([id,list])=>({id,faces:list.map(b=>decodeVec(b,div)),meta:(idx.meta&&idx.meta[id])||[],hash:idx.hash&&idx.hash[id]?hexToBits(idx.hash[id]):""}));return photos;};
 // 原站（ChatGPT Sites）有全站共用的人臉索引；需要原站開放 GitHub Pages 跨站讀取（PR #5）才能用。
 const MAIN_SITE="https://jimframe.jay0916746661.chatgpt.site";
+// 門檻（10.15 實測：同一人多在 0.45 以上，長得像的別人常落在 0.39–0.42）
+const CANDIDATE_CUTOFF=0.40,ANCHOR_CUTOFF=0.50,SOLO_CUTOFF=0.48,SUPPORT_CUTOFF=0.40;
+// 主站的「多張參考照互相佐證」自動化：先收很像的照片（錨點），
+// 0.40–0.50 的候選，要跟錨點照片裡的你也平均 ≥0.40 才收；沒有錨點時要 ≥0.48 才收。
+// 偵測信心低（<0.55）的臉不能當錨點。
+function confirmCandidates(list,i,hit){
+ // 偵測信心低的「臉」常是耳朵、後腦勺：<0.5 不收，錨點要 ≥0.6
+ list=list.filter(c=>c.ds>=.5);
+ const anchors=list.filter(c=>c.s>=ANCHOR_CUTOFF&&c.ds>=.6);
+ anchors.forEach(c=>hit(c.id,i,c.s));
+ for(const c of list){
+  if(anchors.includes(c))continue;
+  const others=anchors.filter(a=>a.id!==c.id);
+  if(others.length){const sup=others.reduce((t,a)=>t+dot(c.vec,a.vec),0)/others.length;if(sup>=SUPPORT_CUTOFF)hit(c.id,i,c.s);}
+  else if(c.s>=SOLO_CUTOFF&&c.ds>=.6)hit(c.id,i,c.s);
+ }
+}
 async function searchOtherAlbums(eng,onProgress,judge){
  const local=new Set(faceIndex.map(ph=>ph.id));const known=new Set(albums.flatMap(a=>a.photos));
  const cand=new Map();let indexed=0;
@@ -1030,7 +1047,7 @@ async function searchOtherAlbums(eng,onProgress,judge){
    for(const m of (j.matches||[]).slice(0,24)){if(local.has(m.id)||!known.has(m.id))continue;const c=cand.get(m.id)||{id:m.id,people:[]};c.people.push([i,m]);cand.set(m.id,c);}
   }
  }catch{return{ok:false,hits:[],reason:L("連不到原站的共用索引（原站還沒開放跨站讀取，或網路中斷）。","could not reach the main site's index.","원본 사이트 색인에 연결할 수 없어요.")};}
- const list=[...cand.values()];const out=[];let done=0,cursor=0,failed=0;
+ const list=[...cand.values()];const out=[];const cands=FS.people.map(()=>[]);let done=0,cursor=0,failed=0;
  const opt=eng.options(608,.3);
  const worker=async()=>{while(cursor<list.length){const c=list[cursor++];try{
    const exact=c.people.filter(([,m])=>m.exact);exact.forEach(([i])=>out.push([c.id,i,1,true]));
@@ -1039,13 +1056,34 @@ async function searchOtherAlbums(eng,onProgress,judge){
    const img=new Image();const url=URL.createObjectURL(await r.blob());img.src=url;await img.decode();
    const faces=await eng.embedFacesRotated(img,opt,{minScore:.3,minSize:32},[0,-25,25,-45,45]);URL.revokeObjectURL(url);
    const vecs=faces.map(f=>Float32Array.from(f.embedding)),meta=faces.map(f=>[Math.min(f.box[2],f.box[3]),f.score]);
-   for(const [i] of rest){const s=judge(FS.people[i],vecs,meta);if(s>0)out.push([c.id,i,s,false]);}
+   for(const [i] of rest){const j=judge(FS.people[i],vecs,meta);if(j&&j.s>=CANDIDATE_CUTOFF)cands[i].push({id:c.id,...j});}
   }catch{failed++;}finally{done++;onProgress(done,list.length);}}};
  await Promise.all([0,1,2].map(worker));
+ // 跟 10.15 一樣做第二輪確認；10.15 已確認的照片也一起當錨點
+ FS.people.forEach((p,i)=>confirmCandidates([...FS.cands[i].filter(c=>c.s>=ANCHOR_CUTOFF&&c.ds>=.6),...cands[i]],i,(id,pi,sc)=>{if(cands[pi].some(c=>c.id===id))out.push([id,pi,sc,false]);}));
  return{ok:true,hits:out,indexed,reason:failed?L(`${failed} 張候選照片讀取失敗。`,`${failed} candidates failed to load.`,`${failed}장 불러오기 실패.`):""};
 }
+function buildFaceResults(){
+  const all=[],together=[],per=FS.people.map(()=>[]);
+ for(const h of FS.hits.values()){if(FS.hidden.has(h.id))continue;const who=[...h.who].sort();const m={id:h.id,score:h.score,who,exact:h.exact};all.push(m);if(who.length>1)together.push(m);who.forEach(i=>per[i].push({id:h.id,score:h.scores[i],who:[i],exact:h.exact}));}
+ const sorter=(a,b)=>Number(!!b.exact)-Number(!!a.exact)||b.who.length-a.who.length||b.score-a.score;
+ all.sort(sorter);together.sort(sorter);per.forEach(l=>l.sort(sorter));
+ const keep=FS.results&&FS.tab!=="all";FS.results={all,per,together};if(!keep)FS.tab=together.length?"together":"all";
+ const bad=FS.people.map((p,i)=>!p.vecs.length?personLabel(i):"").filter(Boolean);
+ const r=FS.extended;const scope=!r?L("目前搜尋的是本週活動（10.15 Bachata Crush）。想找以前的活動，按下方「延伸搜尋其他相簿」。","Searched this week's event (10.15). Tap “Search other albums” for older events.","이번 주 행사(10.15)를 검색했어요."):r.ok?L(`已搜尋 10.15 與其他相簿（共用索引 ${r.indexed} 張）。`,`Searched 10.15 and other albums (${r.indexed} indexed photos).`,`10.15와 다른 앨범을 검색했어요.`):L(`只搜尋了 10.15 這本：${r.reason}`,`Only 10.15 was searched: ${r.reason}`,`10.15 앨범만 검색했어요: ${r.reason}`);
+ FS.status=L(`找到 ${all.length} 張照片`+(together.length?`，其中 ${together.length} 張你們同框`:"")+"。點照片可以放大、下載或做成限動。"+(bad.length?`（${bad.join("、")} 的照片找不到清楚的臉）`:""),`Found ${all.length} photos`+(together.length?`, ${together.length} with you together`:"")+".",`${all.length}장을 찾았어요`+(together.length?` (함께 ${together.length}장)`:"")+".")+" "+scope;
+}
+async function extendFaceSearch(){
+ FS.busy=true;FS.progress=5;FS.status=L("正在搜尋其他相簿…","Searching other albums…","다른 앨범을 찾는 중…");renderFinder();
+ try{
+  const eng=await JimFace.loadFaceEngine("face/");
+  const r=await searchOtherAlbums(eng,(done,total)=>{FS.progress=10+Math.round(done/Math.max(1,total)*89);FS.status=L(`正在確認其他相簿的候選照片 ${done} / ${total}…`,`Checking candidates ${done} / ${total}…`,`후보 확인 중 ${done} / ${total}…`);renderFinder();},FS.judge);
+  r.hits.forEach(([id,i,score,exact])=>FS.hit(id,i,score,exact));FS.extended=r;buildFaceResults();
+ }catch(err){console.error(err);FS.extended={ok:false,reason:L("延伸搜尋失敗，請再試一次。","Search failed, please retry.","검색 실패")};buildFaceResults();}
+ FS.busy=false;FS.progress=100;renderFinder();
+}
 async function runFaceSearch(){
- FS.busy=true;FS.progress=5;FS.status=L("第一次使用會載入辨識模型（約 12MB），請稍候…","Loading the face model (~12MB) the first time…","처음에는 얼굴 인식 모델(약 12MB)을 불러와요…");renderFinder();
+ FS.hidden=new Set();FS.results=null;FS.busy=true;FS.progress=5;FS.status=L("第一次使用會載入辨識模型（約 12MB），請稍候…","Loading the face model (~12MB) the first time…","처음에는 얼굴 인식 모델(약 12MB)을 불러와요…");renderFinder();
  try{
   const [eng,photos]=await Promise.all([JimFace.loadFaceEngine("face/"),faceIndex||loadIndex()]);
   faceIndex=photos;FS.progress=45;renderFinder();
@@ -1058,10 +1096,13 @@ async function runFaceSearch(){
     const img=new Image();img.src=URL.createObjectURL(f);
     try{await img.decode();p.hashes.push(imageFingerprint(img));
      // 主站：偵測時 inputSize 608，至少 48px、信心 0.5，依面積排序。
-     let faces=await eng.embedFaces(img,qOpt,{minScore:.5,minSize:48});
-     // 正面找不到臉時（例如歪著拍的照片），再轉幾個角度找。
-     if(!faces.length)faces=await eng.embedFacesRotated(img,qOpt,{minScore:.5,minSize:48},[-20,20,-40,40]);
-     faces.sort((a,b)=>b.box[2]*b.box[3]-a.box[2]*a.box[3]);
+     // 自拍常是臉塞滿畫面，偵測器反而容易漏或框歪：四周先補邊，再用 0°、±20° 找；信心不夠再試 ±40°。
+     const qq={minScore:.4,minSize:48};
+     const pad=Math.round(Math.max(img.naturalWidth,img.naturalHeight)*.25);const cv=document.createElement("canvas");cv.width=img.naturalWidth+pad*2;cv.height=img.naturalHeight+pad*2;const cx=cv.getContext("2d");cx.fillStyle="#777";cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(img,pad,pad);
+     let faces=await eng.embedFacesRotated(cv,qOpt,qq,[0,-20,20]);
+     if(!faces.some(f=>f.score>=.6))faces=faces.concat(await eng.embedFacesRotated(cv,qOpt,qq,[-40,40]));
+     // 臉大且偵測信心高的優先（只比面積會挑到歪掉、對不準的大框）
+     faces.sort((a,b)=>b.box[2]*b.box[3]*b.score-a.box[2]*a.box[3]*a.score);if(faces[0]&&faces[0].score<.6)p.warn=true;
      detected.push(faces);if(faces[0]&&faces[0].box[2]<110)p.warn=true;
     }catch{detected.push([]);}
     URL.revokeObjectURL(img.src);done++;FS.progress=45+Math.round(done/total*35);renderFinder();
@@ -1078,26 +1119,19 @@ async function runFaceSearch(){
   const hits=new Map();
   const hit=(id,i,score,exact)=>{const h=hits.get(id)||{id,who:new Set(),score:-1,exact:false,scores:[]};h.who.add(i);h.score=Math.max(h.score,score);h.exact=h.exact||!!exact;h.scores[i]=Math.max(h.scores[i]??-1,score);hits.set(id,h);};
   // 這張照片的臉是否算這個人（主站門檻 + 靜態版較嚴的「可能」門檻）
-  const judge=(p,faces,meta)=>{let s=-1,k=-1;faces.forEach((f,fi)=>{if(meta[fi]&&meta[fi][0]<36)return;const d=referenceScore(p.vecs,f);if(d>s){s=d;k=fi;}});if(k<0)return -1;const need=(meta[k]||[99,1])[1]>=.55?LIKELY_CUTOFF:JimFace.MATCH_STRONG;return s>=need?s:-1;};
-  // 1) 10.15：本機索引
+  // 這個人在這張照片裡最像的那張臉（小於 36px 的臉太糊不比）
+  const judge=(p,faces,meta)=>{let s=-1,k=-1;faces.forEach((f,fi)=>{if(meta[fi]&&meta[fi][0]<36)return;const d=referenceScore(p.vecs,f);if(d>s){s=d;k=fi;}});return k<0?null:{s,vec:faces[k],ds:(meta[k]||[99,1])[1]};};
+  // 1) 10.15：本機索引，先找出每個人每張照片最像的臉
+  FS.cands=FS.people.map(()=>[]);
   for(const ph of photos)FS.people.forEach((p,i)=>{
    if(ph.hash&&p.hashes.some(h=>fingerprintDistance(h,ph.hash)<=5)){hit(ph.id,i,1,true);return;}
    if(!p.vecs.length||!ph.faces.length)return;
-   // 小於 36px 的臉太糊不比；一般臉 0.42 以上才算「可能」，偵測信心低（<0.55）的臉要 0.48「很像」才算。
-   const s=judge(p,ph.faces,ph.meta);if(s>0)hit(ph.id,i,s);
+   const j=judge(p,ph.faces,ph.meta);if(j&&j.s>=CANDIDATE_CUTOFF)FS.cands[i].push({id:ph.id,...j});
   });
-  // 2) 其他相簿：原站共用人臉索引（只送出臉的數值特徵，照片本身不上傳），再下載候選照片在本機二次確認。
-  FS.progress=82;FS.status=L("10.15 比對完成，正在搜尋其他相簿…","Searching the other albums…","다른 앨범을 찾는 중…");renderFinder();
-  const remote=await searchOtherAlbums(eng,(done,total)=>{FS.progress=82+Math.round(done/Math.max(1,total)*17);FS.status=L(`正在確認其他相簿的候選照片 ${done} / ${total}…`,`Checking candidates from other albums ${done} / ${total}…`,`다른 앨범 후보 확인 중 ${done} / ${total}…`);renderFinder();},judge);
-  remote.hits.forEach(([id,i,score,exact])=>hit(id,i,score,exact));
-  const all=[],together=[],per=FS.people.map(()=>[]);
-  for(const h of hits.values()){const who=[...h.who].sort();const m={id:h.id,score:h.score,who,exact:h.exact};all.push(m);if(who.length>1)together.push(m);who.forEach(i=>per[i].push({id:h.id,score:h.scores[i],who:[i],exact:h.exact}));}
-  const sorter=(a,b)=>Number(!!b.exact)-Number(!!a.exact)||b.who.length-a.who.length||b.score-a.score;
-  all.sort(sorter);together.sort(sorter);per.forEach(l=>l.sort(sorter));
-  FS.results={all,per,together};FS.tab=together.length?"together":"all";
-  const bad=FS.people.map((p,i)=>!p.vecs.length?personLabel(i):"").filter(Boolean);
-  const scope=remote.ok?L(`已搜尋 10.15 與其他相簿（共用索引 ${remote.indexed} 張）。`,`Searched 10.15 and other albums (${remote.indexed} indexed photos).`,`10.15와 다른 앨범을 검색했어요.`):L(`只搜尋了 10.15 這本：${remote.reason}`,`Only 10.15 was searched: ${remote.reason}`,`10.15 앨범만 검색했어요: ${remote.reason}`);
-  FS.status=L(`找到 ${all.length} 張照片`+(together.length?`，其中 ${together.length} 張你們同框`:"")+"。點照片可以放大、下載或做成限動。"+(bad.length?`（${bad.join("、")} 的照片找不到清楚的臉）`:""),`Found ${all.length} photos`+(together.length?`, ${together.length} with you together`:"")+".",`${all.length}장을 찾았어요`+(together.length?` (함께 ${together.length}장)`:"")+".")+" "+scope;
+  // 2) 第二輪確認：很像的照片先當「確認過的你」，介於中間的候選照片要跟這些照片也像才算
+  FS.people.forEach((p,i)=>confirmCandidates(FS.cands[i],i,hit));
+  FS.hits=hits;FS.hit=hit;FS.judge=judge;FS.extended=null;
+  buildFaceResults();
  }catch(err){console.error(err);FS.status=L("辨識模型載入失敗，請重新整理再試一次。","Could not load the face model. Please reload and try again.","모델을 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.");}
  FS.busy=false;FS.progress=100;renderFinder();
 }
