@@ -465,6 +465,7 @@ button { font: inherit; color: inherit; }
 .video-meta small { color: var(--label-2); font-size: 12px; font-variant-numeric: tabular-nums; }
 .video-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .video-actions .video-buy { grid-column: 1 / -1; }
+.video-edit { padding: 0; font-size: 12px; }
 .video-actions .button { min-height: 36px; padding-inline: 8px; font-size: 14px; border-radius: 10px; }
 .video-note { margin-top: 18px; }
 .buy-steps { margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.6; }
@@ -516,9 +517,9 @@ button { font: inherit; color: inherit; }
 
 
  <section class="section" id="videos">
-  <div class="section-head"><div><h2 class="title2">影片 · 10.15 Bachata Crush</h2><p class="footnote">每支都能免費下載 15 秒精華影片與限動照片（含 Logo，1080×1920，可直接發 IG 限動／Reels）。完整版（4K 原檔、完整長度）每支 NT$300／US$10。</p></div></div>
+  <div class="section-head"><div><h2 class="title2">影片 · 10.15 Bachata Crush</h2><p class="footnote">每支都能免費下載 15 秒精華影片與限動照片（含 Logo，1080×1920，可直接發 IG 限動／Reels）。完整版（完整長度）也免費下載。</p></div></div>
   <div class="video-grid" id="video-grid"></div>
-  <aside class="credit-note video-note"><span data-icon="tag"></span><p><b>想要完整版？每支 NT$300／US$10</b>點影片下方「完整版」，用 LINE 告訴我影片編號，我會回傳收款資訊，付款後傳送 4K 原檔。<em>Full-length 4K video: US$10 each — message me on LINE or IG with the clip number.</em></p></aside>
+  <aside class="credit-note video-note"><span data-icon="tag"></span><p><b>想要個人精華剪輯？NT$300／US$10</b>把你們這一對整晚的片段剪成 30–60 秒精華（慢動作、轉場、Logo），可直接發 Reels。點任一支影片的「客製精華剪輯」，用 LINE 告訴我影片編號即可。<em>Custom 30–60s highlight edit of your dances: US$10 — message me on LINE or IG with the clip number.</em></p></aside>
  </section>
 
  <section class="section" id="support">
@@ -815,12 +816,14 @@ function withCredit(action){
 }
 
 // ---------- Videos: 15s previews (free) + paid full version ----------
-const VIDEO_PRICE="NT$300 / US$10";
+const VIDEO_PRICE="NT$300 / US$10"; // 客製精華剪輯價格
+const FULL_FOLDER=""; // 完整版雲端資料夾 ID（上傳後填入）
+const FULL_IDS={}; // 各支完整版的雲端檔案 ID，例如 {"03":"1abc..."}
 const VIDEO_READY=null; // null = 全部
 const VIDEO_DATA_ALL=[["00",54.5],["01",38.5],["02",53],["03",63.5],["04",38],["06",55.5],["07",82.5],["08",75],["10",70.5],["11",20],["12",75],["13",106],["14",51],["15",214],["16",157.5],["17",95],["18",80],["19",67.5],["20",59.5],["21",83],["24",43.5],["25",78],["26",101.5]];
 const VIDEO_DATA=VIDEO_READY?VIDEO_DATA_ALL.filter(v=>VIDEO_READY.includes(v[0])):VIDEO_DATA_ALL;
 const mmss=s=>`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
-document.getElementById("video-grid").innerHTML=VIDEO_DATA.map(([n,d])=>`<article class="video-card"><div class="video-frame"><video src="videos/1015/bc-${n}.mp4" poster="videos/1015/bc-${n}.jpg" preload="none" playsinline controls controlslist="nodownload" aria-label="10.15 Bachata Crush 影片 #${n} 15 秒試看"></video><span class="video-badge">15 秒試看</span></div><div class="video-meta"><div class="video-meta-top"><b>#${n}</b><small>完整版 ${mmss(d)}</small></div><div class="video-actions"><button type="button" class="button button-gray" data-video-dl="${n}">${icon("download")}15 秒影片</button><button type="button" class="button button-gray" data-story-dl="${n}">${icon("download")}限動照片</button><button type="button" class="button button-filled video-buy" data-video-buy="${n}">完整版 NT$300</button></div></div></article>`).join("");
+document.getElementById("video-grid").innerHTML=VIDEO_DATA.map(([n,d])=>`<article class="video-card"><div class="video-frame"><video src="videos/1015/bc-${n}.mp4" poster="videos/1015/bc-${n}.jpg" preload="none" playsinline controls controlslist="nodownload" aria-label="10.15 Bachata Crush 影片 #${n} 15 秒試看"></video><span class="video-badge">15 秒試看</span></div><div class="video-meta"><div class="video-meta-top"><b>#${n}</b><small>完整版 ${mmss(d)} · <button type="button" class="text-button video-edit" data-video-buy="${n}">客製精華剪輯</button></small></div><div class="video-actions"><button type="button" class="button button-gray" data-video-dl="${n}">${icon("download")}15 秒影片</button><button type="button" class="button button-gray" data-story-dl="${n}">${icon("download")}限動照片</button><button type="button" class="button button-filled video-buy" data-video-full="${n}">${icon("download")}完整版（免費）</button></div></div></article>`).join("");
 document.getElementById("video-grid").addEventListener("play",e=>{document.querySelectorAll("#video-grid video").forEach(v=>{if(v!==e.target)v.pause();});},true);
 const videoFile=n=>`JimFrame_1015-BachataCrush_${n}_15s.mp4`;
 function openBuy(n){
@@ -828,20 +831,21 @@ function openBuy(n){
  const root=document.getElementById("credit-root");
  root.innerHTML=`<div class="credit-backdrop" data-credit-close><div class="credit-sheet" role="dialog" aria-modal="true" aria-labelledby="buy-title">
   <span class="credit-grabber" aria-hidden="true"></span>
-  <h2 id="buy-title">購買完整版 · #${n}</h2>
-  <div class="buy-price"><span>10.15 Bachata Crush #${n}（4K 原檔 · ${mmss(d)}）</span><b>${VIDEO_PRICE||"私訊報價"}</b></div>
-  <ol class="buy-steps"><li>加 LINE：<b class="selectable">jim0916746661</b></li><li>傳送影片編號 <b>#${n}</b></li><li>收到收款資訊並付款（LINE Pay／轉帳；海外朋友私訊討論付款方式）</li><li>我會用雲端連結傳送完整版原檔</li></ol>
+  <h2 id="buy-title">客製精華剪輯 · #${n}</h2>
+  <div class="buy-price"><span>30–60 秒個人精華（慢動作、轉場、Logo），素材來自 #${n} 等片段</span><b>${VIDEO_PRICE||"私訊報價"}</b></div>
+  <ol class="buy-steps"><li>加 LINE：<b class="selectable">jim0916746661</b></li><li>傳送影片編號 <b>#${n}</b></li><li>收到收款資訊並付款（LINE Pay／轉帳；海外朋友私訊討論付款方式）</li><li>剪好後用雲端連結傳給你</li></ol>
   <div class="credit-row"><button type="button" class="button button-gray" data-buy-copy>${icon("tag")}複製編號</button><a class="button button-gray" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">${icon("message")}IG 私訊</a></div>
-  <a class="button button-filled button-large" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">用 LINE 購買</a>
+  <a class="button button-filled button-large" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">用 LINE 預約剪輯</a>
   <button type="button" class="text-button credit-cancel" data-credit-close>取消</button>
  </div></div>`;
  const close=()=>{root.innerHTML="";};
  root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
- root.querySelector("[data-buy-copy]").addEventListener("click",async e=>{try{await navigator.clipboard.writeText(`10.15 Bachata Crush 影片 #${n} 完整版`);e.currentTarget.lastChild.textContent="已複製 ✓";}catch{toast(`影片編號 #${n}`);}});
+ root.querySelector("[data-buy-copy]").addEventListener("click",async e=>{try{await navigator.clipboard.writeText(`10.15 Bachata Crush 影片 #${n} 客製精華剪輯`);e.currentTarget.lastChild.textContent="已複製 ✓";}catch{toast(`影片編號 #${n}`);}});
 }
 document.getElementById("video-grid").addEventListener("click",e=>{
  const dl=e.target.closest("[data-video-dl]");if(dl){const n=dl.dataset.videoDl;withCredit(()=>{const a=document.createElement("a");a.href=`videos/1015/bc-${n}.mp4`;a.download=videoFile(n);document.body.appendChild(a);a.click();a.remove();});return;}
  const st=e.target.closest("[data-story-dl]");if(st){const n=st.dataset.storyDl;withCredit(()=>{const a=document.createElement("a");a.href=`videos/1015/story-${n}.jpg`;a.download=`JimFrame_1015-BachataCrush_${n}_story.jpg`;document.body.appendChild(a);a.click();a.remove();});return;}
+ const fu=e.target.closest("[data-video-full]");if(fu){const n=fu.dataset.videoFull;const id=FULL_IDS[n];if(id){withCredit(()=>openDownload(id));}else if(FULL_FOLDER){window.open(`https://drive.google.com/drive/folders/${FULL_FOLDER}`,"_blank","noreferrer");}else{toast("完整版整理上傳中，晚點再來 🙏");}return;}
  const b=e.target.closest("[data-video-buy]");if(b)openBuy(b.dataset.videoBuy);
 });
 // ---------- Events (delegated) ----------
