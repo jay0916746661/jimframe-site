@@ -816,7 +816,7 @@ function withCredit(action){
 
 // ---------- Videos: 15s previews (free) + paid full version ----------
 const VIDEO_PRICE="NT$300 / US$10";
-const VIDEO_READY=["00","01","03","07","08","10","12","13","14","15","16","17","19","21","24","25","26"]; // null = 全部
+const VIDEO_READY=null; // null = 全部
 const VIDEO_DATA_ALL=[["00",54.5],["01",38.5],["02",53],["03",63.5],["04",38],["06",55.5],["07",82.5],["08",75],["10",70.5],["11",20],["12",75],["13",106],["14",51],["15",214],["16",157.5],["17",95],["18",80],["19",67.5],["20",59.5],["21",83],["24",43.5],["25",78],["26",101.5]];
 const VIDEO_DATA=VIDEO_READY?VIDEO_DATA_ALL.filter(v=>VIDEO_READY.includes(v[0])):VIDEO_DATA_ALL;
 const mmss=s=>`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
