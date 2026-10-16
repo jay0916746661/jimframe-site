@@ -998,7 +998,7 @@ async function runFaceSearch(){
   const qOpt=eng.options(608,.3);FS.people=[];
   for(const f of FS.files){
    const img=new Image();img.src=URL.createObjectURL(f);await img.decode();
-   const faces=(await eng.embedFaces(img,qOpt,{minScore:.5,minSize:40})).sort((a,b)=>b.box[2]*b.box[3]-a.box[2]*a.box[3]);
+   const faces=(await eng.embedFaces(img,qOpt,{minScore:.5,minSize:48})).sort((a,b)=>b.box[2]*b.box[3]-a.box[2]*a.box[3]);
    FS.people.push(faces[0]?Float32Array.from(faces[0].embedding):null);URL.revokeObjectURL(img.src);
   }
   FS.progress=80;renderFinder();
@@ -1006,8 +1006,8 @@ async function runFaceSearch(){
   if(!valid.length){FS.status=L("照片裡找不到清楚的臉，換一張正臉、光線好的照片。","No clear face found. Try a well-lit, front-facing photo.","선명한 얼굴을 찾지 못했어요. 밝은 정면 사진으로 바꿔 보세요.");FS.busy=false;renderFinder();return;}
   const per=FS.people.map(()=>[]);const all=[];const together=[];
   for(const [id,vecs] of Object.entries(idx.faces)){
-   const faces=vecs.map(decodeVec);const who=[];let best=-1;const used=new Set();
-   valid.forEach(([p,i])=>{let s=-1,k=-1;faces.forEach((f,fi)=>{const d=dot(p,f);if(d>s){s=d;k=fi;}});if(s>=JimFace.MATCH_LIKELY){who.push(i);per[i].push({id,score:s,who:[i]});used.add(k);}best=Math.max(best,s);});
+   const faces=vecs.map(decodeVec);const meta=(idx.meta&&idx.meta[id])||[];const who=[];let best=-1;const used=new Set();
+   valid.forEach(([p,i])=>{let s=-1,k=-1;faces.forEach((f,fi)=>{const d=dot(p,f);if(d>s){s=d;k=fi;}});const m=meta[k]||[99,1];const need=(m[0]>=40&&m[1]>=.55)?JimFace.MATCH_LIKELY:JimFace.MATCH_STRONG;if(s>=need){who.push(i);per[i].push({id,score:s,who:[i]});used.add(k);}best=Math.max(best,s);});
    if(who.length){all.push({id,score:best,who});if(who.length>1)together.push({id,score:best,who});}
   }
   const sorter=(a,b)=>b.who.length-a.who.length||b.score-a.score;
