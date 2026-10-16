@@ -1,4 +1,4 @@
-import { forbidden, isSameOriginRequest } from "../same-origin";
+import { allowedCrossOrigin, corsPreflight, forbidden, isSameOriginRequest, withCors } from "../same-origin";
 // Proxies a small Drive thumbnail so the browser can run face detection on it
 // (Drive thumbnails have no CORS headers, so the canvas would be tainted).
 //
@@ -15,8 +15,16 @@ const sources = (id: string, width: number) => [
   `https://lh3.googleusercontent.com/d/${encodeURIComponent(id)}=w${width}`,
 ];
 
+export const OPTIONS = (request: Request) => corsPreflight(request, "GET");
+
+// The GitHub Pages copy reads previews cross-origin so its canvas is not tainted.
 export async function GET(request: Request) {
-  if (!isSameOriginRequest(request)) return forbidden();
+  const crossOrigin = isSameOriginRequest(request) ? null : allowedCrossOrigin(request);
+  if (!isSameOriginRequest(request) && !crossOrigin) return forbidden();
+  return withCors(await handle(request), crossOrigin);
+}
+
+async function handle(request: Request) {
   const params = new URL(request.url).searchParams;
   const id = params.get("id") ?? "";
   const requestedWidth = Number(params.get("w") ?? 900);
