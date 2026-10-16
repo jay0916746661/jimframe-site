@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer"><meta name="description" content="JimFrame 限動工作室：自動挑選活動照片，產生限動、貼文、Reels 與多語文案。"><title>JimFrame · 限動工作室</title><link rel="stylesheet" href="./studio.css"></head>
+<body><main class="app studio">
+<header class="navbar"><a class="brand" href="../"><span class="brand-mark">JL</span><span data-t="studio">限動工作室</span></a><div class="lang-switch" role="group" aria-label="Language"><button type="button" data-lang="zh">繁中</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ko">한국어</button></div><a href="../" class="nav-pill" data-t="back">回相簿</a></header>
+<section class="section"><p class="eyebrow">JIMFRAME · IG STUDIO</p><h1 class="large-title" data-t="title">限動、貼文、Reels 一次做好</h1><p class="hero-sub" data-t="intro">選活動、自動挑照片，產生可以下載或分享的素材。</p><p class="footnote" data-t="shareNote">手機可呼叫系統分享面板；選擇 Instagram 後，仍需由你確認發布。電腦可下載素材。</p></section>
+<section class="section studio-grid">
+<div class="grouped studio-form">
+<label class="grouped-row"><span data-t="album">活動</span><select id="album" disabled aria-label="Album"></select></label>
+<label class="grouped-row"><span data-t="headline">標題</span><input id="headline" maxlength="60" value="新照片上線"></label>
+<div class="grouped-row"><span data-t="theme">風格</span><div id="themes" class="segmented studio-themes" role="group"></div></div>
+<label class="grouped-row"><span data-t="handle">IG 帳號</span><input id="handle" maxlength="80" value="@jimframe"></label>
+<label class="grouped-row"><span data-t="url">網站網址</span><input id="site" type="url" maxlength="300"></label>
+<label class="grouped-row is-stacked"><span>Hashtags</span><textarea id="tags" rows="3" maxlength="2000">#jimframe #taipeidance #latindance #salsa #bachata #台北跳舞 #舞會攝影</textarea></label>
+<label class="grouped-row"><span data-t="includeReel">同時產生 Reels（較久）</span><input id="include-reel" type="checkbox" style="flex:none;width:22px;height:22px"></label>
+</div>
+<div class="studio-run"><button type="button" class="button button-filled button-large" id="generate" disabled data-t="generate">一鍵產生限動與貼文</button><progress id="progress" value="0" max="100" aria-label="Progress"></progress><p id="status" class="footnote" role="status" aria-live="polite"></p><p id="album-note" class="footnote"></p><p class="footnote" data-t="outputsNote">限動 1080×1920・貼文 1080×1350。素材上的文字與文案會使用目前選擇的語言。</p><div id="picked-area" hidden><p class="footnote" data-t="pickNote">點照片可排除，再用剩下的重做。</p><div class="pick-row" id="picked"></div><button type="button" class="button button-tinted" id="rerender" data-t="rerender">用剩下的重做</button></div></div>
+</section>
+<section class="section" id="outputs" hidden><div class="section-head"><div id="tabs" class="segmented" role="tablist" aria-label="Output"></div><div class="studio-actions" id="actions"><button type="button" class="button button-filled" id="share" data-t="share">分享素材</button><button type="button" class="button button-gray" id="zip" data-t="zip">下載 ZIP</button></div></div><div id="assets" class="asset-grid"></div><div id="captions" class="caption-list" hidden></div><p class="footnote studio-tip" data-t="tip">發限動時，可自行加入網站連結貼紙與 @jimframe 標記。</p></section>
+<footer class="footer"><a href="../" data-t="back">回相簿</a><span>© 2026 JimFrame</span></footer>
+</main><script type="module" src="./studio.mjs"></script></body></html>

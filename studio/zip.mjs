@@ -1,0 +1,14 @@
+const zipCrcTable = Array.from({ length: 256 }, (_, index) => { let value = index; for (let bit = 0; bit < 8; bit++)
+    value = (value & 1) ? 0xedb88320 ^ (value >>> 1) : value >>> 1; return value >>> 0; });
+const zipCrc32 = (data) => { let crc = 0xffffffff; for (const byte of data)
+    crc = zipCrcTable[(crc ^ byte) & 0xff] ^ (crc >>> 8); return (crc ^ 0xffffffff) >>> 0; };
+const zipPart = (size, write) => { const bytes = new Uint8Array(size); write(new DataView(bytes.buffer)); return bytes; };
+export const makeStoredZip = (entries) => { const encoder = new TextEncoder(); const parts = []; const central = []; let offset = 0; for (const entry of entries) {
+    const name = encoder.encode(entry.name);
+    const crc = zipCrc32(entry.data);
+    const local = zipPart(30 + name.length, view => { view.setUint32(0, 0x04034b50, true); view.setUint16(4, 20, true); view.setUint16(6, 0x0800, true); view.setUint16(8, 0, true); view.setUint32(14, crc, true); view.setUint32(18, entry.data.length, true); view.setUint32(22, entry.data.length, true); view.setUint16(26, name.length, true); new Uint8Array(view.buffer, 30).set(name); });
+    const directory = zipPart(46 + name.length, view => { view.setUint32(0, 0x02014b50, true); view.setUint16(4, 20, true); view.setUint16(6, 20, true); view.setUint16(8, 0x0800, true); view.setUint16(10, 0, true); view.setUint32(16, crc, true); view.setUint32(20, entry.data.length, true); view.setUint32(24, entry.data.length, true); view.setUint16(28, name.length, true); view.setUint32(42, offset, true); new Uint8Array(view.buffer, 46).set(name); });
+    parts.push(local, entry.data);
+    central.push(directory);
+    offset += local.length + entry.data.length;
+} const centralSize = central.reduce((sum, item) => sum + item.length, 0); const end = zipPart(22, view => { view.setUint32(0, 0x06054b50, true); view.setUint16(8, entries.length, true); view.setUint16(10, entries.length, true); view.setUint32(12, centralSize, true); view.setUint32(16, offset, true); }); return new Blob([...parts, ...central, end], { type: "application/zip" }); };
