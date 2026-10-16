@@ -1007,7 +1007,7 @@ async function runFaceSearch(){
   const per=FS.people.map(()=>[]);const all=[];const together=[];
   for(const [id,vecs] of Object.entries(idx.faces)){
    const faces=vecs.map(decodeVec);const meta=(idx.meta&&idx.meta[id])||[];const who=[];let best=-1;const used=new Set();
-   valid.forEach(([p,i])=>{let s=-1,k=-1;faces.forEach((f,fi)=>{const d=dot(p,f);if(d>s){s=d;k=fi;}});const m=meta[k]||[99,1];const need=(m[0]>=40&&m[1]>=.55)?JimFace.MATCH_LIKELY:JimFace.MATCH_STRONG;if(s>=need){who.push(i);per[i].push({id,score:s,who:[i]});used.add(k);}best=Math.max(best,s);});
+   valid.forEach(([p,i])=>{let s=-1,k=-1;faces.forEach((f,fi)=>{if(meta[fi]&&meta[fi][0]<36)return;const d=dot(p,f);if(d>s){s=d;k=fi;}});const m=meta[k]||[99,1];if(m[0]>=36&&s>=0.42){who.push(i);per[i].push({id,score:s,who:[i]});used.add(k);}best=Math.max(best,s);});
    if(who.length){all.push({id,score:best,who});if(who.length>1)together.push({id,score:best,who});}
   }
   const sorter=(a,b)=>b.who.length-a.who.length||b.score-a.score;
