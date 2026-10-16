@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 
-const venues = new Set(["Flow", "Barcade", "La Salsa", "Odoro", "Zouk"]);
+const venues = new Set(["Flow", "Barcade", "La Salsa", "Odoro", "Zouk", "Bachata Crush"]);
 
 export async function GET(request: Request) {
   const url = new URL(request.url);

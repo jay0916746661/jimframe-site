@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { albumData, hiddenPhotoIds as hiddenPhotoIdList, lowExposurePhotoIds as lowExposurePhotoIdList, type Venue } from "./albums-data";
 import { loadFaceEngine, photoScore, MATCH_STRONG, MATCH_LIKELY, MATCH_CANDIDATE } from "./face-engine";
+import { CrushPromo, CrushVideos } from "./crush";
 
 type Album = { date:string; venue:Venue; folder:string; images:string[] };
 type Language = "zh" | "en" | "ko";
@@ -153,6 +154,7 @@ function Icon({name}:{name:string}){
 export default function Home(){
  const [language,setLanguage]=useState<Language>("zh");
  const copy=translations[language];
+ const finderBatchCopy=language==="en"?{selectAll:"Select all",clear:"Clear",selected:"selected",download:"Download selected",working:"Preparing download…",limit:"Up to 20 photos at a time"}:language==="ko"?{selectAll:"전체 선택",clear:"선택 해제",selected:"장 선택",download:"선택 사진 다운로드",working:"다운로드 준비 중…",limit:"한 번에 최대 20장"}:{selectAll:"全部選取",clear:"清除",selected:"張已選",download:"下載已選照片",working:"正在準備下載…",limit:"一次最多 20 張"};
  const [filter,setFilter]=useState<"全部"|Venue>("全部");
  const [dateQuery,setDateQuery]=useState("");
  const [finderOpen,setFinderOpen]=useState(false);
@@ -161,6 +163,9 @@ export default function Home(){
  const [faceDiagnostics,setFaceDiagnostics]=useState<FaceDiagnostic[]>([]);
  const [faceMatches,setFaceMatches]=useState<FaceMatch[]>([]);
  const [rejectedFaceMatches,setRejectedFaceMatches]=useState<Set<string>>(new Set());
+ const [selectedFaceMatches,setSelectedFaceMatches]=useState<Set<string>>(new Set());
+ const [faceDownloadStatus,setFaceDownloadStatus]=useState("");
+ const [faceDownloadWorking,setFaceDownloadWorking]=useState(false);
  const [faceFeedbackStatus,setFaceFeedbackStatus]=useState("");
  const [faceStatus,setFaceStatus]=useState("可上傳自己或同行朋友的照片，一次搜尋一至兩人；每人至少準備一張清楚正面照。");
  const [faceProgress,setFaceProgress]=useState(0);
@@ -203,10 +208,10 @@ export default function Home(){
   return sessionAlbums.filter(a=>(filter==="全部"||a.venue===filter)&&(!normalized||a.date.includes(normalized)));
  },[dateQuery,filter,sessionAlbums]);
  const resetFinder=()=>{setFilter("全部");setDateQuery("");};
- const chooseFacePhoto=(event:ChangeEvent<HTMLInputElement>)=>{const files=Array.from(event.target.files??[]).slice(0,3);facePreviews.forEach(url=>URL.revokeObjectURL(url));setFaceFiles(files);setFacePreviews(files.map(file=>URL.createObjectURL(file)));setFaceDiagnostics(files.map((_,index)=>({label:`照片 ${index+1}`,status:"waiting",detail:"待檢查"})));setFaceMatches([]);setRejectedFaceMatches(new Set());setFaceFeedbackStatus("");setFaceProgress(0);setFaceStatus(files.length?`已選擇 ${files.length} 張參考照；可混合自己與同行朋友，結果會合併顯示。`:"可搜尋自己，也可加入同行朋友；建議每人至少放一張近距離正面照。");};
+ const chooseFacePhoto=(event:ChangeEvent<HTMLInputElement>)=>{const files=Array.from(event.target.files??[]).slice(0,3);facePreviews.forEach(url=>URL.revokeObjectURL(url));setFaceFiles(files);setFacePreviews(files.map(file=>URL.createObjectURL(file)));setFaceDiagnostics(files.map((_,index)=>({label:`照片 ${index+1}`,status:"waiting",detail:"待檢查"})));setFaceMatches([]);setRejectedFaceMatches(new Set());setSelectedFaceMatches(new Set());setFaceDownloadStatus("");setFaceFeedbackStatus("");setFaceProgress(0);setFaceStatus(files.length?`已選擇 ${files.length} 張參考照；可混合自己與同行朋友，結果會合併顯示。`:"可搜尋自己，也可加入同行朋友；建議每人至少放一張近距離正面照。");};
  const runFaceSearch=async()=>{
   if(!faceFiles.length||faceSearching)return;
-  setFaceSearching(true);setFaceMatches([]);setFaceProgress(0);setFaceStatus("第一次使用正在載入臉部辨識模型（約 12MB），之後會快很多…");
+  setFaceSearching(true);setFaceMatches([]);setSelectedFaceMatches(new Set());setFaceDownloadStatus("");setFaceProgress(0);setFaceStatus("第一次使用正在載入臉部辨識模型（約 12MB），之後會快很多…");
   try{
    const engine=await loadFaceEngine();
    const queryOptions=engine.options(608,.3);
@@ -304,6 +309,7 @@ export default function Home(){
  const openFaceMatch=(match:FaceMatch)=>{const album=freshAlbums.find(item=>`${item.date}-${item.venue}`===match.albumKey);if(!album)return;openAlbum(album);setActiveAlbumPhoto(match.id);setActiveGrade("original");setAdjustments(defaultAdjustments);trackPhotoOpen(match.id);};
  const rejectFaceMatch=async(match:FaceMatch)=>{
   setRejectedFaceMatches(current=>new Set(current).add(match.id));
+  setSelectedFaceMatches(current=>{const next=new Set(current);next.delete(match.id);return next;});
   setFaceFeedbackStatus("已移除這張結果，謝謝你的回饋。");
   let visitorId=localStorage.getItem("jimframe_visitor_id");
   if(!visitorId){visitorId=crypto.randomUUID();localStorage.setItem("jimframe_visitor_id",visitorId);}
@@ -311,6 +317,38 @@ export default function Home(){
    const response=await fetch("/api/face-feedback",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({visitorId,photoId:match.id,albumKey:match.albumKey,model:"sface-1",distance:match.distance}),keepalive:true});
    if(!response.ok)throw new Error("feedback failed");
   }catch{setFaceFeedbackStatus("照片已從本次結果移除；匿名回饋暫時無法送出。");}
+ };
+ const toggleFaceSelection=(photoId:string)=>setSelectedFaceMatches(current=>{const next=new Set(current);if(next.has(photoId))next.delete(photoId);else if(next.size<20)next.add(photoId);return next;});
+ const visibleFaceMatches=()=>faceMatches.filter(match=>!rejectedFaceMatches.has(match.id));
+ const downloadFaceSelection=async()=>{
+  const ids=visibleFaceMatches().map(match=>match.id).filter(id=>selectedFaceMatches.has(id));
+  if(!ids.length||faceDownloadWorking)return;
+  if(!confirmPhotoCredit())return;
+  setFaceDownloadWorking(true);setFaceDownloadStatus(language==="en"?`Collecting 1 / ${ids.length}…`:language==="ko"?`원본 수집 중 1 / ${ids.length}…`:`正在收集原檔 1 / ${ids.length}…`);
+  try{
+   const files:ZipEntry[]=[];const failed:string[]=[];
+   for(let i=0;i<ids.length;i++){
+    setFaceDownloadStatus(language==="en"?`Collecting ${i+1} / ${ids.length}…`:language==="ko"?`원본 수집 중 ${i+1} / ${ids.length}…`:`正在收集原檔 ${i+1} / ${ids.length}…`);
+    let response:Response|null=null;
+    for(let attempt=0;attempt<2;attempt++){try{response=await fetch(`/api/photo-file?id=${encodeURIComponent(ids[i])}&batch=1&attempt=${attempt}`);if(response.ok)break;}catch{}response=null;}
+    if(!response?.ok){failed.push(ids[i]);continue;}
+    const data=new Uint8Array(await response.arrayBuffer());if(!data.length){failed.push(ids[i]);continue;}
+    files.push({name:`JimFrame_${String(i+1).padStart(2,"0")}_${ids[i].slice(0,8)}.jpg`,data});trackInteraction(ids[i],"download");
+   }
+   if(!files.length)throw new Error("all downloads failed");
+   const mobileFiles=files.map(file=>new File([file.data],file.name,{type:"image/jpeg"}));
+   const isMobile=window.matchMedia("(max-width: 760px)").matches||/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
+   if(isMobile&&navigator.share&&navigator.canShare?.({files:mobileFiles})){
+    setFaceDownloadStatus(language==="en"?"Opening your phone’s save menu…":language==="ko"?"휴대폰 저장 메뉴를 여는 중…":"正在開啟手機儲存選單…");
+    try{
+     await navigator.share({title:"JimFrame Photos",text:"Photography @jimframe",files:mobileFiles});
+     setFaceDownloadStatus(failed.length?`${files.length} 張已交給手機處理，${failed.length} 張暫時無法取得。`:`已交給手機處理，共 ${files.length} 張照片。`);return;
+    }catch(error){if((error as Error).name==="AbortError"){setFaceDownloadStatus(language==="en"?"Save cancelled. You can try again.":language==="ko"?"저장이 취소되었습니다. 다시 시도할 수 있습니다.":"已取消儲存，可再次下載。");return;}}
+   }
+   setFaceDownloadStatus(language==="en"?"Creating ZIP…":language==="ko"?"ZIP 파일 생성 중…":"正在建立 ZIP 壓縮包…");
+   const zip=makeStoredZip(files);const url=URL.createObjectURL(zip);const link=document.createElement("a");link.href=url;link.download=`JimFrame_Found_${files.length}photos.zip`;document.body.appendChild(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),10000);
+   setFaceDownloadStatus(failed.length?`已下載 ${files.length} 張，${failed.length} 張暫時無法取得。`:`下載完成，共 ${files.length} 張照片。`);
+  }catch{setFaceDownloadStatus(language==="en"?"Download failed. Please select fewer photos or try again later.":language==="ko"?"다운로드에 실패했습니다. 사진 수를 줄이거나 나중에 다시 시도해 주세요.":"下載失敗，請減少選取數量或稍後再試。");}finally{setFaceDownloadWorking(false);}
  };
  useEffect(()=>{
   const mixed=shuffle(freshPool);
@@ -741,15 +779,20 @@ export default function Home(){
  };
  const gradeThumbFilter=(grade:(typeof colorGrades)[number])=>{const p=grade.preview;return `grayscale(${p.grayscale}) sepia(${p.sepia}) hue-rotate(${p.hue}deg) brightness(${p.brightness}) contrast(${p.contrast}) saturate(${p.saturation})`;};
  const activeIndex=selectedAlbum&&activeAlbumPhoto?selectedAlbum.images.indexOf(activeAlbumPhoto):-1;
- const venues=["全部","Flow","Barcade","La Salsa","Odoro","Zouk"] as const;
+ const venues=["全部","Bachata Crush","Flow","Barcade","La Salsa","Odoro","Zouk"] as const;
+ const crushAlbum=albumData.find(a=>a.date==="1015"&&a.venue==="Bachata Crush");
  return <main className="app">
   <header className="navbar">
    <a className="brand" href="#top" aria-label="Jim Lin Photography 首頁"><span className="brand-mark" aria-hidden="true">JL</span><span>Jim Lin <em>Photography</em></span></a>
    <nav className="nav-links" aria-label="主要">
-    <a href="#top">{copy.navFeatured}</a><a href="#archive">{copy.navAlbums}</a><a href="#finder">{copy.navFind}</a><a href="#support">{copy.navSupport}</a><a href="#contact">{copy.navBook}</a>
+    <a href="#top">{copy.navFeatured}</a><a href="#archive">{copy.navAlbums}</a><a href="#videos">{language==="zh"?"影片":language==="ko"?"영상":"Videos"}</a><a href="#finder">{copy.navFind}</a><a href="#support">{copy.navSupport}</a><a href="#contact">{copy.navBook}</a>
    </nav>
    <div className="nav-actions"><a className="studio-pill" href="/studio"><Icon name="photo"/><span>{copy.navStudio}</span></a><div className="language-switch" role="group" aria-label="Language"><button className={language==="zh"?"is-selected":""} onClick={()=>setLanguage("zh")}>繁中</button><button className={language==="en"?"is-selected":""} onClick={()=>setLanguage("en")}>EN</button><button className={language==="ko"?"is-selected":""} onClick={()=>setLanguage("ko")}>한국어</button></div><a className="nav-pill" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">@jimframe</a></div>
   </header>
+
+  <CrushPromo language={language} photoCount={crushAlbum?.images.length??0} cover={(crushAlbum?.images??[]).filter((_,i)=>i%37===5).map(id=>image(id,700))}
+   onPhotos={()=>{setFilter("Bachata Crush");requestAnimationFrame(()=>document.getElementById("archive")?.scrollIntoView({behavior:"smooth"}));}}
+   onFind={()=>{setFinderOpen(true);requestAnimationFrame(()=>document.getElementById("finder")?.scrollIntoView({behavior:"smooth"}));}}/>
 
   <section className="hero" id="top">
    <div className="hero-copy">
@@ -814,14 +857,19 @@ export default function Home(){
      </div>
      {facePreviews.length>0&&<div className="query-row">{facePreviews.map((url,index)=><figure className={`query ${faceDiagnostics[index]?.status??"waiting"}`} key={url}><img src={url} alt={`參考照片 ${index+1}`}/><figcaption>{faceDiagnostics[index]?.detail??"待檢查"}</figcaption></figure>)}</div>}
      <div className={`progress status-island ${faceSearching?"is-active":faceProgress===100?"is-complete":""}`} aria-live="polite"><div className="progress-track"><span style={{width:`${faceProgress}%`}}/></div><div className="status-line"><i aria-hidden="true"/><p className="footnote">{faceStatus}</p></div></div>
-     {faceMatches.some(match=>!rejectedFaceMatches.has(match.id))&&<div className="match-grid">{faceMatches.filter(match=>!rejectedFaceMatches.has(match.id)).map((match,index)=><article className="match-card motion-reveal" style={{animationDelay:`${Math.min(index,10)*45}ms`}} key={match.id}>
+     {faceMatches.some(match=>!rejectedFaceMatches.has(match.id))&&<>
+      <div className="match-selection-head"><b>{language==="en"?"Choose photos to download":language==="ko"?"다운로드할 사진 선택":"選擇要下載的照片"}</b><div><button type="button" onClick={()=>setSelectedFaceMatches(new Set(visibleFaceMatches().slice(0,20).map(match=>match.id)))}>{finderBatchCopy.selectAll}</button><button type="button" disabled={!selectedFaceMatches.size} onClick={()=>{setSelectedFaceMatches(new Set());setFaceDownloadStatus("");}}>{finderBatchCopy.clear}</button></div></div>
+      <div className="match-grid">{faceMatches.filter(match=>!rejectedFaceMatches.has(match.id)).map((match,index)=>{const selected=selectedFaceMatches.has(match.id);return <article className={`match-card motion-reveal ${selected?"is-selected":""}`} style={{animationDelay:`${Math.min(index,10)*45}ms`}} key={match.id}>
       <button type="button" className="match" onClick={()=>openFaceMatch(match)}>
        <img src={image(match.id,500)} alt={`可能符合的照片 ${index+1}`} loading="lazy"/>
        <span className={`badge ${match.exact||match.distance<STRONG_DISTANCE?"badge-strong":""}`}>{match.exact?copy.exact:match.distance<STRONG_DISTANCE?copy.strong:copy.likely}</span>
       </button>
+      <button type="button" className="match-select-button" aria-label={selected?"取消選取":"選取照片"} aria-pressed={selected} onClick={()=>toggleFaceSelection(match.id)}><span>{selected&&<Icon name="check"/>}</span></button>
       {!match.exact&&<button type="button" className="not-me-button" onClick={()=>void rejectFaceMatch(match)}>{copy.notMe}</button>}
       <button type="button" className="quick-story-button" onClick={()=>setStoryPhotoId(match.id)}><Icon name="share"/>{copy.shareStory}</button>
-     </article>)}</div>}
+     </article>})}</div>
+      <div className="face-download-bar" aria-live="polite"><div><b>{selectedFaceMatches.size} {finderBatchCopy.selected}</b><span>{faceDownloadStatus||finderBatchCopy.limit}</span></div><button type="button" className="button button-filled" disabled={!selectedFaceMatches.size||faceDownloadWorking} onClick={()=>void downloadFaceSelection()}><Icon name="download"/>{faceDownloadWorking?finderBatchCopy.working:finderBatchCopy.download}</button></div>
+     </>}
      {faceFeedbackStatus&&<p className="feedback-status" role="status">{faceFeedbackStatus}</p>}
      <p className="footnote">{copy.privacy}</p>
     </div>}
@@ -847,6 +895,8 @@ export default function Home(){
     <p><b>{copy.creditTitle} <a href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">@jimframe</a></b>{copy.creditText}<em>Please credit @jimframe when sharing.</em></p>
    </aside>
   </section>
+
+  <CrushVideos language={language} confirmCredit={confirmPhotoCredit}/>
 
   <section className="section" id="support">
    <div className="section-head"><div><h2 className="title2">{copy.supportTitle}</h2><p className="footnote">{copy.supportSub}</p></div></div>

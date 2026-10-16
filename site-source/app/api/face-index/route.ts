@@ -3,7 +3,7 @@ import { forbidden, isSameOriginRequest } from "../same-origin";
 
 type FaceIndexRow={photo_id:string;album_key:string;descriptors:string;image_hash:string};
 const photoPattern=/^[A-Za-z0-9_-]{10,120}$/;
-const albumPattern=/^\d{4}-(Flow|Barcade|La Salsa|Odoro|Zouk)$/;
+const albumPattern=/^\d{4}-(Flow|Barcade|La Salsa|Odoro|Zouk|Bachata Crush)$/;
 const hashPattern=/^[01]{64}$/;
 // A 64-bit dHash only counts as "the same picture" when nearly identical.
 // Looser values make dark club photos collide with dark selfies.

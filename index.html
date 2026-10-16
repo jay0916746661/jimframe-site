@@ -405,35 +405,6 @@ button { font: inherit; color: inherit; }
 }
 
 
-/* ---------- Upcoming events ---------- */
-.events-row { display: grid; grid-auto-flow: column; grid-auto-columns: min(80vw, 330px); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding: 2px var(--gutter) 12px; scroll-padding-inline: var(--gutter); }
-.events-row::-webkit-scrollbar { display: none; }
-.event { scroll-snap-align: start; background: var(--surface); border-radius: var(--radius-l); overflow: hidden; box-shadow: var(--shadow); display: grid; align-content: start; }
-.event-cover { position: relative; aspect-ratio: 4 / 5; background: var(--fill); }
-.event-cover img { width: 100%; height: 100%; object-fit: cover; }
-.event-cover::after { content: ""; position: absolute; inset: 42% 0 0; background: linear-gradient(transparent, rgba(0, 0, 0, 0.84)); }
-.event-date { position: absolute; z-index: 1; left: 12px; top: 12px; width: 62px; padding: 6px 0 8px; border-radius: 14px; background: rgba(255, 255, 255, 0.92); color: #1d1d1f; text-align: center; line-height: 1.05; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
-.event-date small { display: block; font-size: 11px; font-weight: 700; color: #ff3b30; letter-spacing: 0.04em; }
-.event-date b { display: block; font: 700 28px/1.05 var(--font-display); font-variant-numeric: tabular-nums; }
-.event-date span { display: block; font-size: 12px; color: rgba(60, 60, 67, 0.7); }
-.event-when { position: absolute; z-index: 1; right: 12px; top: 12px; padding: 5px 10px; border-radius: 999px; background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 12px; font-weight: 600; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
-.event-when.is-soon { background: var(--edit-accent); color: #000; }
-.event-text { position: absolute; z-index: 1; left: 16px; right: 16px; bottom: 14px; color: #fff; }
-.event-text h3 { margin: 0 0 4px; font: 700 24px/1.15 var(--font-display); letter-spacing: -0.02em; text-wrap: balance; }
-.event-text p { margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.86); font-variant-numeric: tabular-nums; }
-.event-tag { display: inline-block; margin-bottom: 8px; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; color: #fff; }
-.event-mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-.event-mosaic img { width: 100%; height: 100%; object-fit: cover; }
-.event-new { position: absolute; z-index: 1; right: 12px; top: 50px; padding: 4px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.92); color: #1d1d1f; font-size: 11px; font-weight: 700; }
-.event-date.is-tbd b { color: rgba(60, 60, 67, 0.55); }
-.event-activity { margin: 0; padding: 10px 14px 0; font-size: 14px; font-weight: 600; color: var(--label); }
-.event-note { margin: 0; padding: 10px 14px 0; font-size: 13px; color: var(--label-2); }
-.event-actions { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 10px; border-top: 0.5px solid var(--separator); }
-.event-actions > * { display: grid; justify-items: center; gap: 2px; padding: 10px 4px; border: 0; background: none; color: var(--tint); font-size: 12px; font-weight: 500; cursor: pointer; text-decoration: none; }
-.event-actions > * + * { border-left: 0.5px solid var(--separator); }
-.event-actions .icon { width: 20px; height: 20px; }
-.event-actions [disabled] { color: var(--label-3); cursor: default; }
-
 /* Credit / support sheet */
 .credit-backdrop { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; justify-content: center; background: rgba(0, 0, 0, 0.42); animation: fade-in 0.2s ease both; }
 .credit-sheet { width: min(100%, 460px); display: grid; gap: 12px; padding: 10px 20px calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--surface); color: var(--label); border-radius: 16px 16px 0 0; box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25); animation: sheet-up 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
@@ -492,11 +463,6 @@ button { font: inherit; color: inherit; }
   <div class="carousel" role="list" aria-label="每週精選照片" id="carousel"></div>
  </section>
 
- <section class="section" id="events" hidden>
-  <div class="section-head"><div><h2 class="title2">接下來的活動</h2><p class="footnote">拍攝排程 · 現場見！照片會在活動後 24 小時內上線。</p></div></div>
-  <div class="events-row" id="events-row"></div>
- </section>
-
  <section class="section">
   <div class="section-head"><div><h2 class="title2">精選照片</h2><p class="footnote">最近幾場活動的精選。</p></div></div>
   <div class="popular-row" id="popular"></div>
@@ -517,9 +483,9 @@ button { font: inherit; color: inherit; }
 
 
  <section class="section" id="videos">
-  <div class="section-head"><div><h2 class="title2">影片 · 10.15 Bachata Crush</h2><p class="footnote">每支都能免費下載 15 秒精華影片與限動照片（含 Logo，1080×1920，可直接發 IG 限動／Reels）。完整版（完整長度）也免費下載。</p></div></div>
+  <div class="section-head"><div><h2 class="title2">影片 · 10.15 Bachata Crush</h2><p class="footnote">每支都能免費下載 25 秒試看影片（含開場特效）與限動照片（含 Logo，1080×1920，可直接發 IG 限動／Reels）。完整版（完整長度、高畫質）每支 NT$300／US$10。</p></div></div>
   <div class="video-grid" id="video-grid"></div>
-  <aside class="credit-note video-note"><span data-icon="tag"></span><p><b>想要個人精華剪輯？NT$300／US$10</b>把你們這一對整晚的片段剪成 30–60 秒精華（慢動作、轉場、Logo），可直接發 Reels。點任一支影片的「客製精華剪輯」，用 LINE 告訴我影片編號即可。<em>Custom 30–60s highlight edit of your dances: US$10 — message me on LINE or IG with the clip number.</em></p></aside>
+  <aside class="credit-note video-note"><span data-icon="tag"></span><p><b>想要完整版？每支 NT$300／US$10</b>點影片下方「完整版」，用 LINE 告訴我影片編號，付款後用雲端連結傳完整版給你。<em>Full-length video: US$10 each — message me on LINE or IG with the clip number.</em></p></aside>
  </section>
 
  <section class="section" id="support">
@@ -601,85 +567,6 @@ const popular=[[albums[0],0],[albums[1],0],[albums[2],0],[albums[3],0]];
 const renderPopular=()=>{document.getElementById("popular").innerHTML=popular.map(([a,i],r)=>{const id=a.photos[i];return `<article class="popular-card"><button type="button" class="popular-image" data-open="${id}" aria-label="開啟熱門第 ${r+1} 名照片"><img src="${photoSrc(id,900)}" alt="" loading="lazy"></button><div class="popular-meta"><div><b>${dateLabel(a.date)} · ${esc(a.venue)}</b><small>${a.photos.length} 張照片</small></div><div class="icon-row"><button type="button" class="icon-button ${liked.has(id)?"is-liked":""}" data-like="${id}" aria-label="喜歡">${icon(liked.has(id)?"heartFill":"heart")}</button><button type="button" class="icon-button" data-download="${id}" aria-label="下載原始照片">${icon("download")}</button><button type="button" class="icon-button" data-share="${id}" aria-label="分享">${icon("share")}</button></div></div></article>`;}).join("");};
 renderPopular();
 
-// ---------- Upcoming events ----------
-// 新增活動：在 UPCOMING_EVENTS 加一筆。活動結束後會自動隱藏；沒有活動時整區不顯示。
-//   date: "2026-10-16"   start: "21:00"   end: "01:00"（可省略，預設 4 小時；跨午夜會自動算到隔天）
-//   title: 活動名稱      organizer: { name: "主辦名稱", instagram: "IG帳號（不含 @）" }
-//   venue: 場地名稱      series: 對應相簿的場地（Flow / Barcade / La Salsa / Odoro / Zouk）
-//                        → 自動用「這個場地上一場的照片」當封面，並出現「上次照片」按鈕
-//   cover: 指定封面照片的 Drive 檔案 ID（可省略）   color: 標籤顏色（可省略）   note: 一行補充（可省略）
-//   tentative: true  → 顯示「預計」（依往常行程推估、還沒確認）
-//   沒有 date → 顯示「日期待公布」，排在最後；沒有 start → 顯示「時間以主辦公告為準」
-//   activity: 當晚的現場企劃（一行）
-const UPCOMING_EVENTS = [
-  { date: "2026-10-15", title: "Barcade 週四舞會", organizer: { name: "Barcade" }, venue: "Barcade", series: "Barcade", color: "#ff9f0a", tentative: true },
-  { date: "2026-10-16", title: "Flow 週五舞會", organizer: { name: "Flow" }, venue: "Flow", series: "Flow", color: "#30d158", tentative: true },
-  { date: "2026-10-17", title: "La Salsa 週六舞會", organizer: { name: "La Salsa" }, venue: "La Salsa", series: "La Salsa", color: "#bf5af2", tentative: true },
-  { title: "Bachata Crush", organizer: { name: "Bachata Crush", instagram: "bachata_crush_tw" }, color: "#ff375f", note: "第一次拍 Bachata Crush，日期與場地以主辦 IG 公告為準。" },
-];
-const weekday = ["日", "一", "二", "三", "四", "五", "六"];
-const eventStart = e => e.date ? new Date(`${e.date}T${e.start || "20:00"}:00+08:00`) : new Date(8640000000000000);
-const eventEnd = e => {
-  const s = eventStart(e);
-  if (!e.date) return s;
-  if (!e.end) return new Date(s.getTime() + 4 * 3600e3);
-  let end = new Date(`${e.date}T${e.end}:00+08:00`);
-  if (end <= s) end = new Date(end.getTime() + 24 * 3600e3);
-  return end;
-};
-const lastAlbumOf = series => albums.find(a => a.venue === series);
-const taipeiParts = d => { const p = new Date(d.toLocaleString("en-US", { timeZone: "Asia/Taipei" })); return { day: p.getDate(), month: p.getMonth() + 1, wd: p.getDay() }; };
-function whenLabel(e) {
-  const now = new Date();
-  if (!e.date) return ["日期待公布", false];
-  if (now >= eventStart(e) && now < eventEnd(e)) return ["進行中", true];
-  const today = new Date(now.toLocaleDateString("en-CA", { timeZone: "Asia/Taipei" }) + "T00:00:00+08:00");
-  const days = Math.round((new Date(e.date + "T00:00:00+08:00") - today) / 86400e3);
-  const label = days <= 0 ? "今晚" : days === 1 ? "明天" : `${days} 天後`;
-  return [e.tentative ? `預計 · ${label}` : label, days <= 1];
-}
-function icsFor(e) {
-  const fmt = d => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-  const ig = e.organizer && e.organizer.instagram ? `https://www.instagram.com/${e.organizer.instagram}/ ` : "";
-  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Jim Lin Photography//Events//ZH", "BEGIN:VEVENT",
-    `UID:${e.date}-${encodeURIComponent(e.title)}@jimframe`, `DTSTAMP:${fmt(new Date())}`,
-    ...(e.start ? [`DTSTART:${fmt(eventStart(e))}`, `DTEND:${fmt(eventEnd(e))}`] : [`DTSTART;VALUE=DATE:${e.date.replace(/-/g, "")}`]),
-    `SUMMARY:${e.title}`, `LOCATION:${e.venue || ""}`, `DESCRIPTION:${ig}攝影 @jimframe`, "END:VEVENT", "END:VCALENDAR"];
-  return new Blob([lines.join("\r\n")], { type: "text/calendar" });
-}
-let shownEvents = [];
-function renderEvents(source = UPCOMING_EVENTS) {
-  const now = new Date();
-  shownEvents = source.filter(e => eventEnd(e) > now).sort((a, b) => eventStart(a) - eventStart(b)).slice(0, 8);
-  const section = document.getElementById("events");
-  section.hidden = !shownEvents.length;
-  if (!shownEvents.length) return;
-  document.getElementById("events-row").innerHTML = shownEvents.map((e, i) => {
-    const past = e.series ? lastAlbumOf(e.series) : null;
-    const cover = e.cover ? drive(e.cover, 900) : past ? past.img(0, 900) : "";
-    // No past album for this series yet: a 2x2 mosaic of the latest nights, so the card is never empty.
-    const mosaic = cover ? "" : `<div class="event-mosaic">${albums.slice(0, 4).map(a => `<img src="${a.img(1, 500)}" alt="" loading="lazy">`).join("")}</div><span class="event-new">首次拍攝</span>`;
-    const parts = e.date ? taipeiParts(eventStart(e)) : null;
-    const [label, soon] = whenLabel(e);
-    const time = e.start ? `${e.start}${e.end ? `–${e.end}` : ""}` : e.date ? "時間以主辦公告為準" : "日期待公布";
-    const org = e.organizer || {};
-    return `<article class="event">
-      <div class="event-cover">${cover ? `<img src="${cover}" alt="" loading="lazy">` : mosaic}
-        ${parts ? `<div class="event-date"><small>週${weekday[parts.wd]}</small><b>${parts.day}</b><span>${parts.month} 月</span></div>` : `<div class="event-date is-tbd"><small>即將</small><b>?</b><span>待公布</span></div>`}
-        <span class="event-when ${soon ? "is-soon" : ""}">${label}</span>
-        <div class="event-text">${org.name ? `<span class="event-tag" style="background:${esc(e.color || "#0a84ff")}">${esc(org.name)}</span>` : ""}<h3>${esc(e.title)}</h3><p>${esc(time)}${e.venue ? ` · ${esc(e.venue)}` : ""}</p></div>
-      </div>
-      ${e.activity ? `<p class="event-activity">✨ ${esc(e.activity)}</p>` : ""}
-      ${e.note ? `<p class="event-note">${esc(e.note)}</p>` : ""}
-      <div class="event-actions">
-        ${e.date ? `<button type="button" data-ics="${i}">${icon("albums")}加到行事曆</button>` : `<button type="button" disabled>${icon("albums")}加到行事曆</button>`}
-        ${org.instagram ? `<a href="https://www.instagram.com/${encodeURIComponent(org.instagram)}/" target="_blank" rel="noreferrer">${icon("external")}活動 IG</a>` : `<button type="button" disabled>${icon("external")}活動 IG</button>`}
-        ${past ? `<button type="button" data-album="${past.key}">${icon("photo")}上次照片</button>` : `<button type="button" disabled>${icon("photo")}上次照片</button>`}
-      </div>
-    </article>`;
-  }).join("");
-}
-renderEvents();
 
 // Albums grid with filter + date search
 const venues=["全部","Bachata Crush","Flow","Barcade","La Salsa","Odoro","Zouk"];let filter=store.get("demo_filter","全部");let query="";
@@ -816,39 +703,35 @@ function withCredit(action){
 }
 
 // ---------- Videos: 15s previews (free) + paid full version ----------
-const VIDEO_PRICE="NT$300 / US$10"; // 客製精華剪輯價格
-const FULL_FOLDER=""; // 完整版雲端資料夾 ID（上傳後填入）
-const FULL_IDS={}; // 各支完整版的雲端檔案 ID，例如 {"03":"1abc..."}
+const VIDEO_PRICE="NT$300 / US$10";
 const VIDEO_READY=null; // null = 全部
 const VIDEO_DATA_ALL=[["00",54.5],["01",38.5],["02",53],["03",63.5],["04",38],["06",55.5],["07",82.5],["08",75],["10",70.5],["11",20],["12",75],["13",106],["14",51],["15",214],["16",157.5],["17",95],["18",80],["19",67.5],["20",59.5],["21",83],["24",43.5],["25",78],["26",101.5]];
 const VIDEO_DATA=VIDEO_READY?VIDEO_DATA_ALL.filter(v=>VIDEO_READY.includes(v[0])):VIDEO_DATA_ALL;
 const mmss=s=>`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
-document.getElementById("video-grid").innerHTML=VIDEO_DATA.map(([n,d])=>`<article class="video-card"><div class="video-frame"><video src="videos/1015/bc-${n}.mp4" poster="videos/1015/bc-${n}.jpg" preload="none" playsinline controls controlslist="nodownload" aria-label="10.15 Bachata Crush 影片 #${n} 15 秒試看"></video><span class="video-badge">15 秒試看</span></div><div class="video-meta"><div class="video-meta-top"><b>#${n}</b><small>完整版 ${mmss(d)} · <button type="button" class="text-button video-edit" data-video-buy="${n}">客製精華剪輯</button></small></div><div class="video-actions"><button type="button" class="button button-gray" data-video-dl="${n}">${icon("download")}15 秒影片</button><button type="button" class="button button-gray" data-story-dl="${n}">${icon("download")}限動照片</button><button type="button" class="button button-filled video-buy" data-video-full="${n}">${icon("download")}完整版（免費）</button></div></div></article>`).join("");
+document.getElementById("video-grid").innerHTML=VIDEO_DATA.map(([n,d])=>`<article class="video-card"><div class="video-frame"><video src="videos/1015/bc-${n}.mp4" poster="videos/1015/bc-${n}.jpg" preload="none" playsinline controls controlslist="nodownload" aria-label="10.15 Bachata Crush 影片 #${n} 25 秒試看"></video><span class="video-badge">25 秒試看</span></div><div class="video-meta"><div class="video-meta-top"><b>#${n}</b><small>完整版 ${mmss(d)}</small></div><div class="video-actions"><button type="button" class="button button-gray" data-video-dl="${n}">${icon("download")}25 秒試看</button><button type="button" class="button button-gray" data-story-dl="${n}">${icon("download")}限動照片</button><button type="button" class="button button-filled video-buy" data-video-buy="${n}">完整版 NT$300</button></div></div></article>`).join("");
 document.getElementById("video-grid").addEventListener("play",e=>{document.querySelectorAll("#video-grid video").forEach(v=>{if(v!==e.target)v.pause();});},true);
-const videoFile=n=>`JimFrame_1015-BachataCrush_${n}_15s.mp4`;
+const videoFile=n=>`JimFrame_1015-BachataCrush_${n}_25s.mp4`;
 function openBuy(n){
  const d=(VIDEO_DATA.find(v=>v[0]===n)||[])[1]||0;
  const root=document.getElementById("credit-root");
  root.innerHTML=`<div class="credit-backdrop" data-credit-close><div class="credit-sheet" role="dialog" aria-modal="true" aria-labelledby="buy-title">
   <span class="credit-grabber" aria-hidden="true"></span>
-  <h2 id="buy-title">客製精華剪輯 · #${n}</h2>
-  <div class="buy-price"><span>30–60 秒個人精華（慢動作、轉場、Logo），素材來自 #${n} 等片段</span><b>${VIDEO_PRICE||"私訊報價"}</b></div>
-  <ol class="buy-steps"><li>加 LINE：<b class="selectable">jim0916746661</b></li><li>傳送影片編號 <b>#${n}</b></li><li>收到收款資訊並付款（LINE Pay／轉帳；海外朋友私訊討論付款方式）</li><li>剪好後用雲端連結傳給你</li></ol>
+  <h2 id="buy-title">購買完整版 · #${n}</h2>
+  <div class="buy-price"><span>10.15 Bachata Crush #${n}（完整長度 ${mmss(d)}）</span><b>${VIDEO_PRICE||"私訊報價"}</b></div>
+  <ol class="buy-steps"><li>加 LINE：<b class="selectable">jim0916746661</b></li><li>傳送影片編號 <b>#${n}</b></li><li>收到收款資訊並付款（LINE Pay／轉帳；海外朋友私訊討論付款方式）</li><li>付款後用雲端連結傳完整版給你</li></ol>
   <div class="credit-row"><button type="button" class="button button-gray" data-buy-copy>${icon("tag")}複製編號</button><a class="button button-gray" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">${icon("message")}IG 私訊</a></div>
-  <a class="button button-filled button-large" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">用 LINE 預約剪輯</a>
+  <a class="button button-filled button-large" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">用 LINE 購買</a>
   <button type="button" class="text-button credit-cancel" data-credit-close>取消</button>
  </div></div>`;
  const close=()=>{root.innerHTML="";};
  root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
- root.querySelector("[data-buy-copy]").addEventListener("click",async e=>{try{await navigator.clipboard.writeText(`10.15 Bachata Crush 影片 #${n} 客製精華剪輯`);e.currentTarget.lastChild.textContent="已複製 ✓";}catch{toast(`影片編號 #${n}`);}});
+ root.querySelector("[data-buy-copy]").addEventListener("click",async e=>{try{await navigator.clipboard.writeText(`10.15 Bachata Crush 影片 #${n} 完整版`);e.currentTarget.lastChild.textContent="已複製 ✓";}catch{toast(`影片編號 #${n}`);}});
 }
 document.getElementById("video-grid").addEventListener("click",e=>{
  const dl=e.target.closest("[data-video-dl]");if(dl){const n=dl.dataset.videoDl;withCredit(()=>{const a=document.createElement("a");a.href=`videos/1015/bc-${n}.mp4`;a.download=videoFile(n);document.body.appendChild(a);a.click();a.remove();});return;}
  const st=e.target.closest("[data-story-dl]");if(st){const n=st.dataset.storyDl;withCredit(()=>{const a=document.createElement("a");a.href=`videos/1015/story-${n}.jpg`;a.download=`JimFrame_1015-BachataCrush_${n}_story.jpg`;document.body.appendChild(a);a.click();a.remove();});return;}
- const fu=e.target.closest("[data-video-full]");if(fu){const n=fu.dataset.videoFull;const id=FULL_IDS[n];if(id){withCredit(()=>openDownload(id));}else if(FULL_FOLDER){window.open(`https://drive.google.com/drive/folders/${FULL_FOLDER}`,"_blank","noreferrer");}else{toast("完整版整理上傳中，晚點再來 🙏");}return;}
  const b=e.target.closest("[data-video-buy]");if(b)openBuy(b.dataset.videoBuy);
 });
-// ---------- Events (delegated) ----------
 document.addEventListener("click",e=>{
  const t=e.target.closest("button,a,[data-backdrop]");if(!t)return;const d=t.dataset;
  if("backdrop" in d){if(e.target===t)closeAlbum();return;}
@@ -857,7 +740,6 @@ document.addEventListener("click",e=>{
  if(d.venue){filter=d.venue;store.set("demo_filter",filter);renderAlbums();return;}
  if(d.like){liked.has(d.like)?liked.delete(d.like):liked.add(d.like);store.set("demo_liked",[...liked]);renderPopular();if(st.photo)renderSheet();return;}
  if(d.demo){e.preventDefault();demoOnly(d.demo);return;}
- if(d.ics){const ev=shownEvents[Number(d.ics)];if(ev){const url=URL.createObjectURL(icsFor(ev));const a=document.createElement("a");a.href=url;a.download=`${ev.date}-${ev.title}.ics`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}return;}
  if(d.share){shareLinks([d.share]);return;}
  if(d.download){withCredit(()=>openDownload(d.download));return;}
  if("export" in d){withCredit(exportGraded);return;}

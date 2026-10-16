@@ -2,7 +2,7 @@ import { env } from "cloudflare:workers";
 import { forbidden, isSameOriginRequest } from "../same-origin";
 
 const photoPattern=/^[A-Za-z0-9_-]{10,120}$/;
-const albumPattern=/^\d{4}-(Flow|Barcade|La Salsa|Odoro|Zouk)$/;
+const albumPattern=/^\d{4}-(Flow|Barcade|La Salsa|Odoro|Zouk|Bachata Crush)$/;
 const visitorPattern=/^[A-Za-z0-9_-]{8,80}$/;
 const MODEL="sface-1";
 
