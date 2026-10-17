@@ -209,6 +209,7 @@ button { font: inherit; color: inherit; }
 .album-cover { position: relative; aspect-ratio: 1; border-radius: var(--radius-m); overflow: hidden; background: var(--fill); transition: transform 0.25s ease; }
 .album:hover .album-cover { transform: translateY(-2px); }
 .album:active .album-cover { transform: scale(0.98); }
+.album-cover .cover-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .album-cover .slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; animation: album-slide 40s infinite both; }
 @keyframes album-slide { 0%, 10% { opacity: 1; } 12.5%, 100% { opacity: 0; } }
 .album-meta { display: grid; }
@@ -721,6 +722,8 @@ async function analyzeColors(a,onProg){
  const out={};H.forEach((h,i)=>{if(!h)return;const e=h.map((v,k)=>v-1.3*base[k]);let best=-1,bv=-1e9;for(let k=0;k<36;k++){const sm=e[k]+.5*e[(k+35)%36]+.5*e[(k+1)%36];if(sm>bv){bv=sm;best=k;}}const hue=best*10+5;out[ids[i]]=[grp(hue),hue,Math.round(bv*1000)];});
  COLOR_DATA[a.key]=out;a._cover=null;try{localStorage.setItem(ck,JSON.stringify(out));}catch{}return out;
 }
+// 設計過的相簿封面（Logo＋日期主題）；沒有的相簿用照片輪播
+const ALBUM_COVERS={"1016":"photos/1016/cover.jpg","1015":"photos/1015-cover.jpg"};
 const themeOf=a=>ALBUM_THEME[a.date]?` · ${ALBUM_THEME[a.date]}`:"";
 const albumOf=id=>albums.find(a=>a.photos.includes(id));
 let liked=new Set(store.get("demo_liked",[]));
@@ -743,7 +746,7 @@ const renderAlbums=()=>{
  document.getElementById("venues").innerHTML=venues.map(v=>`<button type="button" role="tab" aria-selected="${filter===v}" class="${filter===v?"is-selected":""}" data-venue="${v}">${v}</button>`).join("");
  document.getElementById("album-count").textContent=`2026 · ${vis.length} 本相簿`;
  document.getElementById("empty").hidden=vis.length>0;
- document.getElementById("albums").innerHTML=vis.map(a=>`<button type="button" class="album" data-album="${a.key}"><div class="album-cover">${[0,1,2,3,4,5,6,7].map(j=>`<img class="slide" style="animation-delay:${j*5}s" src="${a.img(j,600)}" alt="" loading="lazy">`).join("")}</div><div class="album-meta"><b>${esc(a.venue)}</b><span>2026.${dateLabel(a.date)}${themeOf(a)}</span></div></button>`).join("");
+ document.getElementById("albums").innerHTML=vis.map(a=>`<button type="button" class="album" data-album="${a.key}"><div class="album-cover">${ALBUM_COVERS[a.date]?`<img class="cover-art" src="${ALBUM_COVERS[a.date]}" alt="${esc(a.venue)} ${dateLabel(a.date)} 封面" loading="lazy">`:[0,1,2,3,4,5,6,7].map(j=>`<img class="slide" style="animation-delay:${j*5}s" src="${a.img(j,600)}" alt="" loading="lazy">`).join("")}</div><div class="album-meta"><b>${esc(a.venue)}</b><span>2026.${dateLabel(a.date)}${themeOf(a)}</span></div></button>`).join("");
 };
 renderAlbums();
 document.getElementById("album-date-search").addEventListener("input",e=>{query=e.target.value;renderAlbums();});
