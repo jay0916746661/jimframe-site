@@ -4,7 +4,7 @@ import {languages,translate} from './i18n.mjs';
 const $=id=>document.getElementById(id);
 const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const storage={get(k,f){try{return localStorage.getItem(k)??f;}catch{return f;}},set(k,v){try{localStorage.setItem(k,v);}catch{}}};
-const guess=navigator.language?.startsWith('zh')?'zh':navigator.language?.startsWith('ko')?'ko':'en';
+const guess=navigator.language?.startsWith('zh')?'zh':navigator.language?.startsWith('ko')?'ko':navigator.language?.startsWith('ja')?'ja':'en';
 let lang=storage.get('jf_lang',guess);if(!languages.includes(lang))lang='zh';
 const t=(key,values)=>translate(lang,key,values);
 let albums=[],album=null,theme='night',picked=[],assets=[],excluded=new Set(),busy=false,tab='story';
@@ -32,7 +32,7 @@ function renderOutputs(){
  $('assets').className=`asset-grid kind-${tab}`;
  $('assets').innerHTML=shown.map(a=>`<figure class="asset">${a.kind==='reel'?`<video src="${esc(a.url)}" controls playsinline muted loop></video>`:`<img src="${esc(a.url)}" alt="${esc(a.name)}" width="${a.width}" height="${a.height}" loading="lazy">`}<figcaption><span>${a.width} × ${a.height}</span><a class="text-button" href="${esc(a.url)}" download="${esc(fileName(a))}">${esc(t('save'))}</a></figcaption></figure>`).join('');
  const captions=buildCaptions(info(),$('tags').value);
- $('captions').innerHTML=['story','post','reel','english','korean'].map(k=>`<article class="caption-card"><header><b>${esc(t(k))}</b><button type="button" class="text-button" data-copy="${k}">${esc(t('copy'))}</button></header><pre>${esc(captions[k])}</pre></article>`).join('');
+ $('captions').innerHTML=['story','post','reel','english','korean','japanese'].map(k=>`<article class="caption-card"><header><b>${esc(t(k))}</b><button type="button" class="text-button" data-copy="${k}">${esc(t('copy'))}</button></header><pre>${esc(captions[k])}</pre></article>`).join('');
 }
 function applyLanguage(){
  document.documentElement.lang=lang==='zh'?'zh-Hant':lang;

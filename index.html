@@ -927,10 +927,11 @@ const DICT={
   "下載":"다운로드","限動":"스토리","分享到限動":"스토리로 공유","下載圖片":"이미지 저장","版型":"레이아웃","滿版":"전체","留白標記":"태그 공간","舞伴分享":"댄스 파트너","夜色相框":"나이트 프레임","標記舞伴":"파트너 태그",
   "建議畫面（最清楚的幾格）":"추천 장면 (가장 선명)","或自己挑時間":"또는 원하는 순간 선택","前一格":"이전","下一格":"다음","影片載入中…":"영상 불러오는 중…","製作中…":"만드는 중…","關閉":"닫기"}
 };
-let LANG=(()=>{try{const v=localStorage.getItem("jf_lang");if(v)return v;}catch{}const n=(navigator.language||"").toLowerCase();return n.startsWith("zh")?"zh":n.startsWith("ko")?"ko":n?"en":"zh";})();
-DICT.en["限動工具"]="IG Studio";DICT.ko["限動工具"]="IG 스튜디오";
+let LANG=(()=>{try{const v=localStorage.getItem("jf_lang");if(v)return v;}catch{}const n=(navigator.language||"").toLowerCase();return n.startsWith("zh")?"zh":n.startsWith("ko")?"ko":n.startsWith("ja")?"ja":n?"en":"zh";})();
+DICT.ja={"精選": "ピックアップ", "相簿": "アルバム", "影片": "動画", "找自己": "自分を探す", "支持": "サポート", "預約": "予約", "每週精選 · Weekly Picks": "今週のピックアップ · WEEKLY PICKS", "把舞動的夜晚留下": "踊る夜を、写真に残す", "台北舞蹈與活動攝影。每次開啟換一批精選，點一下照片即可調色、下載或分享。": "台北のダンス・イベント写真。開くたびにピックアップが入れ替わります。写真をタップして色調整・ダウンロード・シェアができます。", "精選照片": "ピックアップ写真", "最近幾場活動的精選。": "最近のイベントからのハイライト。", "活動相簿": "イベントアルバム", "支持下一場拍攝": "次の撮影をサポート", "預約拍攝": "撮影を予約", "影片 · Bachata Crush": "動画 · Bachata Crush", "找自己和朋友": "自分と友だちを探す", "看照片": "写真を見る", "看影片": "動画を見る", "活動照片＋影片上線": "写真・動画を公開しました", "完整版": "フル版", "下載試看": "ダウンロード", "做限動": "ストーリー", "25 秒試看": "25秒プレビュー", "18 秒試看": "18秒プレビュー", "上傳自拍": "自撮りを追加", "開始找": "探す", "找到": "見つかった写真", "全部": "すべて", "我": "自分", "朋友": "友だち", "一起入鏡": "一緒に写っている", "選照片（最多 3 張，每張一個人）": "写真を選ぶ（最大3枚、1枚につき1人）", "下載": "ダウンロード", "限動": "ストーリー", "分享到限動": "ストーリーでシェア", "下載圖片": "画像を保存", "版型": "レイアウト", "滿版": "全面", "留白標記": "タグ用スペース", "舞伴分享": "ダンスパートナー", "夜色相框": "ナイトフレーム", "標記舞伴": "パートナーをタグ付け", "建議畫面（最清楚的幾格）": "おすすめのシーン（最も鮮明）", "或自己挑時間": "または好きな瞬間を選ぶ", "前一格": "前へ", "下一格": "次へ", "影片載入中…": "動画を読み込み中…", "製作中…": "作成中…", "關閉": "閉じる"};
+DICT.en["限動工具"]="IG Studio";DICT.ko["限動工具"]="IG 스튜디오";DICT.ja["限動工具"]="IG スタジオ";
 const T=s=>LANG==="zh"?s:(DICT[LANG]&&DICT[LANG][s])||s;
-const L=(zh,en,ko)=>LANG==="zh"?zh:LANG==="ko"?(ko||en):en;
+const L=(zh,en,ko,ja)=>LANG==="zh"?zh:LANG==="ko"?(ko||en):LANG==="ja"?(ja||en):en;
 const applyLang=()=>{
  document.documentElement.lang=LANG==="zh"?"zh-Hant":LANG;
  document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;el.textContent=T(k);});
@@ -945,7 +946,7 @@ const nav=document.querySelector(".nav-links");
 if(nav&&!nav.querySelector('[href="#finder"]')){const a=document.createElement("a");a.href="#finder";a.dataset.i18n="找自己";a.textContent="找自己";nav.insertBefore(a,nav.querySelector('[href="#support"]'));}
 const pill=document.querySelector(".navbar .nav-pill");
 const ls=document.createElement("div");ls.className="lang-switch";ls.setAttribute("role","group");ls.setAttribute("aria-label","Language");
-ls.innerHTML=`<button type="button" data-lang="zh">繁中</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ko">한</button>`;
+ls.innerHTML=`<button type="button" data-lang="zh">繁中</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ko">한</button><button type="button" data-lang="ja">日</button>`;
 pill&&pill.parentNode.insertBefore(ls,pill);
 ls.addEventListener("click",e=>{const b=e.target.closest("[data-lang]");if(!b)return;LANG=b.dataset.lang;try{localStorage.setItem("jf_lang",LANG);}catch{}applyLang();});
 
@@ -959,9 +960,9 @@ function renderPromo(){
  promo.innerHTML=`<div class="crush-promo-bg" aria-hidden="true">${bg}</div><div class="crush-promo-body">
   <p class="crush-eyebrow">${T("活動照片＋影片上線")} · 2026.10.15–10.16</p>
   <img class="crush-logo" src="${VBASE}crush-logo.png" alt="Taiwan Bachata Crush" width="420" height="246">
-  <p class="crush-sub">${L(`${NPH} 張照片、${NVID} 支影片。上傳一張自拍，AI 幫你從整晚的照片裡找出你和朋友。`,`${NPH} photos and ${NVID} dance clips. Upload a selfie and we’ll find you — and your friends — in every photo.`,`사진 ${NPH}장, 영상 ${NVID}개. 셀카 한 장으로 나와 친구가 나온 사진을 찾아드려요.`)}</p>
+  <p class="crush-sub">${L(`${NPH} 張照片、${NVID} 支影片。上傳一張自拍，AI 幫你從整晚的照片裡找出你和朋友。`,`${NPH} photos and ${NVID} dance clips. Upload a selfie and we’ll find you — and your friends — in every photo.`,`사진 ${NPH}장, 영상 ${NVID}개. 셀카 한 장으로 나와 친구가 나온 사진을 찾아드려요.`,`${NPH} 枚の写真と ${NVID} 本の動画。自撮りを1枚アップロードすると、AI が一晩の写真の中からあなたと友だちを見つけます。`)}</p>
   <div class="crush-actions"><a class="crush-cta crush-cta-primary" href="#finder">${icon("search")}${T("找自己和朋友")}</a><button type="button" class="crush-cta" data-crush-photos>${icon("albums")}${T("看照片")}</button><a class="crush-cta" href="#videos">${icon("play")}${T("看影片")}</a></div>
-  <ul class="crush-points"><li>${L("✓ 一次上傳 3 張，連朋友一起找，還能找出你們同框的照片","✓ Up to 3 people at once — even photos of you together","✓ 최대 3명까지 — 함께 찍힌 사진도 찾아요")}</li><li>${L("✓ 找到的照片一鍵做成 IG 限動","✓ Turn any result into an IG Story in one tap","✓ 찾은 사진을 바로 IG 스토리로")}</li></ul></div>`;
+  <ul class="crush-points"><li>${L("✓ 一次上傳 3 張，連朋友一起找，還能找出你們同框的照片","✓ Up to 3 people at once — even photos of you together","✓ 최대 3명까지 — 함께 찍힌 사진도 찾아요","✓ 3人まで同時に検索、一緒に写っている写真も見つかります")}</li><li>${L("✓ 找到的照片一鍵做成 IG 限動","✓ Turn any result into an IG Story in one tap","✓ 찾은 사진을 바로 IG 스토리로","✓ 見つかった写真をワンタップで IG ストーリーに")}</li></ul></div>`;
 }
 promo.addEventListener("click",e=>{if(e.target.closest("[data-crush-photos]"))openAlbum(albums.find(a=>a.date==="1016")||crushAlbum);});
 
@@ -1001,14 +1002,14 @@ function renderFinder(){
  const people=FS.people;const r=FS.results;
  const tabs=r?[["all",T("全部")],...people.map((p,i)=>[`p${i}`,personLabel(i)]),...(people.length>1?[["together",T("一起入鏡")]]:[])]:[];
  const list=r?(FS.tab==="all"?r.all:FS.tab==="together"?r.together:r.per[+FS.tab.slice(1)]||[]):[];
- const badge=m=>m.exact?L("同一張","Same photo","같은 사진"):m.score>=JimFace.MATCH_STRONG?L("很像","Strong","매우 비슷"):L("可能","Likely","가능");
+ const badge=m=>m.exact?L("同一張","Same photo","같은 사진","同じ写真"):m.score>=JimFace.MATCH_STRONG?L("很像","Strong","매우 비슷","よく似ている"):L("可能","Likely","가능","たぶん");
  finder.innerHTML=`<div class="finder-card">
-  <div class="finder-head"><span class="finder-icon">${icon("search")}</span><div><h2 class="title2">${T("找自己和朋友")}</h2><p class="footnote">${L("每個框代表一個人（最多 3 人）。同一個人可以再加 1–2 張不同角度的照片，會更準。照片只在你的手機裡比對，不會上傳。","Each tile is one person (up to 3). Add 1–2 more photos of the same person for better accuracy. Matching runs on your device — nothing is uploaded.","한 칸이 한 사람이에요 (최대 3명). 같은 사람 사진을 1–2장 더 넣으면 더 정확해요. 기기 안에서만 비교하며 업로드되지 않아요.")}</p></div></div>
-  <div class="finder-people">${[0,1,2].map(i=>{const p=people[i];if(p)return `<figure class="finder-person"><img src="${p.urls[0]}" alt=""><figcaption>${personLabel(i)}${p.urls.length>1?` · ${p.urls.length}${L("張"," photos","장")}`:""}${personState(p)}</figcaption><button type="button" class="finder-remove" data-remove-person="${i}" aria-label="${L("移除","Remove","삭제")}">✕</button>${p.urls.length<3?`<label class="finder-more" aria-label="${L("同一人再加一張","Add another photo of this person","같은 사람 사진 추가")}"><input type="file" accept="image/*" multiple data-more-person="${i}">＋</label>`:""}</figure>`;return i===people.length?`<label class="finder-add"><input type="file" accept="image/*" multiple data-add-person>${icon("plus")}<span>${i===0?T("上傳自拍"):`${T("朋友")} ${i}`}</span></label>`:"";}).join("")}</div>
-  <div class="finder-actions"><button type="button" class="button button-filled" data-face-search ${!people.length||FS.busy?"disabled":""}>${FS.busy?L("比對中…","Searching…","찾는 중…"):T("開始找")}</button><p class="footnote finder-status" aria-live="polite">${FS.status}</p>${r&&!FS.busy&&!FS.extended?`<button type="button" class="button" data-face-extend>${L("延伸搜尋其他相簿","Search other albums","다른 앨범 검색")}</button>`:""}</div>
+  <div class="finder-head"><span class="finder-icon">${icon("search")}</span><div><h2 class="title2">${T("找自己和朋友")}</h2><p class="footnote">${L("每個框代表一個人（最多 3 人）。同一個人可以再加 1–2 張不同角度的照片，會更準。照片只在你的手機裡比對，不會上傳。","Each tile is one person (up to 3). Add 1–2 more photos of the same person for better accuracy. Matching runs on your device — nothing is uploaded.","한 칸이 한 사람이에요 (최대 3명). 같은 사람 사진을 1–2장 더 넣으면 더 정확해요. 기기 안에서만 비교하며 업로드되지 않아요.","1つの枠が1人です（最大3人）。同じ人の別角度の写真を1〜2枚追加すると精度が上がります。照合は端末内で行われ、写真はアップロードされません。")}</p></div></div>
+  <div class="finder-people">${[0,1,2].map(i=>{const p=people[i];if(p)return `<figure class="finder-person"><img src="${p.urls[0]}" alt=""><figcaption>${personLabel(i)}${p.urls.length>1?` · ${p.urls.length}${L("張"," photos","장","枚")}`:""}${personState(p)}</figcaption><button type="button" class="finder-remove" data-remove-person="${i}" aria-label="${L("移除","Remove","삭제","削除")}">✕</button>${p.urls.length<3?`<label class="finder-more" aria-label="${L("同一人再加一張","Add another photo of this person","같은 사람 사진 추가","この人の写真をもう1枚追加")}"><input type="file" accept="image/*" multiple data-more-person="${i}">＋</label>`:""}</figure>`;return i===people.length?`<label class="finder-add"><input type="file" accept="image/*" multiple data-add-person>${icon("plus")}<span>${i===0?T("上傳自拍"):`${T("朋友")} ${i}`}</span></label>`:"";}).join("")}</div>
+  <div class="finder-actions"><button type="button" class="button button-filled" data-face-search ${!people.length||FS.busy?"disabled":""}>${FS.busy?L("比對中…","Searching…","찾는 중…","検索中…"):T("開始找")}</button><p class="footnote finder-status" aria-live="polite">${FS.status}</p>${r&&!FS.busy&&!FS.extended?`<button type="button" class="button" data-face-extend>${L("延伸搜尋其他相簿","Search other albums","다른 앨범 검색","ほかのアルバムも検索")}</button>`:""}</div>
   ${FS.busy?`<div class="finder-progress"><span style="width:${FS.progress}%"></span></div>`:""}
   ${r?`<div class="segmented-wrap"><div class="segmented" role="tablist">${tabs.map(([k,l])=>`<button type="button" role="tab" class="${FS.tab===k?"is-selected":""}" data-face-tab="${k}">${l} <small>${k==="all"?r.all.length:k==="together"?r.together.length:(r.per[+k.slice(1)]||[]).length}</small></button>`).join("")}</div></div>
-   ${list.length?`<div class="finder-grid">${list.map(m=>`<article class="finder-match"><button type="button" class="finder-photo" data-open="${m.id}"><img src="${photoSrc(m.id,600)}" alt="" loading="lazy"><span class="badge ${m.exact||m.score>=JimFace.MATCH_STRONG?"badge-strong":""}">${badge(m)}${m.who.length>1?" · "+m.who.length+L("人","",""):""}</span></button><div class="finder-match-actions"><button type="button" data-photo-story="${m.id}">${icon("photo")}${T("限動")}</button><button type="button" data-download="${m.id}">${icon("download")}${T("下載")}</button>${m.exact?"":`<button type="button" data-not-me="${m.id}">${L("不是我","Not me","제가 아니에요")}</button>`}</div></article>`).join("")}</div>`:`<p class="footnote">${L("這一類沒有找到照片。為了避免認錯人，低信心的結果不會顯示；可以換一張臉更近、光線更好、或接近當晚造型的照片再試。","Nothing here. Low-confidence results are hidden to avoid mix-ups — try a closer, brighter photo, or one with a similar look to that night.","결과가 없어요. 오인식을 막기 위해 신뢰도가 낮은 결과는 숨겨요. 더 가깝고 밝은 사진으로 다시 시도해 보세요.")}</p>`}`:""}
+   ${list.length?`<div class="finder-grid">${list.map(m=>`<article class="finder-match"><button type="button" class="finder-photo" data-open="${m.id}"><img src="${photoSrc(m.id,600)}" alt="" loading="lazy"><span class="badge ${m.exact||m.score>=JimFace.MATCH_STRONG?"badge-strong":""}">${badge(m)}${m.who.length>1?" · "+m.who.length+L("人","","","人"):""}</span></button><div class="finder-match-actions"><button type="button" data-photo-story="${m.id}">${icon("photo")}${T("限動")}</button><button type="button" data-download="${m.id}">${icon("download")}${T("下載")}</button>${m.exact?"":`<button type="button" data-not-me="${m.id}">${L("不是我","Not me","제가 아니에요","自分じゃない")}</button>`}</div></article>`).join("")}</div>`:`<p class="footnote">${L("這一類沒有找到照片。為了避免認錯人，低信心的結果不會顯示；可以換一張臉更近、光線更好、或接近當晚造型的照片再試。","Nothing here. Low-confidence results are hidden to avoid mix-ups — try a closer, brighter photo, or one with a similar look to that night.","결과가 없어요. 오인식을 막기 위해 신뢰도가 낮은 결과는 숨겨요. 더 가깝고 밝은 사진으로 다시 시도해 보세요.","ここには見つかりませんでした。人違いを避けるため、信頼度の低い結果は表示していません。顔が大きく明るく写った写真や、当日に近い雰囲気の写真で試してみてください。")}</p>`}`:""}
  </div>`;
 }
 const addFiles=(person,files)=>{for(const f of files){if(person.files.length>=3)break;person.files.push(f);person.urls.push(URL.createObjectURL(f));}person.checked=false;person.vecs=[];};
@@ -1055,11 +1056,11 @@ async function searchOtherAlbums(eng,onProgress,judge){
   for(const [i,p] of FS.people.entries()){
    if(!p.vecs.length&&!p.hashes.length)continue;
    const r=await fetch(MAIN_SITE+"/api/face-index",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({model:"sface-1",queryDescriptors:p.vecs.map(v=>Array.from(v)),queryHashes:p.hashes.slice(0,3)})});
-   if(!r.ok)return{ok:false,hits:[],reason:r.status===403?L("原站還沒開放 GitHub 版讀取共用索引。","the main site has not opened its index to this page yet.","원본 사이트가 아직 색인을 열지 않았어요."):L(`原站索引回應錯誤（${r.status}）。`,`index error (${r.status}).`,`색인 오류 (${r.status}).`)};
+   if(!r.ok)return{ok:false,hits:[],reason:r.status===403?L("原站還沒開放 GitHub 版讀取共用索引。","the main site has not opened its index to this page yet.","원본 사이트가 아직 색인을 열지 않았어요.","メインサイトがまだこのページへの索引公開をしていません。"):L(`原站索引回應錯誤（${r.status}）。`,`index error (${r.status}).`,`색인 오류 (${r.status}).`,`インデックスのエラー（${r.status}）。`)};
    const j=await r.json();indexed=Math.max(indexed,j.indexed||0);
    for(const m of (j.matches||[]).slice(0,24)){if(local.has(m.id)||!known.has(m.id))continue;const c=cand.get(m.id)||{id:m.id,people:[]};c.people.push([i,m]);cand.set(m.id,c);}
   }
- }catch{return{ok:false,hits:[],reason:L("連不到原站的共用索引（原站還沒開放跨站讀取，或網路中斷）。","could not reach the main site's index.","원본 사이트 색인에 연결할 수 없어요.")};}
+ }catch{return{ok:false,hits:[],reason:L("連不到原站的共用索引（原站還沒開放跨站讀取，或網路中斷）。","could not reach the main site's index.","원본 사이트 색인에 연결할 수 없어요.","メインサイトの共有インデックスに接続できませんでした。")};}
  const list=[...cand.values()];const out=[];const cands=FS.people.map(()=>[]);let done=0,cursor=0,failed=0;
  const opt=eng.options(608,.3);
  const worker=async()=>{while(cursor<list.length){const c=list[cursor++];try{
@@ -1074,7 +1075,7 @@ async function searchOtherAlbums(eng,onProgress,judge){
  await Promise.all([0,1,2].map(worker));
  // 跟 10.15 一樣做第二輪確認；10.15 已確認的照片也一起當錨點
  FS.people.forEach((p,i)=>confirmCandidates([...FS.cands[i].filter(c=>c.s>=ANCHOR_CUTOFF&&c.ds>=.6),...cands[i]],i,(id,pi,sc)=>{if(cands[pi].some(c=>c.id===id))out.push([id,pi,sc,false]);}));
- return{ok:true,hits:out,indexed,reason:failed?L(`${failed} 張候選照片讀取失敗。`,`${failed} candidates failed to load.`,`${failed}장 불러오기 실패.`):""};
+ return{ok:true,hits:out,indexed,reason:failed?L(`${failed} 張候選照片讀取失敗。`,`${failed} candidates failed to load.`,`${failed}장 불러오기 실패.`,`${failed} 枚の候補写真を読み込めませんでした。`):""};
 }
 function buildFaceResults(){
   const all=[],together=[],per=FS.people.map(()=>[]);
@@ -1083,20 +1084,20 @@ function buildFaceResults(){
  all.sort(sorter);together.sort(sorter);per.forEach(l=>l.sort(sorter));
  const keep=FS.results&&FS.tab!=="all";FS.results={all,per,together};if(!keep)FS.tab=together.length?"together":"all";
  const bad=FS.people.map((p,i)=>!p.vecs.length?personLabel(i):"").filter(Boolean);
- const r=FS.extended;const scope=!r?L("目前搜尋的是本週活動（10.15、10.16 Bachata Crush）。想找以前的活動，按下方「延伸搜尋其他相簿」。","Searched this week's events (10.15, 10.16). Tap “Search other albums” for older events.","이번 주 행사(10.15, 10.16)를 검색했어요."):r.ok?L(`已搜尋 10.15、10.16 與其他相簿（共用索引 ${r.indexed} 張）。`,`Searched 10.15, 10.16 and other albums (${r.indexed} indexed photos).`,`10.15와 다른 앨범을 검색했어요.`):L(`只搜尋了 10.15、10.16：${r.reason}`,`Only 10.15 and 10.16 were searched: ${r.reason}`,`10.15 앨범만 검색했어요: ${r.reason}`);
- FS.status=L(`找到 ${all.length} 張照片`+(together.length?`，其中 ${together.length} 張你們同框`:"")+"。點照片可以放大、下載或做成限動。"+(bad.length?`（${bad.join("、")} 的照片找不到清楚的臉）`:""),`Found ${all.length} photos`+(together.length?`, ${together.length} with you together`:"")+".",`${all.length}장을 찾았어요`+(together.length?` (함께 ${together.length}장)`:"")+".")+" "+scope;
+ const r=FS.extended;const scope=!r?L("目前搜尋的是本週活動（10.15、10.16 Bachata Crush）。想找以前的活動，按下方「延伸搜尋其他相簿」。","Searched this week's events (10.15, 10.16). Tap “Search other albums” for older events.","이번 주 행사(10.15, 10.16)를 검색했어요.","今週のイベント（10.15、10.16 Bachata Crush）を検索しました。過去のイベントは下の「ほかのアルバムも検索」から。"):r.ok?L(`已搜尋 10.15、10.16 與其他相簿（共用索引 ${r.indexed} 張）。`,`Searched 10.15, 10.16 and other albums (${r.indexed} indexed photos).`,`10.15와 다른 앨범을 검색했어요.`,`10.15、10.16 とほかのアルバムを検索しました（共有インデックス ${r.indexed} 枚）。`):L(`只搜尋了 10.15、10.16：${r.reason}`,`Only 10.15 and 10.16 were searched: ${r.reason}`,`10.15 앨범만 검색했어요: ${r.reason}`,`10.15、10.16 のみ検索しました：${r.reason}`);
+ FS.status=L(`找到 ${all.length} 張照片`+(together.length?`，其中 ${together.length} 張你們同框`:"")+"。點照片可以放大、下載或做成限動。"+(bad.length?`（${bad.join("、")} 的照片找不到清楚的臉）`:""),`Found ${all.length} photos`+(together.length?`, ${together.length} with you together`:"")+".",`${all.length}장을 찾았어요`+(together.length?` (함께 ${together.length}장)`:"")+".",`${all.length} 枚の写真が見つかりました`+(together.length?`（うち ${together.length} 枚は一緒に写っています）`:"")+"。写真をタップすると拡大・ダウンロード・ストーリー作成ができます。")+" "+scope;
 }
 async function extendFaceSearch(){
- FS.busy=true;FS.progress=5;FS.status=L("正在搜尋其他相簿…","Searching other albums…","다른 앨범을 찾는 중…");renderFinder();
+ FS.busy=true;FS.progress=5;FS.status=L("正在搜尋其他相簿…","Searching other albums…","다른 앨범을 찾는 중…","ほかのアルバムを検索中…");renderFinder();
  try{
   const eng=await JimFace.loadFaceEngine("face/");
-  const r=await searchOtherAlbums(eng,(done,total)=>{FS.progress=10+Math.round(done/Math.max(1,total)*89);FS.status=L(`正在確認其他相簿的候選照片 ${done} / ${total}…`,`Checking candidates ${done} / ${total}…`,`후보 확인 중 ${done} / ${total}…`);renderFinder();},FS.judge);
+  const r=await searchOtherAlbums(eng,(done,total)=>{FS.progress=10+Math.round(done/Math.max(1,total)*89);FS.status=L(`正在確認其他相簿的候選照片 ${done} / ${total}…`,`Checking candidates ${done} / ${total}…`,`후보 확인 중 ${done} / ${total}…`,`ほかのアルバムの候補を確認中 ${done} / ${total}…`);renderFinder();},FS.judge);
   r.hits.forEach(([id,i,score,exact])=>FS.hit(id,i,score,exact));FS.extended=r;buildFaceResults();
- }catch(err){console.error(err);FS.extended={ok:false,reason:L("延伸搜尋失敗，請再試一次。","Search failed, please retry.","검색 실패")};buildFaceResults();}
+ }catch(err){console.error(err);FS.extended={ok:false,reason:L("延伸搜尋失敗，請再試一次。","Search failed, please retry.","검색 실패","検索に失敗しました。もう一度お試しください。")};buildFaceResults();}
  FS.busy=false;FS.progress=100;renderFinder();
 }
 async function runFaceSearch(){
- FS.hidden=new Set();FS.results=null;FS.busy=true;FS.progress=5;FS.status=L("第一次使用會載入辨識模型（約 12MB），請稍候…","Loading the face model (~12MB) the first time…","처음에는 얼굴 인식 모델(약 12MB)을 불러와요…");renderFinder();
+ FS.hidden=new Set();FS.results=null;FS.busy=true;FS.progress=5;FS.status=L("第一次使用會載入辨識模型（約 12MB），請稍候…","Loading the face model (~12MB) the first time…","처음에는 얼굴 인식 모델(약 12MB)을 불러와요…","初回は顔認識モデル（約12MB）を読み込みます。少しお待ちください…");renderFinder();
  try{
   const [eng,photos]=await Promise.all([JimFace.loadFaceEngine("face/"),faceIndex||loadIndex()]);
   faceIndex=photos;FS.progress=45;renderFinder();
@@ -1127,7 +1128,7 @@ async function runFaceSearch(){
     p.vecs.push(Float32Array.from(pick.embedding));});
    p.checked=true;
   }
-  if(!FS.people.some(p=>p.vecs.length||p.hashes.length)){FS.status=L("照片裡找不到清楚的臉，換一張正臉、光線好的照片。","No clear face found. Try a well-lit, front-facing photo.","선명한 얼굴을 찾지 못했어요. 밝은 정면 사진으로 바꿔 보세요.");FS.busy=false;renderFinder();return;}
+  if(!FS.people.some(p=>p.vecs.length||p.hashes.length)){FS.status=L("照片裡找不到清楚的臉，換一張正臉、光線好的照片。","No clear face found. Try a well-lit, front-facing photo.","선명한 얼굴을 찾지 못했어요. 밝은 정면 사진으로 바꿔 보세요.","はっきりした顔が見つかりませんでした。正面で明るく写った写真に変えてください。");FS.busy=false;renderFinder();return;}
   // 一張照片裡每個人的命中：id → {who:Set, score, exact, scores:[]}
   const hits=new Map();
   const hit=(id,i,score,exact)=>{const h=hits.get(id)||{id,who:new Set(),score:-1,exact:false,scores:[]};h.who.add(i);h.score=Math.max(h.score,score);h.exact=h.exact||!!exact;h.scores[i]=Math.max(h.scores[i]??-1,score);hits.set(id,h);};
@@ -1145,7 +1146,7 @@ async function runFaceSearch(){
   FS.people.forEach((p,i)=>confirmCandidates(FS.cands[i],i,hit));
   FS.hits=hits;FS.hit=hit;FS.judge=judge;FS.extended=null;
   buildFaceResults();
- }catch(err){console.error(err);FS.status=L("辨識模型載入失敗，請重新整理再試一次。","Could not load the face model. Please reload and try again.","모델을 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.");}
+ }catch(err){console.error(err);FS.status=L("辨識模型載入失敗，請重新整理再試一次。","Could not load the face model. Please reload and try again.","모델을 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.","顔認識モデルを読み込めませんでした。ページを再読み込みしてもう一度お試しください。");}
  FS.busy=false;FS.progress=100;renderFinder();
 }
 
@@ -1165,8 +1166,8 @@ async function drawPhotoStory(id,tpl){
  if(logo&&tpl!=="space"){const w=tpl==="full"?360:300,h=w*logo.height/logo.width;x.drawImage(logo,tpl==="full"?60:70,tpl==="full"?1560:90,w,h);}
  x.fillStyle=light?"#111":"#fff";x.font=fontF(700,tpl==="space"?44:38);x.fillText(tpl==="space"?"TAIWAN BACHATA CRUSH":SD,tpl==="space"?64:(tpl==="full"?460:400),tpl==="space"?170:(tpl==="full"?1720:200));
  x.fillStyle=light?"rgba(17,17,17,.6)":"rgba(255,255,255,.72)";x.font=fontF(500,30);
- if(tpl==="space"){x.fillText(SD+" · FILM BY JIM",64,218);x.fillStyle="#111";x.font=fontF(700,46);x.fillText("@jimframe",64,1560);x.fillStyle="rgba(17,17,17,.6)";x.font=fontF(600,32);x.fillText(L("在這裡標記你的舞伴 ↗","Tag your dance partner here ↗","여기에 댄스 파트너를 태그하세요 ↗"),64,1700);}
- else if(tpl==="partner"){x.fillStyle="#fff";x.font=fontF(700,52);x.fillText(L("和我跳舞的是 ↗","Dancing with ↗","함께 춤춘 사람 ↗"),70,1560);x.strokeStyle="rgba(255,255,255,.4)";x.lineWidth=3;x.beginPath();x.moveTo(70,1630);x.lineTo(1010,1630);x.stroke();x.fillStyle="rgba(255,255,255,.7)";x.font=fontF(500,30);x.fillText("@jimframe · @bachata_crush_tw · @flow.taipei",70,1720);}
+ if(tpl==="space"){x.fillText(SD+" · FILM BY JIM",64,218);x.fillStyle="#111";x.font=fontF(700,46);x.fillText("@jimframe",64,1560);x.fillStyle="rgba(17,17,17,.6)";x.font=fontF(600,32);x.fillText(L("在這裡標記你的舞伴 ↗","Tag your dance partner here ↗","여기에 댄스 파트너를 태그하세요 ↗","ここにダンスパートナーをタグ付け ↗"),64,1700);}
+ else if(tpl==="partner"){x.fillStyle="#fff";x.font=fontF(700,52);x.fillText(L("和我跳舞的是 ↗","Dancing with ↗","함께 춤춘 사람 ↗","一緒に踊ったのは ↗"),70,1560);x.strokeStyle="rgba(255,255,255,.4)";x.lineWidth=3;x.beginPath();x.moveTo(70,1630);x.lineTo(1010,1630);x.stroke();x.fillStyle="rgba(255,255,255,.7)";x.font=fontF(500,30);x.fillText("@jimframe · @bachata_crush_tw · @flow.taipei",70,1720);}
  else{x.fillText("@jimframe · @bachata_crush_tw",460,1770);}
  return c;
 }
@@ -1178,9 +1179,9 @@ async function exportCanvas(c,name,share){
 }
 function openPhotoStory(id){
  let tpl="full";
- const draw=async()=>{const pv=sr.querySelector("canvas.pv");if(!pv)return;try{const c=await drawPhotoStory(id,tpl);const ctx=pv.getContext("2d");ctx.clearRect(0,0,pv.width,pv.height);ctx.drawImage(c,0,0,pv.width,pv.height);}catch{toast(L("照片載入失敗","Could not load photo","사진을 불러오지 못했어요"));}};
+ const draw=async()=>{const pv=sr.querySelector("canvas.pv");if(!pv)return;try{const c=await drawPhotoStory(id,tpl);const ctx=pv.getContext("2d");ctx.clearRect(0,0,pv.width,pv.height);ctx.drawImage(c,0,0,pv.width,pv.height);}catch{toast(L("照片載入失敗","Could not load photo","사진을 불러오지 못했어요","写真を読み込めませんでした"));}};
  const render=()=>{sr.innerHTML=`<div class="credit-backdrop story-backdrop" data-sclose><div class="credit-sheet story-sheet" role="dialog" aria-modal="true">
-  <span class="credit-grabber"></span><h2>${L("做成 IG 限動","Make an IG Story","IG 스토리 만들기")}</h2>
+  <span class="credit-grabber"></span><h2>${L("做成 IG 限動","Make an IG Story","IG 스토리 만들기","IG ストーリーを作る")}</h2>
   <div class="story-body"><canvas class="pv" width="324" height="576"></canvas><div class="story-side"><p class="crush-label">${T("版型")}</p>
   <div class="crush-templates">${[["full",T("滿版")],["space",T("留白標記")],["partner",T("舞伴分享")]].map(([k,l])=>`<button type="button" class="${tpl===k?"is-selected":""}" data-tpl="${k}"><b>${l}</b></button>`).join("")}</div>
   <div class="button-stack"><button type="button" class="button button-filled button-large" data-sshare>${T("分享到限動")}</button><button type="button" class="button button-gray" data-sdl>${icon("download")}${T("下載圖片")}</button><button type="button" class="text-button" data-sclose>${T("關閉")}</button></div></div></div></div></div>`;draw();};
@@ -1188,7 +1189,7 @@ function openPhotoStory(id){
  sr.onclick=async e=>{
   if(e.target.matches("[data-sclose]")||e.target.closest("button[data-sclose]")){sr.innerHTML="";return;}
   const t=e.target.closest("[data-tpl]");if(t){tpl=t.dataset.tpl;render();return;}
-  const sh=e.target.closest("[data-sshare],[data-sdl]");if(sh){sh.disabled=true;try{const c=await drawPhotoStory(id,tpl);await exportCanvas(c,`JimFrame_${id.startsWith("L1016-")?id.slice(1):"1015_"+id.slice(0,8)}_story.jpg`,sh.matches("[data-sshare]"));}catch{toast(L("暫時無法製作，請再試一次","Please try again","다시 시도해 주세요"));}sh.disabled=false;}
+  const sh=e.target.closest("[data-sshare],[data-sdl]");if(sh){sh.disabled=true;try{const c=await drawPhotoStory(id,tpl);await exportCanvas(c,`JimFrame_${id.startsWith("L1016-")?id.slice(1):"1015_"+id.slice(0,8)}_story.jpg`,sh.matches("[data-sshare]"));}catch{toast(L("暫時無法製作，請再試一次","Please try again","다시 시도해 주세요","作成できませんでした。もう一度お試しください"));}sh.disabled=false;}
  };
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-photo-story]");if(b){e.stopPropagation();openPhotoStory(b.dataset.photoStory);}},true);
@@ -1213,7 +1214,7 @@ function openVideoStory(n){
   c.save();c.beginPath();c.roundRect(bx,by,bw,bh,34*scale);c.clip();c.drawImage(v,bx+(bw-dw)/2,by+(bh-dh)/2,dw,dh);c.restore();
   const f=(w,px)=>fontF(w,px*scale);c.fillStyle=light?"#111":"#fff";c.font=f(700,40);c.fillText("TAIWAN BACHATA CRUSH",90*scale,150*scale);c.fillStyle=light?"rgba(17,17,17,.6)":"rgba(255,255,255,.66)";c.font=f(500,30);c.fillText(`${VLAB(n)}.2026 · FILM BY JIM`,90*scale,196*scale);
   if(tpl==="frame"){c.fillStyle="#ff8a3d";c.font=f(700,34);c.fillText("@jimframe",90*scale,1810*scale);c.fillStyle="rgba(255,255,255,.7)";c.font=f(500,28);c.fillText("@bachata_crush_tw  @flow.taipei",90*scale,1856*scale);}
-  else{c.fillStyle="#111";c.font=f(700,48);c.fillText(L("和我跳舞的是 ↗","Dancing with ↗","함께 춤춘 사람 ↗"),120*scale,1690*scale);c.strokeStyle="rgba(17,17,17,.35)";c.lineWidth=3*scale;c.beginPath();c.moveTo(120*scale,1760*scale);c.lineTo(960*scale,1760*scale);c.stroke();c.fillStyle="rgba(17,17,17,.6)";c.font=f(500,28);c.fillText("@jimframe · @bachata_crush_tw",120*scale,1830*scale);}
+  else{c.fillStyle="#111";c.font=f(700,48);c.fillText(L("和我跳舞的是 ↗","Dancing with ↗","함께 춤춘 사람 ↗","一緒に踊ったのは ↗"),120*scale,1690*scale);c.strokeStyle="rgba(17,17,17,.35)";c.lineWidth=3*scale;c.beginPath();c.moveTo(120*scale,1760*scale);c.lineTo(960*scale,1760*scale);c.stroke();c.fillStyle="rgba(17,17,17,.6)";c.font=f(500,28);c.fillText("@jimframe · @bachata_crush_tw",120*scale,1830*scale);}
  };
  const refresh=async()=>{if(!ready)return;await seek(time);draw(pv,.3);sr.querySelector(".tval").textContent=time.toFixed(1)+"s";sr.querySelector(".crush-scrub").value=time;sr.querySelectorAll("[data-cand]").forEach(b=>b.classList.toggle("is-selected",Math.abs(+b.dataset.cand-time)<0.05));};
  v.addEventListener("loadeddata",()=>{ready=true;sr.querySelector(".crush-loading")?.remove();sr.querySelectorAll("[data-vshare],[data-vdl]").forEach(b=>b.disabled=false);refresh();},{once:true});
@@ -1223,7 +1224,7 @@ function openVideoStory(n){
   const cd=e.target.closest("[data-cand]");if(cd){time=+cd.dataset.cand;refresh();return;}
   const nd=e.target.closest("[data-nudge]");if(nd){time=Math.min(PREVIEW_LEN(n)-0.1,Math.max(0,+(time+(+nd.dataset.nudge)/30).toFixed(3)));refresh();return;}
   const tp=e.target.closest("[data-vtpl]");if(tp){tpl=tp.dataset.vtpl;sr.querySelectorAll("[data-vtpl]").forEach(b=>b.classList.toggle("is-selected",b===tp));refresh();return;}
-  const ex=e.target.closest("[data-vshare],[data-vdl]");if(ex){ex.disabled=true;try{await seek(time);const c=document.createElement("canvas");draw(c,1);await exportCanvas(c,`JimFrame_${VEV(n)}-BachataCrush_${n}_story.jpg`,ex.matches("[data-vshare]"));}catch{toast(L("暫時無法輸出，請換一個畫面","Could not export, try another frame","다른 장면으로 다시 시도해 주세요"));}ex.disabled=false;}
+  const ex=e.target.closest("[data-vshare],[data-vdl]");if(ex){ex.disabled=true;try{await seek(time);const c=document.createElement("canvas");draw(c,1);await exportCanvas(c,`JimFrame_${VEV(n)}-BachataCrush_${n}_story.jpg`,ex.matches("[data-vshare]"));}catch{toast(L("暫時無法輸出，請換一個畫面","Could not export, try another frame","다른 장면으로 다시 시도해 주세요","書き出せませんでした。別のシーンを選んでください"));}ex.disabled=false;}
  };
 }
 window.renderVideoLabels=()=>renderVideoLabels();

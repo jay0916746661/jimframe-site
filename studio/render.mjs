@@ -3,7 +3,7 @@
 // carousel posts (1080x1350), a Reel (MP4, 1080x1920) and captions, entirely in
 // the browser. Photos come through /api/face-preview so canvases stay exportable.
 import { ArrayBufferTarget, Muxer } from "./vendor/mp4-muxer.mjs";
-const tr = (info, zh, en, ko) => info.language === "en" ? en : info.language === "ko" ? ko : zh;
+const tr = (info, zh, en, ko, ja) => info.language === "en" ? en : info.language === "ko" ? ko : info.language === "ja" ? (ja ?? en) : zh;
 const FONT = '-apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang TC", "Noto Sans TC", "Helvetica Neue", Arial, sans-serif';
 const palettes = {
     night: { bg: "#0b0b0c", fg: "#f5f5f7", sub: "rgba(245,245,247,.62)", accent: "#ffd60a", onAccent: "#111", card: "#1c1c1e" },
@@ -260,12 +260,12 @@ export async function renderStories(photos, info, theme) {
         wordmark(x, 90, 300, pal.sub);
         text(x, info.headline, 90, 420, 84, { weight: 800, color: pal.fg, maxWidth: 900 });
         text(x, info.venue, 90, 560, 150, { weight: 800, color: pal.fg, spacing: -3, maxWidth: 900 });
-        text(x, `${date}  ·  ${info.count} ${tr(info, "張", "photos", "장")}`, 90, 640, 44, { weight: 500, color: pal.sub });
+        text(x, `${date}  ·  ${info.count} ${tr(info, "張", "photos", "장", "枚")}`, 90, 640, 44, { weight: 500, color: pal.sub });
         const [a, b2, c2] = [portraits[0], portraits[1] ?? portraits[0], portraits[2] ?? portraits[0]];
         framedPhoto(x, b2.img, 70, 760, 420, 560, -0.07, pal.card);
         framedPhoto(x, c2.img, 590, 790, 420, 560, 0.07, pal.card);
         framedPhoto(x, a.img, 250, 700, 580, 760, 0, pal.card);
-        pill(x, tr(info, "到網站用自拍找你自己 ↗", "Find your photos with a selfie ↗", "셀카로 내 사진 찾기 ↗"), SW / 2, 1555, 46, pal.accent, pal.onAccent);
+        pill(x, tr(info, "到網站用自拍找你自己 ↗", "Find your photos with a selfie ↗", "셀카로 내 사진 찾기 ↗", "自撮りで自分の写真を探す ↗"), SW / 2, 1555, 46, pal.accent, pal.onAccent);
         out.push(await asset(c, "story-1-new-photos.jpg", "story"));
     }
     // 2. One hero photo, full bleed.
@@ -283,7 +283,7 @@ export async function renderStories(photos, info, theme) {
         wordmark(x, 90, 300, "rgba(255,255,255,.85)");
         text(x, info.venue, 90, 1380, 140, { weight: 800, color: "#fff", spacing: -3, maxWidth: 900 });
         text(x, date, 90, 1460, 48, { weight: 500, color: "rgba(255,255,255,.75)" });
-        text(x, tr(info, `完整照片在網站 · 分享請標記 ${info.handle}`, `All photos online · Tag ${info.handle}`, `전체 사진은 웹사이트에서 · ${info.handle} 태그`), 90, 1545, 38, { weight: 600, color: "#fff", maxWidth: 900 });
+        text(x, tr(info, `完整照片在網站 · 分享請標記 ${info.handle}`, `All photos online · Tag ${info.handle}`, `전체 사진은 웹사이트에서 · ${info.handle} 태그`, `全写真はサイトで · ${info.handle} をタグ付け`), 90, 1545, 38, { weight: 600, color: "#fff", maxWidth: 900 });
         out.push(await asset(c, "story-2-hero.jpg", "story"));
     }
     // 3. "Which one are you?" 3x3 grid.
@@ -294,14 +294,14 @@ export async function renderStories(photos, info, theme) {
         x.fillRect(0, 0, SW, SH);
         themeDecor(x, theme, SW, SH);
         campaignMark(x, theme, 820, 300);
-        text(x, tr(info, "你在哪一張？", "Can you spot yourself?", "어디에 있나요?"), SW / 2, 400, 104, { weight: 800, color: pal.fg, align: "center" });
+        text(x, tr(info, "你在哪一張？", "Can you spot yourself?", "어디에 있나요?", "あなたはどこ？"), SW / 2, 400, 104, { weight: 800, color: pal.fg, align: "center" });
         text(x, `${info.venue} · ${date}`, SW / 2, 470, 42, { weight: 500, color: pal.sub, align: "center" });
         const cell = 312, gap = 12, left = (SW - cell * 3 - gap * 2) / 2, top = 540;
         for (let i = 0; i < 9; i++) {
             const p = photos[i % photos.length];
             cover(x, p.img, left + (i % 3) * (cell + gap), top + Math.floor(i / 3) * (cell + gap), cell, cell, { radius: 18 });
         }
-        pill(x, tr(info, "上傳自拍，找自己的照片", "Upload a selfie to find your photos", "셀카로 내 사진을 찾아보세요"), SW / 2, 1555, 44, pal.accent, pal.onAccent);
+        pill(x, tr(info, "上傳自拍，找自己的照片", "Upload a selfie to find your photos", "셀카로 내 사진을 찾아보세요", "自撮りで自分の写真を探そう"), SW / 2, 1555, 44, pal.accent, pal.onAccent);
         out.push(await asset(c, "story-3-find-yourself.jpg", "story"));
     }
     return out;
@@ -335,7 +335,7 @@ export async function renderCarousel(photos, info, theme) {
         wordmark(x, 64, 1090, "rgba(255,255,255,.8)");
         text(x, info.venue, 60, 1210, 130, { weight: 800, color: "#fff", spacing: -3, maxWidth: 760 });
         text(x, date, 64, 1280, 42, { weight: 500, color: "rgba(255,255,255,.78)" });
-        text(x, tr(info, "滑動看更多 →", "Swipe for more →", "넘겨서 더 보기 →"), PW - 64, 1280, 36, { weight: 700, color: "#fff", align: "right" });
+        text(x, tr(info, "滑動看更多 →", "Swipe for more →", "넘겨서 더 보기 →", "スワイプしてもっと見る →"), PW - 64, 1280, 36, { weight: 700, color: "#fff", align: "right" });
         counter(x, 1);
         out.push(await asset(c, "post-01-cover.jpg", "post"));
     }
@@ -364,11 +364,11 @@ export async function renderCarousel(photos, info, theme) {
         const cell = 232, gap = 14, left = (PW - cell * 4 - gap * 3) / 2;
         for (let i = 0; i < 4; i++)
             cover(x, photos[(i + 1) % photos.length].img, left + i * (cell + gap), 150, cell, cell * 1.25, { radius: 16 });
-        text(x, tr(info, `完整 ${info.count} 張照片`, `${info.count} photos`, `${info.count}장의 사진`), PW / 2, 640, 88, { weight: 800, color: pal.fg, align: "center", maxWidth: 960 });
-        text(x, tr(info, "已上線", "Now online", "지금 공개"), PW / 2, 740, 88, { weight: 800, color: pal.fg, align: "center" });
-        text(x, tr(info, "到網站上傳自拍，自動找出你的照片", "Upload a selfie on the site to find yours", "웹사이트에서 셀카로 내 사진 찾기"), PW / 2, 850, 42, { weight: 500, color: pal.sub, align: "center", maxWidth: 960 });
-        pill(x, tr(info, "連結在主頁 ↗", "Link in bio ↗", "프로필 링크 ↗"), PW / 2, 990, 44, pal.accent, pal.onAccent);
-        text(x, tr(info, `分享時請標記 ${info.handle} 🙏`, `Please tag ${info.handle} 🙏`, `공유할 때 ${info.handle} 태그 🙏`), PW / 2, 1160, 38, { weight: 600, color: pal.fg, align: "center" });
+        text(x, tr(info, `完整 ${info.count} 張照片`, `${info.count} photos`, `${info.count}장의 사진`, `全 ${info.count} 枚の写真`), PW / 2, 640, 88, { weight: 800, color: pal.fg, align: "center", maxWidth: 960 });
+        text(x, tr(info, "已上線", "Now online", "지금 공개", "公開中"), PW / 2, 740, 88, { weight: 800, color: pal.fg, align: "center" });
+        text(x, tr(info, "到網站上傳自拍，自動找出你的照片", "Upload a selfie on the site to find yours", "웹사이트에서 셀카로 내 사진 찾기", "サイトで自撮りをアップして自分の写真を探す"), PW / 2, 850, 42, { weight: 500, color: pal.sub, align: "center", maxWidth: 960 });
+        pill(x, tr(info, "連結在主頁 ↗", "Link in bio ↗", "프로필 링크 ↗", "リンクはプロフィールに ↗"), PW / 2, 990, 44, pal.accent, pal.onAccent);
+        text(x, tr(info, `分享時請標記 ${info.handle} 🙏`, `Please tag ${info.handle} 🙏`, `공유할 때 ${info.handle} 태그 🙏`, `シェアするときは ${info.handle} をタグ付けしてね 🙏`), PW / 2, 1160, 38, { weight: 600, color: pal.fg, align: "center" });
         text(x, info.siteUrl.replace(/^https?:\/\//, ""), PW / 2, 1220, 32, { weight: 500, color: pal.sub, align: "center" });
         counter(x, total);
         out.push(await asset(c, `post-${String(total).padStart(2, "0")}-cta.jpg`, "post"));
@@ -440,10 +440,10 @@ const reelFrame = (x, photos, info, theme, t, timeline) => {
         x.globalAlpha = a * 0.92;
         x.fillRect(0, 0, SW, SH);
         x.globalAlpha = a;
-        text(x, tr(info, `${info.count} 張照片已上線`, `${info.count} photos are up`, `${info.count}장의 사진 공개`), SW / 2, 820, 96, { weight: 800, color: pal.fg, align: "center", maxWidth: 960 });
-        text(x, tr(info, "上傳自拍，自動找到你", "Upload a selfie to find yourself", "셀카로 내 사진 찾기"), SW / 2, 920, 52, { weight: 500, color: pal.sub, align: "center" });
-        pill(x, tr(info, "連結在主頁 ↗", "Link in bio ↗", "프로필 링크 ↗"), SW / 2, 1080, 50, pal.accent, pal.onAccent);
-        text(x, tr(info, `分享請標記 ${info.handle}`, `Please tag ${info.handle}`, `공유 시 ${info.handle} 태그`), SW / 2, 1260, 44, { weight: 600, color: pal.fg, align: "center" });
+        text(x, tr(info, `${info.count} 張照片已上線`, `${info.count} photos are up`, `${info.count}장의 사진 공개`, `${info.count} 枚の写真を公開`), SW / 2, 820, 96, { weight: 800, color: pal.fg, align: "center", maxWidth: 960 });
+        text(x, tr(info, "上傳自拍，自動找到你", "Upload a selfie to find yourself", "셀카로 내 사진 찾기", "自撮りで自分を見つけよう"), SW / 2, 920, 52, { weight: 500, color: pal.sub, align: "center" });
+        pill(x, tr(info, "連結在主頁 ↗", "Link in bio ↗", "프로필 링크 ↗", "リンクはプロフィールに ↗"), SW / 2, 1080, 50, pal.accent, pal.onAccent);
+        text(x, tr(info, `分享請標記 ${info.handle}`, `Please tag ${info.handle}`, `공유 시 ${info.handle} 태그`, `シェア時は ${info.handle} をタグ付け`), SW / 2, 1260, 44, { weight: 600, color: pal.fg, align: "center" });
         x.restore();
     }
 };
@@ -541,11 +541,12 @@ export async function renderReel(photos, info, theme, onProgress) {
 export function buildCaptions(info, hashtags) {
     const date = '2026.' + dateLabel(info.date), tags = hashtags.trim(), url = info.siteUrl;
     const english = info.venue + ' · ' + date + '\n\n' + info.count + ' photos are up 📸\nUpload a selfie to find yours: ' + url + '\nPlease tag ' + info.handle + ' when sharing 🙏\n\n' + tags;
+    const japanese = info.venue + ' · ' + date + '\n\n' + info.count + ' 枚の写真を公開しました 📸\n自撮りで自分の写真を探せます：' + url + '\nシェアするときは ' + info.handle + ' をタグ付けしてください 🙏\n\n' + tags;
     const korean = info.venue + ' · ' + date + '\n\n' + info.count + '장의 사진 공개 📸\n셀카로 내 사진을 찾아보세요: ' + url + '\n공유할 때 ' + info.handle + ' 태그 부탁드려요 🙏\n\n' + tags;
     return {
-        post: tr(info, info.venue + ' · ' + date + '\n\n' + info.count + ' 張照片已上線 📸\n上傳自拍，找出你的照片：' + url + '\n分享時請標記 ' + info.handle + ' 🙏\n\n' + tags, english, korean),
-        reel: tr(info, info.venue + ' 的夜晚 ✨ ' + date + '\n完整照片：' + url + '\n分享請標記 ' + info.handle + '\n\n' + tags, info.venue + ' at night ✨ ' + date + '\nAll photos: ' + url + '\nTag ' + info.handle + '\n\n' + tags, info.venue + '의 밤 ✨ ' + date + '\n전체 사진: ' + url + '\n' + info.handle + ' 태그\n\n' + tags),
-        story: tr(info, info.venue + ' 照片上線了！\n用自拍找自己 👇\n' + url, info.venue + ' photos are up!\nFind yours with a selfie 👇\n' + url, info.venue + ' 사진 공개!\n셀카로 내 사진 찾기 👇\n' + url), english, korean
+        post: tr(info, info.venue + ' · ' + date + '\n\n' + info.count + ' 張照片已上線 📸\n上傳自拍，找出你的照片：' + url + '\n分享時請標記 ' + info.handle + ' 🙏\n\n' + tags, english, korean, japanese),
+        reel: tr(info, info.venue + ' 的夜晚 ✨ ' + date + '\n完整照片：' + url + '\n分享請標記 ' + info.handle + '\n\n' + tags, info.venue + ' at night ✨ ' + date + '\nAll photos: ' + url + '\nTag ' + info.handle + '\n\n' + tags, info.venue + '의 밤 ✨ ' + date + '\n전체 사진: ' + url + '\n' + info.handle + ' 태그\n\n' + tags, info.venue + ' の夜 ✨ ' + date + '\n全写真：' + url + '\n' + info.handle + ' をタグ付け\n\n' + tags),
+        story: tr(info, info.venue + ' 照片上線了！\n用自拍找自己 👇\n' + url, info.venue + ' photos are up!\nFind yours with a selfie 👇\n' + url, info.venue + ' 사진 공개!\n셀카로 내 사진 찾기 👇\n' + url, info.venue + ' の写真を公開！\n自撮りで自分を探そう 👇\n' + url), english, korean, japanese
     };
 }
 async function asset(c, name, kind) {
