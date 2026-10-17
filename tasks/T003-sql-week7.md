@@ -1,7 +1,7 @@
 ---
 id: T003
 title: SQL 練習室加「第 7 週：面試延伸」5 題
-status: open
+status: review
 size: S
 ---
 
@@ -32,4 +32,8 @@ size: S
 - 對答案的邏輯（`run`、`norm`、`normUnordered`）
 
 ## 實作紀錄
-（Codex 完成後填寫）
+- sql/index.html 僅於 WEEKS 附加第 7 週五題；原 30 題逐項比對完全一致。
+- node --check 通過；Playwright 桌機 1280px、手機 390px 五題貼入參考答案均顯示「對了」，無 JS 錯誤及水平捲動，進度為 x / 35。
+- 五題結果列數依序為 3、5、12、92、35；日期差保留 90 天門檻。
+- 原 smoke 腳本在 SQL 頁僅因沒有 #albums 報錯；已用 SQL 專用瀏覽器驗證補足。測試伺服器以 UTF-8 傳送 HTML。
+- 保留既有版面、資料產生及對答案邏輯（含原有六週完成文案）。
