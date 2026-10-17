@@ -426,6 +426,7 @@ button { font: inherit; color: inherit; }
 .sim-note { font-size: 13px; color: var(--label-2); }
 
 /* ---------- Videos (15s previews) ---------- */
+.video-seg { margin-top: 10px; display: inline-flex; }
 .video-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .video-card { background: var(--surface); border-radius: var(--radius-l); overflow: hidden; box-shadow: var(--shadow); display: grid; }
 .video-frame { position: relative; aspect-ratio: 9 / 16; background: #000; }
@@ -590,7 +591,7 @@ button { font: inherit; color: inherit; }
 
 
  <section class="section" id="videos">
-  <div class="section-head"><div><h2 class="title2">影片 · 10.15 Bachata Crush</h2><p class="footnote">每支都能免費下載 25 秒試看影片（含開場特效）與限動照片（含 Logo，1080×1920，可直接發 IG 限動／Reels）。完整版（完整長度、高畫質）每支 NT$300／US$10。</p></div></div>
+  <div class="section-head"><div><h2 class="title2">影片 · Bachata Crush</h2><div class="segmented video-seg" role="tablist" data-vseg><button type="button" class="is-selected" data-vsel="1016">10.16</button><button type="button" data-vsel="1015">10.15</button></div><p class="footnote">每支都能免費下載 25 秒試看影片（含開場特效）與限動照片（含 Logo，1080×1920，可直接發 IG 限動／Reels）。完整版（完整長度、高畫質）每支 NT$300／US$10。</p></div></div>
   <div class="video-grid" id="video-grid"></div>
   <aside class="credit-note video-note"><span data-icon="tag"></span><p><b>想要完整版？每支 NT$300／US$10</b>點影片下方「完整版」，用 LINE 告訴我影片編號，付款後用雲端連結傳完整版給你。<em>Full-length video: US$10 each — message me on LINE or IG with the clip number.</em></p></aside>
  </section>
@@ -820,19 +821,23 @@ function withCredit(action){
 // ---------- Videos: 15s previews (free) + paid full version ----------
 const VIDEO_PRICE="NT$300 / US$10";
 const VIDEO_READY=null; // null = 全部
-const VIDEO_DATA_ALL=[["00",54.5],["01",38.5],["02",53],["03",63.5],["04",38],["06",55.5],["07",82.5],["08",75],["10",70.5],["11",20],["12",75],["13",106],["14",51],["15",214],["16",157.5],["17",95],["18",80],["19",67.5],["20",59.5],["21",83],["24",43.5],["25",78],["26",101.5]];
-const VIDEO_DATA=VIDEO_READY?VIDEO_DATA_ALL.filter(v=>VIDEO_READY.includes(v[0])):VIDEO_DATA_ALL;
+const VIDEO_DATA_ALL=[["122",32.2],["123",97.0],["124",26.7],["125",30.7],["126",99.8],["127",80.9],["128",57.9],["129",98.4],["130",31.2],["131",76.3],["132",87.9],["133",29.9],["134",67.9],["135",133.1],["136",75.9],["137",107.9],["138",116.6],["139",78.7],["140",55.7],["141",35.1],["142",108.8],["143",61.9],["144",136.5],["145",49.0],["146",44.1],["147",123.5],["148",97.2],["149",89.0],["00",54.5],["01",38.5],["02",53],["03",63.5],["04",38],["06",55.5],["07",82.5],["08",75],["10",70.5],["11",20],["12",75],["13",106],["14",51],["15",214],["16",157.5],["17",95],["18",80],["19",67.5],["20",59.5],["21",83],["24",43.5],["25",78],["26",101.5]];
+const VEV=n=>String(n).length===3?"1016":"1015";const VDIR=n=>`videos/${VEV(n)}/`;const VLAB=n=>VEV(n)==="1016"?"10.16":"10.15";
+const VIDEOS_1016_READY=false; // 10.16 影片上傳後改成 true
+let VSEL=VIDEOS_1016_READY?"1016":"1015";
+const VIDEO_DATA=(VIDEO_READY?VIDEO_DATA_ALL.filter(v=>VIDEO_READY.includes(v[0])):VIDEO_DATA_ALL).filter(v=>VIDEOS_1016_READY||VEV(v[0])!=="1016");
 const mmss=s=>`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
-document.getElementById("video-grid").innerHTML=VIDEO_DATA.map(([n,d])=>`<article class="video-card"><div class="video-frame"><video src="videos/1015/bc-${n}.mp4" poster="videos/1015/bc-${n}.jpg" preload="none" playsinline controls controlslist="nodownload" aria-label="10.15 Bachata Crush 影片 #${n} 25 秒試看"></video><span class="video-badge">25 秒試看</span></div><div class="video-meta"><div class="video-meta-top"><b>#${n}</b><small>完整版 ${mmss(d)}</small></div><div class="video-actions"><button type="button" class="button button-gray" data-video-dl="${n}">${icon("download")}25 秒試看</button><button type="button" class="button button-gray" data-story-dl="${n}">${icon("download")}限動照片</button><button type="button" class="button button-filled video-buy" data-video-buy="${n}">完整版 NT$300</button></div></div></article>`).join("");
+const renderVideoGrid=()=>{const sg=document.querySelector("[data-vseg]");if(sg)sg.hidden=!VIDEOS_1016_READY;document.querySelectorAll("[data-vsel]").forEach(b=>b.classList.toggle("is-selected",b.dataset.vsel===VSEL));document.getElementById("video-grid").innerHTML=VIDEO_DATA.filter(([n])=>VEV(n)===VSEL).map(([n,d])=>`<article class="video-card"><div class="video-frame"><video src="${VDIR(n)}bc-${n}.mp4" poster="${VDIR(n)}bc-${n}.jpg" preload="none" playsinline controls controlslist="nodownload" aria-label="${VLAB(n)} Bachata Crush 影片 #${n} 25 秒試看"></video><span class="video-badge">25 秒試看</span></div><div class="video-meta"><div class="video-meta-top"><b>#${n}</b><small>完整版 ${mmss(d)}</small></div><div class="video-actions"><button type="button" class="button button-gray" data-video-dl="${n}">${icon("download")}25 秒試看</button><button type="button" class="button button-gray" data-story-dl="${n}">${icon("download")}限動照片</button><button type="button" class="button button-filled video-buy" data-video-buy="${n}">完整版 NT$300</button></div></div></article>`).join("");if(window.renderVideoLabels)window.renderVideoLabels();};renderVideoGrid();
+document.addEventListener("click",e=>{const b=e.target.closest("[data-vsel]");if(b){VSEL=b.dataset.vsel;renderVideoGrid();}});
 document.getElementById("video-grid").addEventListener("play",e=>{document.querySelectorAll("#video-grid video").forEach(v=>{if(v!==e.target)v.pause();});},true);
-const videoFile=n=>`JimFrame_1015-BachataCrush_${n}_25s.mp4`;
+const videoFile=n=>`JimFrame_${VEV(n)}-BachataCrush_${n}_25s.mp4`;
 function openBuy(n){
  const d=(VIDEO_DATA.find(v=>v[0]===n)||[])[1]||0;
  const root=document.getElementById("credit-root");
  root.innerHTML=`<div class="credit-backdrop" data-credit-close><div class="credit-sheet" role="dialog" aria-modal="true" aria-labelledby="buy-title">
   <span class="credit-grabber" aria-hidden="true"></span>
   <h2 id="buy-title">購買完整版 · #${n}</h2>
-  <div class="buy-price"><span>10.15 Bachata Crush #${n}（完整長度 ${mmss(d)}）</span><b>${VIDEO_PRICE||"私訊報價"}</b></div>
+  <div class="buy-price"><span>${VLAB(n)} Bachata Crush #${n}（完整長度 ${mmss(d)}）</span><b>${VIDEO_PRICE||"私訊報價"}</b></div>
   <ol class="buy-steps"><li>加 LINE：<b class="selectable">jim0916746661</b></li><li>傳送影片編號 <b>#${n}</b></li><li>收到收款資訊並付款（LINE Pay／轉帳；海外朋友私訊討論付款方式）</li><li>付款後用雲端連結傳完整版給你</li></ol>
   <div class="credit-row"><button type="button" class="button button-gray" data-buy-copy>${icon("tag")}複製編號</button><a class="button button-gray" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">${icon("message")}IG 私訊</a></div>
   <a class="button button-filled button-large" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">用 LINE 購買</a>
@@ -840,11 +845,11 @@ function openBuy(n){
  </div></div>`;
  const close=()=>{root.innerHTML="";};
  root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
- root.querySelector("[data-buy-copy]").addEventListener("click",async e=>{try{await navigator.clipboard.writeText(`10.15 Bachata Crush 影片 #${n} 完整版`);e.currentTarget.lastChild.textContent="已複製 ✓";}catch{toast(`影片編號 #${n}`);}});
+ root.querySelector("[data-buy-copy]").addEventListener("click",async e=>{try{await navigator.clipboard.writeText(`${VLAB(n)} Bachata Crush 影片 #${n} 完整版`);e.currentTarget.lastChild.textContent="已複製 ✓";}catch{toast(`影片編號 #${n}`);}});
 }
 document.getElementById("video-grid").addEventListener("click",e=>{
- const dl=e.target.closest("[data-video-dl]");if(dl){const n=dl.dataset.videoDl;withCredit(()=>{const a=document.createElement("a");a.href=`videos/1015/bc-${n}.mp4`;a.download=videoFile(n);document.body.appendChild(a);a.click();a.remove();});return;}
- const st=e.target.closest("[data-story-dl]");if(st){const n=st.dataset.storyDl;withCredit(()=>{const a=document.createElement("a");a.href=`videos/1015/story-${n}.jpg`;a.download=`JimFrame_1015-BachataCrush_${n}_story.jpg`;document.body.appendChild(a);a.click();a.remove();});return;}
+ const dl=e.target.closest("[data-video-dl]");if(dl){const n=dl.dataset.videoDl;withCredit(()=>{const a=document.createElement("a");a.href=`${VDIR(n)}bc-${n}.mp4`;a.download=videoFile(n);document.body.appendChild(a);a.click();a.remove();});return;}
+ const st=e.target.closest("[data-story-dl]");if(st){const n=st.dataset.storyDl;withCredit(()=>{const a=document.createElement("a");a.href=`${VDIR(n)}story-${n}.jpg`;a.download=`JimFrame_${VEV(n)}-BachataCrush_${n}_story.jpg`;document.body.appendChild(a);a.click();a.remove();});return;}
  const b=e.target.closest("[data-video-buy]");if(b)openBuy(b.dataset.videoBuy);
 });
 document.addEventListener("click",e=>{
@@ -908,7 +913,7 @@ const DICT={
  en:{"精選":"Featured","相簿":"Albums","影片":"Videos","找自己":"Find me","支持":"Support","預約":"Book",
   "每週精選 · Weekly Picks":"WEEKLY PICKS","把舞動的夜晚留下":"Keep the night in motion","台北舞蹈與活動攝影。每次開啟換一批精選，點一下照片即可調色、下載或分享。":"Dance and event photography in Taipei. Tap any photo to edit, download or share.",
   "精選照片":"Featured photos","最近幾場活動的精選。":"Highlights from the latest events.","活動相簿":"Event albums","支持下一場拍攝":"Support the next shoot","預約拍攝":"Book a shoot",
-  "影片 · 10.15 Bachata Crush":"Videos · 10.15 Bachata Crush","找自己和朋友":"Find me & my friends","看照片":"Photos","看影片":"Videos",
+  "影片 · Bachata Crush":"Videos · Bachata Crush","找自己和朋友":"Find me & my friends","看照片":"Photos","看影片":"Videos",
   "活動照片＋影片上線":"PHOTOS & VIDEOS ARE UP","完整版":"Full","下載試看":"Download","做限動":"Story","25 秒試看":"25s preview","18 秒試看":"18s preview",
   "上傳自拍":"Add selfie","開始找":"Search","找到":"Found","全部":"All","我":"Me","朋友":"Friend","一起入鏡":"Together","選照片（最多 3 張，每張一個人）":"Add photos (up to 3, one person each)",
   "下載":"Download","限動":"Story","分享到限動":"Share to Story","下載圖片":"Download image","版型":"Layout","滿版":"Full","留白標記":"Tag space","舞伴分享":"Dance partner","夜色相框":"Night frame","標記舞伴":"Tag partner",
@@ -916,7 +921,7 @@ const DICT={
  ko:{"精選":"추천","相簿":"앨범","影片":"영상","找自己":"내 사진 찾기","支持":"후원","預約":"예약",
   "每週精選 · Weekly Picks":"주간 추천 · WEEKLY PICKS","把舞動的夜晚留下":"춤추는 밤을 남기다","台北舞蹈與活動攝影。每次開啟換一批精選，點一下照片即可調色、下載或分享。":"타이베이 댄스·이벤트 사진. 사진을 눌러 보정·다운로드·공유하세요.",
   "精選照片":"추천 사진","最近幾場活動的精選。":"최근 이벤트 하이라이트.","活動相簿":"이벤트 앨범","支持下一場拍攝":"다음 촬영 후원","預約拍攝":"촬영 예약",
-  "影片 · 10.15 Bachata Crush":"영상 · 10.15 Bachata Crush","找自己和朋友":"나와 친구 찾기","看照片":"사진","看影片":"영상",
+  "影片 · Bachata Crush":"영상 · Bachata Crush","找自己和朋友":"나와 친구 찾기","看照片":"사진","看影片":"영상",
   "活動照片＋影片上線":"사진·영상 공개","完整版":"풀버전","下載試看":"다운로드","做限動":"스토리","25 秒試看":"25초 미리보기","18 秒試看":"18초 미리보기",
   "上傳自拍":"셀카 추가","開始找":"찾기","找到":"찾음","全部":"전체","我":"나","朋友":"친구","一起入鏡":"함께 찍힌 사진","選照片（最多 3 張，每張一個人）":"사진 추가 (최대 3장, 한 장에 한 명)",
   "下載":"다운로드","限動":"스토리","分享到限動":"스토리로 공유","下載圖片":"이미지 저장","版型":"레이아웃","滿版":"전체","留白標記":"태그 공간","舞伴分享":"댄스 파트너","夜色相框":"나이트 프레임","標記舞伴":"파트너 태그",
@@ -949,15 +954,16 @@ const promo=document.createElement("section");promo.className="crush-promo";prom
 document.querySelector(".hero").before(promo);
 function renderPromo(){
  if(!crushAlbum){promo.hidden=true;return;}
+ const a16=albums.find(a=>a.date==="1016");const NPH=crushAlbum.photos.length+(a16?a16.photos.length:0);const NVID=VIDEO_DATA.length;
  const bg=crushAlbum.photos.filter((_,i)=>i%35===4).slice(0,6).map(id=>`<img src="${PBASE}${id}.jpg" alt="" loading="lazy">`).join("");
  promo.innerHTML=`<div class="crush-promo-bg" aria-hidden="true">${bg}</div><div class="crush-promo-body">
-  <p class="crush-eyebrow">${T("活動照片＋影片上線")} · 2026.10.15</p>
+  <p class="crush-eyebrow">${T("活動照片＋影片上線")} · 2026.10.15–10.16</p>
   <img class="crush-logo" src="${VBASE}crush-logo.png" alt="Taiwan Bachata Crush" width="420" height="246">
-  <p class="crush-sub">${L(`${crushAlbum.photos.length} 張照片、23 支影片。上傳一張自拍，AI 幫你從整晚的照片裡找出你和朋友。`,`${crushAlbum.photos.length} photos and 23 dance clips. Upload a selfie and we’ll find you — and your friends — in every photo.`,`사진 ${crushAlbum.photos.length}장, 영상 23개. 셀카 한 장으로 나와 친구가 나온 사진을 찾아드려요.`)}</p>
+  <p class="crush-sub">${L(`${NPH} 張照片、${NVID} 支影片。上傳一張自拍，AI 幫你從整晚的照片裡找出你和朋友。`,`${NPH} photos and ${NVID} dance clips. Upload a selfie and we’ll find you — and your friends — in every photo.`,`사진 ${NPH}장, 영상 ${NVID}개. 셀카 한 장으로 나와 친구가 나온 사진을 찾아드려요.`)}</p>
   <div class="crush-actions"><a class="crush-cta crush-cta-primary" href="#finder">${icon("search")}${T("找自己和朋友")}</a><button type="button" class="crush-cta" data-crush-photos>${icon("albums")}${T("看照片")}</button><a class="crush-cta" href="#videos">${icon("play")}${T("看影片")}</a></div>
   <ul class="crush-points"><li>${L("✓ 一次上傳 3 張，連朋友一起找，還能找出你們同框的照片","✓ Up to 3 people at once — even photos of you together","✓ 최대 3명까지 — 함께 찍힌 사진도 찾아요")}</li><li>${L("✓ 找到的照片一鍵做成 IG 限動","✓ Turn any result into an IG Story in one tap","✓ 찾은 사진을 바로 IG 스토리로")}</li></ul></div>`;
 }
-promo.addEventListener("click",e=>{if(e.target.closest("[data-crush-photos]"))openAlbum(crushAlbum);});
+promo.addEventListener("click",e=>{if(e.target.closest("[data-crush-photos]"))openAlbum(albums.find(a=>a.date==="1016")||crushAlbum);});
 
 /* ---------- 熱度：聚焦最近 7 天的活動 ---------- */
 (()=>{
@@ -1192,8 +1198,8 @@ function openVideoStory(n){
  const cands=(window.CRUSH_CANDIDATES&&CRUSH_CANDIDATES[n])||[4,8,12,16,20];let time=cands[0],tpl="full",ready=false;
  sr.innerHTML=`<div class="credit-backdrop story-backdrop" data-sclose><div class="credit-sheet story-sheet" role="dialog" aria-modal="true">
   <span class="credit-grabber"></span><h2>${T("做限動")} · #${n}</h2>
-  <div class="story-body"><div class="story-pv-wrap"><canvas class="pv" width="324" height="576"></canvas><p class="crush-loading">${T("影片載入中…")}</p><video class="crush-hidden-video" src="${VBASE}bc-${n}.mp4" preload="auto" muted playsinline crossorigin="anonymous"></video></div>
-  <div class="story-side"><p class="crush-label">${T("建議畫面（最清楚的幾格）")}</p><div class="crush-candidates">${cands.map((s,i)=>`<button type="button" data-cand="${s}"><img src="${VBASE}cand-${n}-${i+1}.jpg" alt="" loading="lazy"><small>${s.toFixed(1)}s</small></button>`).join("")}</div>
+  <div class="story-body"><div class="story-pv-wrap"><canvas class="pv" width="324" height="576"></canvas><p class="crush-loading">${T("影片載入中…")}</p><video class="crush-hidden-video" src="${VDIR(n)}bc-${n}.mp4" preload="auto" muted playsinline crossorigin="anonymous"></video></div>
+  <div class="story-side"><p class="crush-label">${T("建議畫面（最清楚的幾格）")}</p><div class="crush-candidates">${cands.map((s,i)=>`<button type="button" data-cand="${s}"><img src="${VDIR(n)}cand-${n}-${i+1}.jpg" alt="" loading="lazy"><small>${s.toFixed(1)}s</small></button>`).join("")}</div>
   <p class="crush-label">${T("或自己挑時間")} <b class="tval">${time.toFixed(1)}s</b></p><input type="range" class="crush-scrub" min="0" max="${PREVIEW_LEN(n)-0.1}" step="0.1" value="${time}">
   <div class="crush-nudge"><button type="button" data-nudge="-1">‹ ${T("前一格")}</button><button type="button" data-nudge="1">${T("下一格")} ›</button></div>
   <p class="crush-label">${T("版型")}</p><div class="crush-templates">${[["full",T("滿版")],["frame",T("夜色相框")],["partner",T("標記舞伴")]].map(([k,l])=>`<button type="button" data-vtpl="${k}" class="${k==="full"?"is-selected":""}"><b>${l}</b></button>`).join("")}</div>
@@ -1205,7 +1211,7 @@ function openVideoStory(n){
   const light=tpl==="partner";c.fillStyle=light?"#f2efe9":"#0b0b0d";c.fillRect(0,0,W,H);
   const b=tpl==="frame"?[90,230,900,1500]:[120,300,840,1290];const [bx,by,bw,bh]=b.map(q=>q*scale);const s=Math.max(bw/v.videoWidth,bh/v.videoHeight),dw=v.videoWidth*s,dh=v.videoHeight*s;
   c.save();c.beginPath();c.roundRect(bx,by,bw,bh,34*scale);c.clip();c.drawImage(v,bx+(bw-dw)/2,by+(bh-dh)/2,dw,dh);c.restore();
-  const f=(w,px)=>fontF(w,px*scale);c.fillStyle=light?"#111":"#fff";c.font=f(700,40);c.fillText("TAIWAN BACHATA CRUSH",90*scale,150*scale);c.fillStyle=light?"rgba(17,17,17,.6)":"rgba(255,255,255,.66)";c.font=f(500,30);c.fillText("10.15.2026 · FILM BY JIM",90*scale,196*scale);
+  const f=(w,px)=>fontF(w,px*scale);c.fillStyle=light?"#111":"#fff";c.font=f(700,40);c.fillText("TAIWAN BACHATA CRUSH",90*scale,150*scale);c.fillStyle=light?"rgba(17,17,17,.6)":"rgba(255,255,255,.66)";c.font=f(500,30);c.fillText(`${VLAB(n)}.2026 · FILM BY JIM`,90*scale,196*scale);
   if(tpl==="frame"){c.fillStyle="#ff8a3d";c.font=f(700,34);c.fillText("@jimframe",90*scale,1810*scale);c.fillStyle="rgba(255,255,255,.7)";c.font=f(500,28);c.fillText("@bachata_crush_tw  @flow.taipei",90*scale,1856*scale);}
   else{c.fillStyle="#111";c.font=f(700,48);c.fillText(L("和我跳舞的是 ↗","Dancing with ↗","함께 춤춘 사람 ↗"),120*scale,1690*scale);c.strokeStyle="rgba(17,17,17,.35)";c.lineWidth=3*scale;c.beginPath();c.moveTo(120*scale,1760*scale);c.lineTo(960*scale,1760*scale);c.stroke();c.fillStyle="rgba(17,17,17,.6)";c.font=f(500,28);c.fillText("@jimframe · @bachata_crush_tw",120*scale,1830*scale);}
  };
@@ -1217,9 +1223,10 @@ function openVideoStory(n){
   const cd=e.target.closest("[data-cand]");if(cd){time=+cd.dataset.cand;refresh();return;}
   const nd=e.target.closest("[data-nudge]");if(nd){time=Math.min(PREVIEW_LEN(n)-0.1,Math.max(0,+(time+(+nd.dataset.nudge)/30).toFixed(3)));refresh();return;}
   const tp=e.target.closest("[data-vtpl]");if(tp){tpl=tp.dataset.vtpl;sr.querySelectorAll("[data-vtpl]").forEach(b=>b.classList.toggle("is-selected",b===tp));refresh();return;}
-  const ex=e.target.closest("[data-vshare],[data-vdl]");if(ex){ex.disabled=true;try{await seek(time);const c=document.createElement("canvas");draw(c,1);await exportCanvas(c,`JimFrame_1015-BachataCrush_${n}_story.jpg`,ex.matches("[data-vshare]"));}catch{toast(L("暫時無法輸出，請換一個畫面","Could not export, try another frame","다른 장면으로 다시 시도해 주세요"));}ex.disabled=false;}
+  const ex=e.target.closest("[data-vshare],[data-vdl]");if(ex){ex.disabled=true;try{await seek(time);const c=document.createElement("canvas");draw(c,1);await exportCanvas(c,`JimFrame_${VEV(n)}-BachataCrush_${n}_story.jpg`,ex.matches("[data-vshare]"));}catch{toast(L("暫時無法輸出，請換一個畫面","Could not export, try another frame","다른 장면으로 다시 시도해 주세요"));}ex.disabled=false;}
  };
 }
+window.renderVideoLabels=()=>renderVideoLabels();
 function renderVideoLabels(){
  document.querySelectorAll("#video-grid [data-story-dl]").forEach(b=>{b.removeAttribute("data-story-dl");});
  document.querySelectorAll("#video-grid .video-card").forEach(card=>{
