@@ -433,7 +433,19 @@ button { font: inherit; color: inherit; }
 .sim-note { font-size: 13px; color: var(--label-2); }
 
 /* ---------- Videos (15s previews) ---------- */
-.video-seg { margin-top: 10px; display: inline-flex; }
+.video-grid.is-events{grid-template-columns:repeat(2,minmax(0,1fr));}
+.vev-card{display:flex;flex-direction:column;padding:0;border:1px solid var(--separator);border-radius:18px;overflow:hidden;background:var(--surface);color:var(--label);text-align:left;cursor:pointer;font:inherit;transition:transform .2s}
+.vev-card:hover{transform:translateY(-2px)}
+.vev-cover{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:#000}
+.vev-cover img{width:100%;aspect-ratio:9/16;object-fit:cover;display:block}
+.vev-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px}
+.vev-meta b{display:block;font-size:17px}.vev-meta small{display:block;color:var(--label-2);font-size:13px;margin-top:2px}
+.vev-go{font-size:26px;color:var(--label-2);line-height:1}
+.vev-head{grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.vev-head b{font-size:17px}.vev-head b small{margin-left:8px;color:var(--label-2);font-weight:500}
+.vev-back{font-size:15px;padding:6px 0}
+.vev-colors{grid-column:1/-1;padding:0 0 4px;margin-top:-6px}
+@media (max-width:640px){.video-grid.is-events{grid-template-columns:1fr}}
 .video-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .video-card { background: var(--surface); border-radius: var(--radius-l); overflow: hidden; box-shadow: var(--shadow); display: grid; }
 .video-frame { position: relative; aspect-ratio: 9 / 16; background: #000; }
@@ -601,7 +613,7 @@ button { font: inherit; color: inherit; }
 
 
  <section class="section" id="videos">
-  <div class="section-head"><div><h2 class="title2">影片 · Bachata Crush</h2><div class="segmented video-seg" role="tablist" data-vseg><button type="button" class="is-selected" data-vsel="1016">10.16</button><button type="button" data-vsel="1015">10.15</button></div><p class="footnote">每支都能免費下載 25 秒試看影片（含開場特效）與限動照片（含 Logo，1080×1920，可直接發 IG 限動／Reels）。完整版（完整長度、高畫質）每支 NT$300／US$10。</p></div></div>
+  <div class="section-head"><div><h2 class="title2">影片 · Bachata Crush</h2><p class="footnote">每支都能免費下載 25 秒試看影片（含開場特效）與限動照片（含 Logo，1080×1920，可直接發 IG 限動／Reels）。完整版（完整長度、高畫質）每支 NT$300／US$10。</p></div></div>
   <div class="video-grid" id="video-grid"></div>
   <aside class="credit-note video-note"><span data-icon="tag"></span><p><b>想要完整版？每支 NT$300／US$10</b>點影片下方「完整版」，用 LINE 告訴我影片編號，付款後用雲端連結傳完整版給你。<em>Full-length video: US$10 each — message me on LINE or IG with the clip number.</em></p></aside>
  </section>
@@ -864,11 +876,30 @@ const VIDEO_READY=null; // null = 全部
 const VIDEO_DATA_ALL=[["122",32.2],["123",97.0],["124",26.7],["125",30.7],["126",99.8],["127",80.9],["128",57.9],["129",98.4],["130",31.2],["131",76.3],["132",87.9],["133",29.9],["134",67.9],["135",133.1],["136",75.9],["137",107.9],["138",116.6],["139",78.7],["140",55.7],["141",35.1],["142",108.8],["143",61.9],["144",136.5],["145",49.0],["146",44.1],["147",123.5],["148",97.2],["149",89.0],["00",54.5],["01",38.5],["02",53],["03",63.5],["04",38],["06",55.5],["07",82.5],["08",75],["10",70.5],["11",20],["12",75],["13",106],["14",51],["15",214],["16",157.5],["17",95],["18",80],["19",67.5],["20",59.5],["21",83],["24",43.5],["25",78],["26",101.5]];
 const VEV=n=>String(n).length===3?"1016":"1015";const VDIR=n=>`videos/${VEV(n)}/`;const VLAB=n=>VEV(n)==="1016"?"10.16":"10.15";
 const VIDEOS_1016_READY=true; // 10.16 影片上傳後改成 true
-let VSEL=VIDEOS_1016_READY?"1016":"1015";
+let VSEL=null; // null = 活動總覽；"1016"／"1015" = 進入該場活動
+let VCV="time"; // 影片排列：time／rainbow／顏色群組 0-7
+// 影片衣服顏色（用封面＋5 張候選畫面，跟照片同一套方法預先算好）；燈光影響較大，分數太低的不放進顏色分類
+const VCOLOR={"1015":{"00":[0,5,14],"01":[0,355,3],"02":[0,355,12],"03":[6,285,10],"04":[0,355,124],"06":[0,5,8],"07":[5,245,14],"08":[5,245,47],"10":[7,325,31],"11":[5,235,7],"12":[7,325,39],"13":[7,325,4],"14":[6,255,17],"15":[6,255,35],"16":[0,5,34],"17":[7,335,56],"18":[7,315,13],"19":[1,35,2],"20":[0,5,5],"21":[6,265,49],"24":[7,325,19],"25":[0,355,46],"26":[6,255,18]},"1016":{"122":[6,275,40],"123":[0,345,42],"124":[6,275,57],"125":[5,245,27],"126":[5,205,21],"127":[6,255,27],"128":[6,255,80],"129":[5,245,2],"130":[5,215,28],"131":[2,55,4],"132":[6,255,27],"133":[5,205,4],"134":[5,225,4],"135":[0,345,36],"136":[6,275,13],"137":[6,285,65],"138":[6,285,107],"139":[6,285,33],"140":[5,215,6],"141":[6,265,119],"142":[6,275,16],"143":[7,295,79],"144":[7,335,39],"145":[6,285,23],"146":[7,295,107],"147":[6,265,68],"148":[0,345,52],"149":[7,335,41]}};const VCOLOR_MIN=8;
+const VEVENTS=[["1016","Neon 螢光狂潮"],["1015","Preparty"]];
+const VCN=[["紅","Red","빨강","赤"],["橘","Orange","주황","オレンジ"],["黃","Yellow","노랑","黄"],["綠","Green","초록","緑"],["青","Cyan","하늘","水色"],["藍","Blue","파랑","青"],["紫","Purple","보라","紫"],["粉","Pink","분홍","ピンク"]];
+const VL=(...a)=>window.jfL?window.jfL(...a):a[0];
+const vcolOf=n=>{const c=(VCOLOR[VEV(n)]||{})[n];return c||null;};
+const vrk=n=>{const c=vcolOf(n);return c?c[0]*1e4-Math.min(c[2],9999):9e9;};
+const vgrp=n=>{const c=vcolOf(n);return c&&c[2]>=VCOLOR_MIN?c[0]:-1;};
 const VIDEO_DATA=(VIDEO_READY?VIDEO_DATA_ALL.filter(v=>VIDEO_READY.includes(v[0])):VIDEO_DATA_ALL).filter(v=>VIDEOS_1016_READY||VEV(v[0])!=="1016");
 const mmss=s=>`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
-const renderVideoGrid=()=>{const sg=document.querySelector("[data-vseg]");if(sg)sg.hidden=!VIDEOS_1016_READY;document.querySelectorAll("[data-vsel]").forEach(b=>b.classList.toggle("is-selected",b.dataset.vsel===VSEL));document.getElementById("video-grid").innerHTML=VIDEO_DATA.filter(([n])=>VEV(n)===VSEL).map(([n,d])=>`<article class="video-card"><div class="video-frame"><video src="${VDIR(n)}bc-${n}.mp4" poster="${VDIR(n)}bc-${n}.jpg" preload="none" playsinline controls controlslist="nodownload" aria-label="${VLAB(n)} Bachata Crush 影片 #${n} 25 秒試看"></video><span class="video-badge">25 秒試看</span></div><div class="video-meta"><div class="video-meta-top"><b>#${n}</b><small>完整版 ${mmss(d)}</small></div><div class="video-actions"><button type="button" class="button button-gray" data-video-dl="${n}">${icon("download")}25 秒試看</button><button type="button" class="button button-gray" data-story-dl="${n}">${icon("download")}限動照片</button><button type="button" class="button button-filled video-buy" data-video-buy="${n}">完整版 NT$300</button></div></div></article>`).join("");if(window.renderVideoLabels)window.renderVideoLabels();};renderVideoGrid();
-document.addEventListener("click",e=>{const b=e.target.closest("[data-vsel]");if(b){VSEL=b.dataset.vsel;renderVideoGrid();}});
+const vCover=ev=>{const ns=VIDEO_DATA.filter(([n])=>VEV(n)===ev).map(v=>v[0]);const out=[];for(let g=0;g<8&&out.length<4;g++){const b=ns.filter(n=>vgrp(n)===g).sort((x,y)=>vcolOf(y)[2]-vcolOf(x)[2])[0];if(b)out.push(b);}for(const n of ns){if(out.length>=4)break;if(!out.includes(n))out.push(n);}return out.slice(0,4);};
+const renderVideoGrid=()=>{const g=document.getElementById("video-grid");if(!g)return;
+ if(!VSEL){g.classList.add("is-events");g.innerHTML=VEVENTS.filter(([ev])=>VIDEO_DATA.some(([n])=>VEV(n)===ev)).map(([ev,th])=>{const k=VIDEO_DATA.filter(([n])=>VEV(n)===ev).length;const lab=ev.slice(0,2)+"."+ev.slice(2);return `<button type="button" class="vev-card" data-vsel="${ev}" aria-label="${lab} ${th} · ${k}"><span class="vev-cover">${vCover(ev).map(n=>`<img src="${VDIR(n)}bc-${n}.jpg" alt="" loading="lazy">`).join("")}</span><span class="vev-meta"><span><b>${lab} · ${th}</b><small>Taiwan Bachata Crush · ${VL(k+" 支影片",k+" videos",k+"개 영상",k+" 本の動画")}</small></span><span class="vev-go" aria-hidden="true">›</span></span></button>`;}).join("");return;}
+ g.classList.remove("is-events");
+ let list=VIDEO_DATA.filter(([n])=>VEV(n)===VSEL);const all=list;
+ if(VCV!=="time"){if(VCV!=="rainbow")list=list.filter(([n])=>vgrp(n)===VCV);list=list.slice().sort((x,y)=>vrk(x[0])-vrk(y[0]));}
+ const th=(VEVENTS.find(e=>e[0]===VSEL)||[])[1]||"";const lab=VSEL.slice(0,2)+"."+VSEL.slice(2);
+ const bar=`<div class="vev-head"><button type="button" class="text-button vev-back" data-vsel="">‹ ${VL("所有活動","All events","전체 이벤트","すべてのイベント")}</button><b>${lab} · ${th}<small>${all.length}</small></b></div><div class="color-bar vev-colors" role="group" aria-label="${VL("依衣服顏色排列","Sort by outfit colour","옷 색상별 정렬","服の色で並べる")}"><button type="button" data-vcv="time" class="${VCV==="time"?"is-selected":""}">${VL("時間","Time","시간","時間")}</button><button type="button" data-vcv="rainbow" class="cv-rainbow ${VCV==="rainbow"?"is-selected":""}">🌈 ${VL("彩虹","Rainbow","무지개","虹色")}</button>${CGROUPS.map(([nm,c],gi)=>{const k=all.filter(([n])=>vgrp(n)===gi).length;return k?`<button type="button" data-vcv="${gi}" class="cv-dot ${VCV===gi?"is-selected":""}"><i style="background:${c}"></i>${VL(...VCN[gi])}<small>${k}</small></button>`:"";}).join("")}</div>`;
+ g.innerHTML=bar+list.map(([n,d])=>`<article class="video-card"><div class="video-frame"><video src="${VDIR(n)}bc-${n}.mp4" poster="${VDIR(n)}bc-${n}.jpg" preload="none" playsinline controls controlslist="nodownload" aria-label="${VLAB(n)} Bachata Crush 影片 #${n} 25 秒試看"></video><span class="video-badge">25 秒試看</span></div><div class="video-meta"><div class="video-meta-top"><b>#${n}</b><small>完整版 ${mmss(d)}</small></div><div class="video-actions"><button type="button" class="button button-gray" data-video-dl="${n}">${icon("download")}25 秒試看</button><button type="button" class="button button-gray" data-story-dl="${n}">${icon("download")}限動照片</button><button type="button" class="button button-filled video-buy" data-video-buy="${n}">完整版 NT$300</button></div></div></article>`).join("");if(window.renderVideoLabels)window.renderVideoLabels();};renderVideoGrid();
+const vScroll=()=>{const el=document.getElementById("videos");if(el&&el.getBoundingClientRect().top<0)el.scrollIntoView({block:"start"});};
+document.addEventListener("click",e=>{const b=e.target.closest("[data-vsel]");if(b){const was=VSEL;VSEL=b.dataset.vsel||null;VCV="time";if(VSEL&&!was){try{history.pushState({vsel:VSEL},"");}catch{}}else if(!VSEL&&was&&history.state&&history.state.vsel){history.back();return;}renderVideoGrid();vScroll();return;}const c=e.target.closest("[data-vcv]");if(c){const v=c.dataset.vcv;VCV=v==="time"||v==="rainbow"?v:Number(v);renderVideoGrid();}});
+window.addEventListener("popstate",()=>{if(VSEL&&!(history.state&&history.state.vsel)){VSEL=null;VCV="time";renderVideoGrid();vScroll();}});
 document.getElementById("video-grid").addEventListener("play",e=>{document.querySelectorAll("#video-grid video").forEach(v=>{if(v!==e.target)v.pause();});},true);
 const videoFile=n=>`JimFrame_${VEV(n)}-BachataCrush_${n}_25s.mp4`;
 function openBuy(n){
@@ -973,12 +1004,12 @@ let LANG=(()=>{try{const v=localStorage.getItem("jf_lang");if(v)return v;}catch{
 DICT.ja={"精選": "ピックアップ", "相簿": "アルバム", "影片": "動画", "找自己": "自分を探す", "支持": "サポート", "預約": "予約", "每週精選 · Weekly Picks": "今週のピックアップ · WEEKLY PICKS", "把舞動的夜晚留下": "踊る夜を、写真に残す", "台北舞蹈與活動攝影。每次開啟換一批精選，點一下照片即可調色、下載或分享。": "台北のダンス・イベント写真。開くたびにピックアップが入れ替わります。写真をタップして色調整・ダウンロード・シェアができます。", "精選照片": "ピックアップ写真", "最近幾場活動的精選。": "最近のイベントからのハイライト。", "活動相簿": "イベントアルバム", "支持下一場拍攝": "次の撮影をサポート", "預約拍攝": "撮影を予約", "影片 · Bachata Crush": "動画 · Bachata Crush", "找自己和朋友": "自分と友だちを探す", "看照片": "写真を見る", "看影片": "動画を見る", "活動照片＋影片上線": "写真・動画を公開しました", "完整版": "フル版", "下載試看": "ダウンロード", "做限動": "ストーリー", "25 秒試看": "25秒プレビュー", "18 秒試看": "18秒プレビュー", "上傳自拍": "自撮りを追加", "開始找": "探す", "找到": "見つかった写真", "全部": "すべて", "我": "自分", "朋友": "友だち", "一起入鏡": "一緒に写っている", "選照片（最多 3 張，每張一個人）": "写真を選ぶ（最大3枚、1枚につき1人）", "下載": "ダウンロード", "限動": "ストーリー", "分享到限動": "ストーリーでシェア", "下載圖片": "画像を保存", "版型": "レイアウト", "滿版": "全面", "留白標記": "タグ用スペース", "舞伴分享": "ダンスパートナー", "夜色相框": "ナイトフレーム", "標記舞伴": "パートナーをタグ付け", "建議畫面（最清楚的幾格）": "おすすめのシーン（最も鮮明）", "或自己挑時間": "または好きな瞬間を選ぶ", "前一格": "前へ", "下一格": "次へ", "影片載入中…": "動画を読み込み中…", "製作中…": "作成中…", "關閉": "閉じる"};
 DICT.en["彩虹霓虹"]="Neon";DICT.ko["彩虹霓虹"]="네온";DICT.ja["彩虹霓虹"]="ネオン";DICT.en["彩虹條紋"]="Rainbow stripes";DICT.ko["彩虹條紋"]="레인보우";DICT.ja["彩虹條紋"]="レインボー";DICT.en["顏色"]="Color";DICT.ko["顏色"]="색상";DICT.ja["顏色"]="カラー";DICT.en["彩虹"]="Rainbow";DICT.ko["彩虹"]="무지개";DICT.ja["彩虹"]="レインボー";DICT.en["粉紅"]="Pink";DICT.ko["粉紅"]="핑크";DICT.ja["粉紅"]="ピンク";DICT.en["紫"]="Purple";DICT.ko["紫"]="보라";DICT.ja["紫"]="パープル";DICT.en["藍"]="Blue";DICT.ko["藍"]="파랑";DICT.ja["藍"]="ブルー";DICT.en["青"]="Cyan";DICT.ko["青"]="청록";DICT.ja["青"]="シアン";DICT.en["綠"]="Green";DICT.ko["綠"]="초록";DICT.ja["綠"]="グリーン";DICT.en["黃"]="Yellow";DICT.ko["黃"]="노랑";DICT.ja["黃"]="イエロー";DICT.en["橘"]="Orange";DICT.ko["橘"]="주황";DICT.ja["橘"]="オレンジ";DICT.en["限動工具"]="IG Studio";DICT.ko["限動工具"]="IG 스튜디오";DICT.ja["限動工具"]="IG スタジオ";
 const T=s=>LANG==="zh"?s:(DICT[LANG]&&DICT[LANG][s])||s;
-const L=(zh,en,ko,ja)=>LANG==="zh"?zh:LANG==="ko"?(ko||en):LANG==="ja"?(ja||en):en;
+const L=(zh,en,ko,ja)=>LANG==="zh"?zh:LANG==="ko"?(ko||en):LANG==="ja"?(ja||en):en;window.jfL=L;
 const applyLang=()=>{
  document.documentElement.lang=LANG==="zh"?"zh-Hant":LANG;
  document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;el.textContent=T(k);});
  document.querySelectorAll(".lang-switch button").forEach(b=>b.classList.toggle("is-selected",b.dataset.lang===LANG));
- renderPromo();renderFinder();renderVideoLabels();
+ renderPromo();renderFinder();renderVideoGrid();
 };
 // 標記既有固定文字
 const mark=(sel,txt)=>document.querySelectorAll(sel).forEach(el=>{if(el.textContent.trim()===txt){el.dataset.i18n=txt;}});
