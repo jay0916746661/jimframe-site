@@ -1226,8 +1226,8 @@ finder.addEventListener("click",async e=>{
  if(e.target.closest("[data-face-extend]"))extendFaceSearch();
  const nm=e.target.closest("[data-not-me]");if(nm){FS.hidden.add(nm.dataset.notMe);buildFaceResults();renderFinder();}
 });
-// 本週的本機索引（10.15、10.16 Bachata Crush）；10.16 的照片 id 加上 L1016- 前綴
-const FACE_INDEXES=[["face/index-1015.json",""],["face/index-1016.json","L1016-"]];
+// 本週的本機索引（10.15–10.17 Bachata Crush）；10.16 的照片 id 加上 L1016- 前綴
+const FACE_INDEXES=[["face/index-1015.json",""],["face/index-1016.json","L1016-"],["face/index-1017.json","L1017-"]];
 const loadIndex=async()=>{const all=await Promise.all(FACE_INDEXES.map(([u,pre])=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null).then(idx=>{if(!idx)return[];const div=idx.div||127*4;return Object.entries(idx.faces).map(([id,list])=>({id:pre+id,faces:list.map(b=>decodeVec(b,div)),meta:(idx.meta&&idx.meta[id])||[],hash:idx.hash&&idx.hash[id]?hexToBits(idx.hash[id]):""}));})));const known=new Set(albums.flatMap(a=>a.photos));return all.flat().filter(p=>known.has(p.id));};
 // 原站（ChatGPT Sites）有全站共用的人臉索引；需要原站開放 GitHub Pages 跨站讀取（PR #5）才能用。
 const MAIN_SITE="https://jimframe.jay0916746661.chatgpt.site";
@@ -1283,7 +1283,7 @@ function buildFaceResults(){
  all.sort(sorter);together.sort(sorter);per.forEach(l=>l.sort(sorter));
  const keep=FS.results&&FS.tab!=="all";FS.results={all,per,together};if(!keep)FS.tab=together.length?"together":"all";
  const bad=FS.people.map((p,i)=>!p.vecs.length?personLabel(i):"").filter(Boolean);
- const r=FS.extended;const scope=!r?L("目前搜尋的是本週活動（10.15、10.16 Bachata Crush）。想找以前的活動，按下方「延伸搜尋其他相簿」。","Searched this week's events (10.15, 10.16). Tap “Search other albums” for older events.","이번 주 행사(10.15, 10.16)를 검색했어요.","今週のイベント（10.15、10.16 Bachata Crush）を検索しました。過去のイベントは下の「ほかのアルバムも検索」から。"):r.ok?L(`已搜尋 10.15、10.16 與其他相簿（共用索引 ${r.indexed} 張）。`,`Searched 10.15, 10.16 and other albums (${r.indexed} indexed photos).`,`10.15와 다른 앨범을 검색했어요.`,`10.15、10.16 とほかのアルバムを検索しました（共有インデックス ${r.indexed} 枚）。`):L(`只搜尋了 10.15、10.16：${r.reason}`,`Only 10.15 and 10.16 were searched: ${r.reason}`,`10.15 앨범만 검색했어요: ${r.reason}`,`10.15、10.16 のみ検索しました：${r.reason}`);
+ const r=FS.extended;const scope=!r?L("目前搜尋的是本週活動（10.15–10.17 Bachata Crush）。想找以前的活動，按下方「延伸搜尋其他相簿」。","Searched this week's events (10.15–10.17). Tap “Search other albums” for older events.","이번 주 행사(10.15–10.17)를 검색했어요.","今週のイベント（10.15–10.17 Bachata Crush）を検索しました。過去のイベントは下の「ほかのアルバムも検索」から。"):r.ok?L(`已搜尋 10.15–10.17 與其他相簿（共用索引 ${r.indexed} 張）。`,`Searched 10.15–10.17 and other albums (${r.indexed} indexed photos).`,`10.15–10.17와 다른 앨범을 검색했어요.`,`10.15–10.17 とほかのアルバムを検索しました（共有インデックス ${r.indexed} 枚）。`):L(`只搜尋了 10.15–10.17：${r.reason}`,`Only 10.15–10.17 were searched: ${r.reason}`,`10.15 앨범만 검색했어요: ${r.reason}`,`10.15–10.17 のみ検索しました：${r.reason}`);
  FS.status=L(`找到 ${all.length} 張照片`+(together.length?`，其中 ${together.length} 張你們同框`:"")+"。點照片可以放大、下載或做成限動。"+(bad.length?`（${bad.join("、")} 的照片找不到清楚的臉）`:""),`Found ${all.length} photos`+(together.length?`, ${together.length} with you together`:"")+".",`${all.length}장을 찾았어요`+(together.length?` (함께 ${together.length}장)`:"")+".",`${all.length} 枚の写真が見つかりました`+(together.length?`（うち ${together.length} 枚は一緒に写っています）`:"")+"。写真をタップすると拡大・ダウンロード・ストーリー作成ができます。")+" "+scope;
 }
 async function extendFaceSearch(){
