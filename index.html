@@ -887,8 +887,8 @@ function withCredit(action,official){
  const root=document.getElementById("credit-root");
  root.innerHTML=`<div class="credit-backdrop" data-credit-close><div class="credit-sheet" role="dialog" aria-modal="true" aria-labelledby="credit-title">
   <span class="credit-grabber" aria-hidden="true"></span>
-  <h2 id="credit-title">分享時標記我們，下次更容易被拍到 📸</h2>
-  <p>發限動、貼文或拼圖時標記${crush?"攝影師和官方帳號":"攝影師"}，我每次都會看。<b>常標記的舞友，下一場我會特別留意、多拍幾張</b>。</p>
+  <h2 id="credit-title">分享時記得標記 📸</h2>
+  <p>常分享、有標記的舞友，通常也是最常出現在相簿裡的人——<b>因為攝影師會記得你</b>。發限動、貼文或拼圖時標記${crush?"攝影師和官方帳號":"攝影師"}，也讓更多人看見這場活動。</p>
   <div class="credit-tags">${tags.map(t=>`<span>${t}</span>`).join("")}</div>
   <button type="button" class="button button-gray" data-credit-copy>${icon("tag")}一鍵複製標記</button>
   <button type="button" class="button button-filled button-large" data-credit-go>好，我會標記 💛 下載</button>
@@ -897,7 +897,7 @@ function withCredit(action,official){
  </div></div>`;
  const close=()=>{root.innerHTML="";};
  const go=root.querySelector("[data-credit-go]");
- go.addEventListener("click",()=>{close();action();toast(`下載中 · 分享時標記 ${tags.join(" ")}，下次多拍你幾張 📸`);});
+ go.addEventListener("click",()=>{close();action();toast(`下載中 · 分享時記得標記 ${tags.join(" ")} 📸`);});
  root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
  root.querySelector("[data-credit-copy]").addEventListener("click",async e=>{const b=e.currentTarget;try{await navigator.clipboard.writeText(tags.join(" "));b.lastChild.textContent="已複製 ✓ 貼到限動就好";}catch{toast("請手動輸入 "+tags.join(" "));}});
 }
