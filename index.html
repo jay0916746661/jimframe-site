@@ -579,6 +579,14 @@ button { font: inherit; color: inherit; }
 .photo-grid .pick-mark{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;background:#0a84ff;color:#fff;display:grid;place-items:center;border:2px solid #fff;pointer-events:none}.photo-grid .pick-mark svg{width:14px;height:14px}
 .photo-grid button.is-last{outline:3px solid #0a84ff;outline-offset:-3px}
 .pick-btn.is-picked{color:#0a84ff}
+.latest-albums .section-head{align-items:flex-end}
+.latest-albums .text-link{color:var(--accent,#0a84ff);font-weight:600;font-size:15px;text-decoration:none;white-space:nowrap}
+.latest-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.latest-card{display:grid;gap:8px;border:0;padding:0;background:none;text-align:left;cursor:pointer;color:inherit}
+.latest-card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:18px;box-shadow:var(--shadow);transition:transform .2s}
+.latest-card:hover img{transform:translateY(-2px)}
+.latest-meta{display:grid;gap:2px;padding:0 4px}.latest-meta b{font-size:16px;font-weight:600}.latest-meta small{color:var(--label-2);font-size:13px}
+@media (max-width:600px){.latest-row{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:72%;overflow-x:auto;scroll-snap-type:x mandatory;padding-inline:2px;scrollbar-width:none}.latest-row::-webkit-scrollbar{display:none}.latest-card{scroll-snap-align:start}}
 </style>
 </head><body>
 
@@ -991,7 +999,7 @@ document.addEventListener("keydown",e=>{
 const applyHidden=()=>{let ch=false;albums.forEach(a=>{const k=a.all.filter(id=>!JF_HIDDEN.has(id));if(k.length!==a.photos.length||k.some((id,i)=>id!==a.photos[i])){a.photos.length=0;a.photos.push(...k);a._cover=null;ch=true;}});return ch;};
 const rerenderAll=()=>{
  document.querySelectorAll(".carousel-card").forEach(b=>{if(JF_HIDDEN.has(b.dataset.open))b.remove();});
- try{renderAlbums();}catch{}try{renderPopular();}catch{}
+ try{renderAlbums();}catch{}try{renderPopular();}catch{}try{window.renderLatest&&window.renderLatest();}catch{}
  if(st.album){if(st.photo&&JF_HIDDEN.has(st.photo))st.photo=null;renderSheet();}
  if(ADMIN)admBadge();
 };
@@ -1132,7 +1140,7 @@ DICT.ja={"精選": "ピックアップ", "相簿": "アルバム", "影片": "�
 DICT.en["彩虹霓虹"]="Neon";DICT.ko["彩虹霓虹"]="네온";DICT.ja["彩虹霓虹"]="ネオン";DICT.en["彩虹條紋"]="Rainbow stripes";DICT.ko["彩虹條紋"]="레인보우";DICT.ja["彩虹條紋"]="レインボー";DICT.en["顏色"]="Color";DICT.ko["顏色"]="색상";DICT.ja["顏色"]="カラー";DICT.en["彩虹"]="Rainbow";DICT.ko["彩虹"]="무지개";DICT.ja["彩虹"]="レインボー";DICT.en["粉紅"]="Pink";DICT.ko["粉紅"]="핑크";DICT.ja["粉紅"]="ピンク";DICT.en["紫"]="Purple";DICT.ko["紫"]="보라";DICT.ja["紫"]="パープル";DICT.en["藍"]="Blue";DICT.ko["藍"]="파랑";DICT.ja["藍"]="ブルー";DICT.en["青"]="Cyan";DICT.ko["青"]="청록";DICT.ja["青"]="シアン";DICT.en["綠"]="Green";DICT.ko["綠"]="초록";DICT.ja["綠"]="グリーン";DICT.en["黃"]="Yellow";DICT.ko["黃"]="노랑";DICT.ja["黃"]="イエロー";DICT.en["橘"]="Orange";DICT.ko["橘"]="주황";DICT.ja["橘"]="オレンジ";DICT.en["限動工具"]="IG Studio";DICT.ko["限動工具"]="IG 스튜디오";DICT.ja["限動工具"]="IG スタジオ";
 const T=s=>LANG==="zh"?s:(DICT[LANG]&&DICT[LANG][s])||s;
 const L=(zh,en,ko,ja)=>LANG==="zh"?zh:LANG==="ko"?(ko||en):LANG==="ja"?(ja||en):en;window.jfL=L;
-const applyLang=()=>{
+const applyLang=()=>{try{renderLatest();}catch{}
  document.documentElement.lang=LANG==="zh"?"zh-Hant":LANG;
  document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;el.textContent=T(k);});
  document.querySelectorAll(".lang-switch button").forEach(b=>b.classList.toggle("is-selected",b.dataset.lang===LANG));
@@ -1182,7 +1190,18 @@ promo.addEventListener("click",e=>{if(e.target.closest("[data-crush-photos]"))op
 
 /* ---------- 找自己和朋友 ---------- */
 const finder=document.createElement("section");finder.className="section";finder.id="finder";
-(document.getElementById("popular")?.closest("section")||document.getElementById("archive")).after(finder);
+/* ---------- 最新相簿置頂：有設計封面的最新活動（目前 Bachata Crush 10.15–10.17） ---------- */
+const latest=document.createElement("section");latest.className="section latest-albums";latest.id="latest";
+promo.after(latest);
+function renderLatest(){
+ const ls=albums.filter(a=>ALBUM_COVERS[a.date]).sort((x,y)=>y.date.localeCompare(x.date)).slice(0,4);
+ if(!ls.length){latest.hidden=true;return;}
+ latest.innerHTML=`<div class="section-head"><div><h2 class="title2">${L("最新相簿","Latest albums","최신 앨범","最新アルバム")}</h2><p class="footnote">${L("點封面看照片，可下載、調色、做限動","Tap a cover to see the photos — download, edit or make a Story","표지를 눌러 사진 보기","表紙をタップして写真を見る")}</p></div><a class="text-link" href="#archive">${L("全部相簿","All albums","전체 앨범","すべてのアルバム")} →</a></div>
+ <div class="latest-row">${ls.map(a=>`<button type="button" class="latest-card" data-album="${a.key}"><img src="${ALBUM_COVERS[a.date]}" alt="${esc(a.venue)} ${dateLabel(a.date)}" loading="eager"><span class="latest-meta"><b>${dateLabel(a.date)}${ALBUM_THEME[a.date]?" · "+esc(ALBUM_THEME[a.date]):""}</b><small>${a.photos.length} ${L("張照片","photos","장","枚")}</small></span></button>`).join("")}</div>`;
+}
+window.renderLatest=renderLatest;renderLatest();
+latest.after(finder);
+{const v=document.getElementById("videos");if(v)finder.after(v);}
 // 人臉搜尋：比對邏輯移植自主站 site-source/app/page.tsx 與 face-engine.ts（SFace）。
 // 每個人可放 1–3 張參考照（主站作法：最清楚的一張佔 75%，其餘當佐證），
 // 原圖指紋相同直接命中；小臉或低信心的臉要「很像」門檻才算。
