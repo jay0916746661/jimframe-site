@@ -574,6 +574,11 @@ button { font: inherit; color: inherit; }
 .story-side { display: grid; gap: 10px; }
 .story-side .button-stack { margin-top: 6px; }
 @media (max-width: 640px) { .story-body { grid-template-columns: 1fr; } .story-body canvas.pv, .story-pv-wrap { max-width: 220px; margin-inline: auto; width: 100%; } }
+.photo-grid .seen-mark{position:absolute;left:5px;bottom:5px;font-style:normal;font-size:10px;line-height:1;padding:3px 6px;border-radius:999px;background:rgba(0,0,0,.6);color:#fff;pointer-events:none}
+.photo-grid button.is-seen img{opacity:.78}
+.photo-grid .pick-mark{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;background:#0a84ff;color:#fff;display:grid;place-items:center;border:2px solid #fff;pointer-events:none}.photo-grid .pick-mark svg{width:14px;height:14px}
+.photo-grid button.is-last{outline:3px solid #0a84ff;outline-offset:-3px}
+.pick-btn.is-picked{color:#0a84ff}
 </style>
 </head><body>
 
@@ -792,10 +797,15 @@ const updatePreview=()=>{
  previewTimer=setTimeout(async()=>{try{const src=await getSource(id);if(token!==renderToken)return;const f=new ImageData(new Uint8ClampedArray(src.data),src.width,src.height);applyColorGrade(f.data,st.grade,st.mix,st.adj);const c=document.createElement("canvas");c.width=f.width;c.height=f.height;c.getContext("2d").putImageData(f,0,0);if(token===renderToken){img.style.filter="";img.src=c.toDataURL("image/jpeg",.92);}}catch{if(token===renderToken)img.style.filter=cssPreview();}},35);
 };
 const root=document.getElementById("sheet-root");
-const openAlbum=(a,photo=null)=>{if(st.album!==a)st.cview=colorMap(a)?"rainbow":"time";st.album=a;st.photo=photo;st.editing=false;st.batch=false;st.selected=new Set();st.grade="original";st.adj=zeroAdj();document.body.style.overflow="hidden";renderSheet();};
+const SEEN=new Set(store.get("jf_seen",[]));const saveSel=()=>{if(st.album)store.set("jf_sel_"+st.album.key,[...st.selected]);};
+const openAlbum=(a,photo=null)=>{if(st.album!==a)st.cview=colorMap(a)?"rainbow":"time";st.album=a;st.photo=photo;st.editing=false;st.batch=false;st.selected=new Set(store.get("jf_sel_"+a.key,[]));st.gridTop=0;st.lastPhoto=null;st.grade="original";st.adj=zeroAdj();document.body.style.overflow="hidden";renderSheet();};
 const closeAlbum=()=>{st.album=null;st.photo=null;document.body.style.overflow="";root.innerHTML="";};
 const step=d=>{const ps=viewList(st.album);const i=ps.indexOf(st.photo);st.photo=ps[(i+d+ps.length)%ps.length];renderSheet();};
-function renderSheet(){
+function renderSheet(){const g0=root.querySelector(".photo-grid");if(g0)st.gridTop=g0.scrollTop;
+ if(st.photo&&!SEEN.has(st.photo)){SEEN.add(st.photo);store.set("jf_seen",[...SEEN].slice(-5000));}
+ renderSheet0();const g=root.querySelector(".photo-grid");if(!g)return;g.scrollTop=st.gridTop||0;
+ if(st.lastPhoto){const el=g.querySelector(`[data-photo="${CSS.escape(st.lastPhoto)}"]`);st.lastPhoto=null;if(el){const r=el.getBoundingClientRect(),gr=g.getBoundingClientRect();if(r.top<gr.top||r.bottom>gr.bottom)el.scrollIntoView({block:"center"});el.classList.add("is-last");}}}
+function renderSheet0(){
  const a=st.album;if(!a){root.innerHTML="";return;}
  if(st.photo){
   const VL=viewList(a);const i=VL.indexOf(st.photo);const lk=liked.has(st.photo);
@@ -806,7 +816,7 @@ function renderSheet(){
    :`<div class="adjust-list">${adjLabels.map(([k,l])=>`<label class="slider"><span>${l}</span><input id="adjust-${k}" data-adj="${k}" type="range" min="-100" max="100" step="1" value="${st.adj[k]}"><output>${st.adj[k]>0?"+":""}${st.adj[k]}</output></label>`).join("")}<button type="button" class="text-button" data-reset-adj ${Object.values(st.adj).some(v=>v)?"":"disabled"}>全部重設</button></div>`}
    <div class="presets"><div class="presets-head"><b>我的調色</b><span class="sim-note">存在這台裝置</span></div><div class="preset-row">${presets.map(p=>`<span class="preset"><button type="button" data-preset="${p.id}">${esc(p.name)}</button><button type="button" aria-label="刪除 ${esc(p.name)}" data-del-preset="${p.id}">${icon("close")}</button></span>`).join("")}<span class="preset-new"><input id="preset-name" maxlength="36" placeholder="命名目前設定"><button type="button" data-save-preset ${hasEdits(st.grade,st.adj)?"":"disabled"}>儲存</button></span></div></div>
    <div class="editor-actions"><button type="button" class="button button-dark" data-compare>按住比較原圖</button><button type="button" class="button button-filled" data-export>儲存調色版</button></div>
-  </div>`:`<footer class="viewer-toolbar"><a class="tool" href="${isLocal(st.photo)?localPath(st.photo):`https://drive.google.com/file/d/${st.photo}/view`}" target="_blank" rel="noreferrer" aria-label="開啟原圖">${icon("share")}</a><button type="button" class="tool ${lk?"is-liked":""}" data-like="${st.photo}" aria-label="喜歡">${icon(lk?"heartFill":"heart")}</button><button type="button" class="tool" data-edit aria-label="調色">${icon("sliders")}</button><button type="button" class="tool" data-download="${st.photo}" aria-label="下載原始照片">${icon("download")}</button></footer>`;
+  </div>`:`<footer class="viewer-toolbar"><a class="tool" href="${isLocal(st.photo)?localPath(st.photo):`https://drive.google.com/file/d/${st.photo}/view`}" target="_blank" rel="noreferrer" aria-label="開啟原圖">${icon("share")}</a><button type="button" class="tool ${lk?"is-liked":""}" data-like="${st.photo}" aria-label="喜歡">${icon(lk?"heartFill":"heart")}</button><button type="button" class="tool pick-btn ${st.selected.has(st.photo)?"is-picked":""}" data-pick="${st.photo}" aria-label="勾選">${icon("check")}</button><button type="button" class="tool" data-edit aria-label="調色">${icon("sliders")}</button><button type="button" class="tool" data-download="${st.photo}" aria-label="下載原始照片">${icon("download")}</button></footer>`;
   root.innerHTML=`<div class="sheet-backdrop" data-backdrop><div class="sheet is-viewer" role="dialog" aria-modal="true" aria-label="${esc(a.venue)} 照片"><div class="viewer ${st.editing?"is-editing":""}">
    <header class="viewer-bar"><button type="button" class="bar-button" data-leave>${icon("back")}相簿</button><div class="bar-title"><b>${esc(a.venue)}</b><span>2026.${dateLabel(a.date)} · ${i+1} / ${VL.length}</span></div><button type="button" class="bar-button ${st.editing?"is-strong":""}" data-edit>${st.editing?"完成":"編輯"}</button></header>
    <div class="viewer-stage"><button type="button" class="stage-arrow prev" data-step="-1" aria-label="上一張">${icon("back")}</button><img src="${photoSrc(st.photo)}" alt="${esc(a.venue)} 照片"><button type="button" class="stage-arrow next" data-step="1" aria-label="下一張">${icon("chevron")}</button>${st.showOriginal?`<span class="stage-label">原圖</span>`:""}</div>
@@ -816,7 +826,7 @@ function renderSheet(){
   root.innerHTML=`<div class="sheet-backdrop" data-backdrop><div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(a.venue)} 相簿">
    <header class="sheet-bar"><button type="button" class="bar-button" data-close>完成</button><div class="bar-title"><b>${esc(a.venue)}</b><span>2026.${dateLabel(a.date)}${themeOf(a)} · ${a.photos.length} 張</span></div><button type="button" class="bar-button" data-batch>${st.batch?"取消":"選取"}</button></header>
    ${colorMap(a)?`<div class="color-bar" role="group" aria-label="依衣服顏色排列"><button type="button" data-cview="time" class="${st.cview==null||st.cview==="time"?"is-selected":""}">時間</button><button type="button" data-cview="rainbow" class="cv-rainbow ${st.cview==="rainbow"?"is-selected":""}">🌈 彩虹</button>${CGROUPS.map(([n,c],g)=>{const k=a.photos.filter(id=>(colorOf(a,id)||[])[0]===g).length;return k?`<button type="button" data-cview="${g}" class="cv-dot ${st.cview===g?"is-selected":""}" aria-label="${n}色衣服 ${k} 張"><i style="background:${c}"></i>${n}<small>${k}</small></button>`:"";}).join("")}</div>`:`<div class="color-bar" role="group" aria-label="依衣服顏色排列"><button type="button" class="is-selected">時間</button><button type="button" data-canalyze class="cv-rainbow" ${CA_BUSY[a.key]?"disabled":""}>🌈 ${CA_BUSY[a.key]?`分析顏色中 ${CA_BUSY[a.key]}`:"依衣服顏色排列"}</button></div>`}
-   <div class="photo-grid ${st.batch?"is-selecting":""}">${viewList(a).map((id,i)=>{const s=st.selected.has(id);return `<button type="button" class="${s?"is-selected":""}" data-photo="${id}" aria-label="照片 ${i+1}"><img src="${photoSrc(id,400)}" alt="" loading="lazy">${st.batch?`<i class="check" aria-hidden="true">${s?icon("check"):""}</i>`:""}</button>`;}).join("")}</div>
+   <div class="photo-grid ${st.batch?"is-selecting":""}">${viewList(a).map((id,i)=>{const s=st.selected.has(id);return `<button type="button" class="${s?"is-selected":""} ${SEEN.has(id)?"is-seen":""}" data-photo="${id}" aria-label="照片 ${i+1}"><img src="${photoSrc(id,400)}" alt="" loading="lazy">${!st.batch&&s?`<i class="pick-mark" aria-hidden="true">${icon("check")}</i>`:""}${SEEN.has(id)?`<i class="seen-mark">看過</i>`:""}${st.batch?`<i class="check" aria-hidden="true">${s?icon("check"):""}</i>`:""}</button>`;}).join("")}</div>
    ${st.batch?`<footer class="sheet-toolbar"><button type="button" class="tool" data-batch-share ${st.selected.size?"":"disabled"} aria-label="分享選取的照片">${icon("share")}</button><div class="toolbar-status"><b>${st.selected.size?`已選取 ${st.selected.size} 張`:"選取照片"}</b><span>下載最多 20 張 · 分享最多 10 張</span></div><button type="button" class="tool" data-batch-download ${st.selected.size?"":"disabled"} aria-label="下載選取的原檔">${icon("download")}</button></footer>`
    :!a.folder?"":`<footer class="sheet-footer"><a href="https://drive.google.com/drive/folders/${a.folder}" target="_blank" rel="noreferrer">在 Google Drive 開啟${icon("external")}</a></footer>`}
   </div></div>`;
@@ -940,13 +950,14 @@ document.addEventListener("click",e=>{
  if("batchShare" in d){shareLinks([...st.selected]);return;}
  if("batchDownload" in d){const ids=[...st.selected];withCredit(()=>batchDownload(ids));return;}
  if("close" in d){closeAlbum();return;}
- if("batch" in d){st.batch=!st.batch;st.selected=new Set();renderSheet();return;}
- if(d.photo){if(st.batch){st.selected.has(d.photo)?st.selected.delete(d.photo):st.selected.add(d.photo);renderSheet();}else{st.photo=d.photo;st.editing=false;st.grade="original";st.adj=zeroAdj();renderSheet();}return;}
- if("leave" in d){st.photo=null;st.editing=false;st.grade="original";st.adj=zeroAdj();renderSheet();return;}
+ if("batch" in d){st.batch=!st.batch;renderSheet();return;}
+ if(d.photo){if(st.batch){st.selected.has(d.photo)?st.selected.delete(d.photo):st.selected.add(d.photo);saveSel();renderSheet();}else{st.photo=d.photo;st.editing=false;st.grade="original";st.adj=zeroAdj();renderSheet();}return;}
+ if("leave" in d){st.lastPhoto=st.photo;st.photo=null;st.editing=false;st.grade="original";st.adj=zeroAdj();renderSheet();return;}
  if("edit" in d){st.editing=!st.editing;renderSheet();return;}
  if(d.step){step(Number(d.step));return;}
+ if(d.pick){st.selected.has(d.pick)?st.selected.delete(d.pick):st.selected.add(d.pick);saveSel();renderSheet();toast(st.selected.has(d.pick)?`已勾選（共 ${st.selected.size} 張）`:"已取消勾選");return;}
  if("canalyze" in d){const a=st.album;if(CA_BUSY[a.key])return;CA_BUSY[a.key]="0%";renderSheet();analyzeColors(a,(x,n)=>{const p=Math.round(x/n*100)+"%";if(CA_BUSY[a.key]!==p){CA_BUSY[a.key]=p;const b=root.querySelector("[data-canalyze]");if(b)b.textContent="🌈 分析顏色中 "+p;}}).then(()=>{delete CA_BUSY[a.key];if(st.album===a){st.cview="rainbow";renderSheet();}}).catch(()=>{delete CA_BUSY[a.key];toast("這本相簿的照片暫時無法分析顏色");if(st.album===a)renderSheet();});return;}
- if(d.cview){st.cview=d.cview==="time"||d.cview==="rainbow"?d.cview:Number(d.cview);renderSheet();const g=root.querySelector(".photo-grid");if(g)g.scrollTop=0;return;}
+ if(d.cview){st.gridTop=0;st.cview=d.cview==="time"||d.cview==="rainbow"?d.cview:Number(d.cview);renderSheet();const g=root.querySelector(".photo-grid");if(g)g.scrollTop=0;return;}
  if(d.tab){st.tab=d.tab;renderSheet();return;}
  if(d.grade){st.grade=d.grade;renderSheet();return;}
  if("resetAdj" in d){st.adj=zeroAdj();renderSheet();return;}
