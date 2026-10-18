@@ -723,7 +723,7 @@ async function analyzeColors(a,onProg){
  COLOR_DATA[a.key]=out;a._cover=null;try{localStorage.setItem(ck,JSON.stringify(out));}catch{}return out;
 }
 // 設計過的相簿封面（Logo＋日期主題）；沒有的相簿用照片輪播
-const ALBUM_COVERS={"1017":"photos/1017/cover.jpg?v=3","1016":"photos/1016/cover.jpg","1015":"photos/1015-cover.jpg"};
+const ALBUM_COVERS={"1017":"photos/1017/cover.jpg?v=4","1016":"photos/1016/cover.jpg","1015":"photos/1015-cover.jpg"};
 const themeOf=a=>ALBUM_THEME[a.date]?` · ${ALBUM_THEME[a.date]}`:"";
 const albumOf=id=>albums.find(a=>a.photos.includes(id));
 let liked=new Set(store.get("demo_liked",[]));
