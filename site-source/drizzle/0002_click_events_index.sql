@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS `click_events_type_key_idx` ON `click_events` (`event_type`,`album_key`);
