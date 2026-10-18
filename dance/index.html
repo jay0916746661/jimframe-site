@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#140f16">
+  <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
   <title>Dance Training | 舞蹈練習平台</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap">
   <style>
     /* 版面：左側導覽（桌機）／底部分頁（手機）＋單一畫面切換，一次只看一件事。
        視覺：舞池夜色，暗色為主；每個舞風一個主色（Bachata 玫瑰、Salsa 琥珀、Zouk 青綠、Blues 靛藍）。 */
@@ -541,6 +542,40 @@
     }
     footer .section-inner { flex-direction: row; flex-wrap: wrap; gap: 6px 18px; }
 
+    /* ---------- 舞池熱歌榜 ---------- */
+    .hit-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .hit-tools .small-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--fg); }
+    .hit-note { margin-top: 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--muted); font-size: 14px; }
+    .hit-list { display: grid; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+    .hit-row { border-bottom: 1px solid var(--line); }
+    .hit-row:last-child { border-bottom: 0; }
+    .hit-head { all: unset; box-sizing: border-box; width: 100%; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; cursor: pointer; }
+    .hit-head:hover { background: var(--surface-2); }
+    .hit-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .hit-rank { font-family: var(--f-display); font-size: 24px; line-height: 1; color: var(--muted); }
+    .hit-row:nth-child(-n+3) .hit-rank { color: var(--accent); }
+    .hit-name { min-width: 0; display: grid; gap: 2px; }
+    .hit-name strong { overflow-wrap: anywhere; }
+    .hit-name small { color: var(--muted); overflow-wrap: anywhere; }
+    .hit-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .hit-count { font-family: var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; font-size: 14px; }
+    .hit-count small { display: block; color: var(--muted); font-size: 11px; }
+    .hit-body { padding: 0 16px 18px 68px; display: grid; gap: 12px; }
+    .hit-body p { margin: 0; color: var(--muted); font-size: 14px; }
+    .hit-how { border-left: 3px solid var(--accent); padding-left: 12px; font-size: 14px; }
+    .hit-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hit-mix { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 14px; }
+    .hit-mix div { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); padding: 12px; display: grid; gap: 2px; }
+    .hit-mix strong { font-family: var(--f-mono); font-size: 22px; }
+    .hit-mix span { color: var(--muted); font-size: 13px; }
+    .hit-playlist { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; counter-reset: hp; }
+    .hit-playlist li { counter-increment: hp; display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); }
+    .hit-playlist li::before { content: counter(hp); font-family: var(--f-mono); color: var(--muted); }
+    .hit-playlist li span { min-width: 0; overflow-wrap: anywhere; }
+    @media (max-width: 640px) {
+      .hit-body { padding: 0 16px 16px; }
+      .hit-head { grid-template-columns: 30px minmax(0, 1fr) auto; }
+    }
     .tabbar { display: none; }
 
     /* ---------- 平板 ---------- */
@@ -610,7 +645,7 @@
 
       .tabbar {
         position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
-        display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+        display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
         padding-top: 6px;
         padding-bottom: max(6px, env(safe-area-inset-bottom, 0px));
         padding-left: max(8px, env(safe-area-inset-left, 0px));
@@ -625,6 +660,90 @@
       footer { padding-bottom: 90px; }
     }
 
+
+    /* ===== Apple 質感改版：系統字、淺灰底白卡、霧面導覽、大標題、無框卡片 ===== */
+    :root {
+      --bg: #000000; --surface: #1c1c1e; --surface-2: #2c2c2e; --line: #38383a;
+      --fg: #f5f5f7; --muted: #98989d; --faint: #6e6e73;
+      --good: #30d158; --warn: #ffd60a; --risk: #ff453a; --on-accent: #ffffff; --veil: rgba(0, 0, 0, .6);
+      --f-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --f-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      --f-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
+      --r: 18px; --r-sm: 12px;
+      --shadow: none;
+    }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        --bg: #f5f5f7; --surface: #ffffff; --surface-2: #f0f0f3; --line: #e3e3e8;
+        --fg: #1d1d1f; --muted: #6e6e73; --faint: #86868b;
+        --good: #248a3d; --warn: #b25000; --risk: #d70015; --on-accent: #ffffff; --veil: rgba(0, 0, 0, .4);
+        --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 4px 16px rgba(0, 0, 0, .04);
+      }
+    }
+    :root[data-theme="light"] {
+      --bg: #f5f5f7; --surface: #ffffff; --surface-2: #f0f0f3; --line: #e3e3e8;
+      --fg: #1d1d1f; --muted: #6e6e73; --faint: #86868b;
+      --good: #248a3d; --warn: #b25000; --risk: #d70015; --on-accent: #ffffff; --veil: rgba(0, 0, 0, .4);
+      --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 4px 16px rgba(0, 0, 0, .04);
+    }
+    .app { --a-dark: #ff375f; --a-light: #e3194c; }
+    .app[data-style="salsa"] { --a-dark: #ff9f0a; --a-light: #c45500; }
+    .app[data-style="zouk"] { --a-dark: #40c8e0; --a-light: #0a7d8c; }
+    .app[data-style="blues"] { --a-dark: #7d7aff; --a-light: #5856d6; }
+    .app { --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent); --accent-line: color-mix(in srgb, var(--accent) 35%, transparent); }
+    body { font-size: 16px; letter-spacing: -.01em; }
+
+    .rail { background: color-mix(in srgb, var(--surface) 72%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-right: 1px solid var(--line); }
+    .brand { font-weight: 600; letter-spacing: -.02em; }
+    .brand-mark { font-family: var(--f-display); font-weight: 700; border-radius: 10px; }
+    .rail-nav a, .tabbar a { border-radius: 10px; font-weight: 500; }
+    .rail-nav a.active { background: var(--surface-2); color: var(--fg); }
+    .topbar, .tabbar { background: color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); }
+    .topbar { border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+    .style-tab { border: 0; background: var(--surface-2); }
+    .style-tab.active { background: var(--fg); color: var(--bg); }
+    .style-tab.active span { color: var(--bg); }
+    .beat-dot, .beat-btn { border: 0; background: var(--surface-2); }
+
+    .hero h1 { font-family: var(--f-display); font-weight: 700; letter-spacing: -.035em; font-size: clamp(40px, 6vw, 68px); line-height: 1.05; }
+    .section-title h2, .view-head h2 { font-family: var(--f-display); font-weight: 700; letter-spacing: -.025em; font-size: clamp(26px, 3vw, 34px); line-height: 1.15; }
+    .style-info h3 { font-family: var(--f-display); font-weight: 700; letter-spacing: -.02em; }
+    .eyebrow { font-family: var(--f-body); font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+    .stat strong, .t-big, .session-clock, .hit-mix strong { font-family: var(--f-display); font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+    .hit-rank { font-family: var(--f-display); font-weight: 700; letter-spacing: -.03em; }
+    .view { gap: 56px; }
+
+    .t-card, .style-info, .class-row, .practice-panel, .video-card, .segment-card, .source-card, .drill, .hit-list, .hit-mix div, .hit-playlist li, .path-grid, .lesson-panel, .move-table-wrap, .mind-map, .category-preset, .move-category-card, .move-category-detail, .week-item {
+      border-color: transparent !important; box-shadow: var(--shadow);
+    }
+    .t-card, .style-info, .practice-panel, .hit-list, .path-grid { border-radius: var(--r); }
+    .session-step { border-radius: 12px; }
+    .btn, .small-btn, .lesson-link { border: 0; background: var(--surface-2); font-weight: 500; min-height: 34px; padding: 6px 16px; }
+    .small-btn:hover, .lesson-link:hover, .btn:hover { background: color-mix(in srgb, var(--fg) 10%, var(--surface-2)); }
+    .btn.primary, .small-btn.primary { background: var(--accent); color: #fff; }
+    .hit-tools .small-btn.active, .small-btn.saved { background: var(--fg); color: var(--bg); }
+    .badge, .tag, .pill { border-radius: 99px; font-weight: 600; padding: 3px 10px; }
+    .badge { font-family: var(--f-body); letter-spacing: 0; }
+    .search, .select { border: 0; background: var(--surface-2); border-radius: 12px; }
+    .search:focus, .select:focus { box-shadow: 0 0 0 3px var(--accent-soft); }
+    .empty { border-style: solid; border-color: var(--line); }
+    .hit-head:hover { background: color-mix(in srgb, var(--fg) 4%, transparent); }
+
+    /* 熱歌整合元件：今天卡、影片庫配歌條 */
+    .song-rows { display: grid; gap: 2px; }
+    .song-row { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .song-row:last-child { border-bottom: 0; }
+    .song-row > b { font-family: var(--f-display); font-weight: 700; color: var(--muted); font-size: 17px; }
+    .song-row > span { min-width: 0; display: grid; gap: 2px; }
+    .song-row strong { font-weight: 600; overflow-wrap: anywhere; }
+    .song-row small { color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+    .song-row .row-end { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    .hit-strip { display: grid; gap: 10px; padding: 18px 20px; border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow); }
+    .hit-strip-head { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; justify-content: space-between; }
+    .hit-strip-head h3 { font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+    .hit-strip-head p { color: var(--muted); font-size: 14px; }
+    .play-mini { width: 32px; height: 32px; min-height: 32px; padding: 0; border-radius: 50%; }
+    @media (max-width: 640px) { .song-row { grid-template-columns: 22px minmax(0, 1fr); } .song-row .row-end { grid-column: 2; justify-content: flex-start; } }
   </style>
 </head>
 <body>
@@ -636,6 +755,7 @@
           <a href="#classVideos" data-go="class"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg><span>上課影片</span><span class="nav-count" hidden></span></a>
           <a href="#path" data-go="moves"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="8" cy="15" rx="2.6" ry="4.2" transform="rotate(-12 8 15)"/><ellipse cx="16" cy="9" rx="2.6" ry="4.2" transform="rotate(12 16 9)"/></svg><span>課綱與招式</span></a>
           <a href="#library" data-go="videos"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M10 9v6l5-3z"/></svg><span>影片庫</span></a>
+          <a href="#hits" data-go="hits"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg><span>熱歌榜</span></a>
           <a href="#practice" data-go="practice"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><span>練習計畫</span></a>
           <a href="#sources" data-go="sources"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><span>來源</span></a>
       </nav>
@@ -713,6 +833,21 @@
                 </div>
               </article>
             </div>
+
+            <article class="t-card" id="todayHits" style="grid-column:1/-1">
+              <div class="t-row" style="margin-top:0;justify-content:space-between">
+                <div>
+                  <span class="eyebrow">今天的熱歌 · 每天換 3 首</span>
+                  <h3>今晚舞池最可能放的歌</h3>
+                </div>
+                <div class="t-row" style="margin-top:0">
+                  <a class="small-btn" href="#hitPractice">照比例排 10 首</a>
+                  <a class="small-btn primary" href="#hits">熱歌榜</a>
+                </div>
+              </div>
+              <p class="t-sub">從 14 份 DJ 歌單的前 12 名輪流挑。先聽一遍、數出 break，再跟舞者影片對照。</p>
+              <div class="song-rows"></div>
+            </article>
           </div>
 
           <section class="band" id="danceStyles">
@@ -1083,6 +1218,7 @@
             <button class="category-preset" type="button" data-video-preset="musicality"><strong>Musicality</strong><span>break、timing、歌曲結構</span></button>
             <button class="category-preset" type="button" data-video-preset="safety"><strong>Safety</strong><span>head roll、dip、舒適連接</span></button>
           </div>
+          <div class="hit-strip" id="libraryHits" hidden></div>
           <div class="toolbar">
             <div class="filter-row">
               <input class="search" id="search" type="search" placeholder="搜尋：basic、turn、sensual、Dominican、styling...">
@@ -1107,6 +1243,50 @@
           </div>
           <div class="video-grid" id="videoGrid"></div>
           <div class="empty" id="emptyState" hidden>找不到符合條件的影片。換個關鍵字或清掉篩選試試。</div>
+        </div>
+      </section>
+
+        </div>
+
+        <div class="view" data-view="hits">
+
+      <section class="band" id="hits">
+        <div class="section-inner">
+          <div class="section-title">
+            <h2>舞池熱歌榜</h2>
+            <p>2026 年 1–10 月，比利時 bachata 派對 DJ 實際放歌的 14 份歌單（467 次播放、233 首歌），依「出現在幾場」排序。點一首歌：站內播放舞者影片，或直接跳到同類型的教學影片。</p>
+          </div>
+          <div class="hit-note" id="hitStyleNote" hidden>熱歌榜目前只有 Bachata 的資料。切回 Bachata 後，「看教學」按鈕會帶你到對應的 Bachata 教學影片。</div>
+          <div class="hit-tools" role="toolbar" aria-label="熱歌篩選">
+            <button class="small-btn active" type="button" data-hit-filter="all">全部</button>
+            <button class="small-btn" type="button" data-hit-filter="vid">有舞蹈影片</button>
+            <button class="small-btn" type="button" data-hit-filter="oct">10 月還在放</button>
+            <button class="small-btn" type="button" data-hit-filter="sensual">Sensual</button>
+            <button class="small-btn" type="button" data-hit-filter="urban">都會</button>
+            <button class="small-btn" type="button" data-hit-filter="romantic">浪漫流行</button>
+            <button class="small-btn" type="button" data-hit-filter="dominican">多明尼加</button>
+          </div>
+          <div class="hit-list" id="hitList"></div>
+        </div>
+      </section>
+
+      <section class="band" id="hitStyles">
+        <div class="section-inner">
+          <div class="section-title">
+            <h2>四種歌，四種跳法</h2>
+            <p>同一套動作放在不同類型的歌上，效果差很多。每張卡都能直接跳到影片庫的對應教學。</p>
+          </div>
+          <div class="drill-grid" id="hitStyleGrid"></div>
+        </div>
+      </section>
+
+      <section class="band" id="hitFollow">
+        <div class="section-inner">
+          <div class="section-title">
+            <h2>IG 先追這 5 組</h2>
+            <p>照歌型比例挑的舞者。看到喜歡的 Reel，點畫面下方的歌名，會打開那首歌的音訊頁，列出所有用這首歌的影片。</p>
+          </div>
+          <div class="drill-grid" id="hitFollowGrid"></div>
         </div>
       </section>
 
@@ -1139,6 +1319,20 @@
         </div>
       </section>
 
+
+      <section class="band" id="hitPractice">
+        <div class="section-inner">
+          <div class="section-title">
+            <h2>照放歌比例練</h2>
+            <p>336 次純 bachata 播放裡有 193 首不同的歌，前 40 名只涵蓋約 41%。所以不要背歌單，而是照歌型比例練耳朵：每次 10 首，3–4 首核心歌練到熟，其餘輪換。</p>
+          </div>
+          <div class="hit-mix" id="hitMix"></div>
+          <div class="hit-tools">
+            <button class="small-btn" type="button" id="hitShuffle">排一組新的 10 首</button>
+          </div>
+          <ol class="hit-playlist" id="hitPlaylist"></ol>
+        </div>
+      </section>
 
       <section class="band" id="scenarios">
         <div class="section-inner">
@@ -1199,6 +1393,7 @@
       <a href="#classVideos" data-go="class"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg><span>上課</span></a>
       <a href="#path" data-go="moves"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><ellipse cx="8" cy="15" rx="2.6" ry="4.2" transform="rotate(-12 8 15)"/><ellipse cx="16" cy="9" rx="2.6" ry="4.2" transform="rotate(12 16 9)"/></svg><span>招式</span></a>
       <a href="#library" data-go="videos"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M10 9v6l5-3z"/></svg><span>影片</span></a>
+      <a href="#hits" data-go="hits"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg><span>熱歌</span></a>
       <a href="#practice" data-go="practice"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><span>練習</span></a>
     </nav>
   </div>
@@ -4380,8 +4575,8 @@
     });
 
     /* ===== 重新設計：畫面切換、今天、拍點條、播放視窗 ===== */
-    const viewOf = { today: "today", danceStyles: "today", classVideos: "class", path: "moves", moves: "moves", segments: "moves", lessonPanel: "moves", library: "videos", practice: "practice", scenarios: "practice", sources: "sources" };
-    const viewEntry = { today: "today", class: "classVideos", moves: "path", videos: "library", practice: "practice", sources: "sources" };
+    const viewOf = { today: "today", danceStyles: "today", classVideos: "class", path: "moves", moves: "moves", segments: "moves", lessonPanel: "moves", library: "videos", practice: "practice", scenarios: "practice", sources: "sources", hits: "hits", hitPractice: "practice", hitStyles: "hits", hitFollow: "hits" };
+    const viewEntry = { today: "today", class: "classVideos", moves: "path", videos: "library", practice: "practice", sources: "sources", hits: "hits" };
 
     function showView(name, scrollTop = true) {
       if (!document.querySelector(`.view[data-view="${name}"]`)) name = "today";
@@ -4662,6 +4857,171 @@
       try { saved = localStorage.getItem("dance-view") || "today"; } catch (error) {}
       showView(saved, false);
     }
+    const HIT_SONGS = [{"t": "Escalofríos", "a": "sP Polanco, Bchta Rising, jensen", "n": 9, "p": 9, "st": "sensual", "f": 1, "l": 10, "v": [["Ronald y Alba", "Bachataspain 2025 表演", "eu2N99_uBuE", 0]]}, {"t": "Calentura", "a": "Pinto Picasso, DJ Nico", "n": 8, "p": 8, "st": "urban", "f": 1, "l": 10, "v": [["Alejandro y Vanessa", "雙人編舞", "YGgjCahjSSU", 0], ["Abdel y Lety", "Bachata Flow", "9vAZlZllCoU", 0]]}, {"t": "Dec. 21", "a": "Prince Royce", "n": 8, "p": 8, "st": "romantic", "f": 1, "l": 10, "v": [["Ataca & La Alemana", "經典雙人表演", "GVeYCYdN_uA", 0]]}, {"t": "Lejanía", "a": "Jensen", "n": 8, "p": 8, "st": "sensual", "f": 2, "l": 10, "v": [["Marco y Sara", "Istanbul World Dance Congress 2026", "ixyvO6mnqys", 0]]}, {"t": "Dardos", "a": "Romeo Santos, Prince Royce", "n": 7, "p": 7, "st": "romantic", "f": 1, "l": 10, "v": [["Romeo Santos, Prince Royce", "官方音訊", "bpeUHhtWSbQ", 1]]}, {"t": "Valkiria", "a": "Montelier, DJ SERMAAN, Dimelo Cupido", "n": 7, "p": 7, "st": "urban", "f": 1, "l": 10, "v": [["Montelier, DJ Sermaan, Dimelo Cupido", "官方 MV", "dy5zPjapANs", 1]]}, {"t": "Chacha", "a": "Jean & Alex, Pinto Picasso", "n": 6, "p": 6, "st": "urban", "f": 5, "l": 10, "v": [["Michał & Nicki", "Part III 短影片", "8h1XF1HwY9w", 0], ["Jean & Alex, Pinto Picasso", "官方 MV", "G_FuyWxTapo", 1]]}, {"t": "100 X Hora", "a": "Kewin Cosmos", "n": 5, "p": 5, "st": "sensual", "f": 2, "l": 10, "v": [["Marco y Sara", "Bachata Geneva Festival 2023", "MSC8oNt791E", 0], ["Bastien & Morgane", "Bachata Geneva Festival 2023", "Hnx2ud8deus", 0]]}, {"t": "Adrenalina", "a": "DJ Husky, Dimelo Cupido, Charles Luis", "n": 5, "p": 5, "st": "urban", "f": 1, "l": 5, "v": [["Mica y Fran", "Street Bachata · Calpe Dance Festival 2025", "ZWmdNt45mEg", 0]]}, {"t": "BAILAME", "a": "Charles Luis, Dimelo Cupido, DJ Husky", "n": 5, "p": 5, "st": "urban", "f": 2, "l": 10, "v": [["Pablo & Raquel", "Explosion Berlin Bachata Festival 2025", "60_QUp71QDU", 0]]}, {"t": "Bailarina", "a": "Mayinbito, Super Joell", "n": 5, "p": 5, "st": "dominican", "f": 1, "l": 10, "v": []}, {"t": "Casualidades", "a": "Marco Puma, jensen, sP Polanco", "n": 5, "p": 5, "st": "sensual", "f": 1, "l": 10, "v": [["Onur Alp & Deniz", "Aura Dance Festival 2025", "4H4u4AXlgvQ", 0]]}, {"t": "En Privado", "a": "Xavi, Manuel Turizo", "n": 5, "p": 5, "st": "romantic", "f": 1, "l": 10, "v": []}, {"t": "No Me Toca", "a": "sP Polanco, Bchta Rising, Pinto Picasso", "n": 5, "p": 5, "st": "sensual", "f": 1, "l": 5, "v": []}, {"t": "Residuals", "a": "J Salez, DerekVinci", "n": 5, "p": 5, "st": "sensual", "f": 1, "l": 7, "v": [["J Salez, DerekVinci", "官方音訊", "g9vCD05dJnQ", 1]]}, {"t": "Te Sigo Extrañando", "a": "sP Polanco, Karlos Rosé", "n": 5, "p": 5, "st": "sensual", "f": 2, "l": 10, "v": []}, {"t": "Ay! San Miguel", "a": "Romeo Santos, Prince Royce", "n": 4, "p": 4, "st": "dominican", "f": 2, "l": 10, "v": []}, {"t": "En Los Pasillos", "a": "Sonce, Mayinbito", "n": 4, "p": 4, "st": "urban", "f": 2, "l": 10, "v": []}, {"t": "Entre Tú y Mil Mares", "a": "Dani J", "n": 4, "p": 4, "st": "sensual", "f": 2, "l": 10, "v": []}, {"t": "Lips on You", "a": "Dj Khalid", "n": 4, "p": 4, "st": "sensual", "f": 1, "l": 10, "v": [["Korke & Judith", "Bachata Sensual Meeting", "kcDiKFThPwM", 0], ["Gatica y Lety", "Bachatea Suiza 2020", "oDpg1aPFFT8", 0]]}, {"t": "NOCHE DE SEXO", "a": "Karlos Rosé, Dimelo Cupido, Dj Husky", "n": 4, "p": 4, "st": "urban", "f": 1, "l": 10, "v": []}, {"t": "No Te Vayas", "a": "Prince Royce", "n": 4, "p": 4, "st": "romantic", "f": 2, "l": 10, "v": []}, {"t": "Provenza", "a": "Dama", "n": 4, "p": 4, "st": "sensual", "f": 2, "l": 10, "v": []}, {"t": "Sin Piedad", "a": "Mickey Then", "n": 4, "p": 4, "st": "dominican", "f": 2, "l": 10, "v": []}, {"t": "Solo Tu", "a": "Mickey Then", "n": 4, "p": 4, "st": "dominican", "f": 1, "l": 10, "v": []}, {"t": "Toa La Noche", "a": "Tony Lozano, DerekVinci, El Tiguere", "n": 4, "p": 4, "st": "dominican", "f": 1, "l": 10, "v": []}, {"t": "Amigos Con Derechos", "a": "Dj Khalid, Mr.Don, Johandy", "n": 3, "p": 3, "st": "sensual", "f": 2, "l": 5, "v": []}, {"t": "Ando Buscando", "a": "Mickey Then", "n": 3, "p": 3, "st": "dominican", "f": 2, "l": 6, "v": []}, {"t": "Anónimos", "a": "sP Polanco, Bchta Rising, Mario Baro", "n": 3, "p": 3, "st": "sensual", "f": 4, "l": 10, "v": []}, {"t": "Aventura", "a": "Pablo de Juana, DJ Husky", "n": 3, "p": 3, "st": "urban", "f": 2, "l": 4, "v": []}, {"t": "BARCELONA", "a": "Charles Luis, Dimelo Cupido, DJ Husky", "n": 3, "p": 3, "st": "urban", "f": 2, "l": 6, "v": [["Masa & Polina", "Bachazouk 雙人", "bGt3p0ZdDiI", 0]]}, {"t": "Bandolebrios", "a": "Joel Santos", "n": 3, "p": 3, "st": "", "f": 1, "l": 4, "v": []}, {"t": "Carita", "a": "Jensen", "n": 3, "p": 3, "st": "", "f": 2, "l": 10, "v": []}, {"t": "Cita", "a": "Prince Royce", "n": 3, "p": 3, "st": "", "f": 1, "l": 10, "v": []}, {"t": "Como Los 90's", "a": "Kewin Cosmos", "n": 3, "p": 3, "st": "", "f": 1, "l": 10, "v": []}, {"t": "Como Va a Ser", "a": "Pinto Picasso", "n": 3, "p": 3, "st": "", "f": 1, "l": 10, "v": []}, {"t": "DRAMA", "a": "DJ Husky, Dimelo Cupido, Charles Luis, Dj Pablo G", "n": 3, "p": 3, "st": "urban", "f": 2, "l": 5, "v": []}, {"t": "Dime Cómo Se Siente", "a": "Johnny Sky", "n": 3, "p": 3, "st": "", "f": 2, "l": 7, "v": []}, {"t": "Enamórate de mi", "a": "J Salez, DerekVinci", "n": 3, "p": 3, "st": "", "f": 1, "l": 10, "v": []}, {"t": "Encima de Mi", "a": "Vinny Rivera, DerekVinci", "n": 3, "p": 3, "st": "", "f": 1, "l": 10, "v": []}];
+
+    /* ===== 舞池熱歌榜（DJ 歌單統計、站內播放、對應教學、照比例練習） ===== */
+    const HIT_STYLE = {
+      sensual: { name: "Sensual", pill: "", preset: "sensual", share: 39, count: 4, desc: "慢、黏，R&B 或流行翻版，人聲突出。", how: "長線條身體波浪、head roll、dip。break 時定格或放慢，比硬塞轉圈好看。", ex: "Escalofríos、Lejanía、Residuals、Lips on You" },
+      urban: { name: "都會", pill: "blue", preset: "musicality", share: 27, count: 3, desc: "鼓點重、有 trap 或 reggaeton 的 hit，節奏切得碎。", how: "isolation、卡點、短暫停頓、換位。跟著鼓的重音做，不要整首都在轉。", ex: "Calentura、Valkiria、BAILAME、Adrenalina" },
+      dominican: { name: "多明尼加", pill: "gold", preset: "footwork", share: 19, count: 2, desc: "requinto 吉他忙、güira 刮得密，常有獨立的吉他段落。", how: "closed hold 近距離，腳步花式和 syncopation 放在吉他段。", ex: "Bailarina、Ay! San Miguel、Sin Piedad、La Estrategia" },
+      romantic: { name: "浪漫流行", pill: "gold", preset: "partnerwork", share: 15, count: 1, desc: "人聲旋律帶路，主歌副歌分得很清楚。", how: "主歌走基本步加小變化，轉圈組合留到副歌。最適合社交。", ex: "Dec. 21、Dardos、No Te Vayas、En Privado" }
+    };
+    const HIT_PRESET_LABEL = { sensual: "看 Sensual 教學", musicality: "看音樂性教學", footwork: "看 Footwork 教學", partnerwork: "看雙人教學" };
+    const HIT_FOLLOW = [
+      ["Marco & Sara", "marcoysaraoficial", "Sensual", "Lejanía、100 X Hora 都有他們 2026 年的影片，直接看熱歌怎麼跳。"],
+      ["Korke & Judith", "korkeyjudith_oficial", "Sensual", "Sensual 的創始者，看基本功和帶跟原理。"],
+      ["Mica y Fran", "micayfranbachata", "都會", "Street bachata，卡點和鼓點處理最清楚。"],
+      ["Ataca & La Alemana", "atacaylaalemanaofficial", "浪漫流行", "大量社交舞影片，最接近你在舞池遇到的狀況。"],
+      ["Gero & Migle", "geroymigleoficial", "追新歌", "新歌一出很快就有影片，提早知道下一批會紅的歌。"]
+    ];
+    const hitList = document.querySelector("#hitList");
+    let hitFilter = "all";
+    let hitOpen = null;
+    const hitEsc = text => String(text).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const hitDance = song => song.v.filter(v => !v[3]);
+
+    function renderHits() {
+      const rows = HIT_SONGS.map((song, i) => ({ ...song, rank: i + 1 })).filter(song => {
+        if (hitFilter === "vid") return hitDance(song).length > 0;
+        if (hitFilter === "oct") return song.l === 10;
+        if (HIT_STYLE[hitFilter]) return song.st === hitFilter;
+        return true;
+      });
+      hitList.innerHTML = rows.map(song => {
+        const st = HIT_STYLE[song.st];
+        const open = hitOpen === song.rank;
+        const dance = hitDance(song).length;
+        return `<div class="hit-row">
+          <button class="hit-head" type="button" data-hit="${song.rank}" aria-expanded="${open}">
+            <span class="hit-rank">${song.rank}</span>
+            <span class="hit-name"><strong>${hitEsc(song.t)}</strong><small>${hitEsc(song.a)}</small>
+              <span class="hit-tags">${st ? `<span class="pill ${st.pill}">${st.name}</span>` : ""}${dance ? `<span class="pill">▶ ${dance} 支舞蹈影片</span>` : ""}</span></span>
+            <span class="hit-count">${song.n}<small>場</small></span>
+          </button>
+          ${open ? `<div class="hit-body">
+            <p>${song.f} 月第一次出現，最近一次 ${song.l} 月，共播 ${song.p} 次。</p>
+            ${st ? `<div class="hit-how"><strong>${st.name}型怎麼跳：</strong>${st.how}</div>` : ""}
+            <div class="hit-actions">
+              ${song.v.map((v, j) => `<button class="small-btn" type="button" data-hit-play="${song.rank}:${j}">▶ ${hitEsc(v[0])}${v[3] ? "（官方音訊）" : ""}</button>`).join("")}
+              ${st ? `<button class="small-btn" type="button" data-hit-tutorial="${st.preset}">${HIT_PRESET_LABEL[st.preset]}</button>` : ""}
+              <a class="small-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(song.t + " " + song.a.split(",")[0] + " bachata dance")}" target="_blank" rel="noreferrer">YouTube 找更多</a>
+            </div>
+          </div>` : ""}
+        </div>`;
+      }).join("") || `<div class="empty">沒有符合的歌。</div>`;
+      document.querySelectorAll("[data-hit-filter]").forEach(b => b.classList.toggle("active", b.dataset.hitFilter === hitFilter));
+      const note = document.querySelector("#hitStyleNote");
+      if (note) note.hidden = state.style === "bachata";
+    }
+
+    function goTutorial(preset) {
+      applyVideoPreset(preset);
+      history.replaceState(null, "", "#library");
+      showView("videos", true);
+    }
+
+    hitList.addEventListener("click", event => {
+      const play = event.target.closest("[data-hit-play]");
+      if (play) {
+        const [rank, idx] = play.dataset.hitPlay.split(":").map(Number);
+        const song = HIT_SONGS[rank - 1];
+        const v = song.v[idx];
+        openWatch(`${song.t} · ${v[0]}`, `https://www.youtube-nocookie.com/embed/${v[2]}?autoplay=1&rel=0`, `https://www.youtube.com/watch?v=${v[2]}`);
+        return;
+      }
+      const tut = event.target.closest("[data-hit-tutorial]");
+      if (tut) { goTutorial(tut.dataset.hitTutorial); return; }
+      const head = event.target.closest("[data-hit]");
+      if (!head) return;
+      const rank = Number(head.dataset.hit);
+      hitOpen = hitOpen === rank ? null : rank;
+      renderHits();
+      document.querySelector(`[data-hit="${rank}"]`)?.focus();
+    });
+    document.querySelectorAll("[data-hit-filter]").forEach(button => button.addEventListener("click", () => { hitFilter = button.dataset.hitFilter; hitOpen = null; renderHits(); }));
+
+    document.querySelector("#hitMix").innerHTML = Object.values(HIT_STYLE).map(st => `<div><strong>${st.count} 首</strong><span>${st.name} · 約 ${st.share}%</span></div>`).join("");
+
+    function shuffleHits(list) { return list.map(x => [Math.random(), x]).sort((a, b) => a[0] - b[0]).map(x => x[1]); }
+    function buildHitPlaylist() {
+      const core = HIT_SONGS.slice(0, 12);
+      const picks = [];
+      Object.entries(HIT_STYLE).forEach(([key, st]) => {
+        const count = st.count;
+        const pool = HIT_SONGS.filter(s => s.st === key);
+        const coreOne = shuffleHits(pool.filter(s => core.includes(s)))[0];
+        const rest = shuffleHits(pool.filter(s => s !== coreOne && !core.includes(s)));
+        const chosen = (coreOne && picks.filter(p => p.core).length < 4 ? [{ ...coreOne, core: true }] : []).concat(rest);
+        picks.push(...chosen.slice(0, count));
+      });
+      document.querySelector("#hitPlaylist").innerHTML = shuffleHits(picks).map(s => `<li><span><strong>${hitEsc(s.t)}</strong> · ${hitEsc(s.a)}</span><span class="pill ${s.core ? "" : HIT_STYLE[s.st].pill}">${s.core ? "核心歌" : HIT_STYLE[s.st].name}</span></li>`).join("");
+    }
+    document.querySelector("#hitShuffle").addEventListener("click", buildHitPlaylist);
+
+    document.querySelector("#hitStyleGrid").innerHTML = Object.values(HIT_STYLE).map(st => `<div class="drill"><strong>${st.name} · 約 ${st.share}%</strong><span>${st.desc}</span><span><b>跳法：</b>${st.how}</span><span>榜上例子：${st.ex}</span><button class="small-btn" type="button" data-hit-tutorial="${st.preset}">${HIT_PRESET_LABEL[st.preset]}</button></div>`).join("");
+    document.querySelector("#hitStyleGrid").addEventListener("click", event => {
+      const tut = event.target.closest("[data-hit-tutorial]");
+      if (tut) goTutorial(tut.dataset.hitTutorial);
+    });
+
+    document.querySelector("#hitFollowGrid").innerHTML = HIT_FOLLOW.map(([name, handle, tag, why]) => `<div class="drill"><strong>${name}</strong><span class="pill">${tag}</span><span>${why}</span><a class="small-btn" href="https://www.instagram.com/${handle}/" target="_blank" rel="noreferrer">@${handle}</a></div>`).join("");
+
+    document.addEventListener("click", event => { if (event.target.closest("[data-style]")) requestAnimationFrame(renderHits); });
+    renderHits();
+    buildHitPlaylist();
+
+    /* ===== 熱歌整合：今天卡、影片庫配歌條 ===== */
+    const TOPIC_TO_HIT_STYLE = { sensual: "sensual", musicality: "urban", footwork: "dominican", partnerwork: "romantic", basic: "romantic", styling: "sensual" };
+    function songRowHtml(song, num) {
+      const st = HIT_STYLE[song.st];
+      const dance = song.v.findIndex(v => !v[3]);
+      const rank = HIT_SONGS.indexOf(song) + 1;
+      return `<div class="song-row"><b>${num}</b><span><strong>${hitEsc(song.t)}</strong><small>${hitEsc(song.a)} · ${song.n} 場</small></span>
+        <span class="row-end">${st ? `<span class="pill ${st.pill}">${st.name}</span>` : ""}${dance >= 0 ? `<button class="small-btn play-mini" type="button" data-hit-play="${rank}:${dance}" aria-label="播放 ${hitEsc(song.t)} 舞蹈影片">▶</button>` : ""}</span></div>`;
+    }
+    function playHit(button) {
+      const [rank, idx] = button.dataset.hitPlay.split(":").map(Number);
+      const song = HIT_SONGS[rank - 1];
+      const v = song.v[idx];
+      openWatch(`${song.t} · ${v[0]}`, `https://www.youtube-nocookie.com/embed/${v[2]}?autoplay=1&rel=0`, `https://www.youtube.com/watch?v=${v[2]}`);
+    }
+
+    function renderTodayHits() {
+      const box = document.querySelector("#todayHits");
+      if (!box) return;
+      box.hidden = state.style !== "bachata";
+      const day = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 864e5);
+      const core = HIT_SONGS.slice(0, 12);
+      const picks = [0, 1, 2].map(i => core[(day * 3 + i) % core.length]);
+      box.querySelector(".song-rows").innerHTML = picks.map((s, i) => songRowHtml(s, i + 1)).join("");
+    }
+
+    function renderLibraryHits(styleKey) {
+      const box = document.querySelector("#libraryHits");
+      if (!box) return;
+      box.hidden = state.style !== "bachata" || !styleKey;
+      if (box.hidden) return;
+      const st = HIT_STYLE[styleKey];
+      const songs = HIT_SONGS.filter(s => s.st === styleKey).slice(0, 4);
+      box.innerHTML = `<div class="hit-strip-head"><h3>用這些熱歌練 · ${st.name}</h3><p>派對上約 ${st.share}% 是這類歌。${st.how}</p></div>
+        <div class="song-rows">${songs.map((s, i) => songRowHtml(s, i + 1)).join("")}</div>
+        <div class="t-row" style="margin-top:0"><a class="small-btn" href="#hits">完整熱歌榜</a></div>`;
+    }
+
+    const _applyVideoPresetBase = applyVideoPreset;
+    applyVideoPreset = function (presetName) {
+      _applyVideoPresetBase(presetName);
+      renderLibraryHits(TOPIC_TO_HIT_STYLE[presetName]);
+    };
+    topic.addEventListener("change", () => renderLibraryHits(TOPIC_TO_HIT_STYLE[topic.value]));
+
+    document.addEventListener("click", event => {
+      const play = event.target.closest("#todayHits [data-hit-play], #libraryHits [data-hit-play]");
+      if (play) playHit(play);
+    });
+    document.addEventListener("click", event => { if (event.target.closest("[data-style]")) requestAnimationFrame(() => { renderTodayHits(); renderLibraryHits(TOPIC_TO_HIT_STYLE[topic.value]); }); });
+    renderTodayHits();
+    renderLibraryHits(TOPIC_TO_HIT_STYLE[topic.value]);
 </script>
 </body>
 </html>
