@@ -1,7 +1,7 @@
 ---
 id: T004
 title: 移植主站限動工作室至 GitHub 並加入三語
-status: review
+status: done
 size: M
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: T003
 title: SQL 練習室加「第 7 週：面試延伸」5 題
-status: open
+status: review
 size: S
 ---
 

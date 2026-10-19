@@ -1,7 +1,7 @@
 ---
 id: T001
 title: 把相簿與活動資料搬到獨立 JSON 檔
-status: open
+status: review
 size: M
 ---
 
