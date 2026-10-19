@@ -862,7 +862,7 @@ async function batchDownload(ids){
  if(!ids.length)return;
  if(ids.length>20){toast("一次最多下載 20 張");return;}
  toast(`開始下載 ${ids.length} 張，瀏覽器若詢問請選「允許」`);
- for(const id of ids){const a=document.createElement("a");if(isLocal(id)){a.href=localPath(id);a.download=localName(id);}else{a.href=`https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t`;a.target="_blank";a.rel="noreferrer";}document.body.appendChild(a);a.click();a.remove();await new Promise(r=>setTimeout(r,700));}
+ for(const id of ids){openDownload(id);await new Promise(r=>setTimeout(r,900));}
 }
 async function exportGraded(){
  const id=st.photo;if(!id)return;
@@ -879,7 +879,11 @@ async function exportGraded(){
 // ---------- Credit & support reminder (once per visit, then a short toast) ----------
 const LINE_SUPPORT="https://line.me/ti/p/~jim0916746661";
 let creditAck=false;try{creditAck=sessionStorage.getItem("jf_credit_ack")==="1";}catch{}
-const openDownload=id=>{const a=document.createElement("a");if(isLocal(id)){a.href=localPath(id);a.download=localName(id);}else{a.href=`https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t`;a.target="_blank";a.rel="noreferrer";}document.body.appendChild(a);a.click();a.remove();};
+// 雲端（Google Drive）照片：用隱藏的 iframe 直接下載，不開新分頁、不跳到雲端頁面
+const driveDl=id=>`https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t`;
+const openDownload=id=>{if(isLocal(id)){const a=document.createElement("a");a.href=localPath(id);a.download=localName(id);document.body.appendChild(a);a.click();a.remove();return;}
+ if(/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)){location.href=driveDl(id);return;} // iOS 不支援 iframe 下載；附件網址不會離開本頁
+ const f=document.createElement("iframe");f.hidden=true;f.src=driveDl(id);document.body.appendChild(f);setTimeout(()=>f.remove(),60000);};
 function withCredit(action,official){
  // 每次下載都要勾選「會標記」才能繼續；Bachata Crush 的照片／影片同時要標官方帳號
  const a=st&&st.album;const crush=official!==undefined?official:(!a||a.venue==="Bachata Crush");

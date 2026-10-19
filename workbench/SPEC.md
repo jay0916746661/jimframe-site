@@ -126,3 +126,15 @@ workbench/
 - `reference/mac/`：在 Jim 的 Mac 上實際跑過的 10.17 影片腳本（路徑寫死，移植時改成參數）。
 - `reference/cloud/`：在雲端跑過的照片 Logo、人臉索引、眼睛偵測、顏色、宣傳圖、CRUSH 軌腳本（路徑寫死在 scratchpad，移植時改到 `assets/`）。
 - 這些都是**已驗證的參數**，請照抄數值，不要「優化」視覺參數。
+
+## 10. 照片改放雲端（Google Drive）— 決定於 2026-10-19
+網站（GitHub Pages）上限 1GB，已用約 860MB。**從 10.18 起，新相簿的照片放 Google Drive，網站只放資料與縮圖。**
+- **下載一律透過網站，不開雲端頁面**（網站已改好）：非 iOS 用隱藏 iframe 指向 `drive.usercontent.google.com/download?id=<ID>&export=download&confirm=t`；iOS 直接 `location.href` 到同網址（附件不會離開頁面）。
+- **顯示**：大圖用 `https://lh3.googleusercontent.com/d/<ID>=w1600`，格子縮圖仍放網站 `photos/<MMDD>/t/`（600px，每張約 50KB，一場約 30MB），讓相簿與人臉搜尋結果打開很快。
+- **工作台流程**（取代 §5 ① 第 3 步的「網站版放 repo」）：
+  1. 網站版照片（長邊 1600）複製到 Mac 上 Google Drive 電腦版的同步資料夾 `我的雲端硬碟/JimFrame 網站/<MMDD> <活動>/`。
+  2. 等同步完成後，用 macOS 延伸屬性讀檔案 ID：`xattr -p 'com.google.drivefs.item-id#S' <檔案>`（Google Drive 電腦版會寫入）。讀不到就提示 Jim 等同步完成再按一次。
+  3. 該資料夾要設定「知道連結的任何人可檢視」（Jim 第一次自己在 Drive 設一次，工作台只檢查、不改權限）。
+  4. `ALBUM_DATA` 的 id 用 Drive 檔案 ID（不加 `L` 前綴），`photoSrc()` 對雲端 id 改用 lh3 網址；縮圖查表 `DRIVE_THUMB[id]="photos/<MMDD>/t/<檔名>.jpg"`。
+  5. 顏色分析與人臉索引都在 Mac 本機用原檔算，不需要從雲端讀。
+- **不使用 Google API／OAuth、不存任何 token**（只靠 Drive 電腦版同步＋xattr）。
