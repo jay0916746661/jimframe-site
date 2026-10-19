@@ -1,7 +1,7 @@
 ---
 id: T010
 title: SQL 作品集：虛構樂器行資料庫＋10 個業務查詢＋README
-status: open
+status: backlog
 size: M
 ---
 
