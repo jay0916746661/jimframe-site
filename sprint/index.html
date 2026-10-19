@@ -1,0 +1,388 @@
+<title>轉職衝刺板</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 版面：單欄工作板，上方三個分頁（心智圖／任務／每日），AI 以色條區分 */
+:root{
+  --bg:#f6f4ef; --card:#fffdf8; --fg:#1f2430; --mute:#6b7080; --line:#e2ddd2;
+  --accent:#1f4e79;
+  --cl:#c8571f; --ge:#2b6cb0; --gp:#2f855a; --cx:#6b46c1; --me:#718096;
+  --ok:#2f855a;
+  --sans:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171a21; --card:#1f232c; --fg:#e8e6df; --mute:#9aa0ad; --line:#303642; --accent:#8fb3d9;
+  --cl:#f0905a; --ge:#7fb0e8; --gp:#6fcf97; --cx:#b794f4; --me:#a0aec0; --ok:#6fcf97; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171a21; --card:#1f232c; --fg:#e8e6df; --mute:#9aa0ad; --line:#303642; --accent:#8fb3d9;
+  --cl:#f0905a; --ge:#7fb0e8; --gp:#6fcf97; --cx:#b794f4; --me:#a0aec0; --ok:#6fcf97; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 60px}
+.wrap{max-width:960px;margin:0 auto;min-width:0}
+h1{font-size:1.5rem;margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--mute);margin:0 0 16px;font-size:.92rem}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.tabs button{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:8px 14px;border-radius:999px;font:inherit;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.tabs button:focus-visible,.copy:focus-visible,.filters button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.82rem;color:var(--mute);margin-bottom:14px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.ai-cl{--c:var(--cl)}.ai-ge{--c:var(--ge)}.ai-gp{--c:var(--gp)}.ai-cx{--c:var(--cx)}.ai-me{--c:var(--me)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{font-size:1.35rem;font-variant-numeric:tabular-nums}
+.stat span{display:block;color:var(--mute);font-size:.8rem}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--ok);width:0}
+/* 心智圖 */
+.tree{display:flex;flex-direction:column;gap:14px}
+.root{background:var(--accent);color:var(--bg);border-radius:12px;padding:14px 16px;font-weight:700;font-size:1.05rem}
+.role{border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
+.role>summary{padding:12px 14px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.role>summary small{color:var(--mute);font-weight:400}
+.gaps{padding:0 14px 12px;display:grid;gap:10px}
+.gap{border-left:3px solid var(--line);padding:4px 12px}
+.gap h4{margin:0 0 4px;font-size:.95rem}
+.gap ul{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:3px}
+.gap li{font-size:.9rem;display:flex;gap:8px;align-items:baseline;min-width:0}
+.tag{font-family:var(--mono);font-size:.72rem;padding:1px 6px;border-radius:4px;background:var(--c,var(--line));color:#fff;flex:none}
+.ai-me .tag{color:var(--bg)}
+/* 任務 */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.filters button{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:5px 10px;font:inherit;font-size:.85rem;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.task{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:10px 12px;margin-bottom:10px;min-width:0}
+.task.done{opacity:.55}
+.task .hd{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.task .hd label{display:flex;gap:8px;align-items:flex-start;flex:1;min-width:0;cursor:pointer}
+.task .hd input{margin-top:4px}
+.task .meta{color:var(--mute);font-size:.8rem;font-family:var(--mono)}
+.task .why{font-size:.88rem;color:var(--mute);margin:4px 0 0 26px}
+.task details{margin:6px 0 0 26px}
+.task summary{cursor:pointer;font-size:.85rem;color:var(--accent)}
+.prompt{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:10px;font-size:.88rem;margin:6px 0}
+.copy{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:6px;padding:4px 10px;font:inherit;font-size:.82rem;cursor:pointer}
+/* 每日 */
+.week{margin:18px 0 8px;font-weight:700;color:var(--mute);font-size:.85rem;letter-spacing:.06em;text-transform:uppercase}
+.day{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
+.day header{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.day header b{font-size:1rem}
+.day header span{color:var(--mute);font-size:.85rem}
+.day.today header{background:var(--accent);color:var(--bg)}
+.day.today header span{color:var(--bg);opacity:.85}
+.items{padding:6px 14px 10px;display:flex;flex-direction:column}
+.item{display:flex;gap:10px;align-items:flex-start;padding:5px 0;border-top:1px solid var(--line);min-width:0}
+.item:first-child{border-top:0}
+.item input{margin-top:4px;flex:none}
+.item .t{font-family:var(--mono);font-size:.78rem;color:var(--mute);flex:none;width:44px;margin-top:2px}
+.item .tx{flex:1;min-width:0}
+.item .tx.done{text-decoration:line-through;color:var(--mute)}
+.item .tag{margin-left:4px}
+.note{font-size:.85rem;color:var(--mute);padding:0 14px 10px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<h1>轉職衝刺板</h1>
+<p class="sub">原則：每天不浪費，一個產出、一個輸入、一個人。11/15 是檢查點，不是期限。勾過的會記在這台裝置上。</p>
+
+<div class="tabs" role="tablist">
+  <button role="tab" aria-selected="true" data-tab="map">心智圖</button>
+  <button role="tab" aria-selected="false" data-tab="tasks">任務（可複製指令）</button>
+  <button role="tab" aria-selected="false" data-tab="days">每日進度</button>
+  <button role="tab" aria-selected="false" data-tab="quiz">模擬試題</button>
+</div>
+
+<div class="legend">
+  <span><i class="dot" style="background:var(--cl)"></i>Claude</span>
+  <span><i class="dot" style="background:var(--ge)"></i>Gemini</span>
+  <span><i class="dot" style="background:var(--gp)"></i>GPT</span>
+  <span><i class="dot" style="background:var(--cx)"></i>Codex</span>
+  <span><i class="dot" style="background:var(--me)"></i>Jim 自己</span>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<section id="tab-map"></section>
+<section id="tab-tasks" hidden>
+  <div class="filters" id="filters"></div>
+  <div id="tasklist"></div>
+</section>
+<section id="tab-days" hidden></section>
+<section id="tab-quiz" hidden>
+  <div class="filters" id="qfilters"></div>
+  <p class="note" style="padding:0 0 10px">先自己答出聲，再點「想聽什麼」和「參考答法」。參考答法是用你的實績寫的骨架，不要背，換成自己的話。</p>
+  <div id="quizlist"></div>
+</section>
+</div>
+
+<script>
+const AI={cl:"Claude",ge:"Gemini",gp:"GPT",cx:"Codex",me:"Jim"};
+// 任務：id, ai, 標題, 補哪個缺口, 為什麼, 可貼指令
+const TASKS=[
+// Gemini
+{id:"G1",ai:"ge",t:"iPAS AI 應用規劃師初級：日期、費用、題庫、4 週計畫",gap:"ai-cert",why:"104 報導點名的國家級證照，AI 應用職缺的入場券",p:"幫我查「iPAS AI 應用規劃師 初級」2026 年最近兩梯次的報名與考試日期、報名費、考科與題型、官方與免費題庫來源，附網址。然後排一份 4 週讀書計畫，每天 30 分鐘。我是業務背景、不會寫程式、每天用 Claude／GPT／Gemini 工作。"},
+{id:"G2",ai:"ge",t:"台北業務企劃／營運企劃職缺 10 筆＋技能關鍵字",gap:"biz-jobs",why:"知道市場真的要什麼，履歷照著對",p:"在 104、CakeResume、Yourator 找台北「業務企劃／營運企劃／通路企劃」職缺 10 筆，公司是品牌代理商、批發零售或連鎖通路優先，排除廣告投放與行銷企劃。表格欄位：公司、職稱、月薪範圍、必要條件、加分條件、連結。最後告訴我這 10 筆裡最常出現的 5 個技能關鍵字。"},
+{id:"G3",ai:"ge",t:"AI 應用專員職缺 10 筆，篩掉掛名的",gap:"ai-jobs",why:"這類職缺品質參差，先篩再投",p:"找台北「AI 應用專員／AI 導入專員／AI 專案助理／數位轉型專員」職缺 10 筆。每筆判斷它是「真的在做 AI 導入」還是「掛 AI 名的行銷／客服／業務」，說明判斷理由，列出工作內容、月薪、必要條件、連結。只留真的那幾筆給我。"},
+{id:"G4",ai:"ge",t:"n8n／Make 比較＋「表單→試算表→LINE」教學",gap:"automation",why:"AI 應用職缺最常問的實作：流程自動化",p:"比較 n8n 雲端免費方案、n8n 自架、Make 免費方案：每月額度、能不能接 LINE Messaging API、Google 表單與試算表。然後給我一份步驟教學：Google 表單送出 → 寫進試算表 → LINE 通知我，用你推薦的那一個，每步附截圖該看哪裡。"},
+{id:"G5",ai:"ge",t:"面試題庫：業務企劃 20 題＋AI 應用 15 題",gap:"interview",why:"週四跟 Claude 模擬面試的題本",p:"給我台灣「業務企劃」面試常見 20 題、「AI 應用專員」15 題，每題附「面試官真正想聽到什麼」一句話。一定要包含：「你不會寫程式，怎麼做 AI 專案？」「你的分析怎麼確定是對的？」「如果公司不給你用 AI 工具呢？」"},
+{id:"G6",ai:"ge",t:"台北 20 家品牌代理／批發零售公司名單",gap:"biz-jobs",why:"投遞名單，不只等 104 刊登",p:"列出台北 20 家「品牌代理商／進口商／批發零售／連鎖通路」公司（樂器、音響、運動用品、生活用品、3C 配件都可以），每家：公司名、主要品牌或品類、員工數、有沒有在徵業務企劃或營運相關職缺（附連結）、官網。排除純廣告代理。"},
+{id:"G7",ai:"ge",t:"11 月台北 AI／數據社群活動 8 場",gap:"network",why:"換工作同時換圈子，每週認識 3 人要有地方認識",p:"找 2026 年 11 月在台北、實體、免費或 500 元以下的 AI 應用、數據分析、No-code 自動化相關聚會或講座 8 場（Meetup、Accupass、KKTIX、FB 社團）。每場：日期時間、地點、主辦、適不適合非工程背景、報名連結。"},
+{id:"G8",ai:"ge",t:"iPAS 每日 10 題（10/27 起每天貼）",gap:"ai-cert",why:"用出題代替讀書，每天 15 分鐘",p:"你是 iPAS AI 應用規劃師初級的出題老師。每天出 10 題選擇題（涵蓋 AI 基礎概念、生成式 AI 應用、資料與倫理、導入規劃），我作答後給我對錯、解析、以及我這次最弱的主題。今天是第 N 天（我會告訴你 N），不要重複前幾天的題目。"},
+{id:"G9",ai:"ge",t:"薪資談判：期望薪資怎麼答、offer 怎麼談",gap:"interview",why:"第一次跳槽最容易在這裡少拿 5 千",p:"我是台灣業務背景，目前月薪約 4 萬，要轉職業務企劃或 AI 應用專員，期望 4.8–5.5 萬。給我：面試被問期望薪資的三種回答版本、拿到 offer 後談加 3–5 千的話術、哪些情況不該談、台灣常見的談薪陷阱（保障年薪、試用期打折、績效獎金）。"},
+{id:"G10",ai:"ge",t:"ERP／POS 導入顧問職缺與要求",gap:"erp",why:"備用路線，看門檻到底多高",p:"找台灣鼎新、正航、叡揚、iCHEF、91APP、Shopline 等公司的「導入顧問／實施顧問／客戶成功」初階職缺 6 筆：工作內容、必要條件、月薪、是否要求程式能力、連結。另外整理這類職務的面試常見 5 題。"},
+// GPT
+{id:"P1",ai:"gp",t:"AI 原理白話版＋10 題口試",gap:"ai-speak",why:"面試要講得清楚又不裝懂",p:"用白話跟一個樂器業務解釋這五個詞：prompt、RAG、agent、token 成本、fine-tuning，每個不超過三句，各舉一個零售業的例子。然後出 10 題口試題考我，我回答後你評分並改我的說法，讓我在面試能講得清楚又不裝懂。"},
+{id:"P2",ai:"gp",t:"Excel 進階練習 10 題（樞紐、XLOOKUP）",gap:"excel",why:"業務企劃職缺的基本門檻",p:"用虛構樂器行資料（12 個品牌、80 個商品、2024–2026 月銷售）生成一份 CSV 給我下載，然後出 10 題練習：5 題樞紐分析（品牌×月份、前 5 商品佔比、同比）、3 題 XLOOKUP、2 題條件格式。每題附操作步驟與正確答案。"},
+{id:"P3",ai:"gp",t:"ABC 分析、同比環比、留存率 三概念實作",gap:"analysis",why:"分析師面試必考，用自己的資料講最有說服力",p:"教我 ABC 分析、同比／環比、客戶留存率三個概念，各用剛才那份虛構樂器行資料實作一次，告訴我面試時怎麼用一句話說明每個概念在零售的用途。"},
+{id:"P4",ai:"gp",t:"履歷核心能力第二條改寫 3 版",gap:"resume",why:"同一句話對三種職缺要有三種講法",p:"這是我履歷「核心能力」第二條，請改寫 3 個版本：一版給業務企劃職缺、一版給 AI 應用專員、一版給 ERP 導入顧問。重點：我不寫程式，我定義問題、驗收 AI 產出、落地。每版不超過 50 字。原句：〔貼上〕"},
+{id:"P5",ai:"gp",t:"GA4 基礎認證 2 週讀書計畫",gap:"ecom",why:"電商營運備用路線的免費證照",p:"Google Analytics 4 基礎認證（Skillshop）免費嗎、多久考得完、考什麼。給我一份 2 週讀書計畫，每天 20 分鐘，重點放在電商漏斗（瀏覽→加入購物車→結帳）怎麼看。"},
+{id:"P6",ai:"gp",t:"90 秒自我介紹三版（錄音練）",gap:"interview",why:"面試第一題，練到不用想",p:"幫我寫 90 秒自我介紹三版：業務企劃、AI 應用專員、ERP 導入顧問。素材：樂器代理商業務 5 年以上；2026 年 10 月起用 AI 把 ERP 資料做成品牌趨勢、庫存健檢、客戶回訪名單、報價工具；自己上線 6 個互動網站工具；不寫程式但會定義問題與驗收。每版口語、不要形容詞堆疊，結尾一句「所以我想做的是…」。"},
+{id:"P7",ai:"gp",t:"STAR 故事 5 個",gap:"interview",why:"行為面試題全靠這 5 個故事換著用",p:"幫我用 STAR 架構整理 5 個面試故事，每個 150 字以內：(1) 把 ERP 匯出流程從每次重摸變成每週 30 分鐘；(2) 做庫存健檢後推動 75 個型號出清上三平台；(3) 同時調度四個 AI 分工並建立去識別規則；(4) 業務現場說服一家教室進貨的經驗（我會補細節）；(5) 一個失敗經驗（我會補）。每個故事最後加一句「這代表我能…」。"},
+{id:"P8",ai:"gp",t:"英文自介 60 秒＋5 題英文面試",gap:"interview",why:"外商或代理商常有一兩題英文",p:"Write a 60-second English self-introduction for a Taiwanese sales rep (musical instrument distributor, 5+ years) moving into business planning / AI application roles, who uses AI tools daily to turn ERP data into reports and tools but does not code. Keep it conversational, B1–B2 level. Then give me 5 common English interview questions with model answers at the same level."},
+{id:"P9",ai:"gp",t:"Power BI 2 週入門＋第一張儀表板步驟",gap:"excel",why:"分析師路線的工具證明，半年後要有",p:"給我 Power BI Desktop 2 週入門計畫（每天 30 分鐘，Windows），最後產出一張儀表板：用虛構樂器行 CSV（品牌、商品、月銷售、庫存），做品牌年度趨勢、今年 vs 去年同期、前 5 商品佔比、可賣月數。每天的步驟寫清楚，附免費教學影片關鍵字。"},
+{id:"P10",ai:"gp",t:"「為什麼轉職」「為什麼離開」回答打磨",gap:"interview",why:"答不好會被貼上不穩定的標籤",p:"我要從樂器代理商業務轉職業務企劃或 AI 應用專員。幫我準備「為什麼想轉職」「為什麼離開現在公司」「你沒有相關經驗怎麼辦」三題的回答，各兩版（30 秒、60 秒）。原則：不批評現公司、把轉職講成延伸而不是逃離、用實績舉證。我會貼我的草稿給你改。"},
+// Codex
+{id:"T010",ai:"cx",t:"SQLite 作品集：虛構樂器行 10 個查詢＋README",gap:"sql",why:"SQL 的實戰證明，面試可以開 GitHub 給人看",p:"新建 portfolio/sql-shop/：把 sql/ 練習室裡的虛構資料（brands、products、customers、sales）匯出成 CSV 並建 shop.sqlite；寫 queries/01–10.sql（品牌年度趨勢、前 5 商品佔比、一年沒動商品、半年沒來客戶、同比、ABC 分級、退貨率、毛利率、可賣月數、淡旺季指數），每個查詢附一行結果說明；寫 README（資料說明、怎麼跑、每個查詢回答什麼業務問題）。不得出現任何真實品牌或客戶名。開 PR。"},
+{id:"T012",ai:"cx",t:"n8n 流程範本：表單→Sheets→LINE",gap:"automation",why:"自動化作品，截圖就能放作品集",p:"寫一份 n8n 工作流 JSON：Google 表單 Webhook → 寫入 Google Sheets → 條件判斷（金額 > 門檻）→ LINE Messaging API 推播。附 README 說明每個節點要填什麼憑證、怎麼匯入。放 automation/n8n-form-to-line/。開 PR。"},
+{id:"T011",ai:"cx",t:"作品集首頁：3 個案例卡＋連結",gap:"portfolio",why:"履歷上那一個連結，點進去要 10 秒看懂",p:"新建 portfolio/index.html（靜態、cdnjs only、繁體中文、390px 不橫向捲動）：上方一句定位，下面 3 張案例卡（品牌健檢儀表板、SQL 作品集、JimFrame 找自己），每卡：問題→做法→結果數字（指數化）→「打開」按鈕，再一列「其他工具」小連結 6 個。內容我會提供 portfolio/content.json，先用占位文字。開 PR。"},
+{id:"T013",ai:"cx",t:"通路健檢月報範本：3 張 CSV→一頁",gap:"portfolio",why:"帶得走的分析產品，對董事長、面試、小店三用",p:"新建 tools/shop-health/：讀 demo/sales.csv、stock.csv、customers.csv（虛構），用 Python 算 8 個數字（本月 vs 去年同月、年累計、前 5 品牌佔比、毛利率、可賣月數、一年沒動佔比、半年沒來客戶數、退貨率），輸出一頁 HTML（版型照 demo/index.html）。monthly_report.py --month 2026-09。repo 內 grep 不到真實品牌名。開 PR。"},
+// Claude
+{id:"C1",ai:"cl",t:"履歷定稿一頁版＋第一個職缺客製版",gap:"resume",why:"等 Jim 填完 8 格",p:"（Jim 填完待補欄位後，在這個對話說「履歷可以收了」）"},
+{id:"C2",ai:"cl",t:"面試模擬 45 分鐘（用 G5 題本）",gap:"interview",why:"週四 20:00 已排",p:"（貼上 G5 的題本，說「開始模擬，業務企劃版」）"},
+{id:"C3",ai:"cl",t:"週報制度審查（每週五 16:00）",gap:"biz-proof",why:"連續 4 週交同一份週報，履歷才能寫「建立制度」",p:"（貼上這週週報草稿，說「審一下，老闆會問什麼」）"},
+{id:"C4",ai:"cl",t:"Codex PR 驗收（T004–T007）",gap:"portfolio",why:"只有 Claude 看過全部專案脈絡",p:"（說「驗收 T004」即可）"},
+{id:"C5",ai:"cl",t:"求職信範本 3 版",gap:"resume",why:"投遞時每封只改 3 句",p:"（說「寫求職信範本，用履歷內容」）"},
+{id:"C6",ai:"cl",t:"共同大腦 repo 建立（5 檔＋3 份固定開頭）",gap:"system",why:"週五同步 10 分鐘的前提",p:"（說「建共同大腦」）"},
+// Jim
+{id:"S1",ai:"me",t:"104 薪資情報開三頁截圖給 Claude",gap:"biz-jobs",why:"要 JavaScript，AI 抓不到",p:"商業分析師、國內業務、電商行銷 三頁，各截「依年資」那張圖。"},
+{id:"S2",ai:"me",t:"報名 iPAS（G1 回來當天）",gap:"ai-cert",why:"報了名才會讀",p:"不要等準備好。"},
+{id:"S3",ai:"me",t:"聯絡一家店（週三 12:30）",gap:"erp",why:"ERP 顧問路線與小店健檢都需要一個真實案例",p:"一句話：「我在做一個小工具幫店家看哪個品牌賣得好，能不能用你們的資料試一次，結果免費給你。」"},
+{id:"S4",ai:"me",t:"填履歷 8 個空格",gap:"resume",why:"Claude 無法替你填",p:"全名、手機、公司名、現職起始年月、更早經歷、學歷、作品集連結、英文程度。"},
+{id:"S5",ai:"me",t:"第二週起每週投 10 家（三、四、五各 3–4 家）",gap:"apply",why:"投了才有面試；11/15 要有第一場",p:"用 G2、G3、G6 的名單。每投一家記在共同大腦 03 決策日誌。"},
+{id:"S6",ai:"me",t:"每週認識 3 個圈外人（G7 活動＋有人日）",gap:"network",why:"轉職的第三個目的：新圈子",p:"不用推銷自己，問對方在做什麼就好。"},
+{id:"S7",ai:"me",t:"P6 自我介紹錄音 3 次，聽回來",gap:"interview",why:"寫好的稿講出來才算會",p:"手機錄音，每版 90 秒內。"},
+];
+const GAPS={
+ "ai-cert":"證照入場券（iPAS）","ai-speak":"講得出 AI 原理","automation":"流程自動化實作","ai-jobs":"真的 AI 職缺名單",
+ "biz-jobs":"職缺與公司名單","biz-proof":"持續的證明（週報制度）","excel":"Excel／Power BI 工具證明","analysis":"分析概念",
+ "sql":"SQL 實戰","portfolio":"作品集與帶得走的產品","erp":"一個真實店家案例","ecom":"電商數據基礎",
+ "resume":"履歷與求職信","interview":"面試準備","apply":"實際投遞","network":"新圈子","system":"共同大腦"
+};
+const ROLES=[
+ {n:"業務企劃／營運企劃",s:"第一順位，現在就能投",gaps:["biz-jobs","biz-proof","excel","analysis","resume","apply"]},
+ {n:"AI 應用專員／導入助理",s:"第二順位，補完證照與自動化後投",gaps:["ai-cert","ai-speak","automation","ai-jobs","portfolio"]},
+ {n:"ERP／POS 導入顧問 ＋ 分析師（半年後）",s:"備用與長線",gaps:["erp","sql","ecom","portfolio"]},
+ {n:"所有職務共用",s:"",gaps:["interview","network","system"]}
+];
+// 每日：日期, 標籤, 項目 [時間, 文字, ai, taskId?]
+const DAYS=[
+{d:"10/19 一",tag:"第一週・補證明",items:[
+ ["10:00","營業週報寫完交出（照昨晚草稿填數字）","me"],
+ ["10:00","電話×5（回訪名單）","me"],
+ ["12:00","貸款確認電話：金額、扣款日、帳戶","me"],
+ ["12:15","貼 G1、G2 給 Gemini","ge","G1"],
+ ["12:30","Bachata Crush 連結貼主辦群","me"],
+ ["12:45","填履歷 8 格（S4）","me","S4"],
+ ["14:00","公司電腦：派 Codex T011、T012、T014＋VM 階段 0","cx","T011"],
+ ["20:00","讀完之後 3 篇","me"],
+ ["21:00","貼 P1、P4 給 GPT（P4 附原句）","gp","P1"],
+ ["21:30","美股開盤：複委託掛賣單","me"]]},
+{d:"10/20 二",items:[
+ ["10:00","電話×5","me"],
+ ["10:30","交付品牌分析一頁（Mackie 第一份，慢慢給）","me"],
+ ["12:30","貼 G3 給 Gemini；S1 104 三頁截圖","ge","G3"],
+ ["18:30","在家日：吃飯＋走 30 分","me"],
+ ["20:00","SQL 練習室 5 題","me"],
+ ["20:40","貼 P2、P3 給 GPT，做完 P2 前 3 題就好","gp","P2"],
+ ["21:30","關機","me"]]},
+{d:"10/21 三",items:[
+ ["09:00","查複委託款項→出金","me"],
+ ["10:00","電話×5","me"],
+ ["12:30","聯絡一家店（S3）","me","S3"],
+ ["12:45","貼 G4 給 Gemini","ge","G4"],
+ ["14:00","公司電腦：派 Codex T015；驗收 T011、T012（C4）","cx","T015"],
+ ["19:00","有人日：約朋友吃飯","me"]]},
+{d:"10/22 四",items:[
+ ["10:00","電話×5","me"],
+ ["12:30","貼 G5 給 Gemini（晚上要用）","ge","G5"],
+ ["20:00","Claude 面試模擬 45 分（C2，用 G5 題本）；Claude 額度今晚用光","cl","C2"],
+ ["21:00","SQL 練習室 5 題","me"]]},
+{d:"10/23 五",items:[
+ ["10:00","電話×5","me"],
+ ["12:00","確認台幣帳戶到帳（連假前最後營業日）","me"],
+ ["12:30","貼 P5 給 GPT；G1 回來就報名 iPAS（S2）","gp","P5"],
+ ["16:00","週報＋同步大腦 10 分；Claude 重置後建共同大腦（C6）","cl","C6"],
+ ["19:30","中正紀念堂 M（原有）","me"]]},
+{d:"10/24 六",items:[
+ ["09:30","爬山地圖挑一條（不帶電腦）","me"],
+ ["下午","空白","me"],
+ ["20:00","台北光年夜拍 30 分","me"],
+ ["21:00","貼 P6 給 GPT，拿到稿先不練","gp","P6"]]},
+{d:"10/25 日",items:[
+ ["11:00","貼 G6 給 Gemini","ge","G6"],
+ ["16:00","敦煌比賽展","me"],
+ ["20:00","讀完之後 3 篇","me"]]},
+{d:"10/26 一（補假）",tag:"第二週・開始試投（每家都當練習）",items:[
+ ["10:00","作品集 3 個案例各 150 字（問題→做法→結果）","me"],
+ ["11:30","貼 P7 給 GPT（補故事 4、5 的細節）","gp","P7"],
+ ["14:00","台北腳下 #10 走拍","me"],
+ ["20:00","P6 自我介紹錄音 3 次（S7）","me","S7"]]},
+{d:"10/27 二",items:[
+ ["10:00","電話×5","me"],
+ ["12:30","G8 iPAS 每日 10 題（之後每天）；貼 G7","ge","G8"],
+ ["14:00","公司電腦：派 Codex T016；驗收 T014","cx","T016"],
+ ["20:00","SQL 練習室 5 題；貼 P8","gp","P8"]]},
+{d:"10/28 三",items:[
+ ["10:00","電話×5","me"],
+ ["12:30","G8 每日 10 題","ge","G8"],
+ ["20:00","投 3 家（用 G2、G6 名單）→ 記進決策日誌","me","S5"],
+ ["21:00","貼 G9 給 Gemini","ge","G9"]]},
+{d:"10/29 四",items:[
+ ["10:00","電話×5","me"],
+ ["12:30","G8 每日 10 題；貼 P10","gp","P10"],
+ ["20:00","Claude 面試模擬第 2 次（AI 應用版）＋求職信範本（C5）","cl","C5"],
+ ["21:00","投 3 家","me","S5"]]},
+{d:"10/30 五",items:[
+ ["10:00","電話×5","me"],
+ ["12:30","G8 每日 10 題；貼 G10","ge","G10"],
+ ["16:00","週報（第 2 週）＋同步大腦","cl","C3"],
+ ["20:00","投 4 家，本週滿 10；貼 P9 開始 Power BI","gp","P9"]]},
+{d:"10/31 六",items:[
+ ["白天","G7 活動挑一場去（S6）","me","S6"],
+ ["晚上","休息，不碰求職","me"]]},
+{d:"11/1 日",items:[
+ ["11:00","兩週回顧：投了幾家、回了幾家、證照讀到哪、哪個 AI 最有用","cl"],
+ ["12:00","排 11/2–11/15 的第二階段（目標：第一場面試）","cl"]]},
+];
+// 模擬試題：cat, 題目, 面試官想聽什麼, 參考答法（用 Jim 的實績）
+const QUIZ=[
+// 共通
+{c:"共通",q:"請用 90 秒介紹你自己。",w:"你是誰、你做過什麼可量化的事、你為什麼坐在這裡。不要從大學講起。",a:"樂器代理商業務五年多，負責台北經銷商與教室通路。今年 10 月起我把公司 ERP 的資料自己匯出來，用 AI 做成品牌趨勢、庫存健檢、客戶回訪名單和報價工具，老闆現在每週看我的週報。我不寫程式，但我知道怎麼把業務問題變成資料問題，再把 AI 做出來的東西驗收到能用。我想做的是把這件事變成正職，而不是業務之餘的副產品。"},
+{c:"共通",q:"為什麼想離開現在的公司？",w:"不批評前公司、不是逃離、有方向。",a:"現在的公司讓我學會第一線怎麼運作，也給了我空間做這些資料工具。但它是傳統代理商，這些工具做出來之後沒有人接手往下做，我做到的東西在那裡是天花板。我想去一個會把這種能力當正式工作的地方。"},
+{c:"共通",q:"你沒有這個職務的經驗，為什麼我們要用你？",w:"承認缺口，但拿出證據說缺口比看起來小。",a:"職稱上沒有，但工作內容我做了一個月：庫存健檢、品牌趨勢、回訪名單，都是這個職務會做的事，差別是我是在業務身分下做的。我缺的是貴公司的系統和流程，這部分我學得快，正航 ERP 我一週內就摸出整套匯出流程。"},
+{c:"共通",q:"你的期望薪資？",w:"一個區間、有依據、留談判空間。",a:"我查過這個職務在台北的行情，加上我能帶來的資料工具能力，期望是 4 萬 8 到 5 萬 5。如果職務範圍跟我理解的不同，我願意再談。"},
+{c:"共通",q:"說一個你失敗的經驗。",w:"真的失敗、你學到的具體改變、不是偽裝成優點的失敗。",a:"（用 P7 補的真實案例。結構：當時我以為…→結果…→現在我會先…。例如第一版品牌分析做了 44 個品牌一次全給，老闆看不完，後來改成一次一個品牌、一頁、附建議，才開始被用。）"},
+{c:"共通",q:"你平常怎麼學新東西？",w:"有方法、有產出、不是『看影片』。",a:"做一個小的真的東西。學 SQL 我不是看課程，是先做一個練習室，35 題用虛構樂器行資料，寫錯會被對答案擋下來。學會的定義是我能用它回答一個業務問題。"},
+{c:"共通",q:"五年後你想在哪裡？",w:"跟這個職務有連續性，不是跳板。",a:"能獨立負責一條業務線的營運分析，用資料決定進什麼貨、推哪個通路，而且帶一兩個人做同樣的事。這個職務是這條路的第一步。"},
+// 業務企劃
+{c:"業務企劃",q:"你會怎麼判斷一個品牌該不該續代理？",w:"有框架、有數字、懂成本不只看營收。",a:"看四件事：近三年銷售趨勢和今年對去年同期、毛利率、庫存可賣月數、退貨率。我做過 44 個品牌的這張表，兩個品牌進貨多但售出率低、一年沒動的型號佔比高，我就拆成專題給老闆看，建議縮採購、清庫存。"},
+{c:"業務企劃",q:"庫存太多怎麼辦？",w:"先分類再行動，而不是打折了事。",a:"先分：哪些是一年沒動、哪些是季節性、哪些是停產。一年沒動的 75 個型號我們上三平台出清，兩天上完；季節性的留；停產的找特定通路。重點是先有名單，不是憑感覺。"},
+{c:"業務企劃",q:"怎麼決定主推哪個通路、哪個客戶？",w:"80/20、流失客戶、客戶分級。",a:"客戶主檔拉出來，前 60 大客戶佔多少、半年沒下單的有 203 家。回訪從流失客戶裡挑曾經前 100 大的先打，每天 5 通，這比開發新客快。"},
+{c:"業務企劃",q:"樂器有淡旺季嗎？你怎麼用？",w:"懂產業節奏、有數字、會提前動作。",a:"開學季 9–10 月、年底比賽與發表會、過年前。我把每個品牌的月份指數算出來，旺季前一個月就先備貨和推給教室，淡季做回訪和清庫存。"},
+{c:"業務企劃",q:"Excel 你會到什麼程度？",w:"具體功能、具體用在哪。",a:"樞紐分析、XLOOKUP、條件格式日常在用；大一點的資料我會用 SQL 先整理再進 Excel。Power BI 正在學，目標是把現在的健檢表做成儀表板。"},
+{c:"業務企劃",q:"老闆要一份報表，你怎麼開始？",w:"先問決策，再定數字，再做。",a:"先問這份報表要幫他做什麼決定，然後只放回答那個決定的 5 到 8 個數字，一頁。我的週報是一句話、三個進度、五個摘要，他 3 分鐘看完。"},
+{c:"業務企劃",q:"你跟業務、採購、倉庫意見不同時怎麼辦？",w:"用資料對話、尊重現場、找共同目標。",a:"我自己是業務出身，知道現場的判斷常常是對的但說不出數字。我會先把數字攤開，問『這跟你看到的一樣嗎』，不一樣的地方通常是資料漏了什麼，一起補。"},
+{c:"業務企劃",q:"你怎麼確定你的分析是對的？",w:"驗證意識：交叉比對、抽查、找反例。",a:"三個方法：總數對得上財務；抽 5 筆回正航原始單據核對；找一個跟結論相反的案例問自己為什麼。44 品牌那次就是抽查發現匯率換算錯，重做一次。"},
+{c:"業務企劃",q:"給你一家店三個月的銷售資料，你會先看什麼？",w:"有順序、會提問、不是列功能。",a:"先看三個數字：本月對去年同月、前 5 商品佔比、半年沒來的客戶數。看完會有兩個問題想問老闆，再決定要往哪挖。這就是我做的通路健檢一頁的邏輯。"},
+{c:"業務企劃",q:"你用 AI 做這些，那沒有 AI 你會嗎？",w:"分清楚你的判斷和 AI 的執行。",a:"判斷的部分是我的：看哪些數字、為什麼這樣分、結論能不能用。AI 幫我做的是把資料清乾淨、算出來、排成表。沒有 AI 我做得慢很多，但方向不會變，就像業務沒有 ERP 也會賣，只是查庫存要打電話。"},
+{c:"業務企劃",q:"你做了這麼多，公司為什麼沒有給你更多？",w:"不抱怨、看清結構。",a:"傳統代理商的業務職務設計上就是出貨和收款，這些分析在那裡是附加的，沒有對應的職位。這也是我來面試的原因。"},
+// AI 應用
+{c:"AI 應用",q:"你不會寫程式，怎麼做 AI 專案？",w:"誠實、角色清楚、有實例。",a:"我負責三件事：定義問題、給 AI 正確的輸入、驗收輸出。寫程式的部分 AI 做，複雜一點我派給 Codex 開 PR，我測試、看結果對不對。一個月內我這樣上線了 6 個工具，包含一個用瀏覽器做人臉比對的網站。"},
+{c:"AI 應用",q:"解釋一下什麼是 RAG。",w:"白話、有例子、知道限制。",a:"讓 AI 回答前先去查你指定的資料，再根據查到的內容回答，而不是靠它自己的記憶。例如客服問『這台音箱保固幾年』，RAG 會先去翻我們的保固文件再答。限制是資料本身要乾淨，文件錯它就錯。"},
+{c:"AI 應用",q:"你用過哪些 AI 工具？各自適合什麼？",w:"不是列名字，是有分工判斷。",a:"Claude 做需要前後文和判斷的事、操作電腦、寫互動工具；Codex 跑程式任務和 PR；Gemini 查證和整理資料；GPT 做練習和文案。我有一份分工規則和交辦面板，需求進來先判斷該給誰。"},
+{c:"AI 應用",q:"AI 給錯答案怎麼辦？",w:"有驗收流程、不迷信。",a:"預設它會錯。數字類的我抽查原始資料、對總數；文字類的我找反例問它；程式類的跑測試。我也會讓兩個 AI 各做一次比對。錯是正常的，沒有驗收才是問題。"},
+{c:"AI 應用",q:"公司資料給 AI 安全嗎？你怎麼處理？",w:"有去識別習慣、知道界線。",a:"我有一套去識別規則：品牌和客戶換成代碼、金額換成指數，公司原始資料不離開公司電腦。能出去的只有去識別後的表。這是我做每個分析前的第一步。"},
+{c:"AI 應用",q:"如果要在一家傳統公司導入 AI，你會從哪裡開始？",w:"從小、從痛點、從可量化。",a:"從一個每週重複、有人抱怨、結果可以量的流程開始，例如報價或報表。先做一個人用的版本，量出省多少時間，再擴。我在公司就是這樣：報價從查表 10 分鐘變 1 分鐘，之後其他人才願意聽。"},
+{c:"AI 應用",q:"什麼是 agent？跟一般聊天有什麼不同？",w:"會自己拆步驟、用工具、回報。",a:"聊天是你問一句它答一句；agent 是你給目標，它自己拆步驟、用工具、做完回報。我派 Codex 做任務就是這樣：給它一張任務卡，它改程式、跑測試、開 PR，我只看結果。"},
+{c:"AI 應用",q:"token 成本是什麼？你怎麼控制？",w:"知道 AI 不是免費、有分配觀念。",a:"AI 每次讀和寫都算字數計費或扣額度。我每週排一張用量計畫，貴的模型只做需要判斷的事，查資料和初稿給便宜的，一週下來同樣的事花的額度少三成。"},
+{c:"AI 應用",q:"同事不想用 AI，你怎麼辦？",w:"不說教、做給他看、降門檻。",a:"不推他用，先幫他把一件他討厭的事做掉，例如補 30 筆商品圖。他看到結果會自己問。然後給他一個按鈕級的版本，不是一套工具。"},
+{c:"AI 應用",q:"你怎麼判斷一個需求適不適合用 AI 做？",w:"有篩選標準。",a:"三個問題：重複嗎、有明確的對錯嗎、錯了代價大嗎。重複且可驗證的先做；錯了代價大的（例如直接對客戶報價）一定留人工最後一關。"},
+{c:"AI 應用",q:"如果公司不給你用 AI 工具呢？",w:"不是沒 AI 就不會做事。",a:"那我就用 Excel 和 SQL 做同樣的分析，只是慢一點。然後我會用一個小案例算給主管看省多少時間，申請一個帳號。工具是手段，判斷才是我帶來的東西。"},
+{c:"AI 應用",q:"展示一個你做的東西。",w:"3 分鐘內讓人看懂問題、做法、結果，能點。",a:"開品牌健檢儀表板（虛構資料版）：這是三張 CSV 進去一頁出來，8 個數字。問題是老闆看不到哪個品牌在吃庫存；做法是算可賣月數和一年沒動佔比；結果是找出兩個品牌縮採購。然後開 SQL 作品集給他看查詢。"},
+];
+// ---- 狀態 ----
+let done={};try{done=JSON.parse(localStorage.getItem("sprint-done")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("sprint-done",JSON.stringify(done))}catch(e){}}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const byId=Object.fromEntries(TASKS.map(t=>[t.id,t]));
+// ---- 統計 ----
+function stats(){
+  const el=$("#stats");el.innerHTML="";
+  const groups=[["全部",TASKS],["Gemini",TASKS.filter(t=>t.ai==="ge")],["GPT",TASKS.filter(t=>t.ai==="gp")],["Codex",TASKS.filter(t=>t.ai==="cx")],["Claude",TASKS.filter(t=>t.ai==="cl")],["Jim",TASKS.filter(t=>t.ai==="me")]];
+  groups.forEach(([n,arr])=>{const d=arr.filter(t=>done["t:"+t.id]).length;const pct=arr.length?Math.round(d/arr.length*100):0;
+    el.insertAdjacentHTML("beforeend",`<div class="stat"><b>${d}/${arr.length}</b><span>${n} 任務完成</span><div class="bar"><i style="width:${pct}%"></i></div></div>`)});
+  const allItems=DAYS.reduce((a,d)=>a+d.items.length,0);const di=Object.keys(done).filter(k=>k.startsWith("d:")&&done[k]).length;
+  el.insertAdjacentHTML("beforeend",`<div class="stat"><b>${di}/${allItems}</b><span>每日項目勾掉</span><div class="bar"><i style="width:${Math.round(di/allItems*100)}%"></i></div></div>`);
+  const qd=Object.keys(done).filter(k=>k.startsWith("q:")&&done[k]).length;
+  el.insertAdjacentHTML("beforeend",`<div class="stat"><b>${qd}/${QUIZ.length}</b><span>試題練過</span><div class="bar"><i style="width:${Math.round(qd/QUIZ.length*100)}%"></i></div></div>`);
+}
+// ---- 心智圖 ----
+function map(){
+  const el=$("#tab-map");
+  let h=`<div class="tree"><div class="root">每天不浪費：一個產出、一個輸入、一個人<br><small style="font-weight:400;opacity:.85">第一週補證明（10/19–10/25），第二週開始試投（10/26–11/1）；11/15 回頭看，準備好了再加速</small></div>`;
+  ROLES.forEach((r,i)=>{
+    h+=`<details class="role" ${i<2?"open":""}><summary>${esc(r.n)}<small>${esc(r.s)}</small></summary><div class="gaps">`;
+    r.gaps.forEach(g=>{
+      const ts=TASKS.filter(t=>t.gap===g);
+      h+=`<div class="gap"><h4>缺：${esc(GAPS[g])}</h4><ul>`+ts.map(t=>`<li class="ai-${t.ai}"><span class="tag">${t.id}</span><span style="min-width:0">${esc(t.t)}${done["t:"+t.id]?" ✓":""}</span></li>`).join("")+`</ul></div>`;
+    });
+    h+=`</div></details>`;
+  });
+  el.innerHTML=h+`</div>`;
+}
+// ---- 任務 ----
+let filter="all";
+function filters(){
+  const el=$("#filters");
+  el.innerHTML=[["all","全部"],["ge","Gemini"],["gp","GPT"],["cx","Codex"],["cl","Claude"],["me","Jim"],["todo","未完成"]].map(([k,n])=>`<button aria-pressed="${filter===k}" data-f="${k}">${n}</button>`).join("");
+  el.querySelectorAll("button").forEach(b=>b.onclick=()=>{filter=b.dataset.f;filters();tasks()});
+}
+function tasks(){
+  const el=$("#tasklist");
+  const list=TASKS.filter(t=>filter==="all"||(filter==="todo"?!done["t:"+t.id]:t.ai===filter));
+  el.innerHTML=list.map(t=>`<div class="task ai-${t.ai} ${done["t:"+t.id]?"done":""}" data-id="${t.id}">
+    <div class="hd"><label><input type="checkbox" id="chk-${t.id}" ${done["t:"+t.id]?"checked":""}><span><b>${t.id}</b>　${esc(t.t)}</span></label>
+    <span class="meta">${AI[t.ai]} · ${esc(GAPS[t.gap])}</span></div>
+    <div class="why">${esc(t.why)}</div>
+    <details><summary>${t.ai==="cl"||t.ai==="me"?"怎麼做":"看指令／複製"}</summary><div class="prompt">${esc(t.p)}</div>${t.ai==="cl"||t.ai==="me"?"":`<button class="copy" data-copy="${t.id}">複製指令</button>`}</details></div>`).join("")||`<p class="note">這個篩選沒有任務。</p>`;
+  el.querySelectorAll("input[type=checkbox]").forEach(c=>c.onchange=()=>{done["t:"+c.id.slice(4)]=c.checked;save();render()});
+  el.querySelectorAll(".copy").forEach(b=>b.onclick=()=>{
+    const txt=byId[b.dataset.copy].p;const ok=()=>{b.textContent="已複製";setTimeout(()=>b.textContent="複製指令",1500)};
+    const fallback=()=>{const r=document.createRange();r.selectNodeContents(b.parentElement.querySelector(".prompt"));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="已選取，按 Ctrl/⌘+C"};
+    try{navigator.clipboard.writeText(txt).then(ok,fallback)}catch(e){fallback()}
+  });
+}
+// ---- 每日 ----
+function days(){
+  const el=$("#tab-days");
+  const today=new Date();const md=`${today.getMonth()+1}/${today.getDate()} `;
+  let h="";
+  DAYS.forEach((d,di)=>{
+    if(d.tag)h+=`<div class="week">${esc(d.tag)}</div>`;
+    const isToday=d.d.startsWith(md);
+    const doneN=d.items.filter((_,i)=>done[`d:${di}:${i}`]).length;
+    h+=`<div class="day ${isToday?"today":""}"><header><b>${esc(d.d)}</b><span>${doneN}/${d.items.length}</span></header><div class="items">`;
+    d.items.forEach((it,i)=>{const k=`d:${di}:${i}`;
+      h+=`<div class="item ai-${it[2]}"><input type="checkbox" id="${k.replace(/:/g,"-")}" data-k="${k}" ${done[k]?"checked":""}><span class="t">${esc(it[0])}</span><span class="tx ${done[k]?"done":""}">${esc(it[1])}${it[3]?`<span class="tag">${it[3]}</span>`:""}</span></div>`});
+    h+=`</div></div>`;
+  });
+  h+=`<p class="note">原有行事曆事件（上班、爵士101 限動 16:30、拍攝）沒列進來，照常。Claude 的部分集中在週四晚與週五重置後，其他天 Claude 幾乎不用。</p>`;
+  el.innerHTML=h;
+  el.querySelectorAll("input[type=checkbox]").forEach(c=>c.onchange=()=>{done[c.dataset.k]=c.checked;save();render()});
+}
+// ---- 模擬試題 ----
+let qf="全部",qpick=null;
+function quiz(){
+  const fl=$("#qfilters");
+  fl.innerHTML=[["全部","全部 "+QUIZ.length+" 題"],["共通","共通"],["業務企劃","業務企劃"],["AI 應用","AI 應用"],["抽5","隨機抽 5 題"]].map(([k,n])=>`<button aria-pressed="${qf===k}" data-q="${k}">${n}</button>`).join("");
+  fl.querySelectorAll("button").forEach(b=>b.onclick=()=>{qf=b.dataset.q;if(qf==="抽5"){qpick=[...QUIZ].sort(()=>Math.random()-.5).slice(0,5)}quiz()});
+  const list=qf==="全部"?QUIZ:qf==="抽5"?qpick:QUIZ.filter(x=>x.c===qf);
+  $("#quizlist").innerHTML=list.map((x,i)=>{const k="q:"+QUIZ.indexOf(x);return `<div class="task ai-${x.c==="AI 應用"?"ge":x.c==="業務企劃"?"gp":"cl"} ${done[k]?"done":""}">
+    <div class="hd"><label><input type="checkbox" data-k="${k}" ${done[k]?"checked":""}><span><b>Q${QUIZ.indexOf(x)+1}</b>　${esc(x.q)}</span></label><span class="meta">${esc(x.c)}</span></div>
+    <details><summary>想聽什麼</summary><div class="why" style="margin-left:0;padding:6px 0">${esc(x.w)}</div></details>
+    <details><summary>參考答法</summary><div class="prompt">${esc(x.a)}</div></details></div>`}).join("");
+  $("#quizlist").querySelectorAll("input").forEach(c=>c.onchange=()=>{done[c.dataset.k]=c.checked;save();quiz();stats()});
+}
+function render(){stats();map();filters();tasks();days();quiz()}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["map","tasks","days","quiz"].forEach(k=>$("#tab-"+k).hidden=k!==b.dataset.tab);
+  try{localStorage.setItem("sprint-tab",b.dataset.tab)}catch(e){}
+});
+render();
+try{const t=localStorage.getItem("sprint-tab");if(t){const b=document.querySelector(`.tabs button[data-tab="${t}"]`);if(b)b.click()}}catch(e){}
+</script>
