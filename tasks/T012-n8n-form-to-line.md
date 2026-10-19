@@ -1,7 +1,7 @@
 ---
 id: T012
 title: n8n 流程範本：Google 表單 → 試算表 → LINE 通知
-status: open
+status: review
 size: S
 ---
 
@@ -20,3 +20,9 @@ AI 應用職缺最常問的實作是流程自動化。一份能匯入就跑的 n
 
 ## 不要動
 - 其他目錄
+
+## 實作紀錄
+- 新增 `workflow.json`，串接 Webhook、Google Sheets append、金額 IF 與 LINE push HTTP Request。
+- 新增表單綁定版 `apps-script.gs`，在提交時整理欄位並 POST JSON 到 n8n。
+- 新增繁體中文 README，包含憑證、匯入、測試、免費方案限制與 Mermaid 流程圖。
+- 使用 n8n `1.123.85` 執行 CLI 匯入，結果為 `Successfully imported 1 workflow.`。

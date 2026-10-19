@@ -1,0 +1,216 @@
+{
+  "name": "Google 表單 → 試算表 → LINE 通知",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "google-form-to-line",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "52487a7e-a92b-4c77-923a-0b9a6f3b2b5c",
+      "name": "接收表單",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -540,
+        120
+      ],
+      "webhookId": "8ab9e8e3-5144-4b31-bb5b-8eb242502ead"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "<YOUR_SHEET_NAME>",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "submittedAt": "={{ $('接收表單').item.json.body.submittedAt }}",
+            "name": "={{ $('接收表單').item.json.body.name }}",
+            "amount": "={{ Number($('接收表單').item.json.body.amount) }}",
+            "note": "={{ $('接收表單').item.json.body.note || '' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "submittedAt",
+              "displayName": "submittedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "4134d211-38f7-47e4-9b7b-dc8081ef1ca8",
+      "name": "寫入試算表",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -280,
+        120
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "<YOUR_GOOGLE_SHEETS_CREDENTIAL_ID>",
+          "name": "<YOUR_GOOGLE_SHEETS_CREDENTIAL_NAME>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5428dba0-261f-43b7-b348-c42fba7aa2db",
+              "leftValue": "={{ Number($('接收表單').item.json.body.amount) }}",
+              "rightValue": 10000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1304a4cf-9aac-4436-94ec-05c7f4b02173",
+      "name": "金額超過門檻？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -20,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.line.me/v2/bot/message/push",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"to\": \"<YOUR_LINE_RECIPIENT_ID>\", \"messages\": [{ \"type\": \"text\", \"text\": \"高額表單通知\\n姓名：\" + $('接收表單').item.json.body.name + \"\\n金額：\" + $('接收表單').item.json.body.amount + \"\\n備註：\" + ($('接收表單').item.json.body.note || \"無\") }] } }}",
+        "options": {}
+      },
+      "id": "9a68ee28-29d5-486c-a3d1-24c437937699",
+      "name": "推送 LINE 通知",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        40
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "<YOUR_LINE_HEADER_AUTH_CREDENTIAL_ID>",
+          "name": "<YOUR_LINE_HEADER_AUTH_CREDENTIAL_NAME>"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "接收表單": {
+      "main": [
+        [
+          {
+            "node": "寫入試算表",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "寫入試算表": {
+      "main": [
+        [
+          {
+            "node": "金額超過門檻？",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "金額超過門檻？": {
+      "main": [
+        [
+          {
+            "node": "推送 LINE 通知",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d55436f4-0ba1-448d-94d0-2e5d8c780455",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
