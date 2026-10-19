@@ -1,7 +1,7 @@
 ---
 id: T012
 title: n8n 流程範本：Google 表單 → 試算表 → LINE 通知
-status: open
+status: backlog
 size: S
 ---
 
