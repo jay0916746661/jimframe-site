@@ -939,7 +939,7 @@ window.addEventListener("popstate",()=>{if(VSEL&&!(history.state&&history.state.
 document.getElementById("video-grid").addEventListener("play",e=>{document.querySelectorAll("#video-grid video").forEach(v=>{if(v!==e.target)v.pause();});},true);
 const videoFile=n=>`JimFrame_${VEV(n)}-BachataCrush_${n}_25s.mp4`;
 // 高畫質 25 秒試看原檔放在 repo 的 videos-hq 分支（不上 Pages、不佔網站空間），下載按鈕優先用它
-const VIDEO_HQ_EVENTS=["1018"];
+const VIDEO_HQ_EVENTS=["1018","1017","1016","1015"];
 const VHQ=n=>VIDEO_HQ_EVENTS.includes(VEV(n))?`https://raw.githubusercontent.com/jay0916746661/jimframe-site/videos-hq/${VEV(n)}/${videoFile(n)}`:null;
 function openBuy(n){
  const d=(VIDEO_DATA.find(v=>v[0]===n)||[])[1]||0;
