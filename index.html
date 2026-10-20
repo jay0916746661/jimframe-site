@@ -938,6 +938,9 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-vsel]");if
 window.addEventListener("popstate",()=>{if(VSEL&&!(history.state&&history.state.vsel)){VSEL=null;VCV="time";renderVideoGrid();vScroll();}});
 document.getElementById("video-grid").addEventListener("play",e=>{document.querySelectorAll("#video-grid video").forEach(v=>{if(v!==e.target)v.pause();});},true);
 const videoFile=n=>`JimFrame_${VEV(n)}-BachataCrush_${n}_25s.mp4`;
+// 高畫質 25 秒試看原檔放在 repo 的 videos-hq 分支（不上 Pages、不佔網站空間），下載按鈕優先用它
+const VIDEO_HQ_EVENTS=["1018"];
+const VHQ=n=>VIDEO_HQ_EVENTS.includes(VEV(n))?`https://raw.githubusercontent.com/jay0916746661/jimframe-site/videos-hq/${VEV(n)}/${videoFile(n)}`:null;
 function openBuy(n){
  const d=(VIDEO_DATA.find(v=>v[0]===n)||[])[1]||0;
  const root=document.getElementById("credit-root");
@@ -955,7 +958,7 @@ function openBuy(n){
  root.querySelector("[data-buy-copy]").addEventListener("click",async e=>{try{await navigator.clipboard.writeText(`${VLAB(n)} Bachata Crush 影片 #${n} 完整版`);e.currentTarget.lastChild.textContent="已複製 ✓";}catch{toast(`影片編號 #${n}`);}});
 }
 document.getElementById("video-grid").addEventListener("click",e=>{
- const dl=e.target.closest("[data-video-dl]");if(dl){const n=dl.dataset.videoDl;withCredit(()=>{const a=document.createElement("a");a.href=`${VDIR(n)}bc-${n}.mp4`;a.download=videoFile(n);document.body.appendChild(a);a.click();a.remove();});return;}
+ const dl=e.target.closest("[data-video-dl]");if(dl){const n=dl.dataset.videoDl;withCredit(()=>{const a=document.createElement("a");a.href=VHQ(n)||`${VDIR(n)}bc-${n}.mp4`;a.download=videoFile(n);document.body.appendChild(a);a.click();a.remove();});return;}
  const st=e.target.closest("[data-story-dl]");if(st){const n=st.dataset.storyDl;withCredit(()=>{const a=document.createElement("a");a.href=`${VDIR(n)}story-${n}.jpg`;a.download=`JimFrame_${VEV(n)}-BachataCrush_${n}_story.jpg`;document.body.appendChild(a);a.click();a.remove();});return;}
  const b=e.target.closest("[data-video-buy]");if(b)openBuy(b.dataset.videoBuy);
 });
