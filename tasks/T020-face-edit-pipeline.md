@@ -1,7 +1,7 @@
 ---
 id: T020
 title: 保臉改髮型工具（丟照片進資料夾、一行指令跑完）
-status: open
+status: review
 size: M   # S＝半小時內、M＝一兩小時
 ---
 
@@ -58,4 +58,7 @@ python run.py --prompt "change the bangs to straight blunt bangs" --n 4
 - 不要把任何真人照片（包括 `photos/` 裡的）複製進 `tools/face-edit/` 或提交到 git；`input/`、`output/` 加進 `.gitignore`
 
 ## 實作紀錄
-（Codex 完成後填寫）
+- 新增 `tools/face-edit/` CPU pipeline：EXIF/HEIC 讀圖、InsightFace 最大臉偵測與 ArcFace 評分、BiSeNet 頭髮／五官遮罩、原臉貼回及 Gemini 可替換後端。
+- 新增 Windows 繁中 README、釘版 requirements、`.env.example`、OpenAI TODO 空殼，以及 best/candidates/masks/report/index 靜態輸出。
+- 用兩張未提交的合成人臉執行 `python run.py --dry-run`，最低相似度 0.999149；另以純色無臉圖確認跳過並寫入 CSV，批次不中斷。
+- `NODE_PATH=$(npm root -g) node scripts/smoke.mjs http://localhost:8000/` 通過桌機與 390px 手機檢查；未使用真實 API key 測試付費 Gemini 呼叫。
