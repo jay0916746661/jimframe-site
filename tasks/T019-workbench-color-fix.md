@@ -2,6 +2,7 @@
 id: T019
 title: 工作台 ⓪ 調色補救（臉太白／偏黃）＋前後對照
 status: backlog
+runner: local   # 本機（Antigravity 或 Claude Code 本機版），要碰 Mac 檔案
 size: S
 ---
 

@@ -2,6 +2,7 @@
 id: T009
 title: 新相簿照片改放 Google Drive（工作台上傳＋網站顯示）
 status: backlog
+runner: local   # 本機（Antigravity 或 Claude Code 本機版），要碰 Mac 檔案
 size: M
 ---
 

@@ -2,6 +2,7 @@
 id: T007
 title: 工作台 ③ 影片（切段、4K 單支、25 秒特效版、網站版、付費完整版）
 status: backlog
+runner: local   # 本機（Antigravity 或 Claude Code 本機版），要碰 Mac 檔案
 size: M
 ---
 

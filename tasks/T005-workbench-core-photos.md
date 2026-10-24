@@ -2,6 +2,7 @@
 id: T005
 title: 工作台骨架＋① 照片上線
 status: open
+runner: local   # 本機（Antigravity 或 Claude Code 本機版），要碰 Mac 檔案
 size: M
 ---
 

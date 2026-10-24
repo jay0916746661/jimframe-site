@@ -2,6 +2,7 @@
 id: T006
 title: 工作台 ② 挑照片（眼睛候選、隱藏）＋九宮格封面
 status: backlog
+runner: local   # 本機（Antigravity 或 Claude Code 本機版），要碰 Mac 檔案
 size: M
 ---
 
