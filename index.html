@@ -714,6 +714,19 @@ a { color: var(--tint); }
   .tabbar { background: rgba(10,12,11,.94); }
 }
 
+/* 下載面板：贊助按鈕＋萬聖節相框 */
+.credit-support{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:14px;border:1px solid var(--separator);color:var(--label);font-weight:650;text-decoration:none;background:transparent}
+.credit-support:hover{border-color:var(--tint);color:var(--tint)}
+.credit-hw{display:none}
+html.halloween .credit-hw{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border:0;border-radius:14px;cursor:pointer;font-weight:760;font-size:16px;color:#1a0b02;background:linear-gradient(90deg,#ff9a3c,#ffb21f,#b6f36a);box-shadow:0 0 22px rgba(255,122,26,.45)}
+.hw-pick{max-height:94dvh;overflow:auto}
+.hw-preview{position:relative;border-radius:14px;overflow:hidden;background:var(--fill);aspect-ratio:4/5;max-height:52dvh;margin:0 auto;width:100%}
+.hw-preview canvas{display:block;width:100%;height:100%;object-fit:contain}
+.hw-loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--label-2);font-size:14px}
+.hw-choices{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.hw-choices button{min-height:44px;border-radius:12px;border:1px solid var(--separator);background:transparent;color:var(--label);font-weight:650;cursor:pointer}
+.hw-choices button.is-on{border-color:var(--tint);background:var(--tint-soft);color:var(--tint)}
+
 /* ===== 萬聖節限定主題（2026）=====
    只在 html.halloween 時生效；10/15–11/3 自動開啟。
    ?season=off 關閉，?season=halloween 強制開啟。拿掉這段與檔尾 halloween script 即還原。 */
@@ -1233,7 +1246,7 @@ const driveDl=id=>`https://drive.usercontent.google.com/download?id=${id}&export
 const openDownload=id=>{if(isLocal(id)){const a=document.createElement("a");a.href=localPath(id);a.download=localName(id);document.body.appendChild(a);a.click();a.remove();return;}
  if(/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)){location.href=driveDl(id);return;} // iOS 不支援 iframe 下載；附件網址不會離開本頁
  const f=document.createElement("iframe");f.hidden=true;f.src=driveDl(id);document.body.appendChild(f);setTimeout(()=>f.remove(),60000);};
-function withCredit(action,official){
+function withCredit(action,official,photoId){
  // 每次下載都要勾選「會標記」才能繼續；Bachata Crush 的照片／影片同時要標官方帳號
  const a=st&&st.album;const crush=official!==undefined?official:(!a||a.venue==="Bachata Crush");
  const tags=crush?["@jimframe","@bachata_crush_tw"]:["@jimframe"];
@@ -1245,15 +1258,119 @@ function withCredit(action,official){
   <div class="credit-tags">${tags.map(t=>`<span>${t}</span>`).join("")}</div>
   <button type="button" class="button button-gray" data-credit-copy>${icon("tag")}一鍵複製標記</button>
   <button type="button" class="button button-filled button-large" data-credit-go>好，我會標記 💛 下載</button>
-  <p class="credit-sub">喜歡這些照片，也歡迎<a href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">自由贊助下一場拍攝</a>（自願，不影響下載）。</p>
+  ${photoId?`<button type="button" class="credit-hw" data-credit-hw>🎃 套用萬聖節相框再下載</button>`:""}
+  <a class="credit-support" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">☕ 贊助下一場拍攝</a>
+  <p class="credit-sub">贊助完全自願，不影響下載。謝謝你讓舞池被好好記錄 💛</p>
   <button type="button" class="text-button credit-cancel" data-credit-close>取消</button>
  </div></div>`;
  const close=()=>{root.innerHTML="";};
  const go=root.querySelector("[data-credit-go]");
  go.addEventListener("click",()=>{close();action();toast(`下載中 · 分享時記得標記 ${tags.join(" ")} 📸`);});
  root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
+ root.querySelector("[data-credit-hw]")?.addEventListener("click",()=>hwFramePicker(photoId,tags));
  root.querySelector("[data-credit-copy]").addEventListener("click",async e=>{const b=e.currentTarget;try{await navigator.clipboard.writeText(tags.join(" "));b.lastChild.textContent="已複製 ✓ 貼到限動就好";}catch{toast("請手動輸入 "+tags.join(" "));}});
 }
+
+// ---------- 萬聖節相框（季節限定；只在 html.halloween 時出現在下載面板）----------
+const HW_FRAMES=[["pumpkin","南瓜派對"],["boo","小幽靈 BOO"],["bat","蝙蝠月夜"],["candy","糖果玉米"]];
+const hwOn=()=>document.documentElement.classList.contains("halloween");
+const hwLoad=src=>new Promise((res,rej)=>{const i=new Image();i.crossOrigin="anonymous";i.onload=()=>res(i);i.onerror=rej;i.src=src;});
+const hwSrc=id=>isLocal(id)?localPath(id):LOCAL_1015.has(id)?`photos/1015/${id}.jpg`:`https://lh3.googleusercontent.com/d/${id}=w1600`;
+const HWF="800 {s}px ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'PingFang TC', 'Noto Sans TC', system-ui, sans-serif";
+const hwFont=s=>HWF.replace("{s}",s);
+function hwRR(x,c,y0,w,h,r){x.beginPath();x.moveTo(c+r,y0);x.arcTo(c+w,y0,c+w,y0+h,r);x.arcTo(c+w,y0+h,c,y0+h,r);x.arcTo(c,y0+h,c,y0,r);x.arcTo(c,y0,c+w,y0,r);x.closePath();}
+function hwPhoto(x,im,px,py,pw,ph,r){x.save();hwRR(x,px,py,pw,ph,r);x.clip();const s=Math.max(pw/im.naturalWidth,ph/im.naturalHeight);const w=im.naturalWidth*s,h=im.naturalHeight*s;x.drawImage(im,px+(pw-w)/2,py+(ph-h)/2.6,w,h);x.restore();}
+function hwPumpkin(x,cx,cy,s,face=true){x.save();x.translate(cx,cy);x.scale(s/100,s/100);
+ x.fillStyle="#3f7d2a";x.beginPath();x.moveTo(-6,-48);x.quadraticCurveTo(-2,-74,16,-78);x.lineTo(18,-70);x.quadraticCurveTo(6,-66,6,-46);x.fill();
+ x.fillStyle="#ff8a1f";[[-34,0,34,44],[34,0,34,44],[0,0,40,48]].forEach(([a,b,rx,ry])=>{x.beginPath();x.ellipse(a,b,rx,ry,0,0,7);x.fill();});
+ x.strokeStyle="rgba(190,70,0,.45)";x.lineWidth=4;[-22,22].forEach(a=>{x.beginPath();x.ellipse(a,0,14,44,0,0,7);x.stroke();});
+ if(face){x.fillStyle="#3a1600";[[-18,-8],[18,-8]].forEach(([a,b])=>{x.beginPath();x.ellipse(a,b,7,9,0,0,7);x.fill();});
+  x.fillStyle="#fff";[[-16,-11],[20,-11]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,2.6,0,7);x.fill();});
+  x.fillStyle="#3a1600";x.beginPath();x.arc(0,10,13,0.15*Math.PI,0.85*Math.PI);x.fill();
+  x.fillStyle="rgba(255,90,120,.55)";[[-34,8],[34,8]].forEach(([a,b])=>{x.beginPath();x.ellipse(a,b,9,5,0,0,7);x.fill();});}
+ x.restore();}
+function hwGhost(x,cx,cy,s,rot=0,blush=true){x.save();x.translate(cx,cy);x.rotate(rot);x.scale(s/100,s/100);
+ x.fillStyle="#fffaf5";x.shadowColor="rgba(120,90,200,.35)";x.shadowBlur=18;
+ x.beginPath();x.moveTo(-44,10);x.bezierCurveTo(-46,-62,46,-62,44,10);x.lineTo(44,52);
+ for(let i=0;i<4;i++){const a=44-i*22;x.quadraticCurveTo(a-5.5,62,a-11,52);x.quadraticCurveTo(a-16.5,42,a-22,52);}
+ x.closePath();x.fill();x.shadowBlur=0;
+ x.fillStyle="#2b1a3a";[[-14,-6],[14,-6]].forEach(([a,b])=>{x.beginPath();x.ellipse(a,b,6,8,0,0,7);x.fill();});
+ x.fillStyle="#fff";[[-12,-9],[16,-9]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,2.2,0,7);x.fill();});
+ x.fillStyle="#2b1a3a";x.beginPath();x.ellipse(0,10,5,6,0,0,7);x.fill();
+ if(blush){x.fillStyle="rgba(255,120,160,.6)";[[-26,6],[26,6]].forEach(([a,b])=>{x.beginPath();x.ellipse(a,b,7,4,0,0,7);x.fill();});}
+ x.restore();}
+function hwBat(x,cx,cy,s,rot=0,col="#2a1640"){x.save();x.translate(cx,cy);x.rotate(rot);x.scale(s/100,s/100);x.fillStyle=col;
+ x.beginPath();x.moveTo(0,-8);x.bezierCurveTo(-20,-30,-50,-34,-70,-14);x.quadraticCurveTo(-58,-10,-56,4);x.quadraticCurveTo(-46,-6,-38,6);x.quadraticCurveTo(-28,-4,-18,10);x.quadraticCurveTo(-8,4,0,14);
+ x.quadraticCurveTo(8,4,18,10);x.quadraticCurveTo(28,-4,38,6);x.quadraticCurveTo(46,-6,56,4);x.quadraticCurveTo(58,-10,70,-14);x.bezierCurveTo(50,-34,20,-30,0,-8);x.fill();
+ x.beginPath();x.arc(0,-6,14,0,7);x.fill();x.beginPath();x.moveTo(-10,-14);x.lineTo(-8,-30);x.lineTo(-2,-18);x.moveTo(10,-14);x.lineTo(8,-30);x.lineTo(2,-18);x.fill();
+ x.fillStyle="#ffd25a";[[-5,-7],[5,-7]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,2.6,0,7);x.fill();});x.restore();}
+function hwCandy(x,cx,cy,s,rot=0){x.save();x.translate(cx,cy);x.rotate(rot);x.scale(s/100,s/100);
+ x.beginPath();x.moveTo(-30,26);x.quadraticCurveTo(0,34,30,26);x.lineTo(4,-36);x.quadraticCurveTo(0,-40,-4,-36);x.closePath();x.save();x.clip();
+ x.fillStyle="#fff7e0";x.fillRect(-40,-50,80,90);x.fillStyle="#ffb21f";x.fillRect(-40,-14,80,22);x.fillStyle="#ff7a1a";x.fillRect(-40,8,80,30);x.restore();
+ x.fillStyle="#3a1600";[[-7,14],[7,14]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,2.6,0,7);x.fill();});x.restore();}
+function hwStar(x,cx,cy,r,col){x.save();x.fillStyle=col;x.beginPath();for(let i=0;i<10;i++){const a=i*Math.PI/5-Math.PI/2,rr=i%2?r*.45:r;x.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr);}x.closePath();x.fill();x.restore();}
+function hwText(x,t,cx,cy,s,fill,stroke,lw=10){x.save();x.font=hwFont(s);x.textAlign="center";x.textBaseline="middle";x.lineJoin="round";if(stroke){x.strokeStyle=stroke;x.lineWidth=lw;x.strokeText(t,cx,cy);}x.fillStyle=fill;x.fillText(t,cx,cy);x.restore();}
+function hwDots(x,W,H,cols,n,seed){let s=seed;const r=()=>(s=(s*9301+49297)%233280)/233280;for(let i=0;i<n;i++){x.fillStyle=cols[i%cols.length];x.beginPath();x.arc(r()*W,r()*H,3+r()*7,0,7);x.fill();}}
+function hwSticker(x,draw){x.save();x.shadowColor="rgba(0,0,0,.28)";x.shadowBlur=14;x.shadowOffsetY=4;x.globalCompositeOperation="source-over";draw();x.restore();}
+function hwBubble(x,t,cx,cy,s,bg,fg,rot=0){x.save();x.translate(cx,cy);x.rotate(rot);x.font=hwFont(s);const w=x.measureText(t).width+s*1.1,h=s*1.55;
+ x.shadowColor="rgba(0,0,0,.25)";x.shadowBlur=16;x.shadowOffsetY=5;x.fillStyle="#fff";hwRR(x,-w/2-8,-h/2-8,w+16,h+16,(h+16)/2);x.fill();x.shadowBlur=0;x.shadowOffsetY=0;
+ x.fillStyle=bg;hwRR(x,-w/2,-h/2,w,h,h/2);x.fill();x.fillStyle=fg;x.textAlign="center";x.textBaseline="middle";x.fillText(t,0,s*.06);x.restore();}
+function hwWave(x,W,y,amp,len,col){x.fillStyle=col;x.beginPath();x.moveTo(0,y);for(let i=0;i<=W;i+=len){x.quadraticCurveTo(i+len/4,y-amp,i+len/2,y);x.quadraticCurveTo(i+len*3/4,y+amp,i+len,y);}x.lineTo(W,99999);x.lineTo(0,99999);x.closePath();x.fill();}
+function hwDrip(x,W,col,h){x.fillStyle=col;x.beginPath();x.moveTo(0,0);x.lineTo(W,0);let px=W;const d=[[.95,.5],[.88,1],[.8,.35],[.71,.8],[.62,.45],[.52,1.1],[.42,.4],[.33,.85],[.24,.3],[.14,.95],[.05,.45]];x.lineTo(W,h*.35);
+ d.forEach(([f,k])=>{const cx=W*f;x.quadraticCurveTo(cx+28,h*.35,cx+22,h*.35+h*k*.6);x.arc(cx,h*.35+h*k*.6,22,0,Math.PI);x.quadraticCurveTo(cx-28,h*.35,cx-60,h*.35);});x.lineTo(0,h*.35);x.closePath();x.fill();}
+function hwSparkle(x,cx,cy,r,col){x.save();x.fillStyle=col;x.beginPath();x.moveTo(cx,cy-r);x.quadraticCurveTo(cx,cy,cx+r,cy);x.quadraticCurveTo(cx,cy,cx,cy+r);x.quadraticCurveTo(cx,cy,cx-r,cy);x.quadraticCurveTo(cx,cy,cx,cy-r);x.fill();x.restore();}
+function hwCredit(x,W,H,t,bg,fg){x.save();x.font=hwFont(30);const w=x.measureText(t).width+44;x.fillStyle=bg;hwRR(x,W-w-36,H-86,w,52,26);x.fill();x.fillStyle=fg;x.textAlign="center";x.textBaseline="middle";x.fillText(t,W-w/2-36,H-59);x.restore();}
+function hwDraw(kind,im,tags){const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+ const credit="@jimframe";hwPhoto(x,im,0,0,W,H,0);
+ if(kind==="pumpkin"){
+  const g=x.createLinearGradient(0,H*.6,0,H);g.addColorStop(0,"rgba(255,120,20,0)");g.addColorStop(1,"rgba(255,120,20,.45)");x.fillStyle=g;x.fillRect(0,0,W,H);
+  hwDrip(x,W,"#ff8a1f",150);
+  hwBubble(x,"Happy Halloween!",330,215,58,"#ff8a1f","#fff",-.07);
+  hwSticker(x,()=>{hwPumpkin(x,150,1210,210);hwPumpkin(x,330,1255,120);});
+  [[880,240,22],[960,330,14],[810,330,10],[120,420,12]].forEach(([a,b,r])=>hwSparkle(x,a,b,r,"#ffe08a"));
+  hwCredit(x,W,H,credit,"#fff","#ff6a00");}
+ else if(kind==="boo"){
+  const g=x.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,H*.75);g.addColorStop(0,"rgba(200,180,255,0)");g.addColorStop(1,"rgba(200,180,255,.55)");x.fillStyle=g;x.fillRect(0,0,W,H);
+  hwSticker(x,()=>{hwGhost(x,150,1180,260,.12);hwGhost(x,940,170,150,-.18);hwGhost(x,1010,760,110,-.5);});
+  hwBubble(x,"BOO!",760,110,64,"#a78bfa","#fff",.1);
+  hwBubble(x,"有鬼在跳舞 👻",330,1250,40,"#fff","#7a3cff",-.04);
+  [[90,120,20],[200,240,12],[950,1000,18],[860,1100,11],[600,80,10]].forEach(([a,b,r],i)=>hwSparkle(x,a,b,r,i%2?"#ffb3cf":"#fff"));
+  hwCredit(x,W,H-60,credit,"#a78bfa","#fff");}
+ else if(kind==="bat"){
+  const g=x.createLinearGradient(0,0,0,H*.45);g.addColorStop(0,"rgba(40,10,70,.82)");g.addColorStop(1,"rgba(40,10,70,0)");x.fillStyle=g;x.fillRect(0,0,W,H);
+  const g2=x.createLinearGradient(0,H*.75,0,H);g2.addColorStop(0,"rgba(40,10,70,0)");g2.addColorStop(1,"rgba(40,10,70,.7)");x.fillStyle=g2;x.fillRect(0,0,W,H);
+  x.save();x.shadowColor="rgba(255,220,150,.9)";x.shadowBlur=70;x.fillStyle="#fff1c4";x.beginPath();x.arc(890,170,100,0,7);x.fill();x.restore();
+  x.fillStyle="rgba(200,160,90,.35)";[[860,150,18],[920,200,12],[900,130,8]].forEach(([a,b,r])=>{x.beginPath();x.arc(a,b,r,0,7);x.fill();});
+  for(let i=0;i<22;i++)hwSparkle(x,(i*173)%W,(i*97)%420+20,6+(i%3)*4,i%4?"#ffe9a8":"#b6f36a");
+  hwText(x,"Trick or Dance",380,150,80,"#ffe9a8","rgba(90,30,140,.9)",12);
+  [[200,330,120,-.2],[640,270,80,.15],[760,420,60,-.1],[120,1180,110,.2],[960,1150,140,-.2]].forEach(([a,b,s,r])=>hwBat(x,a,b,s,r,"#2a1640"));
+  hwCredit(x,W,H,credit,"rgba(255,233,168,.95)","#4a1a7a");}
+ else {
+  hwWave(x,W,1170,22,120,"#ffb21f");hwWave(x,W,1205,22,120,"#ff7a1a");hwWave(x,W,1250,22,120,"#fff7e0");
+  hwBubble(x,"Sweet & Spooky",W/2,120,56,"#ffb21f","#fff",-.03);
+  hwSticker(x,()=>{hwCandy(x,110,200,150,-.35);hwCandy(x,970,240,120,.4);hwCandy(x,90,1100,120,.2);hwPumpkin(x,960,1110,170);hwGhost(x,780,1130,100,.15);});
+  [[250,330,16],[860,420,12],[180,920,12]].forEach(([a,b,r])=>hwSparkle(x,a,b,r,"#fff"));
+  hwText(x,credit,W/2,1300,34,"#ff6a00");}
+ return c;}
+function hwFramePicker(id,tags){const root=document.getElementById("credit-root");
+ root.innerHTML=`<div class="credit-backdrop" data-credit-close><div class="credit-sheet hw-pick" role="dialog" aria-modal="true" aria-label="萬聖節相框">
+  <span class="credit-grabber" aria-hidden="true"></span><h2>🎃 選一個萬聖節相框</h2>
+  <div class="hw-preview"><canvas aria-label="預覽"></canvas><span class="hw-loading">照片載入中…</span></div>
+  <div class="hw-choices">${HW_FRAMES.map(([k,n],i)=>`<button type="button" data-hwf="${k}" class="${i?"":"is-on"}">${n}</button>`).join("")}</div>
+  <button type="button" class="button button-filled button-large" data-hw-dl disabled>下載萬聖節版 💛</button>
+  <p class="credit-sub">下載就代表你會標記 @jimframe，謝謝！</p>
+  <button type="button" class="text-button credit-cancel" data-credit-close>取消</button></div></div>`;
+ const close=()=>{root.innerHTML="";};root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
+ const cv=root.querySelector(".hw-preview canvas"),btn=root.querySelector("[data-hw-dl]");let kind="pumpkin",img=null,out=null;
+ const paint=()=>{if(!img)return;out=hwDraw(kind,img,tags);cv.width=out.width;cv.height=out.height;cv.getContext("2d").drawImage(out,0,0);};
+ const fail=()=>{const l=root.querySelector(".hw-loading");if(l&&!img)l.textContent="這張照片暫時無法套相框，請改用一般下載";};setTimeout(fail,15000);
+ hwLoad(photoSrc(id,1600)).catch(()=>hwLoad(hwSrc(id))).then(i=>{img=i;root.querySelector(".hw-loading")?.remove();btn.disabled=false;paint();}).catch(fail);
+ root.querySelectorAll("[data-hwf]").forEach(b=>b.addEventListener("click",()=>{kind=b.dataset.hwf;root.querySelectorAll("[data-hwf]").forEach(o=>o.classList.toggle("is-on",o===b));paint();}));
+ btn.addEventListener("click",()=>{if(!out)return;out.toBlob(async bl=>{if(!bl){toast("輸出失敗，請再試一次");return;}
+  const name=`JimFrame_Halloween_${kind}_${String(id).replace(/[^\w-]/g,"").slice(-12)}.jpg`;const file=new File([bl],name,{type:"image/jpeg"});
+  if(navigator.canShare&&navigator.canShare({files:[file]})&&/iP(hone|ad|od)|Android/.test(navigator.userAgent)){try{await navigator.share({files:[file],text:"@jimframe"});close();return;}catch(e){if(e.name==="AbortError")return;}}
+  const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  close();toast(`萬聖節版下載中 · 記得標記 @jimframe 🎃`);},"image/jpeg",.92);});}
 
 // ---------- Videos: 15s previews (free) + paid full version ----------
 const VIDEO_PRICE="NT$300 / US$10";
@@ -1320,7 +1437,7 @@ document.addEventListener("click",e=>{
  if(d.like){liked.has(d.like)?liked.delete(d.like):liked.add(d.like);store.set("demo_liked",[...liked]);renderPopular();if(st.photo)renderSheet();return;}
  if(d.demo){e.preventDefault();demoOnly(d.demo);return;}
  if(d.share){shareLinks([d.share]);return;}
- if(d.download){withCredit(()=>openDownload(d.download));return;}
+ if(d.download){withCredit(()=>openDownload(d.download),undefined,d.download);return;}
  if("export" in d){withCredit(exportGraded);return;}
  if("batchShare" in d){shareLinks([...st.selected]);return;}
  if("batchDownload" in d){const ids=[...st.selected];withCredit(()=>batchDownload(ids));return;}
