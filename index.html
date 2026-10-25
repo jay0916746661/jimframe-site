@@ -723,6 +723,10 @@ html.halloween .credit-hw{display:flex;align-items:center;justify-content:center
 .hw-preview{position:relative;border-radius:14px;overflow:hidden;background:var(--fill);aspect-ratio:4/5;max-height:52dvh;margin:0 auto;width:100%}
 .hw-preview canvas{display:block;width:100%;height:100%;object-fit:contain}
 .hw-loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--label-2);font-size:14px}
+.hw-lab{margin:2px 0 -4px!important;font-size:13px!important;font-weight:700;color:var(--label-2)!important}
+.hw-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}.hw-chips::-webkit-scrollbar{display:none}
+.hw-chips button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--separator);background:transparent;color:var(--label);font-weight:650;cursor:pointer;white-space:nowrap}
+.hw-chips button.is-on{border-color:var(--tint);background:var(--tint-soft);color:var(--tint)}
 .hw-choices{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .hw-choices button{min-height:44px;border-radius:12px;border:1px solid var(--separator);background:transparent;color:var(--label);font-weight:650;cursor:pointer}
 .hw-choices button.is-on{border-color:var(--tint);background:var(--tint-soft);color:var(--tint)}
@@ -772,6 +776,7 @@ html.halloween .hw-banner {
   color: var(--label); font-size: 14px; text-align: center;
 }
 html.halloween .hw-banner b { color: var(--tint); font-weight: 760; letter-spacing: .06em; }
+.hw-banner .hw-play{color:var(--hw-slime,#b6f36a);font-weight:800;white-space:nowrap}
 .hw-banner button { margin-left: 4px; border: 0; background: transparent; color: var(--label-2); font-size: 18px; line-height: 1; cursor: pointer; }
 
 /* 標題燭光 */
@@ -1258,7 +1263,7 @@ function withCredit(action,official,photoId){
   <div class="credit-tags">${tags.map(t=>`<span>${t}</span>`).join("")}</div>
   <button type="button" class="button button-gray" data-credit-copy>${icon("tag")}一鍵複製標記</button>
   <button type="button" class="button button-filled button-large" data-credit-go>好，我會標記 💛 下載</button>
-  ${photoId?`<button type="button" class="credit-hw" data-credit-hw>🎃 套用萬聖節相框再下載</button>`:""}
+  ${photoId?`<button type="button" class="credit-hw" data-credit-hw>🎃 萬聖節變身：特效＋相框</button>`:""}
   <a class="credit-support" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">☕ 贊助下一場拍攝</a>
   <p class="credit-sub">贊助完全自願，不影響下載。謝謝你讓舞池被好好記錄 💛</p>
   <button type="button" class="text-button credit-cancel" data-credit-close>取消</button>
@@ -1272,7 +1277,7 @@ function withCredit(action,official,photoId){
 }
 
 // ---------- 萬聖節相框（季節限定；只在 html.halloween 時出現在下載面板）----------
-const HW_FRAMES=[["pumpkin","南瓜派對"],["boo","小幽靈 BOO"],["bat","蝙蝠月夜"],["candy","糖果玉米"]];
+const HW_FRAMES=[["plain","不加框"],["pumpkin","南瓜派對"],["boo","小幽靈 BOO"],["bat","蝙蝠月夜"],["candy","糖果玉米"]];
 const hwOn=()=>document.documentElement.classList.contains("halloween");
 const hwLoad=src=>new Promise((res,rej)=>{const i=new Image();i.crossOrigin="anonymous";i.onload=()=>res(i);i.onerror=rej;i.src=src;});
 const hwSrc=id=>isLocal(id)?localPath(id):LOCAL_1015.has(id)?`photos/1015/${id}.jpg`:`https://lh3.googleusercontent.com/d/${id}=w1600`;
@@ -1320,8 +1325,33 @@ function hwDrip(x,W,col,h){x.fillStyle=col;x.beginPath();x.moveTo(0,0);x.lineTo(
  d.forEach(([f,k])=>{const cx=W*f;x.quadraticCurveTo(cx+28,h*.35,cx+22,h*.35+h*k*.6);x.arc(cx,h*.35+h*k*.6,22,0,Math.PI);x.quadraticCurveTo(cx-28,h*.35,cx-60,h*.35);});x.lineTo(0,h*.35);x.closePath();x.fill();}
 function hwSparkle(x,cx,cy,r,col){x.save();x.fillStyle=col;x.beginPath();x.moveTo(cx,cy-r);x.quadraticCurveTo(cx,cy,cx+r,cy);x.quadraticCurveTo(cx,cy,cx,cy+r);x.quadraticCurveTo(cx,cy,cx-r,cy);x.quadraticCurveTo(cx,cy,cx,cy-r);x.fill();x.restore();}
 function hwCredit(x,W,H,t,bg,fg){x.save();x.font=hwFont(30);const w=x.measureText(t).width+44;x.fillStyle=bg;hwRR(x,W-w-36,H-86,w,52,26);x.fill();x.fillStyle=fg;x.textAlign="center";x.textBaseline="middle";x.fillText(t,W-w/2-36,H-59);x.restore();}
-function hwDraw(kind,im,tags){const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
- const credit="@jimframe";hwPhoto(x,im,0,0,W,H,0);
+// 萬聖節照片特效：直接改像素（Safari 不支援 canvas filter，所以不用 ctx.filter）
+const HW_FX=[["none","原圖"],["zombie","🧟 殭屍"],["ghost","👻 鬼魂"],["vamp","🧛 吸血鬼"],["oldfilm","📼 老鬼片"],["warm","🎃 南瓜暖光"],["dream","🔮 夢幻紫"]];
+function hwFx(x,W,H,fx){if(fx==="none")return;
+ const d=x.getImageData(0,0,W,H),p=d.data;let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+ const cl=v=>v<0?0:v>255?255:v;
+ for(let i=0;i<p.length;i+=4){let r=p[i],g=p[i+1],b=p[i+2];const l=.299*r+.587*g+.114*b;const px=(i/4)%W,py=(i/4/W)|0;
+  const dx=(px-W/2)/(W/2),dy=(py-H/2)/(H/2),v=Math.min(1,Math.sqrt(dx*dx+dy*dy));
+  if(fx==="zombie"){const c=(l-128)*1.35+128;r=c*.72;g=c*1.02+18;b=c*.6;const n=(rnd()-.5)*26;r+=n;g+=n;b+=n;const k=1-v*v*.6;r*=k;g*=k;b*=k;}
+  else if(fx==="ghost"){const c=l*.9+30;r=c*.82;g=c*.95;b=c*1.18+12;const k=1-v*v*.45;r=r*k+(1-k)*20;g=g*k+(1-k)*24;b=b*k+(1-k)*60;}
+  else if(fx==="vamp"){const red=r>g*1.25&&r>b*1.25;const c=(l-128)*1.5+120;if(red){r=cl(r*1.25);g=g*.5;b=b*.5;}else{r=c*.95;g=c*.82;b=c*.85;}const k=1-v*v*.75;r=r*k+(1-k)*60;g*=k;b*=k;}
+  else if(fx==="oldfilm"){const c=(l-128)*1.25+120;r=c*1.07+10;g=c*.93+4;b=c*.72;const n=(rnd()-.5)*40;r+=n;g+=n;b+=n;const k=1-v*v*.8;r*=k;g*=k;b*=k;}
+  else if(fx==="warm"){r=r*1.06+28;g=g*.98+12;b=b*.8;const k=v*v*.35;r=r*(1-k)+255*k;g=g*(1-k)+140*k;b=b*(1-k)+40*k;}
+  else if(fx==="dream"){r=r*.78+70;g=g*.72+52;b=b*.78+80;const k=v*v*.3;r=r*(1-k)+255*k;g=g*(1-k)+190*k;b=b*(1-k)+235*k;}
+  p[i]=cl(r);p[i+1]=cl(g);p[i+2]=cl(b);}
+ x.putImageData(d,0,0);
+ if(fx==="ghost"){const t=document.createElement("canvas");t.width=W;t.height=H;t.getContext("2d").drawImage(x.canvas,0,0);x.save();x.globalAlpha=.28;x.globalCompositeOperation="screen";x.drawImage(t,26,-14);x.drawImage(t,-18,10);x.restore();
+  x.save();x.fillStyle="rgba(230,240,255,.10)";for(let i=0;i<6;i++){x.beginPath();x.ellipse(rnd()*W,H*.55+rnd()*H*.4,260+rnd()*200,70,0,0,7);x.fill();}x.restore();}
+ if(fx==="oldfilm"){x.save();x.strokeStyle="rgba(255,250,235,.22)";for(let i=0;i<6;i++){x.lineWidth=1+rnd()*2;const sx=rnd()*W;x.beginPath();x.moveTo(sx,0);x.lineTo(sx+(rnd()-.5)*40,H);x.stroke();}
+  x.fillStyle="rgba(0,0,0,.5)";for(let i=0;i<60;i++){x.beginPath();x.arc(rnd()*W,rnd()*H,1+rnd()*3,0,7);x.fill();}x.restore();}
+ if(fx==="vamp"){x.save();x.fillStyle="rgba(150,0,20,.85)";for(let i=0;i<9;i++){const dx2=60+i*(W-120)/8,len=40+rnd()*110;x.beginPath();x.moveTo(dx2-18,0);x.lineTo(dx2+18,0);x.lineTo(dx2+9,len);x.arc(dx2,len,9,0,Math.PI);x.closePath();x.fill();}x.fillRect(0,0,W,14);x.restore();}
+ if(fx==="warm"||fx==="dream"){x.save();x.globalCompositeOperation="screen";const cols=fx==="warm"?["rgba(255,170,60,.35)","rgba(255,220,120,.3)"]:["rgba(255,170,230,.35)","rgba(190,170,255,.35)"];
+  for(let i=0;i<26;i++){const rr=12+rnd()*46;const gx=rnd()*W,gy=rnd()<.5?rnd()*H*.3:H*.7+rnd()*H*.3;const g=x.createRadialGradient(gx,gy,0,gx,gy,rr);g.addColorStop(0,cols[i%2]);g.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=g;x.beginPath();x.arc(gx,gy,rr,0,7);x.fill();}x.restore();
+  for(let i=0;i<10;i++)hwSparkle(x,rnd()*W,rnd()<.5?40+rnd()*H*.25:H*.75+rnd()*H*.2,8+rnd()*12,fx==="warm"?"#fff1c4":"#fff");}
+}
+function hwDraw(kind,im,tags,fx="none"){const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+ const credit="@jimframe";hwPhoto(x,im,0,0,W,H,0);hwFx(x,W,H,fx);
+ if(kind==="plain"){hwCredit(x,W,H,credit,"rgba(255,255,255,.92)","#2a0f00");return c;}
  if(kind==="pumpkin"){
   const g=x.createLinearGradient(0,H*.6,0,H);g.addColorStop(0,"rgba(255,120,20,0)");g.addColorStop(1,"rgba(255,120,20,.45)");x.fillStyle=g;x.fillRect(0,0,W,H);
   hwDrip(x,W,"#ff8a1f",150);
@@ -1354,20 +1384,22 @@ function hwDraw(kind,im,tags){const W=1080,H=1350,c=document.createElement("canv
  return c;}
 function hwFramePicker(id,tags){const root=document.getElementById("credit-root");
  root.innerHTML=`<div class="credit-backdrop" data-credit-close><div class="credit-sheet hw-pick" role="dialog" aria-modal="true" aria-label="萬聖節相框">
-  <span class="credit-grabber" aria-hidden="true"></span><h2>🎃 選一個萬聖節相框</h2>
+  <span class="credit-grabber" aria-hidden="true"></span><h2>🎃 萬聖節變身</h2>
   <div class="hw-preview"><canvas aria-label="預覽"></canvas><span class="hw-loading">照片載入中…</span></div>
-  <div class="hw-choices">${HW_FRAMES.map(([k,n],i)=>`<button type="button" data-hwf="${k}" class="${i?"":"is-on"}">${n}</button>`).join("")}</div>
+  <p class="hw-lab">照片特效</p><div class="hw-chips">${HW_FX.map(([k,n],i)=>`<button type="button" data-hwx="${k}" class="${k==="zombie"?"is-on":""}">${n}</button>`).join("")}</div>
+  <p class="hw-lab">相框</p><div class="hw-chips">${HW_FRAMES.map(([k,n])=>`<button type="button" data-hwf="${k}" class="${k==="pumpkin"?"is-on":""}">${n}</button>`).join("")}</div>
   <button type="button" class="button button-filled button-large" data-hw-dl disabled>下載萬聖節版 💛</button>
   <p class="credit-sub">下載就代表你會標記 @jimframe，謝謝！</p>
   <button type="button" class="text-button credit-cancel" data-credit-close>取消</button></div></div>`;
  const close=()=>{root.innerHTML="";};root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
- const cv=root.querySelector(".hw-preview canvas"),btn=root.querySelector("[data-hw-dl]");let kind="pumpkin",img=null,out=null;
- const paint=()=>{if(!img)return;out=hwDraw(kind,img,tags);cv.width=out.width;cv.height=out.height;cv.getContext("2d").drawImage(out,0,0);};
+ const cv=root.querySelector(".hw-preview canvas"),btn=root.querySelector("[data-hw-dl]");let kind="pumpkin",fx="zombie",img=null,out=null;
+ const paint=()=>{if(!img)return;out=hwDraw(kind,img,tags,fx);cv.width=out.width;cv.height=out.height;cv.getContext("2d").drawImage(out,0,0);};
  const fail=()=>{const l=root.querySelector(".hw-loading");if(l&&!img)l.textContent="這張照片暫時無法套相框，請改用一般下載";};setTimeout(fail,15000);
  hwLoad(photoSrc(id,1600)).catch(()=>hwLoad(hwSrc(id))).then(i=>{img=i;root.querySelector(".hw-loading")?.remove();btn.disabled=false;paint();}).catch(fail);
  root.querySelectorAll("[data-hwf]").forEach(b=>b.addEventListener("click",()=>{kind=b.dataset.hwf;root.querySelectorAll("[data-hwf]").forEach(o=>o.classList.toggle("is-on",o===b));paint();}));
+ root.querySelectorAll("[data-hwx]").forEach(b=>b.addEventListener("click",()=>{fx=b.dataset.hwx;root.querySelectorAll("[data-hwx]").forEach(o=>o.classList.toggle("is-on",o===b));paint();}));
  btn.addEventListener("click",()=>{if(!out)return;out.toBlob(async bl=>{if(!bl){toast("輸出失敗，請再試一次");return;}
-  const name=`JimFrame_Halloween_${kind}_${String(id).replace(/[^\w-]/g,"").slice(-12)}.jpg`;const file=new File([bl],name,{type:"image/jpeg"});
+  const name=`JimFrame_Halloween_${fx}-${kind}_${String(id).replace(/[^\w-]/g,"").slice(-12)}.jpg`;const file=new File([bl],name,{type:"image/jpeg"});
   if(navigator.canShare&&navigator.canShare({files:[file]})&&/iP(hone|ad|od)|Android/.test(navigator.userAgent)){try{await navigator.share({files:[file],text:"@jimframe"});close();return;}catch(e){if(e.name==="AbortError")return;}}
   const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
   close();toast(`萬聖節版下載中 · 記得標記 @jimframe 🎃`);},"image/jpeg",.92);});}
@@ -2019,7 +2051,7 @@ const eb=document.querySelector(".brand-story .eyebrow");if(eb)eb.textContent="H
 let gone=false;try{gone=sessionStorage.getItem("hwBanner")==="x"}catch(e){}
 if(!gone){const nb=document.querySelector(".navbar");const b=document.createElement("div");b.className="hw-banner";b.setAttribute("role","note");
 const zh=(document.documentElement.lang||"").startsWith("zh");
-b.innerHTML=`<span>🎃 <b>HALLOWEEN WEEK</b> ${zh?"萬聖節派對照片一樣在這裡找自己・分享請標記 @jimframe":"Trick or treat — find yourself in every party photo · tag @jimframe"}</span><button type="button" aria-label="${zh?"關閉":"Close"}">×</button>`;
+b.innerHTML=`<span>🎃 <b>HALLOWEEN WEEK</b> ${zh?"下載照片可以變身萬聖節特效":"Turn any photo into a Halloween look"} · <a class="hw-play" href="./halloween/">${zh?"🎮 玩小遊戲":"🎮 Play games"}</a></span><button type="button" aria-label="${zh?"關閉":"Close"}">×</button>`;
 b.querySelector("button").onclick=()=>{b.remove();try{sessionStorage.setItem("hwBanner","x")}catch(e){}};nb?.after(b);}
 })();
 </script>
