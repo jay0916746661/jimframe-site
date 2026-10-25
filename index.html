@@ -714,6 +714,19 @@ a { color: var(--tint); }
   .tabbar { background: rgba(10,12,11,.94); }
 }
 
+/* 下載面板：贊助按鈕＋萬聖節相框 */
+.credit-support{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:14px;border:1px solid var(--separator);color:var(--label);font-weight:650;text-decoration:none;background:transparent}
+.credit-support:hover{border-color:var(--tint);color:var(--tint)}
+.credit-hw{display:none}
+html.halloween .credit-hw{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border:0;border-radius:14px;cursor:pointer;font-weight:760;font-size:16px;color:#1a0b02;background:linear-gradient(90deg,#ff9a3c,#ffb21f,#b6f36a);box-shadow:0 0 22px rgba(255,122,26,.45)}
+.hw-pick{max-height:94dvh;overflow:auto}
+.hw-preview{position:relative;border-radius:14px;overflow:hidden;background:var(--fill);aspect-ratio:4/5;max-height:52dvh;margin:0 auto;width:100%}
+.hw-preview canvas{display:block;width:100%;height:100%;object-fit:contain}
+.hw-loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--label-2);font-size:14px}
+.hw-choices{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.hw-choices button{min-height:44px;border-radius:12px;border:1px solid var(--separator);background:transparent;color:var(--label);font-weight:650;cursor:pointer}
+.hw-choices button.is-on{border-color:var(--tint);background:var(--tint-soft);color:var(--tint)}
+
 /* ===== 萬聖節限定主題（2026）=====
    只在 html.halloween 時生效；10/15–11/3 自動開啟。
    ?season=off 關閉，?season=halloween 強制開啟。拿掉這段與檔尾 halloween script 即還原。 */
@@ -1233,7 +1246,7 @@ const driveDl=id=>`https://drive.usercontent.google.com/download?id=${id}&export
 const openDownload=id=>{if(isLocal(id)){const a=document.createElement("a");a.href=localPath(id);a.download=localName(id);document.body.appendChild(a);a.click();a.remove();return;}
  if(/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)){location.href=driveDl(id);return;} // iOS 不支援 iframe 下載；附件網址不會離開本頁
  const f=document.createElement("iframe");f.hidden=true;f.src=driveDl(id);document.body.appendChild(f);setTimeout(()=>f.remove(),60000);};
-function withCredit(action,official){
+function withCredit(action,official,photoId){
  // 每次下載都要勾選「會標記」才能繼續；Bachata Crush 的照片／影片同時要標官方帳號
  const a=st&&st.album;const crush=official!==undefined?official:(!a||a.venue==="Bachata Crush");
  const tags=crush?["@jimframe","@bachata_crush_tw"]:["@jimframe"];
@@ -1245,15 +1258,107 @@ function withCredit(action,official){
   <div class="credit-tags">${tags.map(t=>`<span>${t}</span>`).join("")}</div>
   <button type="button" class="button button-gray" data-credit-copy>${icon("tag")}一鍵複製標記</button>
   <button type="button" class="button button-filled button-large" data-credit-go>好，我會標記 💛 下載</button>
-  <p class="credit-sub">喜歡這些照片，也歡迎<a href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">自由贊助下一場拍攝</a>（自願，不影響下載）。</p>
+  ${photoId?`<button type="button" class="credit-hw" data-credit-hw>🎃 套用萬聖節相框再下載</button>`:""}
+  <a class="credit-support" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">☕ 贊助下一場拍攝</a>
+  <p class="credit-sub">贊助完全自願，不影響下載。謝謝你讓舞池被好好記錄 💛</p>
   <button type="button" class="text-button credit-cancel" data-credit-close>取消</button>
  </div></div>`;
  const close=()=>{root.innerHTML="";};
  const go=root.querySelector("[data-credit-go]");
  go.addEventListener("click",()=>{close();action();toast(`下載中 · 分享時記得標記 ${tags.join(" ")} 📸`);});
  root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
+ root.querySelector("[data-credit-hw]")?.addEventListener("click",()=>hwFramePicker(photoId,tags));
  root.querySelector("[data-credit-copy]").addEventListener("click",async e=>{const b=e.currentTarget;try{await navigator.clipboard.writeText(tags.join(" "));b.lastChild.textContent="已複製 ✓ 貼到限動就好";}catch{toast("請手動輸入 "+tags.join(" "));}});
 }
+
+// ---------- 萬聖節相框（季節限定；只在 html.halloween 時出現在下載面板）----------
+const HW_FRAMES=[["pumpkin","南瓜派對"],["boo","小幽靈 BOO"],["bat","蝙蝠月夜"],["candy","糖果玉米"]];
+const hwOn=()=>document.documentElement.classList.contains("halloween");
+const hwLoad=src=>new Promise((res,rej)=>{const i=new Image();i.crossOrigin="anonymous";i.onload=()=>res(i);i.onerror=rej;i.src=src;});
+const hwSrc=id=>isLocal(id)?localPath(id):LOCAL_1015.has(id)?`photos/1015/${id}.jpg`:`https://lh3.googleusercontent.com/d/${id}=w1600`;
+const HWF="800 {s}px ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'PingFang TC', 'Noto Sans TC', system-ui, sans-serif";
+const hwFont=s=>HWF.replace("{s}",s);
+function hwRR(x,c,y0,w,h,r){x.beginPath();x.moveTo(c+r,y0);x.arcTo(c+w,y0,c+w,y0+h,r);x.arcTo(c+w,y0+h,c,y0+h,r);x.arcTo(c,y0+h,c,y0,r);x.arcTo(c,y0,c+w,y0,r);x.closePath();}
+function hwPhoto(x,im,px,py,pw,ph,r){x.save();hwRR(x,px,py,pw,ph,r);x.clip();const s=Math.max(pw/im.naturalWidth,ph/im.naturalHeight);const w=im.naturalWidth*s,h=im.naturalHeight*s;x.drawImage(im,px+(pw-w)/2,py+(ph-h)/2.6,w,h);x.restore();}
+function hwPumpkin(x,cx,cy,s,face=true){x.save();x.translate(cx,cy);x.scale(s/100,s/100);
+ x.fillStyle="#3f7d2a";x.beginPath();x.moveTo(-6,-48);x.quadraticCurveTo(-2,-74,16,-78);x.lineTo(18,-70);x.quadraticCurveTo(6,-66,6,-46);x.fill();
+ x.fillStyle="#ff8a1f";[[-34,0,34,44],[34,0,34,44],[0,0,40,48]].forEach(([a,b,rx,ry])=>{x.beginPath();x.ellipse(a,b,rx,ry,0,0,7);x.fill();});
+ x.strokeStyle="rgba(190,70,0,.45)";x.lineWidth=4;[-22,22].forEach(a=>{x.beginPath();x.ellipse(a,0,14,44,0,0,7);x.stroke();});
+ if(face){x.fillStyle="#3a1600";[[-18,-8],[18,-8]].forEach(([a,b])=>{x.beginPath();x.ellipse(a,b,7,9,0,0,7);x.fill();});
+  x.fillStyle="#fff";[[-16,-11],[20,-11]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,2.6,0,7);x.fill();});
+  x.fillStyle="#3a1600";x.beginPath();x.arc(0,10,13,0.15*Math.PI,0.85*Math.PI);x.fill();
+  x.fillStyle="rgba(255,90,120,.55)";[[-34,8],[34,8]].forEach(([a,b])=>{x.beginPath();x.ellipse(a,b,9,5,0,0,7);x.fill();});}
+ x.restore();}
+function hwGhost(x,cx,cy,s,rot=0,blush=true){x.save();x.translate(cx,cy);x.rotate(rot);x.scale(s/100,s/100);
+ x.fillStyle="#fffaf5";x.shadowColor="rgba(120,90,200,.35)";x.shadowBlur=18;
+ x.beginPath();x.moveTo(-44,10);x.bezierCurveTo(-46,-62,46,-62,44,10);x.lineTo(44,52);
+ for(let i=0;i<4;i++){const a=44-i*22;x.quadraticCurveTo(a-5.5,62,a-11,52);x.quadraticCurveTo(a-16.5,42,a-22,52);}
+ x.closePath();x.fill();x.shadowBlur=0;
+ x.fillStyle="#2b1a3a";[[-14,-6],[14,-6]].forEach(([a,b])=>{x.beginPath();x.ellipse(a,b,6,8,0,0,7);x.fill();});
+ x.fillStyle="#fff";[[-12,-9],[16,-9]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,2.2,0,7);x.fill();});
+ x.fillStyle="#2b1a3a";x.beginPath();x.ellipse(0,10,5,6,0,0,7);x.fill();
+ if(blush){x.fillStyle="rgba(255,120,160,.6)";[[-26,6],[26,6]].forEach(([a,b])=>{x.beginPath();x.ellipse(a,b,7,4,0,0,7);x.fill();});}
+ x.restore();}
+function hwBat(x,cx,cy,s,rot=0,col="#2a1640"){x.save();x.translate(cx,cy);x.rotate(rot);x.scale(s/100,s/100);x.fillStyle=col;
+ x.beginPath();x.moveTo(0,-8);x.bezierCurveTo(-20,-30,-50,-34,-70,-14);x.quadraticCurveTo(-58,-10,-56,4);x.quadraticCurveTo(-46,-6,-38,6);x.quadraticCurveTo(-28,-4,-18,10);x.quadraticCurveTo(-8,4,0,14);
+ x.quadraticCurveTo(8,4,18,10);x.quadraticCurveTo(28,-4,38,6);x.quadraticCurveTo(46,-6,56,4);x.quadraticCurveTo(58,-10,70,-14);x.bezierCurveTo(50,-34,20,-30,0,-8);x.fill();
+ x.beginPath();x.arc(0,-6,14,0,7);x.fill();x.beginPath();x.moveTo(-10,-14);x.lineTo(-8,-30);x.lineTo(-2,-18);x.moveTo(10,-14);x.lineTo(8,-30);x.lineTo(2,-18);x.fill();
+ x.fillStyle="#ffd25a";[[-5,-7],[5,-7]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,2.6,0,7);x.fill();});x.restore();}
+function hwCandy(x,cx,cy,s,rot=0){x.save();x.translate(cx,cy);x.rotate(rot);x.scale(s/100,s/100);
+ x.beginPath();x.moveTo(-30,26);x.quadraticCurveTo(0,34,30,26);x.lineTo(4,-36);x.quadraticCurveTo(0,-40,-4,-36);x.closePath();x.save();x.clip();
+ x.fillStyle="#fff7e0";x.fillRect(-40,-50,80,90);x.fillStyle="#ffb21f";x.fillRect(-40,-14,80,22);x.fillStyle="#ff7a1a";x.fillRect(-40,8,80,30);x.restore();
+ x.fillStyle="#3a1600";[[-7,14],[7,14]].forEach(([a,b])=>{x.beginPath();x.arc(a,b,2.6,0,7);x.fill();});x.restore();}
+function hwStar(x,cx,cy,r,col){x.save();x.fillStyle=col;x.beginPath();for(let i=0;i<10;i++){const a=i*Math.PI/5-Math.PI/2,rr=i%2?r*.45:r;x.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr);}x.closePath();x.fill();x.restore();}
+function hwText(x,t,cx,cy,s,fill,stroke,lw=10){x.save();x.font=hwFont(s);x.textAlign="center";x.textBaseline="middle";x.lineJoin="round";if(stroke){x.strokeStyle=stroke;x.lineWidth=lw;x.strokeText(t,cx,cy);}x.fillStyle=fill;x.fillText(t,cx,cy);x.restore();}
+function hwDots(x,W,H,cols,n,seed){let s=seed;const r=()=>(s=(s*9301+49297)%233280)/233280;for(let i=0;i<n;i++){x.fillStyle=cols[i%cols.length];x.beginPath();x.arc(r()*W,r()*H,3+r()*7,0,7);x.fill();}}
+function hwDraw(kind,im,tags){const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+ const credit=tags.join("  ");
+ if(kind==="pumpkin"){x.fillStyle="#ff8a1f";x.fillRect(0,0,W,H);
+  const g=x.createRadialGradient(W/2,H/2,200,W/2,H/2,900);g.addColorStop(0,"#ffa443");g.addColorStop(1,"#f06a0a");x.fillStyle=g;x.fillRect(0,0,W,H);
+  hwDots(x,W,H,["#ffd25a","#fff1d6","#7a3cff"],60,7);
+  x.fillStyle="#fff7ea";hwRR(x,58,150,964,1010,48);x.fill();hwPhoto(x,im,78,170,924,970,36);
+  hwText(x,"HAPPY HALLOWEEN",W/2,82,74,"#fff7ea","#5a1f00",14);
+  hwPumpkin(x,140,1170,180);hwPumpkin(x,950,1190,140);hwPumpkin(x,820,1230,90);
+  hwText(x,credit,W/2,1300,30,"#5a1f00");}
+ else if(kind==="boo"){const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,"#e9dcff");g.addColorStop(1,"#c9b2ff");x.fillStyle=g;x.fillRect(0,0,W,H);
+  hwDots(x,W,H,["#fff","#ffb3cf","#b6f36a"],46,3);
+  x.save();x.translate(W/2,660);x.rotate(-.025);x.fillStyle="#fff";x.shadowColor="rgba(60,30,120,.3)";x.shadowBlur=30;x.fillRect(-440,-520,880,1080);x.shadowBlur=0;hwPhoto(x,im,-410,-490,820,880,8);x.restore();
+  hwGhost(x,150,180,190,-.25);hwGhost(x,930,120,150,.2);hwGhost(x,960,1110,120,-.1);
+  x.save();x.fillStyle="#fff";x.strokeStyle="#5b3a9a";x.lineWidth=6;hwRR(x,250,70,230,110,50);x.fill();x.stroke();x.restore();hwText(x,"BOO!",365,126,64,"#7a3cff");
+  hwText(x,"小心，有鬼在跳舞 👻",W/2-80,1220,46,"#5b3a9a");hwText(x,credit,W/2,1300,30,"#5b3a9a");}
+ else if(kind==="bat"){const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,"#1a0b2e");g.addColorStop(1,"#3b1460");x.fillStyle=g;x.fillRect(0,0,W,H);
+  for(let i=0;i<40;i++){hwStar(x,(i*137)%W,(i*263)%H,4+(i%4)*2,i%3?"#ffe9a8":"#b6f36a");}
+  x.save();x.shadowColor="rgba(255,220,150,.8)";x.shadowBlur=60;x.fillStyle="#fff1c4";x.beginPath();x.arc(900,150,90,0,7);x.fill();x.restore();
+  x.strokeStyle="#ff8a1f";x.lineWidth=10;x.save();x.shadowColor="rgba(255,138,31,.9)";x.shadowBlur=30;hwRR(x,70,250,940,960,40);x.stroke();x.restore();hwPhoto(x,im,80,260,920,940,32);
+  hwText(x,"Trick or Dance",400,150,78,"#ffe9a8","#ff6a00",6);
+  [[170,300,120,-.2],[960,330,90,.25],[110,1180,100,.15],[980,1220,130,-.2],[700,110,60,.1]].forEach(([a,b,s,r])=>hwBat(x,a,b,s,r,"#8a5fd6"));
+  hwText(x,credit,W/2,1295,30,"#ffe9a8");}
+ else {x.fillStyle="#fff7e0";x.fillRect(0,0,W,H);
+  const bands=["#ffb21f","#ff7a1a","#fff7e0"];for(let i=-40;i<60;i++){x.fillStyle=bands[(i%3+3)%3];x.beginPath();x.moveTo(i*44,0);x.lineTo(i*44+44,0);x.lineTo(i*44+44-H*.6,H);x.lineTo(i*44-H*.6,H);x.fill();}
+  x.fillStyle="#fff";hwRR(x,70,160,940,1000,56);x.fill();hwPhoto(x,im,92,182,896,956,40);
+  x.fillStyle="#fff";hwRR(x,220,40,640,100,50);x.fill();hwText(x,"Sweet & Spooky",W/2,92,58,"#ff6a00");
+  hwCandy(x,120,170,130,-.3);hwCandy(x,960,170,110,.3);hwCandy(x,130,1180,110,.25);hwPumpkin(x,950,1180,150);hwGhost(x,780,1230,90,.1);
+  x.fillStyle="#fff";hwRR(x,300,1250,480,64,32);x.fill();hwText(x,credit,W/2,1283,28,"#ff6a00");}
+ return c;}
+function hwFramePicker(id,tags){const root=document.getElementById("credit-root");
+ root.innerHTML=`<div class="credit-backdrop" data-credit-close><div class="credit-sheet hw-pick" role="dialog" aria-modal="true" aria-label="萬聖節相框">
+  <span class="credit-grabber" aria-hidden="true"></span><h2>🎃 選一個萬聖節相框</h2>
+  <div class="hw-preview"><canvas aria-label="預覽"></canvas><span class="hw-loading">照片載入中…</span></div>
+  <div class="hw-choices">${HW_FRAMES.map(([k,n],i)=>`<button type="button" data-hwf="${k}" class="${i?"":"is-on"}">${n}</button>`).join("")}</div>
+  <button type="button" class="button button-filled button-large" data-hw-dl disabled>下載萬聖節版 💛</button>
+  <p class="credit-sub">下載就代表你會標記 ${tags.join(" ")}，謝謝！</p>
+  <button type="button" class="text-button credit-cancel" data-credit-close>取消</button></div></div>`;
+ const close=()=>{root.innerHTML="";};root.querySelectorAll("[data-credit-close]").forEach(el=>el.addEventListener("click",e=>{if(e.target===el)close();}));
+ const cv=root.querySelector(".hw-preview canvas"),btn=root.querySelector("[data-hw-dl]");let kind="pumpkin",img=null,out=null;
+ const paint=()=>{if(!img)return;out=hwDraw(kind,img,tags);cv.width=out.width;cv.height=out.height;cv.getContext("2d").drawImage(out,0,0);};
+ const fail=()=>{const l=root.querySelector(".hw-loading");if(l&&!img)l.textContent="這張照片暫時無法套相框，請改用一般下載";};setTimeout(fail,15000);
+ hwLoad(photoSrc(id,1600)).catch(()=>hwLoad(hwSrc(id))).then(i=>{img=i;root.querySelector(".hw-loading")?.remove();btn.disabled=false;paint();}).catch(fail);
+ root.querySelectorAll("[data-hwf]").forEach(b=>b.addEventListener("click",()=>{kind=b.dataset.hwf;root.querySelectorAll("[data-hwf]").forEach(o=>o.classList.toggle("is-on",o===b));paint();}));
+ btn.addEventListener("click",()=>{if(!out)return;out.toBlob(async bl=>{if(!bl){toast("輸出失敗，請再試一次");return;}
+  const name=`JimFrame_Halloween_${kind}_${String(id).replace(/[^\w-]/g,"").slice(-12)}.jpg`;const file=new File([bl],name,{type:"image/jpeg"});
+  if(navigator.canShare&&navigator.canShare({files:[file]})&&/iP(hone|ad|od)|Android/.test(navigator.userAgent)){try{await navigator.share({files:[file],text:tags.join(" ")});close();return;}catch(e){if(e.name==="AbortError")return;}}
+  const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+  close();toast(`萬聖節版下載中 · 記得標記 ${tags.join(" ")} 🎃`);},"image/jpeg",.92);});}
 
 // ---------- Videos: 15s previews (free) + paid full version ----------
 const VIDEO_PRICE="NT$300 / US$10";
@@ -1320,7 +1425,7 @@ document.addEventListener("click",e=>{
  if(d.like){liked.has(d.like)?liked.delete(d.like):liked.add(d.like);store.set("demo_liked",[...liked]);renderPopular();if(st.photo)renderSheet();return;}
  if(d.demo){e.preventDefault();demoOnly(d.demo);return;}
  if(d.share){shareLinks([d.share]);return;}
- if(d.download){withCredit(()=>openDownload(d.download));return;}
+ if(d.download){withCredit(()=>openDownload(d.download),undefined,d.download);return;}
  if("export" in d){withCredit(exportGraded);return;}
  if("batchShare" in d){shareLinks([...st.selected]);return;}
  if("batchDownload" in d){const ids=[...st.selected];withCredit(()=>batchDownload(ids));return;}
