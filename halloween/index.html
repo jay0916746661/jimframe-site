@@ -58,6 +58,20 @@ h1{margin:0;font:800 clamp(34px,9vw,48px)/1.05 var(--display);text-wrap:balance;
 .share .t{user-select:all;-webkit-user-select:all;color:var(--muted);font-size:14px}
 .best{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;flex-wrap:wrap}
 .best b{color:var(--ghost)}
+input{min-height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--night);color:var(--ghost);font:600 16px var(--body);width:min(100%,260px);justify-self:center}
+.rank-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.overlay .err{color:var(--danger)}.muted{color:var(--muted)}
+.board{display:grid;gap:10px;padding:16px;border-radius:18px;background:var(--plum);border:1px solid var(--line)}
+.board-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.board h3{margin:0;font:800 20px var(--display)}
+.scope{display:flex;gap:4px;padding:3px;border-radius:999px;background:var(--night)}.scope button{min-height:34px;padding:0 12px;border:0;border-radius:999px;background:transparent;color:var(--muted);font:700 13px var(--body);cursor:pointer}.scope button[aria-pressed="true"]{background:var(--plum-2);color:var(--ghost)}
+#board-list,.plist{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-variant-numeric:tabular-nums}
+#board-list li{display:grid;grid-template-columns:2.2em 1fr auto;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:rgba(255,246,238,.05)}
+#board-list li.me,.plist li.me{outline:2px solid var(--slime)}#board-list li.muted{display:block;background:none;text-align:center}
+.rk{text-align:center}.nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plist{justify-self:center;min-width:200px}.plist li{padding:6px 12px;border-radius:10px;background:rgba(255,246,238,.06);text-align:left}
+.code{color:var(--slime);letter-spacing:.12em}
+.race{position:absolute;top:8px;left:8px;right:8px;z-index:4;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;pointer-events:none}
+.race span{padding:4px 10px;border-radius:999px;background:rgba(19,10,31,.8);font:700 13px var(--body)}.race span.me{background:var(--pumpkin);color:#2a0f00}
 footer{text-align:center;color:var(--muted);font-size:13px}
 footer a{color:var(--pumpkin)}
 @media (prefers-reduced-motion:reduce){.pop,.card .in{transition:none}.float{animation:none;opacity:0}}
@@ -83,6 +97,11 @@ footer a{color:var(--pumpkin)}
   </div>
 
   <div class="arena" id="arena"></div>
+
+  <section class="board" id="board" hidden aria-label="排行榜">
+    <div class="board-head"><h3 id="board-title">排行榜</h3><div class="scope"><button type="button" data-scope="all" aria-pressed="true">全部</button><button type="button" data-scope="today" aria-pressed="false">今天</button></div></div>
+    <ol id="board-list"></ol>
+  </section>
 
   <section class="share" aria-label="分享成績">
     <div class="best"><span>抓幽靈最佳 <b id="b-ghost">–</b></span><span>接糖果最佳 <b id="b-candy">–</b></span><span>翻翻樂最佳 <b id="b-memory">–</b></span></div>
@@ -113,22 +132,26 @@ const bestText=()=>{const g=store.get("ghost"),c=store.get("candy"),m=store.get(
 const floatAt=(x,y,txt,col)=>{const f=document.createElement("div");f.className="float";f.style.cssText=`left:${x}px;top:${y}px;color:${col}`;f.textContent=txt;arena.appendChild(f);setTimeout(()=>f.remove(),700);};
 
 /* ---------- 抓幽靈 ---------- */
-function ghostGame(){
+function ghostGame(opt={}){
+ const battle=opt.battle||null;
  arena.innerHTML="";setHud("分數",0,"時間",30);
  const pos=[[3,12],[35,6],[67,12],[3,42],[35,36],[67,42],[3,72],[35,66],[67,72]];
  const holes=pos.map(([l,t])=>{const h=document.createElement("div");h.className="hole";h.style.left=l+"%";h.style.top=t+"%";const b=document.createElement("button");b.className="pop";b.type="button";b.setAttribute("aria-label","目標");h.appendChild(b);arena.appendChild(h);return b;});
- overlay("抓幽靈 👻","30 秒內點冒出來的小幽靈。金幽靈 +3，蝙蝠 −2，越後面越快。","開始").onclick=e=>{e.target.closest(".overlay").remove();start();};
- function start(){let score=0,t=30;running=true;
-  const tick=setInterval(()=>{t--;timeEl.textContent=t;if(t<=0)end();},1000);timers.push(tick);
-  const spawn=()=>{if(!running)return;const free=holes.filter(b=>!b.classList.contains("up"));if(free.length){const b=free[Math.random()*free.length|0];const r=Math.random();const kind=r<.12?"gold":r<.3?"bat":"ghost";b.dataset.k=kind;b.innerHTML=SVG[kind];b.classList.remove("hit");b.classList.add("up");
-   const stay=Math.max(520,1100-(30-t)*20);timers.push(setTimeout(()=>b.classList.remove("up"),stay));}
-   timers.push(setTimeout(spawn,Math.max(330,720-(30-t)*14)));};
+ if(battle){start();}
+ else{const go=overlay("抓幽靈 👻","30 秒內點冒出來的小幽靈。金幽靈 +3，蝙蝠 −2，越後面越快。","開始");go.onclick=e=>{e.target.closest(".overlay").remove();start();};
+  if(DB)go.insertAdjacentHTML("afterend",'<button class="btn ghost" type="button" data-battle>⚔️ 找朋友對戰</button>'),arena.querySelector("[data-battle]").onclick=()=>openLobby();}
+ function start(){let score=0,t=30,el=0;running=true;const rng=mulberry(battle?battle.seed:(Math.random()*1e9|0));
+  const tick=setInterval(()=>{t--;el++;timeEl.textContent=t;if(t<=0)end();},1000);timers.push(tick);
+  const spawn=()=>{if(!running)return;const r1=rng(),r2=rng();const free=holes.filter(b=>!b.classList.contains("up"));if(free.length){const b=free[r1*free.length|0];const kind=r2<.12?"gold":r2<.3?"bat":"ghost";b.dataset.k=kind;b.innerHTML=SVG[kind];b.classList.remove("hit");b.classList.add("up");
+   const stay=Math.max(520,1100-el*20);timers.push(setTimeout(()=>b.classList.remove("up"),stay));}
+   timers.push(setTimeout(spawn,Math.max(330,720-el*14)));};
   spawn();
-  holes.forEach(b=>b.onpointerdown=e=>{if(!running||!b.classList.contains("up"))return;e.preventDefault();const k=b.dataset.k,v=k==="gold"?3:k==="bat"?-2:1;score=Math.max(0,score+v);scoreEl.textContent=score;
+  holes.forEach(b=>b.onpointerdown=e=>{if(!running||!b.classList.contains("up"))return;e.preventDefault();const k=b.dataset.k,v=k==="gold"?3:k==="bat"?-2:1;score=Math.max(0,score+v);scoreEl.textContent=score;if(battle)battle.onScore(score);
    const r=b.getBoundingClientRect(),a=arena.getBoundingClientRect();floatAt(r.left-a.left+r.width/3,r.top-a.top,(v>0?"+":"")+v,v>0?"#b6f36a":"#ff5d73");b.classList.add("hit");b.classList.remove("up");});
   function end(){clearAll();holes.forEach(b=>b.classList.remove("up"));const best=store.get("ghost");if(best==null||score>best)store.set("ghost",score);showBest();
+   if(battle){battle.onEnd(score);return;}
    share(`我在 JimFrame 萬聖節遊樂場 30 秒抓了 ${score} 分的幽靈 👻 你能贏我嗎？ @jimframe`);
-   overlay("時間到！",best!=null&&score<=best?`最佳紀錄 ${best} 分，再一場？`:"新紀錄！截圖發限動標記 @jimframe","再玩一次",score).onclick=()=>ghostGame();}
+   const b=overlay("時間到！",best!=null&&score<=best?`最佳紀錄 ${best} 分，再一場？`:"新紀錄！截圖發限動標記 @jimframe","再玩一次",score);b.onclick=()=>ghostGame();addRank(b,"ghost",score);}
  }
 }
 
@@ -155,7 +178,7 @@ function candyGame(){
  overlay("接糖果 🍬","左右滑動南瓜桶接糖果。⭐ +5，被蜘蛛碰到扣一顆心，三顆心用完就結束。","開始").onclick=e=>{e.target.closest(".overlay").remove();running=true;last=0;raf=requestAnimationFrame(loop);};
  function end(){clearAll();const best=store.get("candy");if(best==null||score>best)store.set("candy",score);showBest();
   share(`我在 JimFrame 萬聖節遊樂場接了 ${score} 分的糖果 🍬🎃 換你試試 @jimframe`);
-  overlay("被蜘蛛抓到了！",best!=null&&score<=best?`最佳紀錄 ${best} 分，再一場？`:"新紀錄！截圖發限動標記 @jimframe","再玩一次",score).onclick=()=>candyGame();}
+  const b=overlay("被蜘蛛抓到了！",best!=null&&score<=best?`最佳紀錄 ${best} 分，再一場？`:"新紀錄！截圖發限動標記 @jimframe","再玩一次",score);b.onclick=()=>candyGame();addRank(b,"candy",score);}
 }
 
 /* ---------- 翻翻樂 ---------- */
@@ -171,16 +194,89 @@ function memoryGame(){
     else{lock=true;timers.push(setTimeout(()=>{a.classList.remove("open");b.classList.remove("open");open=[];lock=false;},750));}}};});
  function end(){const best=store.get("memory");if(best==null||moves<best)store.set("memory",moves);showBest();
   share(`我在 JimFrame 萬聖節遊樂場用 ${moves} 步翻完全部南瓜 🎃 你要幾步？ @jimframe`);
-  overlay("全部配對！",best!=null&&moves>=best?`最佳紀錄 ${best} 步，再挑戰？`:"新紀錄！截圖發限動標記 @jimframe","再玩一次",moves+" 步").onclick=()=>memoryGame();}
+  const b=overlay("全部配對！",best!=null&&moves>=best?`最佳紀錄 ${best} 步，再挑戰？`:"新紀錄！截圖發限動標記 @jimframe","再玩一次",moves+" 步");b.onclick=()=>memoryGame();addRank(b,"memory",moves);}
 }
 
+/* ---------- 線上：排行榜＋即時對戰（Firebase Realtime Database，REST，不用金鑰）---------- */
+const DB=""; // 例：https://jimframe-games-default-rtdb.asia-southeast1.firebasedatabase.app
+const TS={".sv":"timestamp"};
+const api=(path,method="GET",body)=>fetch(`${DB}/${path}.json`,{method,headers:body?{"Content-Type":"application/json"}:{},body:body?JSON.stringify(body):undefined}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const nick=()=>{try{return localStorage.getItem("hwg_nick")||""}catch{return ""}};const setNick=v=>{try{localStorage.setItem("hwg_nick",v)}catch{}};
+const pid=(()=>{let v;try{v=localStorage.getItem("hwg_pid")}catch{}if(!v){v=Math.random().toString(36).slice(2,10);try{localStorage.setItem("hwg_pid",v)}catch{}}return v;})();
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cleanName=v=>v.replace(/[\u0000-\u001f<>]/g,"").trim().slice(0,12);
+function addRank(btn,game,value){if(!DB)return;const row=document.createElement("div");row.className="rank-row";
+ row.innerHTML=`<input id="rank-name-${game}" maxlength="12" placeholder="暱稱（最多 12 字）" value="${esc(nick())}" aria-label="暱稱"><button class="btn ghost" type="button">🏆 上排行榜</button>`;
+ btn.closest(".overlay").appendChild(row);const inp=row.querySelector("input"),b=row.querySelector("button");
+ b.onclick=async()=>{const name=cleanName(inp.value);if(!name){inp.focus();return;}setNick(name);b.disabled=true;b.textContent="上傳中…";
+  try{await api(`scores/${game}`,"POST",{name,score:value,t:TS});b.textContent="已上榜 ✓";loadBoard(game);}catch{b.disabled=false;b.textContent="上傳失敗，再按一次";}};}
+let boardGame="ghost",boardScope="all";
+async function loadBoard(g=boardGame){if(!DB)return;boardGame=g;const list=$("#board-list");$("#board-title").textContent={ghost:"抓幽靈",candy:"接糖果",memory:"翻翻樂"}[g]+"排行榜";
+ list.innerHTML='<li class="muted">載入中…</li>';
+ try{const low=g==="memory";const q=low?`orderBy="score"&limitToFirst=100`:`orderBy="score"&limitToLast=100`;
+  const data=await fetch(`${DB}/scores/${g}.json?${q}`).then(r=>r.json())||{};
+  let rows=Object.values(data).filter(r=>r&&typeof r.score==="number");if(boardScope==="today"){const d0=new Date();d0.setHours(0,0,0,0);rows=rows.filter(r=>r.t>=d0.getTime());}
+  rows.sort((a,b)=>low?a.score-b.score||a.t-b.t:b.score-a.score||a.t-b.t);rows=rows.slice(0,15);
+  list.innerHTML=rows.length?rows.map((r,i)=>`<li${r.name===nick()?' class="me"':""}><span class="rk">${["🥇","🥈","🥉"][i]||i+1}</span><span class="nm">${esc(r.name)}</span><b>${r.score}${low?" 步":" 分"}</b></li>`).join(""):'<li class="muted">還沒有人上榜，搶第一！</li>';}
+ catch{list.innerHTML='<li class="muted">排行榜暫時連不上</li>';}}
+/* 對戰房間 */
+let room=null,poll=0;
+const randCode=()=>Array.from({length:4},()=>"ABCDEFGHJKMNPQRSTUVWXYZ23456789"[Math.random()*31|0]).join("");
+function stopRoom(){clearInterval(poll);poll=0;room=null;}
+async function syncOffset(code){await api(`rooms/${code}/players/${pid}/seen`,"PUT",TS);const t=await api(`rooms/${code}/players/${pid}/seen`);return t-Date.now();}
+function openLobby(prefill=""){clearAll();stopRoom();arena.innerHTML="";setHud("對戰","—","人數","—");
+ const o=document.createElement("div");o.className="overlay";o.innerHTML=`<h2>⚔️ 抓幽靈對戰</h2><p>同一批幽靈、同時開始，30 秒比誰分數高。最多 6 人。</p>
+ <input id="battle-name" maxlength="12" placeholder="你的暱稱" value="${esc(nick())}" aria-label="暱稱">
+ <div class="row"><button class="btn" type="button" data-new>開新房間</button></div>
+ <div class="row"><input id="battle-code" maxlength="4" placeholder="房號" value="${esc(prefill)}" aria-label="房號" style="width:7em;text-transform:uppercase"><button class="btn ghost" type="button" data-join>加入</button></div>
+ <p class="err" hidden></p><button class="btn ghost" type="button" data-back>回單人模式</button>`;arena.appendChild(o);
+ const err=m=>{const e=o.querySelector(".err");e.hidden=false;e.textContent=m;};
+ const nm=()=>{const v=cleanName(o.querySelector("#battle-name").value);if(!v){err("先填暱稱");return null;}setNick(v);return v;};
+ o.querySelector("[data-back]").onclick=()=>pick("ghost");
+ o.querySelector("[data-new]").onclick=async()=>{const n=nm();if(!n)return;const code=randCode();
+  try{await api(`rooms/${code}`,"PUT",{host:pid,seed:Math.random()*1e9|0,state:"lobby",created:TS,players:{[pid]:{name:n,score:0}}});enterRoom(code);}catch{err("開房失敗，稍後再試");}};
+ o.querySelector("[data-join]").onclick=async()=>{const n=nm();if(!n)return;const code=o.querySelector("#battle-code").value.toUpperCase().trim();if(code.length!==4){err("房號是 4 碼");return;}
+  try{const r=await api(`rooms/${code}`);if(!r)return err("找不到這個房間");if(r.state!=="lobby")return err("這局已經開始了");if(Object.keys(r.players||{}).length>=6)return err("房間滿了");
+   await api(`rooms/${code}/players/${pid}`,"PUT",{name:n,score:0});enterRoom(code);}catch{err("連線失敗，稍後再試");}};}
+async function enterRoom(code){const off=await syncOffset(code).catch(()=>0);room={code,off,phase:"lobby"};
+ try{history.replaceState(null,"",`?room=${code}`)}catch{}
+ arena.innerHTML="";const o=document.createElement("div");o.className="overlay";arena.appendChild(o);
+ const link=`${location.origin}${location.pathname}?room=${code}`;
+ const draw=r=>{const ps=Object.entries(r.players||{});setHud("房號",code,"人數",ps.length);
+  if(r.state==="lobby"){o.innerHTML=`<h2>房號 <span class="code">${code}</span></h2><p>把房號或連結傳給朋友，人到齊後由房主按開始。</p>
+   <ul class="plist">${ps.map(([id,p])=>`<li>${id===r.host?"👑 ":""}${esc(p.name)}${id===pid?"（你）":""}</li>`).join("")}</ul>
+   <div class="row"><button class="btn ghost" type="button" data-link>📋 複製邀請連結</button>${r.host===pid?`<button class="btn" type="button" data-go ${ps.length<2?"disabled":""}>${ps.length<2?"等朋友加入…":"開始對戰"}</button>`:`<span class="muted">等房主開始…</span>`}</div>
+   <button class="btn ghost" type="button" data-leave>離開房間</button>`;
+   o.querySelector("[data-link]").onclick=async e=>{try{await navigator.clipboard.writeText(`來 JimFrame 萬聖節遊樂場跟我對戰抓幽靈 👻 房號 ${code}\n${link}`);e.target.textContent="已複製 ✓";}catch{e.target.textContent=link;}};
+   o.querySelector("[data-go]")?.addEventListener("click",async()=>{await api(`rooms/${code}`,"PATCH",{state:"play",startAt:Date.now()+room.off+3500});});
+   o.querySelector("[data-leave]").onclick=async()=>{await api(`rooms/${code}/players/${pid}`,"DELETE").catch(()=>{});stopRoom();try{history.replaceState(null,"",location.pathname)}catch{}pick("ghost");};}
+ };
+ const tickRoom=async()=>{if(!room)return;let r;try{r=await api(`rooms/${code}`);}catch{return;}if(!r||!room)return;
+  if(room.phase==="lobby"){if(r.state==="play"&&r.startAt){room.phase="count";countdown(r);}else draw(r);}
+  else{const ps=Object.entries(r.players||{}).sort((a,b)=>(b[1].score||0)-(a[1].score||0));const rb=$("#race");if(rb)rb.innerHTML=ps.map(([id,p])=>`<span class="${id===pid?"me":""}">${esc(p.name)} <b>${p.score||0}</b></span>`).join("");
+   if(room.phase==="done"&&ps.every(([,p])=>p.done)){showResult(ps);}}};
+ const countdown=r=>{const left=()=>Math.ceil((r.startAt-(Date.now()+room.off))/1000);o.innerHTML='<h2>準備</h2><div class="result" id="cd"></div><p>同一批幽靈，看誰手快！</p>';
+  const iv=setInterval(()=>{const l=left();const cd=document.getElementById("cd");if(cd)cd.textContent=l>0?l:"GO!";if(l<=0){clearInterval(iv);room.phase="play";startBattle(r);}},100);};
+ const startBattle=r=>{let last=0,pend=0;const push=sc=>{pend=sc;const now=Date.now();if(now-last>350){last=now;api(`rooms/${code}/players/${pid}/score`,"PUT",sc).catch(()=>{});}};
+  ghostGame({battle:{seed:r.seed,onScore:push,onEnd:async sc=>{room.phase="done";await api(`rooms/${code}/players/${pid}`,"PATCH",{score:sc,done:true}).catch(()=>{});
+   arena.insertAdjacentHTML("beforeend",'<div class="overlay"><h2>時間到！</h2><p>等其他人結算…</p></div>');}}});
+  arena.insertAdjacentHTML("afterbegin",'<div class="race" id="race"></div>');};
+ const showResult=ps=>{clearInterval(poll);poll=0;const sc=id=>(ps.find(([i])=>i===id)?.[1].score)||0;const place=id=>ps.filter(([,p])=>(p.score||0)>sc(id)).length;const me=place(pid);const tie=ps.filter(([,p])=>(p.score||0)===sc(pid)).length>1;arena.querySelectorAll(".overlay").forEach(e=>e.remove());
+  share(`我在 JimFrame 萬聖節抓幽靈對戰拿到第 ${me+1} 名（${sc(pid)} 分）👻 下次換你 @jimframe`);
+  const d=document.createElement("div");d.className="overlay";d.innerHTML=`<h2>${me===0?(tie?"🤝 平手！":"🏆 你贏了！"):"第 "+(me+1)+" 名"}</h2><ul class="plist">${ps.map(([id,p])=>`<li${id===pid?' class="me"':""}>${["🥇","🥈","🥉"][place(id)]||place(id)+1} ${esc(p.name)} <b>${p.score||0}</b></li>`).join("")}</ul>
+  <div class="row"><button class="btn" type="button" data-again>再開一間</button><button class="btn ghost" type="button" data-copy>📋 複製戰績</button></div>`;arena.appendChild(d);
+  d.querySelector("[data-again]").onclick=()=>{stopRoom();openLobby();};d.querySelector("[data-copy]").onclick=e=>copyShare(e.currentTarget);};
+ poll=setInterval(tickRoom,800);tickRoom();}
+
 const games={ghost:ghostGame,candy:candyGame,memory:memoryGame};
-function pick(g){clearAll();game=g;document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.g===g)));games[g]();}
+function pick(g){clearAll();stopRoom();game=g;if(DB)loadBoard(g);document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.g===g)));games[g]();}
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>pick(b.dataset.g));
 async function copyShare(btn){let t=played?$("#share-text").textContent:bestText();if(!t){btn.textContent="先玩完一場再複製";setTimeout(()=>btn.textContent=btn.dataset.copy!==undefined?"📋 複製戰績":"複製戰績",2000);return;}$("#share-text").textContent=t;const label=btn.textContent;
  try{await navigator.clipboard.writeText(t);btn.textContent="已複製 ✓";}catch{const r=document.createRange();r.selectNodeContents($("#share-text"));const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent="已選取，長按複製";}setTimeout(()=>btn.textContent=label,2000);}
 $("#copy").onclick=e=>copyShare(e.currentTarget);
-showBest();const h=location.hash.slice(1);pick(games[h]?h:"ghost");
+showBest();if(DB){$("#board").hidden=false;document.querySelectorAll("[data-scope]").forEach(b=>b.onclick=()=>{boardScope=b.dataset.scope;document.querySelectorAll("[data-scope]").forEach(o=>o.setAttribute("aria-pressed",String(o===b)));loadBoard();});}
+const h=location.hash.slice(1);pick(games[h]?h:"ghost");const rc=new URLSearchParams(location.search).get("room");if(DB&&rc){pick("ghost");openLobby(rc.toUpperCase().slice(0,4));}
 })();
 </script>
 </body></html>
