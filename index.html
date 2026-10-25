@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer">
+<html lang="zh-Hant" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="no-referrer">
 <title>Jim Lin Photography</title>
 <meta name="description" content="台北舞蹈與活動攝影 Jim Lin 的活動相簿。瀏覽、調色、下載你的照片，分享時請標記 @jimframe。">
 <meta property="og:title" content="Jim Lin Photography"><meta property="og:description" content="台北舞蹈・活動攝影相簿 · @jimframe">
-<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0a0c0b">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%231d1d1f%22/%3E%3Ctext x=%2232%22 y=%2241%22 font-family=%22Helvetica,Arial%22 font-weight=%22700%22 font-size=%2224%22 fill=%22white%22 text-anchor=%22middle%22%3EJL%3C/text%3E%3C/svg%3E">
 <style>
 
@@ -590,26 +590,150 @@ button { font: inherit; color: inherit; }
 .credit-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.credit-tags span{font:700 17px/1 var(--font-display,system-ui);padding:10px 14px;border-radius:999px;background:rgba(10,132,255,.12);color:#0a84ff}
 .credit-check{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:12px;background:var(--fill,#f2f2f7);font-size:15px;line-height:1.4;cursor:pointer}.credit-check input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:#0a84ff}
 .credit-sheet [data-credit-go]:disabled{opacity:.4}
+
+/*
+  Professional hybrid direction B
+  Assumptions: keep every working JimFrame tool, make imagery the visual system,
+  and borrow the reference site's restraint without copying its yellow palette.
+  JimFrame orange remains the single accent and the public page stays buildless.
+*/
+:root,
+:root[data-theme="dark"] {
+  --bg: #0a0c0b;
+  --surface: #141715;
+  --label: #f3f0e8;
+  --label-2: rgba(243, 240, 232, 0.64);
+  --label-3: rgba(243, 240, 232, 0.34);
+  --separator: rgba(243, 240, 232, 0.14);
+  --fill: rgba(243, 240, 232, 0.08);
+  --fill-strong: rgba(243, 240, 232, 0.14);
+  --segment: #272b28;
+  --tint: #ff8a4c;
+  --tint-soft: rgba(255, 138, 76, 0.14);
+  --bar: rgba(10, 12, 11, 0.88);
+  --shadow: none;
+  --radius-l: 16px;
+  --radius-m: 12px;
+  --content: 1200px;
+  color-scheme: dark;
+}
+body { background: var(--bg); letter-spacing: -0.012em; }
+a { color: var(--tint); }
+:focus-visible { outline-color: var(--tint); }
+.app { padding-bottom: 64px; }
+.navbar {
+  height: 76px; gap: 30px; border-color: var(--separator);
+  background: var(--bar); backdrop-filter: saturate(130%) blur(22px);
+  -webkit-backdrop-filter: saturate(130%) blur(22px);
+}
+.brand { gap: 12px; font-size: 14px; font-weight: 760; letter-spacing: .12em; text-transform: uppercase; }
+.brand em { display: block; margin-top: 2px; color: var(--label-2); font-size: 9px; font-weight: 650; letter-spacing: .18em; }
+.brand-mark { width: 38px; height: 38px; border: 1px solid var(--label); border-radius: 50%; background: transparent; color: var(--label); font-size: 11px; }
+.nav-links { gap: 28px; }
+.nav-links a { color: var(--label-2); font-size: 14px; opacity: 1; }
+.nav-links a:hover { color: var(--label); }
+.nav-pill { padding: 10px 18px; border: 1px solid var(--label); background: transparent; color: var(--label); font-size: 13px; }
+.section { padding-block: 54px; }
+.section + .section { border-top: 1px solid var(--separator); }
+.section-head { margin-bottom: 24px; }
+.title2 { font-size: clamp(28px, 3.2vw, 40px); line-height: 1.08; letter-spacing: -.035em; }
+.footnote { margin-top: 8px; font-size: 14px; }
+.crush-promo {
+  min-height: min(680px, calc(100dvh - 116px)); margin-block: 24px 36px; border: 1px solid var(--separator);
+  border-radius: 18px; box-shadow: none; display: flex; align-items: end;
+}
+.crush-promo-bg { grid-template-columns: repeat(3, 1fr); opacity: .52; }
+.crush-promo::after { background: linear-gradient(90deg, rgba(10,12,11,.96) 0%, rgba(10,12,11,.72) 48%, rgba(10,12,11,.18) 100%), linear-gradient(0deg, rgba(10,12,11,.82), transparent 60%); }
+.crush-promo-body { gap: 18px; max-width: 680px; padding: clamp(32px, 6vw, 72px); }
+.crush-eyebrow { color: #ffb58c; letter-spacing: .14em; }
+.crush-logo { width: min(430px, 86%); }
+.crush-sub { font-size: clamp(17px, 1.7vw, 20px); color: rgba(255,255,255,.8); }
+.crush-cta { min-height: 48px; border: 1px solid rgba(255,255,255,.24); background: rgba(10,12,11,.36); }
+.crush-cta-primary { border-color: var(--tint); background: var(--tint); color: #180b05; box-shadow: none; }
+.latest-albums { padding-top: 42px; }
+.latest-row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 16px; }
+.latest-card img { aspect-ratio: 4 / 5; border-radius: 12px; box-shadow: none; }
+.latest-meta { padding: 2px 0 0; }
+.latest-meta b { font-size: 17px; }
+.finder-card { padding: 28px; border: 1px solid var(--separator); border-radius: 16px; box-shadow: none; }
+.finder-icon { border-radius: 50%; background: var(--tint); color: #180b05; }
+.video-grid.is-events { gap: 16px; }
+.vev-card, .video-card { border: 1px solid var(--separator); border-radius: 14px; box-shadow: none; }
+.vev-card:hover { border-color: rgba(255,138,76,.5); }
+.vev-meta { padding: 18px; }
+.brand-story { padding-block: 72px; }
+.brand-story .hero-copy { max-width: 760px; margin-bottom: 30px; }
+.brand-story .eyebrow { color: var(--tint); letter-spacing: .14em; }
+.brand-story .large-title { max-width: 12em; font-size: clamp(42px, 6vw, 72px); }
+.brand-story .hero-sub { max-width: 42em; font-size: 18px; }
+.brand-story .carousel-card { border-radius: 12px; box-shadow: none; }
+.secondary-picks { display: none; }
+.studio-feature { padding-block: 26px 54px; }
+.studio-feature-card {
+  display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 24px;
+  padding: 30px 34px; border: 1px solid var(--separator); border-radius: 16px; background: var(--surface); color: var(--label);
+}
+.studio-feature-card p { margin: 8px 0 0; color: var(--label-2); font-size: 15px; }
+.studio-feature-card .button { min-width: 164px; }
+#archive { border-top: 1px solid var(--separator); }
+.album-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 28px 18px; }
+.album-cover { aspect-ratio: 4 / 5; border-radius: 12px; }
+.album:hover .album-cover { transform: none; outline: 1px solid rgba(255,138,76,.7); outline-offset: 3px; }
+.segmented { padding: 3px; border-radius: 999px; }
+.segmented button { border-radius: 999px; }
+.search-field { border: 1px solid var(--separator); background: transparent; }
+.album-more-wrap { display: flex; justify-content: center; margin-top: 34px; }
+.album-more-wrap[hidden] { display: none; }
+.album-more-wrap .button { min-width: 190px; border: 1px solid var(--separator); background: transparent; color: var(--label); }
+.credit-note, .grouped { border: 1px solid var(--separator); box-shadow: none; }
+#support, #contact { width: min(100% - 2 * var(--gutter), 760px); }
+#support .grouped, #contact .grouped { max-width: none; }
+.button-filled { background: var(--tint); color: #180b05; }
+.button-tinted, .button-gray { background: var(--tint-soft); color: #ffad82; }
+.lang-switch { border: 1px solid var(--separator); background: transparent; }
+.lang-switch button.is-selected { background: var(--label); color: var(--bg); box-shadow: none; }
+.footer { padding-top: 36px; }
+@media (max-width: 720px) {
+  .navbar { height: 60px; gap: 12px; }
+  .brand { letter-spacing: .08em; }
+  .brand-mark { width: 34px; height: 34px; }
+  .brand em { display: none; }
+  .section { padding-block: 38px; }
+  .crush-promo { min-height: 520px; margin-block: 10px 24px; border-radius: 16px; }
+  .crush-promo::after { background: linear-gradient(0deg, rgba(10,12,11,.94) 8%, rgba(10,12,11,.52) 70%, rgba(10,12,11,.18)); }
+  .crush-promo-body { padding: 24px; }
+  .crush-points { font-size: 13px; }
+  .latest-row { grid-auto-columns: 70%; gap: 12px; }
+  .latest-card img { aspect-ratio: 4 / 5; }
+  .finder-card { padding: 20px; }
+  .brand-story { padding-block: 52px; }
+  .brand-story .large-title { font-size: 42px; }
+  .studio-feature-card { grid-template-columns: 1fr; padding: 24px; }
+  .studio-feature-card .button { width: 100%; }
+  .album-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 12px; }
+  .tabbar { background: rgba(10,12,11,.94); }
+}
 </style>
 </head><body>
 
 <main class="app" id="app">
+ <!-- B 方向：品牌首頁的節奏更克制；照片工具與既有功能保持原樣。 -->
  <header class="navbar">
-  <a class="brand" href="#top" aria-label="Jim Lin Photography 首頁"><span class="brand-mark" aria-hidden="true">JL</span><span>Jim Lin <em>Photography</em></span></a>
-  <nav class="nav-links" aria-label="主要"><a href="#top">精選</a><a href="#videos">影片</a><a href="#archive">相簿</a><a href="./studio/" data-i18n="限動工具">限動工具</a><a href="#support">支持</a><a href="#contact">預約</a></nav>
-  <a class="nav-pill" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">@jimframe</a>
+  <a class="brand" href="#crush" aria-label="JimFrame 首頁"><span class="brand-mark" aria-hidden="true">JF</span><span>JimFrame <em>Dance photography</em></span></a>
+  <nav class="nav-links" aria-label="主要"><a href="#crush">首頁</a><a href="#latest">最新</a><a href="#archive">圖庫</a><a href="#videos">影片</a><a href="./studio/" data-i18n="限動工具">限動工具</a><a href="#contact">預約</a></nav>
+  <a class="nav-pill" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer" data-i18n="預約拍攝">預約拍攝</a>
  </header>
 
- <section class="hero" id="top">
+ <section class="hero brand-story" id="work">
   <div class="hero-copy">
-   <p class="eyebrow">每週精選 · Weekly Picks</p>
-   <h1 class="large-title">把舞動的夜晚留下</h1>
-   <p class="hero-sub">台北舞蹈與活動攝影。每次開啟換一批精選，點一下照片即可調色、下載或分享。</p>
+   <p class="eyebrow">SELECTED MOMENTS · JIMFRAME</p>
+   <h1 class="large-title">舞池不只是一晚，而是值得留下的身份。</h1>
+   <p class="hero-sub">台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。</p>
   </div>
   <div class="carousel" role="list" aria-label="每週精選照片" id="carousel"></div>
  </section>
 
- <section class="section">
+ <section class="section secondary-picks" aria-hidden="true">
   <div class="section-head"><div><h2 class="title2">精選照片</h2><p class="footnote">最近幾場活動的精選。</p></div></div>
   <div class="popular-row" id="popular"></div>
  </section>
@@ -622,7 +746,7 @@ button { font: inherit; color: inherit; }
   <aside class="credit-note video-note"><span data-icon="tag"></span><p><b>想要完整版？每支 NT$300／US$10</b>點影片下方「完整版」，用 LINE 告訴我影片編號，付款後用雲端連結傳完整版給你。<em>Full-length video: US$10 each — message me on LINE or IG with the clip number.</em></p></aside>
  </section>
 
- <section class="section"><a class="button button-tinted button-large" href="./studio/" data-i18n="限動工具">限動工具</a></section>
+ <section class="section studio-feature"><a class="studio-feature-card" href="./studio/"><span><b class="title2" data-i18n="把照片做成你的限動">把照片做成你的限動</b><p data-i18n="選擇照片、版型與標記空間，直接輸出適合 Instagram 的 9:16 圖片。">選擇照片、版型與標記空間，直接輸出適合 Instagram 的 9:16 圖片。</p></span><span class="button button-filled button-large" data-i18n="開啟限動工具">開啟限動工具</span></a></section>
  <section class="section" id="archive">
   <div class="section-head">
    <div><h2 class="title2">活動相簿</h2><p class="footnote" id="album-count"></p></div>
@@ -631,6 +755,7 @@ button { font: inherit; color: inherit; }
   <div class="segmented-wrap"><div class="segmented" role="tablist" aria-label="依場地篩選" id="venues"></div></div>
   <div class="empty" id="empty" hidden><p>沒有符合的相簿。</p><button type="button" class="button button-tinted" id="reset">顯示全部相簿</button></div>
   <div class="album-grid" id="albums"></div>
+  <div class="album-more-wrap" id="album-more-wrap"><button type="button" class="button button-large" id="album-more" data-i18n="載入更多相簿">載入更多相簿</button></div>
   <aside class="credit-note"><span data-icon="tag"></span><p><b>分享時請標記攝影師 <a href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">@jimframe</a></b>從拍攝、挑選到整理都需要時間，你的標記能讓攝影被看見，也讓我能繼續記錄舞池。<em>Please credit @jimframe when sharing.</em></p></aside>
  </section>
 
@@ -662,10 +787,10 @@ button { font: inherit; color: inherit; }
  <footer class="footer"><span>© 2026 Jim Lin Photography</span><span>Taipei, Taiwan</span></footer>
 
  <nav class="tabbar" aria-label="快速切換">
-  <a href="#top"><i data-icon="star"></i><span>精選</span></a>
+  <a href="#crush"><i data-icon="star"></i><span>首頁</span></a>
+  <a href="#finder"><i data-icon="search"></i><span>找自己</span></a>
   <a href="#archive"><i data-icon="albums"></i><span>相簿</span></a>
   <a href="#contact"><i data-icon="camera"></i><span>預約</span></a>
-  <a href="#support"><i data-icon="heart"></i><span>支持</span></a>
  </nav>
 </main>
 <div id="sheet-root"></div>
@@ -759,18 +884,21 @@ renderPopular();
 
 
 // Albums grid with filter + date search
-const venues=["全部","Bachata Crush","Flow","Barcade","La Salsa","Odoro","Zouk"];let filter=store.get("demo_filter","全部");let query="";
+const venues=["全部","Bachata Crush","Flow","Barcade","La Salsa","Odoro","Zouk"];let filter=store.get("demo_filter","全部");let query="";let albumLimit=12;
 const renderAlbums=()=>{
  const q=query.replace(/[^\d]/g,"");
  const vis=albums.filter(a=>(filter==="全部"||a.venue===filter)&&(!q||a.date.includes(q)));
+ const shown=filter==="全部"&&!q?vis.slice(0,albumLimit):vis;
  document.getElementById("venues").innerHTML=venues.map(v=>`<button type="button" role="tab" aria-selected="${filter===v}" class="${filter===v?"is-selected":""}" data-venue="${v}">${v}</button>`).join("");
- document.getElementById("album-count").textContent=`2026 · ${vis.length} 本相簿`;
+ document.getElementById("album-count").textContent=`2026 · ${vis.length} 本相簿${shown.length<vis.length?` · 目前顯示 ${shown.length} 本`:""}`;
  document.getElementById("empty").hidden=vis.length>0;
- document.getElementById("albums").innerHTML=vis.map(a=>`<button type="button" class="album" data-album="${a.key}"><div class="album-cover">${ALBUM_COVERS[a.date]?`<img class="cover-art" src="${ALBUM_COVERS[a.date]}" alt="${esc(a.venue)} ${dateLabel(a.date)} 封面" loading="lazy">`:[0,1,2,3,4,5,6,7].map(j=>`<img class="slide" style="animation-delay:${j*5}s" src="${a.img(j,600)}" alt="" loading="lazy">`).join("")}</div><div class="album-meta"><b>${esc(a.venue)}</b><span>2026.${dateLabel(a.date)}${themeOf(a)}</span></div></button>`).join("");
+ document.getElementById("albums").innerHTML=shown.map(a=>`<button type="button" class="album" data-album="${a.key}"><div class="album-cover">${ALBUM_COVERS[a.date]?`<img class="cover-art" src="${ALBUM_COVERS[a.date]}" alt="${esc(a.venue)} ${dateLabel(a.date)} 封面" loading="lazy">`:[0,1,2,3,4,5,6,7].map(j=>`<img class="slide" style="animation-delay:${j*5}s" src="${a.img(j,600)}" alt="" loading="lazy">`).join("")}</div><div class="album-meta"><b>${esc(a.venue)}</b><span>2026.${dateLabel(a.date)}${themeOf(a)}</span></div></button>`).join("");
+ const more=document.getElementById("album-more-wrap");if(more)more.hidden=shown.length>=vis.length||filter!=="全部"||!!q;
 };
 renderAlbums();
-document.getElementById("album-date-search").addEventListener("input",e=>{query=e.target.value;renderAlbums();});
-document.getElementById("reset").addEventListener("click",()=>{filter="全部";query="";document.getElementById("album-date-search").value="";renderAlbums();});
+document.getElementById("album-date-search").addEventListener("input",e=>{query=e.target.value;albumLimit=12;renderAlbums();});
+document.getElementById("reset").addEventListener("click",()=>{filter="全部";query="";albumLimit=12;document.getElementById("album-date-search").value="";renderAlbums();});
+document.getElementById("album-more").addEventListener("click",()=>{albumLimit+=12;renderAlbums();});
 
 // ---------- Colour pipeline (identical to the site) ----------
 const grades=[{id:"original",label:"原色",p:{c:1,s:1,se:0,h:0,b:1,g:0}},{id:"portra",label:"人像暖調",p:{c:.86,s:.78,se:.26,h:-10,b:1.06,g:0}},{id:"classic-chrome",label:"紀實低彩",p:{c:1.25,s:.5,se:.06,h:12,b:.96,g:0}},{id:"teal-orange",label:"電影青橙",p:{c:1.28,s:1.38,se:.08,h:-18,b:.97,g:0}},{id:"bw-silver",label:"黑白銀鹽",p:{c:1.48,s:0,se:.04,h:0,b:1.01,g:1}}];
@@ -967,7 +1095,7 @@ document.addEventListener("click",e=>{
  if("backdrop" in d){if(e.target===t)closeAlbum();return;}
  if(d.open){const a=albumOf(d.open);if(a)openAlbum(a,d.open);return;}
  if(d.album){openAlbum(albums.find(a=>a.key===d.album));return;}
- if(d.venue){filter=d.venue;store.set("demo_filter",filter);renderAlbums();return;}
+ if(d.venue){filter=d.venue;albumLimit=12;store.set("demo_filter",filter);renderAlbums();return;}
  if(d.like){liked.has(d.like)?liked.delete(d.like):liked.add(d.like);store.set("demo_liked",[...liked]);renderPopular();if(st.photo)renderSheet();return;}
  if(d.demo){e.preventDefault();demoOnly(d.demo);return;}
  if(d.share){shareLinks([d.share]);return;}
@@ -1151,6 +1279,9 @@ const DICT={
 };
 let LANG=(()=>{try{const v=localStorage.getItem("jf_lang");if(v)return v;}catch{}const n=(navigator.language||"").toLowerCase();return n.startsWith("zh")?"zh":n.startsWith("ko")?"ko":n.startsWith("ja")?"ja":n?"en":"zh";})();
 DICT.ja={"精選": "ピックアップ", "相簿": "アルバム", "影片": "動画", "找自己": "自分を探す", "支持": "サポート", "預約": "予約", "每週精選 · Weekly Picks": "今週のピックアップ · WEEKLY PICKS", "把舞動的夜晚留下": "踊る夜を、写真に残す", "台北舞蹈與活動攝影。每次開啟換一批精選，點一下照片即可調色、下載或分享。": "台北のダンス・イベント写真。開くたびにピックアップが入れ替わります。写真をタップして色調整・ダウンロード・シェアができます。", "精選照片": "ピックアップ写真", "最近幾場活動的精選。": "最近のイベントからのハイライト。", "活動相簿": "イベントアルバム", "支持下一場拍攝": "次の撮影をサポート", "預約拍攝": "撮影を予約", "影片 · Bachata Crush": "動画 · Bachata Crush", "找自己和朋友": "自分と友だちを探す", "看照片": "写真を見る", "看影片": "動画を見る", "活動照片＋影片上線": "写真・動画を公開しました", "完整版": "フル版", "下載試看": "ダウンロード", "做限動": "ストーリー", "25 秒試看": "25秒プレビュー", "18 秒試看": "18秒プレビュー", "上傳自拍": "自撮りを追加", "開始找": "探す", "找到": "見つかった写真", "全部": "すべて", "我": "自分", "朋友": "友だち", "一起入鏡": "一緒に写っている", "選照片（最多 3 張，每張一個人）": "写真を選ぶ（最大3枚、1枚につき1人）", "下載": "ダウンロード", "限動": "ストーリー", "分享到限動": "ストーリーでシェア", "下載圖片": "画像を保存", "版型": "レイアウト", "滿版": "全面", "留白標記": "タグ用スペース", "舞伴分享": "ダンスパートナー", "夜色相框": "ナイトフレーム", "標記舞伴": "パートナーをタグ付け", "建議畫面（最清楚的幾格）": "おすすめのシーン（最も鮮明）", "或自己挑時間": "または好きな瞬間を選ぶ", "前一格": "前へ", "下一格": "次へ", "影片載入中…": "動画を読み込み中…", "製作中…": "作成中…", "關閉": "閉じる"};
+Object.assign(DICT.en,{"首頁":"Home","最新":"Latest","圖庫":"Library","預約拍攝":"Book a shoot","舞池不只是一晚，而是值得留下的身份。":"The dance floor is more than one night — it is part of who you are.","台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。":"Dance and event photography in Taipei. Find, save and share the moments that feel like yours.","把照片做成你的限動":"Turn your photos into Stories","選擇照片、版型與標記空間，直接輸出適合 Instagram 的 9:16 圖片。":"Choose a photo, layout and tag space, then export a ready-to-post 9:16 Story.","開啟限動工具":"Open IG Studio","載入更多相簿":"Load more albums"});
+Object.assign(DICT.ko,{"首頁":"홈","最新":"최신","圖庫":"라이브러리","預約拍攝":"촬영 예약","舞池不只是一晚，而是值得留下的身份。":"댄스 플로어의 순간은 하룻밤을 넘어, 나를 보여주는 기록입니다.","台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。":"타이베이 댄스·이벤트 사진. 나만의 순간을 찾고 저장하고 공유하세요.","把照片做成你的限動":"사진을 스토리로 만들기","選擇照片、版型與標記空間，直接輸出適合 Instagram 的 9:16 圖片。":"사진과 레이아웃, 태그 공간을 선택해 Instagram용 9:16 이미지를 만드세요.","開啟限動工具":"IG 스튜디오 열기","載入更多相簿":"앨범 더 보기"});
+Object.assign(DICT.ja,{"首頁":"ホーム","最新":"最新","圖庫":"ライブラリー","預約拍攝":"撮影を予約","舞池不只是一晚，而是值得留下的身份。":"ダンスフロアの一夜を、自分らしさの記録に。","台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。":"台北のダンス・イベント写真。自分だけの瞬間を見つけ、保存し、シェアできます。","把照片做成你的限動":"写真をストーリーに","選擇照片、版型與標記空間，直接輸出適合 Instagram 的 9:16 圖片。":"写真・レイアウト・タグスペースを選び、Instagram向け9:16画像を書き出せます。","開啟限動工具":"IG スタジオを開く","載入更多相簿":"アルバムをさらに表示"});
 DICT.en["彩虹霓虹"]="Neon";DICT.ko["彩虹霓虹"]="네온";DICT.ja["彩虹霓虹"]="ネオン";DICT.en["彩虹條紋"]="Rainbow stripes";DICT.ko["彩虹條紋"]="레인보우";DICT.ja["彩虹條紋"]="レインボー";DICT.en["顏色"]="Color";DICT.ko["顏色"]="색상";DICT.ja["顏色"]="カラー";DICT.en["彩虹"]="Rainbow";DICT.ko["彩虹"]="무지개";DICT.ja["彩虹"]="レインボー";DICT.en["粉紅"]="Pink";DICT.ko["粉紅"]="핑크";DICT.ja["粉紅"]="ピンク";DICT.en["紫"]="Purple";DICT.ko["紫"]="보라";DICT.ja["紫"]="パープル";DICT.en["藍"]="Blue";DICT.ko["藍"]="파랑";DICT.ja["藍"]="ブルー";DICT.en["青"]="Cyan";DICT.ko["青"]="청록";DICT.ja["青"]="シアン";DICT.en["綠"]="Green";DICT.ko["綠"]="초록";DICT.ja["綠"]="グリーン";DICT.en["黃"]="Yellow";DICT.ko["黃"]="노랑";DICT.ja["黃"]="イエロー";DICT.en["橘"]="Orange";DICT.ko["橘"]="주황";DICT.ja["橘"]="オレンジ";DICT.en["限動工具"]="IG Studio";DICT.ko["限動工具"]="IG 스튜디오";DICT.ja["限動工具"]="IG スタジオ";
 const T=s=>LANG==="zh"?s:(DICT[LANG]&&DICT[LANG][s])||s;
 const L=(zh,en,ko,ja)=>LANG==="zh"?zh:LANG==="ko"?(ko||en):LANG==="ja"?(ja||en):en;window.jfL=L;
@@ -1165,7 +1296,7 @@ const mark=(sel,txt)=>document.querySelectorAll(sel).forEach(el=>{if(el.textCont
 document.querySelectorAll(".nav-links a,.tabbar span,.eyebrow,.large-title,.hero-sub,.title2,.footnote").forEach(el=>{const s=el.textContent.trim();if(DICT.en[s])el.dataset.i18n=s;});
 // 導覽列：加「找自己」與語言切換
 const nav=document.querySelector(".nav-links");
-if(nav&&!nav.querySelector('[href="#finder"]')){const a=document.createElement("a");a.href="#finder";a.dataset.i18n="找自己";a.textContent="找自己";nav.insertBefore(a,nav.querySelector('[href="#support"]'));}
+if(nav&&!nav.querySelector('[href="#finder"]')){const a=document.createElement("a");a.href="#finder";a.dataset.i18n="找自己";a.textContent="找自己";nav.insertBefore(a,nav.querySelector('[href="#archive"]'));}
 const pill=document.querySelector(".navbar .nav-pill");
 const ls=document.createElement("div");ls.className="lang-switch";ls.setAttribute("role","group");ls.setAttribute("aria-label","Language");
 ls.innerHTML=`<button type="button" data-lang="zh">繁中</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ko">한</button><button type="button" data-lang="ja">日</button>`;
