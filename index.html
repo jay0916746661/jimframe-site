@@ -1087,8 +1087,8 @@ const LOCAL_1015=new Set((ALBUM_DATA.find(a=>a[0]==="1015")||[0,0,0,[]])[3]);
 const photoSrc=(id,w=1600)=>isLocal(id)?localPath(id,w):LOCAL_1015.has(id)?`photos/1015/${id}.jpg`:drive(id,w);
 // 已從網站隱藏的照片（hidden.json）；先用這台裝置上次的紀錄立即過濾，再向網站確認最新清單
 const JF_HIDDEN=new Set(store.get("jf_hidden_cache",[]));
-// 管理模式總開關：false＝關閉（?admin 無效）；要用時改成 true 再合併
-const ADMIN_ENABLED=false;
+// 管理模式總開關：true＝網址加 ?admin 時顯示照片刪除／復原工具
+const ADMIN_ENABLED=true;
 const ADMIN=ADMIN_ENABLED&&/[?&]admin\b/.test(location.search);
 const albums=ALBUM_DATA.map(([date,venue,folder,all])=>({date,venue,folder,key:`${date}-${venue}`,all,photos:all.filter(id=>!JF_HIDDEN.has(id)),img(i,w=600){const c=rainbowCover(this);return photoSrc(c[i%c.length],w);}})).sort((a,b)=>b.date.localeCompare(a.date));
 // 衣服主色（依照片中最突出的螢光色估算；[色組 0 紅 1 橘 2 黃 3 綠 4 青 5 藍 6 紫 7 粉, 色相, 鮮明度]；鮮明度 <15 視為顏色不明顯）
