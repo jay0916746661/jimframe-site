@@ -851,6 +851,89 @@ html.halloween .hw-deco { display: block; position: fixed; inset: 0; z-index: 3;
   html.halloween .hw-deco *, html.halloween .brand-story .large-title { animation: none !important; }
   .hw-bat { display: none; }
 }
+/* ===== 萬聖節加強版（更誇張）===== */
+html.halloween body {
+  background:
+    radial-gradient(circle at 84% 10%, rgba(255, 214, 150, 0.30) 0, rgba(255, 170, 80, 0.10) 16vw, transparent 34vw),
+    radial-gradient(ellipse at 0% 100%, rgba(124, 58, 237, 0.38), transparent 55%),
+    radial-gradient(ellipse at 100% 100%, rgba(255, 90, 0, 0.26), transparent 50%),
+    radial-gradient(ellipse at 50% 120%, rgba(182, 243, 106, 0.10), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+/* 月亮放大＋雲飄過 */
+.hw-moon { width: 120px !important; height: 120px !important; top: 120px !important; right: 3vw !important; animation: hw-moonglow 4s ease-in-out infinite; }
+@keyframes hw-moonglow { 0%,100% { box-shadow: 0 0 50px rgba(255,220,150,.5), 0 0 160px rgba(255,170,80,.3); } 50% { box-shadow: 0 0 80px rgba(255,220,150,.7), 0 0 240px rgba(255,140,40,.4); } }
+.hw-cloud { position: absolute; top: 150px; right: -260px; width: 260px; height: 60px; border-radius: 60px; background: rgba(20, 10, 30, .85); filter: blur(10px); animation: hw-cloud 40s linear infinite; }
+@keyframes hw-cloud { from { transform: translateX(0); } to { transform: translateX(-130vw); } }
+/* 閃電 */
+.hw-flash { position: absolute; inset: 0; background: radial-gradient(circle at 70% 0%, rgba(220, 210, 255, .55), rgba(167,139,250,.18) 40%, transparent 70%); opacity: 0; animation: hw-flash 13s infinite; }
+@keyframes hw-flash { 0%, 90%, 100% { opacity: 0; } 91% { opacity: 1; } 92% { opacity: .1; } 93.5% { opacity: .85; } 95% { opacity: 0; } }
+/* 幽靈 */
+.hw-ghost { position: absolute; width: 70px; opacity: .55; filter: drop-shadow(0 0 18px rgba(220, 210, 255, .55)); animation: hw-ghost 18s ease-in-out infinite; }
+.hw-ghost svg { width: 100%; display: block; animation: hw-wobble 2.4s ease-in-out infinite; }
+@keyframes hw-ghost { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: .6; } 50% { transform: translate(-18vw, -60px); opacity: .45; } 90% { opacity: .55; } 100% { transform: translate(-36vw, 10px); opacity: 0; } }
+@keyframes hw-wobble { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-12px) rotate(4deg); } }
+/* 螢光孢子往上飄 */
+.hw-spore { position: absolute; bottom: -20px; width: 6px; height: 6px; border-radius: 50%; background: var(--c, #ff9a3c); box-shadow: 0 0 10px var(--c, #ff9a3c), 0 0 22px var(--c, #ff9a3c); animation: hw-rise var(--d, 14s) linear infinite; animation-delay: var(--w, 0s); opacity: 0; }
+@keyframes hw-rise { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: .9; } 50% { transform: translate(30px, -50vh); } 90% { opacity: .8; } 100% { transform: translate(-20px, -105vh); opacity: 0; } }
+/* 多隻蜘蛛 */
+.hw-spider.s2 { left: auto; right: 120px; animation-duration: 8s; animation-delay: 2s; }
+.hw-spider.s3 { left: 46%; top: 76px; animation-duration: 10s; animation-delay: 4s; }
+/* 導覽列下方滴落黏液 */
+html.halloween .navbar { position: sticky; }
+html.halloween .navbar::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 26px; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 26' preserveAspectRatio='none'%3E%3Cpath fill='%23ff7a1a' d='M0 0h240v4c-8 0-9 6-12 14-2 6-7 6-8 0-2-9-6-14-14-14-10 0-8 9-14 9s-4-9-14-9c-9 0-10 18-16 18s-5-18-14-18c-8 0-9 7-14 7s-6-7-16-7c-8 0-8 12-13 12s-4-12-13-12c-10 0-9 20-16 20s-6-20-16-20c-8 0-9 6-14 6S12 4 0 4z'/%3E%3C/svg%3E") repeat-x;
+  background-size: 240px 26px; filter: drop-shadow(0 4px 6px rgba(255,90,0,.45)); opacity: .9;
+}
+/* 公告條更搶眼 */
+html.halloween .hw-banner {
+  border: 2px solid var(--tint); border-style: solid; margin-top: 34px; font-size: 16px; padding: 14px 22px;
+  background: linear-gradient(90deg, #2a0f3f, #4a1a05, #2a0f3f); background-size: 200% 100%;
+  animation: hw-banner 6s linear infinite; box-shadow: 0 0 30px rgba(255,122,26,.35), inset 0 0 20px rgba(124,58,237,.35);
+}
+html.halloween .hw-banner b { color: var(--hw-slime); text-shadow: 0 0 10px rgba(182,243,106,.8); font-size: 1.1em; }
+@keyframes hw-banner { to { background-position: 200% 0; } }
+/* 大標題：更強燭光＋抖動 */
+html.halloween .brand-story .large-title {
+  color: #ffe9cf;
+  text-shadow: 0 0 10px #ff7a1a, 0 0 30px rgba(255,90,0,.8), 0 0 70px rgba(255,60,0,.5), 0 4px 0 #3b0b55;
+  animation: hw-flicker 4s infinite, hw-shiver 7s infinite;
+}
+@keyframes hw-shiver { 0%, 94%, 100% { transform: none; } 95% { transform: translate(-2px, 1px) skewX(-2deg); } 96% { transform: translate(2px, -1px) skewX(2deg); } 97% { transform: translate(-1px, 0); } }
+html.halloween .title2::before { content: "🦇 "; }
+html.halloween .title2 { text-shadow: 0 0 18px rgba(255, 122, 26, 0.5), 0 0 40px rgba(124, 58, 237, .35); }
+/* CRUSH logo 南瓜光脈動 */
+html.halloween .crush-logo { filter: drop-shadow(0 0 14px rgba(255,122,26,.9)) drop-shadow(0 0 40px rgba(255,60,0,.5)); animation: hw-pulse 2.8s ease-in-out infinite; }
+@keyframes hw-pulse { 0%,100% { filter: drop-shadow(0 0 10px rgba(255,122,26,.8)) drop-shadow(0 0 30px rgba(255,60,0,.4)); } 50% { filter: drop-shadow(0 0 20px rgba(255,160,60,1)) drop-shadow(0 0 60px rgba(255,60,0,.7)); } }
+html.halloween .crush-cta-primary { box-shadow: 0 0 24px rgba(255,122,26,.7); animation: hw-pulse-btn 2.4s ease-in-out infinite; }
+@keyframes hw-pulse-btn { 50% { box-shadow: 0 0 40px rgba(255,140,40,1), 0 0 8px rgba(255,255,255,.4) inset; } }
+/* 照片：暈影＋滑過晃動 */
+html.halloween .latest-card, html.halloween .album-cover { position: relative; }
+html.halloween .latest-card img, html.halloween .album-cover img { filter: saturate(1.08) contrast(1.04); }
+html.halloween .latest-card:hover img, html.halloween .album:hover .album-cover { animation: hw-jiggle .45s ease; }
+@keyframes hw-jiggle { 20% { transform: rotate(-1.5deg); } 40% { transform: rotate(1.5deg); } 60% { transform: rotate(-.8deg); } 80% { transform: rotate(.6deg); } }
+html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60px rgba(124,58,237,.35), 0 0 120px rgba(255,90,0,.15); }
+/* 地上的南瓜群 */
+.hw-patch { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 10px 64px; }
+.hw-patch svg { width: 64px; filter: drop-shadow(0 0 16px rgba(255,122,26,.6)); animation: hw-bob 3.2s ease-in-out infinite; }
+.hw-patch svg:nth-child(2) { width: 44px; animation-delay: .6s; }
+.hw-patch svg:nth-child(3) { width: 52px; animation-delay: 1.2s; }
+.hw-patch .mid { flex: 1; }
+.hw-pumpkin { display: none; }
+@media (max-width: 720px) {
+  .hw-moon { display: block !important; width: 56px !important; height: 56px !important; top: 66px !important; right: -14px !important; opacity: .6; }
+  .hw-ghost { width: 44px; }
+  .hw-patch { padding-bottom: 84px; }
+  .hw-patch svg { width: 40px; } .hw-patch svg:nth-child(2) { width: 30px; } .hw-patch svg:nth-child(3), .hw-patch svg:nth-child(4) { display: none; }
+  .hw-spider.s2, .hw-spider.s3 { display: none; }
+  html.halloween .hw-banner { font-size: 13px; margin-top: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.halloween .hw-deco *, html.halloween .crush-logo, html.halloween .crush-cta-primary, html.halloween .hw-banner { animation: none !important; }
+  .hw-ghost, .hw-spore, .hw-flash { display: none; }
+}
 </style>
 </head><body>
 
@@ -1796,13 +1879,24 @@ applyLang();
  <div class="hw-bat b2"><svg viewBox="0 0 64 28" fill="currentColor"><path d="M32 8c2-4 4-6 4-6s0 4 1 6c6-6 16-8 27-4-6 2-9 7-9 12-4-3-8-3-11 1-2-3-5-4-8-2-1-2-2-3-4-3s-3 1-4 3c-3-2-6-1-8 2-3-4-7-4-11-1 0-5-3-10-9-12 11-4 21-2 27 4 1-2 1-6 1-6s2 2 4 6z"/></svg></div>
  <div class="hw-bat b3"><svg viewBox="0 0 64 28" fill="currentColor"><path d="M32 8c2-4 4-6 4-6s0 4 1 6c6-6 16-8 27-4-6 2-9 7-9 12-4-3-8-3-11 1-2-3-5-4-8-2-1-2-2-3-4-3s-3 1-4 3c-3-2-6-1-8 2-3-4-7-4-11-1 0-5-3-10-9-12 11-4 21-2 27 4 1-2 1-6 1-6s2 2 4 6z"/></svg></div>
  <svg class="hw-pumpkin" viewBox="0 0 64 60"><path d="M30 6c1-4 5-6 8-5-3 2-4 4-4 7z" fill="#5b8c2a"/><ellipse cx="32" cy="35" rx="29" ry="23" fill="#ff7a1a"/><path d="M32 12c-6 0-9 10-9 23s3 23 9 23 9-10 9-23-3-23-9-23z" fill="#ff9640" opacity=".6"/><path d="M14 30l7-6 4 8zM50 30l-7-6-4 8z" fill="#2a0f00"/><path d="M16 40c5 8 27 8 32 0l-5 3-3-3-4 4-4-4-4 4-4-4-3 3z" fill="#2a0f00"/><path d="M14 30l7-6 4 8zM50 30l-7-6-4 8z" fill="#ffd25a" opacity=".35"/></svg>
+ <div class="hw-cloud"></div>
+ <div class="hw-flash"></div>
+ <div class="hw-spider s2"></div><div class="hw-spider s3"></div>
  <div class="hw-fog"></div>
+ <div class="hw-patch"><svg viewBox="0 0 64 60"><path d="M30 6c1-4 5-6 8-5-3 2-4 4-4 7z" fill="#5b8c2a"/><ellipse cx="32" cy="35" rx="29" ry="23" fill="#ff7a1a"/><path d="M32 12c-6 0-9 10-9 23s3 23 9 23 9-10 9-23-3-23-9-23z" fill="#ff9640" opacity=".6"/><path d="M14 30l7-6 4 8zM50 30l-7-6-4 8z" fill="#ffd25a"/><path d="M16 40c5 8 27 8 32 0l-5 3-3-3-4 4-4-4-4 4-4-4-3 3z" fill="#ffd25a"/></svg><svg viewBox="0 0 64 60"><path d="M30 6c1-4 5-6 8-5-3 2-4 4-4 7z" fill="#5b8c2a"/><ellipse cx="32" cy="35" rx="29" ry="23" fill="#ff7a1a"/><path d="M32 12c-6 0-9 10-9 23s3 23 9 23 9-10 9-23-3-23-9-23z" fill="#ff9640" opacity=".6"/><path d="M14 30l7-6 4 8zM50 30l-7-6-4 8z" fill="#ffd25a"/><path d="M16 40c5 8 27 8 32 0l-5 3-3-3-4 4-4-4-4 4-4-4-3 3z" fill="#ffd25a"/></svg><span class="mid"></span><svg viewBox="0 0 64 60"><path d="M30 6c1-4 5-6 8-5-3 2-4 4-4 7z" fill="#5b8c2a"/><ellipse cx="32" cy="35" rx="29" ry="23" fill="#ff7a1a"/><path d="M32 12c-6 0-9 10-9 23s3 23 9 23 9-10 9-23-3-23-9-23z" fill="#ff9640" opacity=".6"/><path d="M14 30l7-6 4 8zM50 30l-7-6-4 8z" fill="#ffd25a"/><path d="M16 40c5 8 27 8 32 0l-5 3-3-3-4 4-4-4-4 4-4-4-3 3z" fill="#ffd25a"/></svg><svg viewBox="0 0 64 60"><path d="M30 6c1-4 5-6 8-5-3 2-4 4-4 7z" fill="#5b8c2a"/><ellipse cx="32" cy="35" rx="29" ry="23" fill="#ff7a1a"/><path d="M32 12c-6 0-9 10-9 23s3 23 9 23 9-10 9-23-3-23-9-23z" fill="#ff9640" opacity=".6"/><path d="M14 30l7-6 4 8zM50 30l-7-6-4 8z" fill="#ffd25a"/><path d="M16 40c5 8 27 8 32 0l-5 3-3-3-4 4-4-4-4 4-4-4-3 3z" fill="#ffd25a"/></svg></div>
 </div>
 <script>
 (()=>{const q=new URLSearchParams(location.search).get("season");const d=new Date(),m=d.getMonth()+1,day=d.getDate();
 const inSeason=(m===10&&day>=15)||(m===11&&day<=3);
 if(q==="off"||(!inSeason&&q!=="halloween"))return;
 document.documentElement.classList.add("halloween");
+const dz=document.querySelector(".hw-deco");if(dz){const small=innerWidth<720;const batSvg=dz.querySelector(".hw-bat")?.innerHTML||"";
+for(let i=0;i<(small?6:12);i++){const b=document.createElement("div");b.className="hw-bat";b.innerHTML=batSvg;const w=14+Math.random()*(small?26:44);
+b.style.cssText=`top:${6+Math.random()*60}%;width:${w}px;animation:hw-fly ${14+Math.random()*22}s linear ${-Math.random()*30}s infinite`;dz.appendChild(b);}
+const gh='<svg viewBox="0 0 60 70"><path d="M30 2C14 2 6 15 6 30v34l8-6 8 7 8-7 8 7 8-7 8 6V30C54 15 46 2 30 2z" fill="#efe8ff"/><circle cx="22" cy="28" r="4" fill="#1a0b26"/><circle cx="38" cy="28" r="4" fill="#1a0b26"/><ellipse cx="30" cy="42" rx="5" ry="7" fill="#1a0b26"/></svg>';
+for(let i=0;i<(small?2:4);i++){const g=document.createElement("div");g.className="hw-ghost";g.innerHTML=gh;g.style.cssText=`top:${20+Math.random()*55}%;right:${-4+Math.random()*30}%;animation-duration:${16+Math.random()*12}s;animation-delay:${-Math.random()*20}s`;dz.appendChild(g);}
+const cs=["#ff9a3c","#b6f36a","#a78bfa","#ff7a1a"];for(let i=0;i<(small?14:30);i++){const p=document.createElement("i");p.className="hw-spore";const z=3+Math.random()*5;
+p.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;--c:${cs[i%4]};--d:${10+Math.random()*14}s;--w:${-Math.random()*20}s`;dz.appendChild(p);}}
 document.querySelector('meta[name="theme-color"]')?.setAttribute("content","#0b0710");
 const eb=document.querySelector(".brand-story .eyebrow");if(eb)eb.textContent="HALLOWEEN NIGHT · JIMFRAME";
 let gone=false;try{gone=sessionStorage.getItem("hwBanner")==="x"}catch(e){}
