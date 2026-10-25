@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { albumData, hiddenPhotoIds as hiddenPhotoIdList, lowExposurePhotoIds as lowExposurePhotoIdList, type Venue } from "./albums-data";
 import { loadFaceEngine, photoScore, MATCH_STRONG, MATCH_LIKELY, MATCH_CANDIDATE } from "./face-engine";
-import { CrushPromo, CrushVideos } from "./crush";
 
 type Album = { date:string; venue:Venue; folder:string; images:string[] };
 type Language = "zh" | "en" | "ko";
@@ -178,6 +177,7 @@ export default function Home(){
  const [sessionHero,setSessionHero]=useState(initialHeroWall);
  const [popularPhotos,setPopularPhotos]=useState<PopularPhoto[]>([]);
  const [homeExcludedIds,setHomeExcludedIds]=useState<Set<string>>(()=>new Set(lowExposurePhotoIds));
+ const [siteHiddenPhotoIds,setSiteHiddenPhotoIds]=useState<Set<string>>(()=>new Set(hiddenPhotoIds));
  const [likedPhotos,setLikedPhotos]=useState<Set<string>>(new Set());
  const [activeGrade,setActiveGrade]=useState<ColorGrade>("original");
  const [filterMix,setFilterMix]=useState(100);
@@ -319,7 +319,7 @@ export default function Home(){
   }catch{setFaceFeedbackStatus("照片已從本次結果移除；匿名回饋暫時無法送出。");}
  };
  const toggleFaceSelection=(photoId:string)=>setSelectedFaceMatches(current=>{const next=new Set(current);if(next.has(photoId))next.delete(photoId);else if(next.size<20)next.add(photoId);return next;});
- const visibleFaceMatches=()=>faceMatches.filter(match=>!rejectedFaceMatches.has(match.id));
+ const visibleFaceMatches=()=>faceMatches.filter(match=>!rejectedFaceMatches.has(match.id)&&!siteHiddenPhotoIds.has(match.id));
  const downloadFaceSelection=async()=>{
   const ids=visibleFaceMatches().map(match=>match.id).filter(id=>selectedFaceMatches.has(id));
   if(!ids.length||faceDownloadWorking)return;
@@ -351,7 +351,7 @@ export default function Home(){
   }catch{setFaceDownloadStatus(language==="en"?"Download failed. Please select fewer photos or try again later.":language==="ko"?"다운로드에 실패했습니다. 사진 수를 줄이거나 나중에 다시 시도해 주세요.":"下載失敗，請減少選取數量或稍後再試。");}finally{setFaceDownloadWorking(false);}
  };
  useEffect(()=>{
-  const mixed=shuffle(freshPool);
+  const mixed=shuffle(freshPool.filter(photo=>!siteHiddenPhotoIds.has(photo.id)));
   // Session-specific shuffling is intentionally initialized after hydration.
   // eslint-disable-next-line react-hooks/set-state-in-effect
   setSessionAlbums(freshAlbums.map(a=>({...a,images:shuffle(a.images)})));
@@ -411,15 +411,19 @@ export default function Home(){
   void Promise.all([
    fetch("/api/popular").then(r=>r.ok?r.json():[]).catch(()=>[] as PopularPhoto[]),
    fetch("/api/home-exclusions").then(r=>r.ok?r.json():{ids:[]}).catch(()=>({ids:[]})) as Promise<{ids?:unknown}>,
-  ]).then(([items,payload])=>{
+   fetch("/api/photo-visibility").then(r=>r.ok?r.json():{hidden:[]}).catch(()=>({hidden:[]})) as Promise<{hidden?:unknown}>,
+  ]).then(([items,payload,visibility])=>{
    const dynamic=Array.isArray(payload.ids)?payload.ids.filter((id):id is string=>typeof id==="string"):[];
-   const excluded=new Set([...lowExposurePhotoIds,...dynamic]);
+   const manual=Array.isArray(visibility.hidden)?visibility.hidden.filter((id):id is string=>typeof id==="string"):[];
+   const siteHidden=new Set([...hiddenPhotoIds,...manual]);
+   setSiteHiddenPhotoIds(siteHidden);
+   const excluded=new Set([...lowExposurePhotoIds,...dynamic,...manual]);
    setHomeExcludedIds(excluded);
-   const eligible=(items as PopularPhoto[]).filter(item=>!excluded.has(item.id));
+   const eligible=(items as PopularPhoto[]).filter(item=>!excluded.has(item.id)&&!siteHidden.has(item.id));
    setPopularPhotos(eligible);
    const picks=autoFeatured(eligible,excluded);
    if(picks.length)setSessionHero(picks);
-   setSessionAlbums(current=>current.map(album=>({...album,images:[...album.images].sort((left,right)=>Number(excluded.has(left))-Number(excluded.has(right)))})));
+   setSessionAlbums(current=>current.map(album=>({...album,images:album.images.filter(id=>!siteHidden.has(id)).sort((left,right)=>Number(excluded.has(left))-Number(excluded.has(right)))})));
   }).catch(()=>{});
  },[]);
  useEffect(()=>{
@@ -530,20 +534,20 @@ export default function Home(){
  };
  const openAlbum=(album:Album)=>{
   const token=++albumLoadToken.current;
-  const preview={...album,images:album.images.filter(id=>!hiddenPhotoIds.has(id))};
+  const preview={...album,images:album.images.filter(id=>!siteHiddenPhotoIds.has(id))};
   setSelectedAlbum(preview);setAlbumLoading(true);setActiveAlbumPhoto(null);setActiveGrade("original");setFilterMix(80);setShowOriginal(false);setAdjustments(defaultAdjustments);setBatchMode(false);setSelectedPhotos(new Set());setBatchStatus("");
   const useCuratedPhotoList=album.date==="1015"&&album.venue==="Bachata Crush";
   if(useCuratedPhotoList){setAlbumLoading(false);}
   else void fetch(`/api/folder-photos?folder=${encodeURIComponent(album.folder)}`).then(response=>response.ok?response.json():Promise.reject()).then((payload:{images?:unknown})=>{
    if(token!==albumLoadToken.current||!Array.isArray(payload.images))return;
-   const images=[...new Set(payload.images.filter((id):id is string=>typeof id==="string"&&!hiddenPhotoIds.has(id)))];
+   const images=[...new Set(payload.images.filter((id):id is string=>typeof id==="string"&&!siteHiddenPhotoIds.has(id)))];
    if(images.length)setSelectedAlbum({...album,images});
   }).catch(()=>{}).finally(()=>{if(token===albumLoadToken.current)setAlbumLoading(false);});
   void fetch("/api/album-click",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({album:`${album.date}-${album.venue}`,venue:album.venue,date:album.date}),keepalive:true});
  };
  const closeAlbum=()=>{albumLoadToken.current++;setAlbumLoading(false);setSelectedAlbum(null);setActiveAlbumPhoto(null);setActiveGrade("original");setFilterMix(80);setShowOriginal(false);setAdjustments(defaultAdjustments);setBatchMode(false);setSelectedPhotos(new Set());setBatchStatus("");};
  const albumKeyOf=(album:Album)=>`${album.date}-${album.venue}`;
- const findPhotoAlbum=(photoId:string)=>freshAlbums.find(album=>album.images.includes(photoId));
+ const findPhotoAlbum=(photoId:string)=>siteHiddenPhotoIds.has(photoId)?undefined:freshAlbums.find(album=>album.images.includes(photoId));
  // Share links carry the album so the photo can be opened even when it is only listed in the Drive folder.
  const photoLink=(photoId:string,album?:Album|null)=>{const owner=album&&album.images.includes(photoId)?album:selectedAlbum&&selectedAlbum.images.includes(photoId)?selectedAlbum:findPhotoAlbum(photoId);return `${window.location.origin}/#photo-${encodeURIComponent(photoId)}${owner?`&album=${encodeURIComponent(albumKeyOf(owner))}`:""}`;};
  useEffect(()=>{
@@ -551,6 +555,7 @@ export default function Home(){
    const match=window.location.hash.match(/^#photo-([A-Za-z0-9_-]{10,120})(?:&album=([^&]+))?/);
    if(!match)return;
    const photoId=match[1];const albumKey=match[2]?decodeURIComponent(match[2]):"";
+   if(siteHiddenPhotoIds.has(photoId))return;
    const album=freshAlbums.find(item=>albumKeyOf(item)===albumKey)??findPhotoAlbum(photoId);
    if(album){openAlbum(album);setActiveAlbumPhoto(photoId);trackPhotoOpen(photoId);}
    else document.getElementById(`photo-${photoId}`)?.scrollIntoView({behavior:"smooth",block:"center"});
@@ -780,19 +785,14 @@ export default function Home(){
  const gradeThumbFilter=(grade:(typeof colorGrades)[number])=>{const p=grade.preview;return `grayscale(${p.grayscale}) sepia(${p.sepia}) hue-rotate(${p.hue}deg) brightness(${p.brightness}) contrast(${p.contrast}) saturate(${p.saturation})`;};
  const activeIndex=selectedAlbum&&activeAlbumPhoto?selectedAlbum.images.indexOf(activeAlbumPhoto):-1;
  const venues=["全部","Flow","Barcade","La Salsa","Odoro","Zouk"] as const;
- const crushAlbum=albumData.find(a=>a.date==="1015"&&a.venue==="Bachata Crush");
  return <main className="app">
   <header className="navbar">
    <a className="brand" href="#top" aria-label="Jim Lin Photography 首頁"><span className="brand-mark" aria-hidden="true"><img src="/jimframe-logo.png" alt=""/></span><span>Jim Lin <em>Photography</em></span></a>
    <nav className="nav-links" aria-label="主要">
-    <a href="#top">{copy.navFeatured}</a><a href="#archive">{copy.navAlbums}</a><a href="#videos">{language==="zh"?"影片":language==="ko"?"영상":"Videos"}</a><a href="#finder">{copy.navFind}</a><a href="#support">{copy.navSupport}</a><a href="#contact">{copy.navBook}</a>
+    <a href="#top">{copy.navFeatured}</a><a href="#archive">{copy.navAlbums}</a><a href="#finder">{copy.navFind}</a><a href="#support">{copy.navSupport}</a><a href="#contact">{copy.navBook}</a>
    </nav>
    <div className="nav-actions"><a className="studio-pill" href="/studio"><Icon name="photo"/><span>{copy.navStudio}</span></a><div className="language-switch" role="group" aria-label="Language"><button className={language==="zh"?"is-selected":""} onClick={()=>setLanguage("zh")}>繁中</button><button className={language==="en"?"is-selected":""} onClick={()=>setLanguage("en")}>EN</button><button className={language==="ko"?"is-selected":""} onClick={()=>setLanguage("ko")}>한국어</button></div><a className="nav-pill" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">@jimframe</a></div>
   </header>
-
-  <CrushPromo language={language} photoCount={crushAlbum?.images.length??0} cover={(crushAlbum?.images??[]).filter((_,i)=>i%37===5).map(id=>image(id,700))}
-   onPhotos={()=>{setFilter("Bachata Crush");requestAnimationFrame(()=>document.getElementById("archive")?.scrollIntoView({behavior:"smooth"}));}}
-   onFind={()=>{setFinderOpen(true);requestAnimationFrame(()=>document.getElementById("finder")?.scrollIntoView({behavior:"smooth"}));}}/>
 
   <section className="hero" id="top">
    <div className="hero-copy">
@@ -895,8 +895,6 @@ export default function Home(){
     <p><b>{copy.creditTitle} <a href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">@jimframe</a></b>{copy.creditText}<em>Please credit @jimframe when sharing.</em></p>
    </aside>
   </section>
-
-  <CrushVideos language={language} confirmCredit={confirmPhotoCredit}/>
 
   <section className="section" id="support">
    <div className="section-head"><div><h2 className="title2">{copy.supportTitle}</h2><p className="footnote">{copy.supportSub}</p></div></div>

@@ -26,3 +26,10 @@ export const faceEmbeddingsSf = sqliteTable("face_embeddings_sf", {
   imageHash: text("image_hash").notNull(),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [index("face_embeddings_sf_album_idx").on(table.albumKey)]);
+
+export const hiddenPhotos = sqliteTable("hidden_photos", {
+  photoId: text("photo_id").primaryKey(),
+  albumKey: text("album_key").notNull(),
+  hiddenBy: text("hidden_by").notNull(),
+  hiddenAt: text("hidden_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (table) => [index("hidden_photos_album_idx").on(table.albumKey)]);

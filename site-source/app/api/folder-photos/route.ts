@@ -1,4 +1,5 @@
 import { forbidden, isSameOriginRequest } from "../same-origin";
+import { env } from "cloudflare:workers";
 
 const folderPattern = /^[A-Za-z0-9_-]{20,80}$/;
 
@@ -31,7 +32,12 @@ export async function GET(request: Request) {
     if (!response.ok) throw new Error("Drive request failed");
     const images = extractPhotoIds(await response.text());
     if (!images.length) throw new Error("No public photos found");
-    return Response.json({ images }, { headers: { "cache-control": "public, max-age=300, s-maxage=900, stale-while-revalidate=3600" } });
+    let hidden = new Set<string>();
+    try {
+      const rows = (await env.DB.prepare("SELECT photo_id FROM hidden_photos").all<{ photo_id: string }>()).results;
+      hidden = new Set(rows.map(row => row.photo_id));
+    } catch { /* table may not exist during a local first build */ }
+    return Response.json({ images: images.filter(id => !hidden.has(id)) }, { headers: { "cache-control": "public, max-age=15, s-maxage=30" } });
   } catch {
     return Response.json({ error: "Unable to load album" }, { status: 502 });
   }
