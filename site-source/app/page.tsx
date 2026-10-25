@@ -779,11 +779,11 @@ export default function Home(){
  };
  const gradeThumbFilter=(grade:(typeof colorGrades)[number])=>{const p=grade.preview;return `grayscale(${p.grayscale}) sepia(${p.sepia}) hue-rotate(${p.hue}deg) brightness(${p.brightness}) contrast(${p.contrast}) saturate(${p.saturation})`;};
  const activeIndex=selectedAlbum&&activeAlbumPhoto?selectedAlbum.images.indexOf(activeAlbumPhoto):-1;
- const venues=["全部","Bachata Crush","Flow","Barcade","La Salsa","Odoro","Zouk"] as const;
+ const venues=["全部","Flow","Barcade","La Salsa","Odoro","Zouk"] as const;
  const crushAlbum=albumData.find(a=>a.date==="1015"&&a.venue==="Bachata Crush");
  return <main className="app">
   <header className="navbar">
-   <a className="brand" href="#top" aria-label="Jim Lin Photography 首頁"><span className="brand-mark" aria-hidden="true">JL</span><span>Jim Lin <em>Photography</em></span></a>
+   <a className="brand" href="#top" aria-label="Jim Lin Photography 首頁"><span className="brand-mark" aria-hidden="true"><img src="/jimframe-logo.png" alt=""/></span><span>Jim Lin <em>Photography</em></span></a>
    <nav className="nav-links" aria-label="主要">
     <a href="#top">{copy.navFeatured}</a><a href="#archive">{copy.navAlbums}</a><a href="#videos">{language==="zh"?"影片":language==="ko"?"영상":"Videos"}</a><a href="#finder">{copy.navFind}</a><a href="#support">{copy.navSupport}</a><a href="#contact">{copy.navBook}</a>
    </nav>
