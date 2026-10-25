@@ -86,7 +86,7 @@ footer a{color:var(--pumpkin)}
 
   <section class="share" aria-label="分享成績">
     <div class="best"><span>抓幽靈最佳 <b id="b-ghost">–</b></span><span>接糖果最佳 <b id="b-candy">–</b></span><span>翻翻樂最佳 <b id="b-memory">–</b></span></div>
-    <p class="t" id="share-text">玩一場，這裡會出現可以貼到限動的戰績文字。</p>
+    <p class="t" id="share-text">玩完一場，這裡會出現可以貼到限動的戰績文字（遊戲結束畫面也能直接複製）。</p>
     <div class="row"><button class="btn ghost" id="copy" type="button">複製戰績</button></div>
   </section>
 
@@ -107,8 +107,9 @@ let game="ghost",timers=[],raf=0,running=false;
 const clearAll=()=>{timers.forEach(clearInterval);timers.forEach(clearTimeout);timers=[];cancelAnimationFrame(raf);running=false;};
 const setHud=(lab1,v1,lab2,v2)=>{hudL.textContent=lab1;scoreEl.textContent=v1;hudR.textContent=lab2;timeEl.textContent=v2;};
 const showBest=()=>{["ghost","candy","memory"].forEach(g=>{const v=store.get(g);$("#b-"+g).textContent=v==null?"–":g==="memory"?v+" 步":v+" 分";});};
-const overlay=(title,text,btn,big)=>{const o=document.createElement("div");o.className="overlay";o.innerHTML=`<h2>${title}</h2>${big!=null?`<div class="result">${big}</div>`:""}<p>${text}</p><button class="btn" type="button">${btn}</button>`;arena.appendChild(o);return o.querySelector("button");};
-const share=t=>{$("#share-text").textContent=t;};
+const overlay=(title,text,btn,big)=>{const o=document.createElement("div");o.className="overlay";o.innerHTML=`<h2>${title}</h2>${big!=null?`<div class="result">${big}</div>`:""}<p>${text}</p><div class="row"><button class="btn" type="button">${btn}</button>${big!=null?`<button class="btn ghost" type="button" data-copy>📋 複製戰績</button>`:""}</div>`;arena.appendChild(o);o.querySelector("[data-copy]")?.addEventListener("click",e=>copyShare(e.currentTarget));return o.querySelector(".btn");};
+let played=false;const share=t=>{played=true;$("#share-text").textContent=t;};
+const bestText=()=>{const g=store.get("ghost"),c=store.get("candy"),m=store.get("memory");const parts=[g!=null&&`抓幽靈 ${g} 分`,c!=null&&`接糖果 ${c} 分`,m!=null&&`翻翻樂 ${m} 步`].filter(Boolean);return parts.length?`我在 JimFrame 萬聖節遊樂場的最佳紀錄：${parts.join("、")} 🎃 你能贏我嗎？ @jimframe`:"";};
 const floatAt=(x,y,txt,col)=>{const f=document.createElement("div");f.className="float";f.style.cssText=`left:${x}px;top:${y}px;color:${col}`;f.textContent=txt;arena.appendChild(f);setTimeout(()=>f.remove(),700);};
 
 /* ---------- 抓幽靈 ---------- */
@@ -176,7 +177,9 @@ function memoryGame(){
 const games={ghost:ghostGame,candy:candyGame,memory:memoryGame};
 function pick(g){clearAll();game=g;document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.g===g)));games[g]();}
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>pick(b.dataset.g));
-$("#copy").onclick=async e=>{const t=$("#share-text").textContent;try{await navigator.clipboard.writeText(t);e.target.textContent="已複製 ✓";}catch{const r=document.createRange();r.selectNodeContents($("#share-text"));const s=getSelection();s.removeAllRanges();s.addRange(r);e.target.textContent="已選取，長按複製";}setTimeout(()=>e.target.textContent="複製戰績",2000);};
+async function copyShare(btn){let t=played?$("#share-text").textContent:bestText();if(!t){btn.textContent="先玩完一場再複製";setTimeout(()=>btn.textContent=btn.dataset.copy!==undefined?"📋 複製戰績":"複製戰績",2000);return;}$("#share-text").textContent=t;const label=btn.textContent;
+ try{await navigator.clipboard.writeText(t);btn.textContent="已複製 ✓";}catch{const r=document.createRange();r.selectNodeContents($("#share-text"));const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent="已選取，長按複製";}setTimeout(()=>btn.textContent=label,2000);}
+$("#copy").onclick=e=>copyShare(e.currentTarget);
 showBest();const h=location.hash.slice(1);pick(games[h]?h:"ghost");
 })();
 </script>
