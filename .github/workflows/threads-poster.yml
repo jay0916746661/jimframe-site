@@ -1,0 +1,44 @@
+name: Threads 自動發文
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "post / dry-run / check"
+        default: "post"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: threads-poster
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/threads-poster
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: 發文
+        env:
+          THREADS_TOKENS: ${{ secrets.THREADS_TOKENS }}
+        run: |
+          MODE="${{ github.event.inputs.mode || 'post' }}"
+          cd tools/threads-poster
+          if [ "$MODE" = "check" ]; then python poster.py --check;
+          elif [ "$MODE" = "dry-run" ]; then python poster.py --dry-run;
+          else python poster.py; fi
+      - name: 回寫發文結果
+        run: |
+          git config user.name "threads-poster"
+          git config user.email "threads-poster@users.noreply.github.com"
+          git add tools/threads-poster/queue.csv
+          git diff --cached --quiet || (git commit -m "Threads 發文結果 $(date -u +%F' '%H:%M)" && git pull --rebase && git push)
