@@ -35,6 +35,24 @@ def load_tokens():
     return tokens
 
 
+_resolved = False
+
+
+def resolve_names(tokens):
+    """前面的名字打錯也沒關係：用 token 查出真正的帳號名稱，補一個對照。"""
+    global _resolved
+    if _resolved:
+        return
+    _resolved = True
+    for label, tok in list(tokens.items()):
+        try:
+            name = api("GET", "me", tok, fields="username").get("username", "")
+        except RuntimeError:
+            continue
+        if name and name not in tokens:
+            tokens[name] = tok
+
+
 def scrub(msg, tokens):
     msg = str(msg)
     for t in tokens.values():
@@ -150,6 +168,8 @@ def main():
             r["status"], r["note"] = "失敗", f"超過 {MAX_LEN} 字（{len(r['text'])} 字）"
             blocked.add(acct)
             continue
+        if acct not in tokens:
+            resolve_names(tokens)
         if acct not in tokens:
             r["status"], r["note"] = "失敗", "THREADS_TOKENS 裡沒有這個帳號"
             blocked.add(acct)
