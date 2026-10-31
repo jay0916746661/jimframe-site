@@ -1,0 +1,27 @@
+name: IG／FB 發文
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "check"
+        default: "check"
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/meta-poster
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: 執行
+        env:
+          META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
+        run: cd tools/meta-poster && python meta.py --${{ github.event.inputs.mode || 'check' }}
