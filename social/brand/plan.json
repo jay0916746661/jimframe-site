@@ -1,0 +1,39 @@
+{
+ "art101.tw": {
+  "page_id": "150622515865283",
+  "cover": "cover_art101.tw.jpg",
+  "picture": "art101.tw.jpg",
+  "about": "看不懂的藝術，一次問清楚。每天一件作品、一間畫廊、一個故事｜IG @art101.tw"
+ },
+ "reading.after": {
+  "page_id": "1386916644507983",
+  "cover": "cover_reading.after.jpg",
+  "picture": "reading.after.jpg",
+  "about": "一本書讀完之後，留下來的那一句。書摘、讀後感、一分鐘讀一本書｜IG @reading.after"
+ },
+ "love.manual.tw": {
+  "page_id": "1463989620124882",
+  "cover": "cover_love.manual.tw.jpg",
+  "picture": "love.manual.tw.jpg"
+ },
+ "theguitarstory101": {
+  "page_id": "1466970109822378",
+  "cover": "cover_theguitarstory101.jpg",
+  "picture": "theguitarstory101.jpg",
+  "about": "每一把琴背後，都有一個人。電吉他・木吉他的故事，一次講一把｜IG @theguitarstory101"
+ },
+ "jazz101tw": {
+  "page_id": "1418511651344150",
+  "cover": "cover_jazz101tw.jpg"
+ },
+ "coffeestory101": {
+  "page_id": "1469530542899142",
+  "cover": "cover_coffeestory101.jpg",
+  "about": "每一杯咖啡，都有一段歷史。咖啡史故事＋一個專業點｜IG @coffeestory101"
+ },
+ "tech101_ai": {
+  "page_id": "1366280216575529",
+  "cover": "cover_tech101_ai.jpg",
+  "picture": "tech101_ai.jpg"
+ }
+}
