@@ -151,6 +151,7 @@ def main():
 
     blocked = {r["account"] for r in rows if r["status"] == "失敗"}  # 有失敗的帳號先停，等 Jim 處理
     sent = 0
+    sent_this_run = set()  # 每次執行每個帳號最多發 1 則，補發時才不會一口氣全擠在同一分鐘
     for r in sorted(rows, key=lambda x: x["publish_at"]):
         if r["status"] != "待發" or not r["publish_at"]:
             continue
@@ -160,7 +161,7 @@ def main():
             r["status"], r["note"] = "失敗", "publish_at 格式要像 2026-11-01 10:00"
             continue
         acct = r["account"].lstrip("@")
-        if due > now or acct in blocked:
+        if due > now or acct in blocked or acct in sent_this_run:
             continue
         if sent >= PER_RUN_CAP or sent_today.get(acct, 0) >= DAILY_CAP:
             continue
@@ -183,6 +184,7 @@ def main():
             r["status"], r["post_id"] = "已發", pid
             r["note"] = f"{datetime.now(TPE):%Y-%m-%d %H:%M} 發出"
             sent_today[acct] = sent_today.get(acct, 0) + 1
+            sent_this_run.add(acct)
             print(f"[已發] {r['id']} {acct} → {pid}")
         except Exception as e:  # noqa: BLE001
             r["status"], r["note"] = "失敗", scrub(e, tokens)
