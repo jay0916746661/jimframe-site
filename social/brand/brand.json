@@ -1,0 +1,92 @@
+{
+ "tech101_ai": {
+  "page_id": "1366280216575529",
+  "page_name": "AI Tech 101",
+  "ig_name": "",
+  "bio": "",
+  "has_cover": false,
+  "has_about": true,
+  "silhouette": false
+ },
+ "reading.after": {
+  "page_id": "1386916644507983",
+  "page_name": "讀完之後",
+  "ig_name": "",
+  "bio": "",
+  "has_cover": false,
+  "has_about": false,
+  "silhouette": true
+ },
+ "socialdance101": {
+  "page_id": "1428314823695457",
+  "page_name": "Social Dance 101",
+  "ig_name": "socialdance",
+  "bio": "今晚跳的舞，都有一段被遺忘的故事\n每週雙人舞歷史小故事",
+  "has_cover": true,
+  "has_about": true,
+  "silhouette": false
+ },
+ "astro_labtw": {
+  "page_id": "1497666520091372",
+  "page_name": "星座實驗",
+  "ig_name": "星座實驗",
+  "bio": "不當占星師，當做實驗的人 🧪\n用程式算真實星象\n週一 十二星座實驗｜週日 一起對帳準不準\n↓ 留言你的星座，加入實驗",
+  "has_cover": true,
+  "has_about": true,
+  "silhouette": false
+ },
+ "love.manual.tw": {
+  "page_id": "1463989620124882",
+  "page_name": "愛情說明書",
+  "ig_name": "愛情說明書",
+  "bio": "用心理學實驗講戀愛\n一集一個研究，不教話術、不站隊\n每天更新 💗",
+  "has_cover": false,
+  "has_about": true,
+  "silhouette": true
+ },
+ "theguitarstory101": {
+  "page_id": "1466970109822378",
+  "page_name": "Guitarstory101",
+  "ig_name": "",
+  "bio": "🎸 每一把琴背後，都有一個人\n電吉他・木吉他的故事，一次講一把",
+  "has_cover": false,
+  "has_about": false,
+  "silhouette": true
+ },
+ "coffeestory101": {
+  "page_id": "1469530542899142",
+  "page_name": "Coffeestory101",
+  "ig_name": "coffeelover",
+  "bio": "",
+  "has_cover": false,
+  "has_about": false,
+  "silhouette": false
+ },
+ "jazz101tw": {
+  "page_id": "1418511651344150",
+  "page_name": "Jazz101",
+  "ig_name": "jazz101",
+  "bio": "🎷 一次看懂爵士樂的一百年\n紐奧良 → Bebop → 融合，6 個年代、34 位樂手\n每週更新｜聽法・名曲・樂手故事",
+  "has_cover": false,
+  "has_about": true,
+  "silhouette": false
+ },
+ "jimframe": {
+  "page_id": "352256395375846",
+  "page_name": "Jim",
+  "ig_name": "filmbyjim",
+  "bio": "",
+  "has_cover": true,
+  "has_about": true,
+  "silhouette": false
+ },
+ "art101.tw": {
+  "page_id": "150622515865283",
+  "page_name": "藝術101",
+  "ig_name": "",
+  "bio": "",
+  "has_cover": false,
+  "has_about": false,
+  "silhouette": true
+ }
+}
