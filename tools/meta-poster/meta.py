@@ -19,7 +19,7 @@ def get(path, token=TOKEN, **params):
 
 def pages():
     out, url = [], "me/accounts"
-    params = {"fields": "id,name,access_token,instagram_business_account{id,username}", "limit": 100}
+    params = {"fields": "id,name,access_token,about,picture{is_silhouette},cover{source},instagram_business_account{id,username,biography}", "limit": 100}
     data = get(url, **params)
     out += data.get("data", [])
     while data.get("paging", {}).get("next"):
@@ -42,7 +42,10 @@ def check():
     print(f"\n粉專 {len(ps)} 個：")
     for p in ps:
         ig = p.get("instagram_business_account") or {}
-        print(f"- {p['name']}（{p['id']}） IG：{ig.get('username', '沒有綁')}（{ig.get('id', '-')}）")
+        pic = "無大頭貼" if (p.get("picture") or {}).get("data", {}).get("is_silhouette", True) else "有大頭貼"
+        cov = "有封面" if p.get("cover") else "無封面"
+        about = "有簡介" if p.get("about") else "無簡介"
+        print(f"- {p['name']}（{p['id']}） IG：{ig.get('username', '沒有綁')}（{ig.get('id', '-')}）｜{pic}｜{cov}｜{about}")
     return 0
 
 
