@@ -46,6 +46,41 @@ def check():
     return 0
 
 
+def post(path, token, **data):
+    data["access_token"] = token
+    r = requests.post(f"{API}/{path}", data=data, timeout=120)
+    body = r.json()
+    if "error" in body:
+        raise RuntimeError(body["error"].get("message", "").replace(token, "***"))
+    return body
+
+
+def test(account="art101.tw"):
+    """不公開的測試：IG 只建立素材容器不發佈；FB 建一則未發佈貼文（不會出現在粉專上）。"""
+    img = "https://raw.githubusercontent.com/jay0916746661/jimframe-site/main/social/test/api_test.jpg"
+    for p in pages():
+        ig = p.get("instagram_business_account") or {}
+        if ig.get("username") != account:
+            continue
+        ptok = p["access_token"]
+        try:
+            c = post(f"{ig['id']}/media", ptok, image_url=img, caption="API 測試（不會發佈）")
+            st = get(c["id"], ptok, fields="status_code")
+            print(f"IG {account}：素材容器建立成功，狀態 {st.get('status_code')}（沒有發佈）")
+        except RuntimeError as e:
+            print(f"IG {account}：失敗 {e}")
+        try:
+            f = post(f"{p['id']}/photos", ptok, url=img, caption="API 測試（未發佈）", published="false")
+            print(f"FB {p['name']}：未發佈相片建立成功（粉專上看不到）")
+        except RuntimeError as e:
+            print(f"FB {p['name']}：失敗 {e}")
+        return 0
+    print(f"找不到 {account}")
+    return 1
+
+
 if __name__ == "__main__":
     if "--check" in sys.argv:
         sys.exit(check())
+    if "--test" in sys.argv:
+        sys.exit(test())
