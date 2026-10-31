@@ -180,7 +180,14 @@ def main():
             sent += 1
             continue
         try:
-            pid = publish(tokens[acct], r["text"], r["image_url"], r["topic_tag"])
+            try:
+                pid = publish(tokens[acct], r["text"], r["image_url"], r["topic_tag"])
+            except Exception as e:  # noqa: BLE001
+                if not r["image_url"]:
+                    raise
+                print(f"[附圖失敗，改發純文字] {r['id']}: {scrub(e, tokens)}")
+                pid = publish(tokens[acct], r["text"], "", r["topic_tag"])
+                r["image_url"] = ""
             r["status"], r["post_id"] = "已發", pid
             r["note"] = f"{datetime.now(TPE):%Y-%m-%d %H:%M} 發出"
             sent_today[acct] = sent_today.get(acct, 0) + 1
