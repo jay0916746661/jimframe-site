@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "check / test"
+        description: "check / test / brand / apply"
         default: "check"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   run:
@@ -16,7 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: tools/meta-poster
+          sparse-checkout: |
+            tools/meta-poster
+            social/brand
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -25,3 +27,10 @@ jobs:
         env:
           META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
         run: cd tools/meta-poster && python meta.py --${{ github.event.inputs.mode || 'check' }}
+      - name: 存回 brand 檔
+        if: github.event.inputs.mode == 'brand'
+        run: |
+          git config user.name "meta-poster"
+          git config user.email "meta-poster@users.noreply.github.com"
+          git add social/brand
+          git diff --cached --quiet || (git commit -m "粉專品牌素材（IG 大頭貼與簡介）" && git pull --rebase && git push)

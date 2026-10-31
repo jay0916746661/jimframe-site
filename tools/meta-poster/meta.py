@@ -82,7 +82,65 @@ def test(account="art101.tw"):
     return 1
 
 
+def brand():
+    """把每個 IG 的大頭貼和簡介存到 social/brand/，給做封面和補粉專用。"""
+    import json, pathlib
+    out = pathlib.Path("../../social/brand"); out.mkdir(parents=True, exist_ok=True)
+    info = {}
+    for p in pages():
+        ig = p.get("instagram_business_account") or {}
+        if not ig:
+            continue
+        d = get(ig["id"], p["access_token"], fields="username,name,biography,profile_picture_url")
+        u = d["username"]
+        if d.get("profile_picture_url"):
+            (out / f"{u}.jpg").write_bytes(requests.get(d["profile_picture_url"], timeout=60).content)
+        info[u] = {"page_id": p["id"], "page_name": p["name"], "ig_name": d.get("name", ""),
+                   "bio": d.get("biography", ""), "has_cover": bool(p.get("cover")),
+                   "has_about": bool(p.get("about")),
+                   "silhouette": (p.get("picture") or {}).get("data", {}).get("is_silhouette", True)}
+        print(f"{u}: 已存")
+    (out / "brand.json").write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
+    return 0
+
+
+def apply_profiles():
+    """照 social/brand/plan.json 補粉專的大頭貼、封面、簡介。只補 plan 裡列的項目。"""
+    import json, pathlib
+    plan = json.loads(pathlib.Path("../../social/brand/plan.json").read_text(encoding="utf-8"))
+    base = "https://raw.githubusercontent.com/jay0916746661/jimframe-site/main/social/brand/"
+    toks = {p["id"]: p["access_token"] for p in pages()}
+    for u, job in plan.items():
+        pid, tok = job["page_id"], toks.get(job["page_id"])
+        if not tok:
+            print(f"{u}: 找不到粉專權杖"); continue
+        if job.get("picture"):
+            try:
+                post(f"{pid}/picture", tok, picture=base + job["picture"])
+                print(f"{u}: 大頭貼 OK")
+            except RuntimeError as e:
+                print(f"{u}: 大頭貼失敗 {e}")
+        if job.get("cover"):
+            try:
+                ph = post(f"{pid}/photos", tok, url=base + job["cover"], published="false")
+                post(pid, tok, cover=ph["id"])
+                print(f"{u}: 封面 OK")
+            except RuntimeError as e:
+                print(f"{u}: 封面失敗 {e}")
+        if job.get("about"):
+            try:
+                post(pid, tok, about=job["about"])
+                print(f"{u}: 簡介 OK")
+            except RuntimeError as e:
+                print(f"{u}: 簡介失敗 {e}")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--brand" in sys.argv:
+        sys.exit(brand())
+    if "--apply" in sys.argv:
+        sys.exit(apply_profiles())
     if "--check" in sys.argv:
         sys.exit(check())
     if "--test" in sys.argv:
