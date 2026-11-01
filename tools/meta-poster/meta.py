@@ -209,7 +209,23 @@ def research(me="art101.tw", n=30):
     return 0
 
 
+def captions(account="jimframe", n=100):
+    """印出某帳號的歷史文案（給分析 Jim 自己的寫法用）。"""
+    for p in pages():
+        ig = p.get("instagram_business_account") or {}
+        if ig.get("username") != account:
+            continue
+        d = get(f"{ig['id']}/media", p["access_token"], fields="caption,timestamp", limit=n)
+        for m in d.get("data", []):
+            c = (m.get("caption") or "").replace("\n", " / ")
+            if c:
+                print(f"@@{m['timestamp'][:10]}｜{c}")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--captions" in sys.argv:
+        sys.exit(captions())
     if "--research" in sys.argv:
         sys.exit(research())
     if "--stats" in sys.argv:

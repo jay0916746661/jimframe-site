@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "check / test / brand / apply / stats / discover"
+        description: "check / test / brand / apply / stats / discover / research / captions"
         default: "check"
       target:
         description: "discover 要查的 IG 帳號"
