@@ -136,7 +136,38 @@ def apply_profiles():
     return 0
 
 
+def stats(account="art101.tw", n=5):
+    """目前權限拿得到的成效：讚、留言數（觸及／觀看要再開數據權限）。"""
+    for p in pages():
+        ig = p.get("instagram_business_account") or {}
+        if ig.get("username") != account:
+            continue
+        d = get(ig["id"], p["access_token"], fields=f"followers_count,media_count,media.limit({n}){{caption,like_count,comments_count,timestamp,media_type}}")
+        print(f"{account}：追蹤 {d.get('followers_count')}，貼文 {d.get('media_count')}")
+        for m in d.get("media", {}).get("data", []):
+            print(f"  {m['timestamp'][:10]} {m['media_type']:<14} 讚 {m.get('like_count')} 留言 {m.get('comments_count')}｜{(m.get('caption') or '')[:18]}")
+    return 0
+
+
+def discover(target, me="art101.tw", n=5):
+    """查別人的 IG 商業／創作者帳號：追蹤數、最近貼文的讚和留言。"""
+    for p in pages():
+        ig = p.get("instagram_business_account") or {}
+        if ig.get("username") != me:
+            continue
+        f = f"business_discovery.username({target}){{username,followers_count,media_count,media.limit({n}){{caption,like_count,comments_count,timestamp,media_type}}}}"
+        d = get(ig["id"], p["access_token"], fields=f)["business_discovery"]
+        print(f"{d['username']}：追蹤 {d.get('followers_count')}，貼文 {d.get('media_count')}")
+        for m in d.get("media", {}).get("data", []):
+            print(f"  {m['timestamp'][:10]} {m['media_type']:<14} 讚 {m.get('like_count')} 留言 {m.get('comments_count')}｜{(m.get('caption') or '')[:18]}")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--stats" in sys.argv:
+        sys.exit(stats())
+    if "--discover" in sys.argv:
+        sys.exit(discover(sys.argv[sys.argv.index("--discover") + 1]))
     if "--brand" in sys.argv:
         sys.exit(brand())
     if "--apply" in sys.argv:

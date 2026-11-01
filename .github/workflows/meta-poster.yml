@@ -4,8 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "check / test / brand / apply"
+        description: "check / test / brand / apply / stats / discover"
         default: "check"
+      target:
+        description: "discover 要查的 IG 帳號"
+        default: ""
 
 permissions:
   contents: write
@@ -26,7 +29,7 @@ jobs:
       - name: 執行
         env:
           META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
-        run: cd tools/meta-poster && python meta.py --${{ github.event.inputs.mode || 'check' }}
+        run: cd tools/meta-poster && python meta.py --${{ github.event.inputs.mode || 'check' }} ${{ github.event.inputs.target }}
       - name: 存回 brand 檔
         if: github.event.inputs.mode == 'brand'
         run: |
