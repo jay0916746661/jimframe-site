@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "post / dry-run / check"
+        description: "post / loop / dry-run / check"
         default: "post"
 
 permissions:
@@ -38,7 +38,7 @@ jobs:
           cd tools/threads-poster
           if [ "$MODE" = "check" ]; then python poster.py --check; exit $?; fi
           if [ "$MODE" = "dry-run" ]; then python poster.py --dry-run; exit 0; fi
-          ROUNDS=1; [ "${{ github.event_name }}" = "schedule" ] && ROUNDS=60
+          ROUNDS=1; if [ "${{ github.event_name }}" = "schedule" ] || [ "$MODE" = "loop" ]; then ROUNDS=60; fi
           for i in $(seq 1 $ROUNDS); do
             git pull -q --rebase || true
             python poster.py
