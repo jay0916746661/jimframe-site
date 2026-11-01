@@ -31,6 +31,7 @@ jobs:
         timeout-minutes: 330
         env:
           THREADS_TOKENS: ${{ secrets.THREADS_TOKENS }}
+          META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
         run: |
           MODE="${{ github.event.inputs.mode || 'post' }}"
           git config user.name "threads-poster"

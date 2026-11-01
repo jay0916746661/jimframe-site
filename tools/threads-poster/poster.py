@@ -85,6 +85,8 @@ def publish(token, text, image_url="", topic_tag=""):
                             image_url=u, is_carousel_item="true")["id"])
         time.sleep(30)
         params.update(media_type="CAROUSEL", children=",".join(kids))
+    elif urls and urls[0].split("?")[0].lower().endswith((".mp4", ".mov")) or (urls and "video" in urls[0][:60]):
+        params.update(media_type="VIDEO", video_url=urls[0])
     elif urls:
         params.update(media_type="IMAGE", image_url=urls[0])
     else:
@@ -101,6 +103,14 @@ def publish(token, text, image_url="", topic_tag=""):
             raise
     cid = creation["id"]
     time.sleep(30 if urls else 5)
+    if params.get("media_type") == "VIDEO":  # 影片要等 Threads 處理完
+        for _ in range(20):
+            st = api("GET", cid, token, fields="status,error_message")
+            if st.get("status") == "FINISHED":
+                break
+            if st.get("status") == "ERROR":
+                raise RuntimeError(f"影片處理失敗：{st.get('error_message')}")
+            time.sleep(15)
     for attempt in range(3):
         try:
             return api("POST", "me/threads_publish", token, creation_id=cid)["id"]
@@ -108,6 +118,36 @@ def publish(token, text, image_url="", topic_tag=""):
             if attempt == 2:
                 raise
             time.sleep(30)
+
+
+def resolve_ig_video(account, day):
+    """igvideo:today → 找這個帳號在 IG 當天發的 Reel，回傳 (影片網址, IG 文案)。"""
+    tok = os.environ.get("META_USER_TOKEN", "").strip()
+    if not tok:
+        raise RuntimeError("沒有 META_USER_TOKEN，抓不到 IG 影片")
+    g = "https://graph.facebook.com/v21.0"
+    pages = requests.get(f"{g}/me/accounts", params={"access_token": tok, "limit": 100,
+                         "fields": "access_token,instagram_business_account{id,username}"}, timeout=60).json()
+    for p in pages.get("data", []):
+        ig = p.get("instagram_business_account") or {}
+        if ig.get("username") != account:
+            continue
+        media = requests.get(f"{g}/{ig['id']}/media", params={"access_token": p["access_token"], "limit": 10,
+                             "fields": "media_type,media_product_type,media_url,caption,timestamp"}, timeout=60).json()
+        for m in media.get("data", []):
+            ts = datetime.strptime(m["timestamp"][:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).astimezone(TPE)
+            if m.get("media_type") == "VIDEO" and ts.strftime("%Y-%m-%d") == day and m.get("media_url"):
+                return m["media_url"], m.get("caption", "")
+        raise RuntimeError(f"{account} 在 IG 上 {day} 還沒有 Reel")
+    raise RuntimeError(f"META_USER_TOKEN 裡找不到 {account}")
+
+
+def short_caption(c, limit=480):
+    c = c.strip()
+    if len(c) <= limit:
+        return c
+    cut = c[:limit]
+    return cut[: max(cut.rfind("\n"), cut.rfind("。")) + 1] or cut
 
 
 def read_queue():
@@ -189,6 +229,10 @@ def main():
             sent += 1
             continue
         try:
+            if r["image_url"].startswith("igvideo:"):
+                vurl, cap = resolve_ig_video(acct, r["publish_at"][:10])
+                r["text"] = r["text"] or short_caption(cap)
+                r["image_url"] = vurl
             try:
                 pid = publish(tokens[acct], r["text"], r["image_url"], r["topic_tag"])
             except Exception as e:  # noqa: BLE001
