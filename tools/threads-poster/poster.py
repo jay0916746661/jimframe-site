@@ -75,9 +75,18 @@ def api(method, path, token, **params):
 
 
 def publish(token, text, image_url="", topic_tag=""):
+    """image_url 可放多張，用 | 隔開：1 張＝單圖，2–20 張＝輪播。"""
+    urls = [u.strip() for u in (image_url or "").split("|") if u.strip()][:20]
     params = {"text": text}
-    if image_url:
-        params.update(media_type="IMAGE", image_url=image_url)
+    if len(urls) >= 2:
+        kids = []
+        for u in urls:
+            kids.append(api("POST", "me/threads", token, media_type="IMAGE",
+                            image_url=u, is_carousel_item="true")["id"])
+        time.sleep(30)
+        params.update(media_type="CAROUSEL", children=",".join(kids))
+    elif urls:
+        params.update(media_type="IMAGE", image_url=urls[0])
     else:
         params["media_type"] = "TEXT"
     if topic_tag:
@@ -91,14 +100,14 @@ def publish(token, text, image_url="", topic_tag=""):
         else:
             raise
     cid = creation["id"]
-    time.sleep(30 if image_url else 5)
-    for attempt in range(2):  # 最多重試 2 次
+    time.sleep(30 if urls else 5)
+    for attempt in range(3):
         try:
             return api("POST", "me/threads_publish", token, creation_id=cid)["id"]
         except RuntimeError:
-            if attempt == 1:
+            if attempt == 2:
                 raise
-            time.sleep(20)
+            time.sleep(30)
 
 
 def read_queue():
