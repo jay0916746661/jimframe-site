@@ -142,10 +142,23 @@ def stats(account="art101.tw", n=5):
         ig = p.get("instagram_business_account") or {}
         if ig.get("username") != account:
             continue
-        d = get(ig["id"], p["access_token"], fields=f"followers_count,media_count,media.limit({n}){{caption,like_count,comments_count,timestamp,media_type}}")
+        d = get(ig["id"], p["access_token"], fields=f"followers_count,media_count,media.limit({n}){{id,caption,like_count,comments_count,timestamp,media_type}}")
         print(f"{account}：追蹤 {d.get('followers_count')}，貼文 {d.get('media_count')}")
         for m in d.get("media", {}).get("data", []):
-            print(f"  {m['timestamp'][:10]} {m['media_type']:<14} 讚 {m.get('like_count')} 留言 {m.get('comments_count')}｜{(m.get('caption') or '')[:18]}")
+            extra = ""
+            try:
+                ins = get(f"{m['id']}/insights", p["access_token"], metric="reach,views,saved,shares")
+                v = {x["name"]: x["values"][0]["value"] for x in ins.get("data", [])}
+                extra = f" 觸及 {v.get('reach')} 觀看 {v.get('views')} 收藏 {v.get('saved')} 分享 {v.get('shares')}"
+            except RuntimeError as e:
+                extra = f" （數據：{str(e)[:60]}）"
+            print(f"  {m['timestamp'][:10]} {m['media_type']:<14} 讚 {m.get('like_count')} 留言 {m.get('comments_count')}{extra}｜{(m.get('caption') or '')[:16]}")
+        try:
+            ins = get(f"{ig['id']}/insights", p["access_token"], metric="reach", period="day", metric_type="total_value", breakdown="follow_type")
+            res = ins["data"][0]["total_value"]["breakdowns"][0]["results"]
+            print("  昨天觸及：" + "、".join(f"{'粉絲' if r['dimension_values'][0]=='FOLLOWER' else '非粉絲'} {r['value']}" for r in res))
+        except Exception as e:  # noqa: BLE001
+            print(f"  （粉絲／非粉絲觸及：{str(e)[:80]}）")
     return 0
 
 
