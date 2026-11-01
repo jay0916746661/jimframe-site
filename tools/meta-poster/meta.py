@@ -176,7 +176,42 @@ def discover(target, me="art101.tw", n=5):
     return 0
 
 
+def research(me="art101.tw", n=30):
+    """批次查 social/research/targets.csv 的帳號，存 accounts.csv、posts.csv。"""
+    import csv, pathlib
+    base = pathlib.Path("../../social/research")
+    targets = list(csv.DictReader((base / "targets.csv").open(encoding="utf-8")))
+    page = next(p for p in pages() if (p.get("instagram_business_account") or {}).get("username") == me)
+    igid, tok = page["instagram_business_account"]["id"], page["access_token"]
+    acc_rows, post_rows = [], []
+    for t in targets:
+        h = t["handle"].strip()
+        f = (f"business_discovery.username({h}){{username,name,followers_count,media_count,"
+             f"media.limit({n}){{caption,like_count,comments_count,timestamp,media_type,permalink}}}}")
+        try:
+            d = get(igid, tok, fields=f)["business_discovery"]
+        except RuntimeError as e:
+            print(f"{h}: 查不到（{str(e)[:50]}）")
+            continue
+        acc_rows.append({"niche": t["niche"], "handle": h, "name": d.get("name", ""),
+                         "followers": d.get("followers_count", 0), "posts": d.get("media_count", 0)})
+        for m in d.get("media", {}).get("data", []):
+            post_rows.append({"niche": t["niche"], "handle": h, "followers": d.get("followers_count", 0),
+                              "time": m.get("timestamp", ""), "type": m.get("media_type", ""),
+                              "likes": m.get("like_count", ""), "comments": m.get("comments_count", ""),
+                              "url": m.get("permalink", ""),
+                              "caption": (m.get("caption") or "").replace("\n", " ")[:200]})
+        print(f"{h}: OK 追蹤 {d.get('followers_count')}")
+    for name, rows in (("accounts.csv", acc_rows), ("posts.csv", post_rows)):
+        if rows:
+            with (base / name).open("w", encoding="utf-8", newline="") as fh:
+                w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
+    return 0
+
+
 if __name__ == "__main__":
+    if "--research" in sys.argv:
+        sys.exit(research())
     if "--stats" in sys.argv:
         sys.exit(stats())
     if "--discover" in sys.argv:

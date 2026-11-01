@@ -22,6 +22,7 @@ jobs:
           sparse-checkout: |
             tools/meta-poster
             social/brand
+            social/research
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -31,9 +32,9 @@ jobs:
           META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
         run: cd tools/meta-poster && python meta.py --${{ github.event.inputs.mode || 'check' }} ${{ github.event.inputs.target }}
       - name: 存回 brand 檔
-        if: github.event.inputs.mode == 'brand'
+        if: github.event.inputs.mode == 'brand' || github.event.inputs.mode == 'research'
         run: |
           git config user.name "meta-poster"
           git config user.email "meta-poster@users.noreply.github.com"
-          git add social/brand
+          git add social/brand social/research
           git diff --cached --quiet || (git commit -m "粉專品牌素材（IG 大頭貼與簡介）" && git pull --rebase && git push)
