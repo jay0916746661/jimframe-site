@@ -223,7 +223,8 @@ def main():
         if acct not in tokens:
             resolve_names(tokens)
         if acct not in tokens:
-            r["status"], r["note"] = "失敗", "THREADS_TOKENS 裡沒有這個帳號"
+            # 不標失敗：可能是這次執行還沒讀到新加的權杖，留著「待發」等下一輪
+            print(f"[略過] {r['id']} {acct}：這次執行讀不到它的權杖，保留待發")
             blocked.add(acct)
             continue
         if dry:

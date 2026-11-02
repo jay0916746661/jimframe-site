@@ -62,7 +62,14 @@ def publish(row, igid, tok):
         cid = c["id"]
     else:
         raise RuntimeError(f"不認得的 type：{row['type']}")
-    return meta.post(f"{igid}/media_publish", tok, creation_id=cid)["id"]
+    # 「Media ID is not available」常是 IG 還沒準備好；同一個容器只能發一次，重試不會重複發
+    for attempt in range(4):
+        try:
+            return meta.post(f"{igid}/media_publish", tok, creation_id=cid)["id"]
+        except Exception:  # noqa: BLE001
+            if attempt == 3:
+                raise
+            time.sleep(30)
 
 
 def read():
