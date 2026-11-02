@@ -3,6 +3,10 @@ name: Threads 自動發文
 on:
   schedule:
     - cron: "7,37 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - tools/threads-poster/queue.csv
   workflow_dispatch:
     inputs:
       mode:
@@ -40,7 +44,7 @@ jobs:
           cd tools/threads-poster
           if [ "$MODE" = "check" ]; then python poster.py --check; exit $?; fi
           if [ "$MODE" = "dry-run" ]; then python poster.py --dry-run; exit 0; fi
-          ROUNDS=1; if [ "${{ github.event_name }}" = "schedule" ] || [ "$MODE" = "loop" ]; then ROUNDS=60; fi
+          ROUNDS=1; if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "$MODE" = "loop" ]; then ROUNDS=60; fi
           for i in $(seq 1 $ROUNDS); do
             git pull -q --rebase || true
             python poster.py
