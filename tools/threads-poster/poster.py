@@ -26,7 +26,9 @@ PER_RUN_CAP = 6    # 每次執行最多發幾則
 
 def load_tokens():
     tokens = {}
-    for line in os.environ.get("THREADS_TOKENS", "").splitlines():
+    # 主清單 THREADS_TOKENS＋追加清單 THREADS_TOKENS_EXTRA（新帳號放這裡，不用重貼舊的）
+    raw = os.environ.get("THREADS_TOKENS", "") + "\n" + os.environ.get("THREADS_TOKENS_EXTRA", "")
+    for line in raw.splitlines():
         line = line.strip()
         if "=" in line:
             acct, tok = line.split("=", 1)
