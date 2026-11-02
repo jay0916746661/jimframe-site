@@ -129,10 +129,15 @@ IG_QUEUE = Path(__file__).resolve().parent.parent / "meta-poster" / "ig_queue.cs
 def repo_reel(account, publish_at):
     """igvideo:today 優先用 repo 裡的原始 Reel 檔（GitHub Pages 網址）。
     IG 的 CDN 影片網址常被 Threads 判「影片處理失敗：UNKNOWN」（11/2 tech、藝術、觀光客都因此變純文字）。"""
-    if not IG_QUEUE.exists():
+    try:
+        if IG_QUEUE.exists():
+            text = IG_QUEUE.read_text(encoding="utf-8-sig")
+        else:  # 只拉了 threads-poster 的舊執行：改從 GitHub Pages 讀 IG 佇列
+            text = requests.get(PAGES + "tools/meta-poster/ig_queue.csv", timeout=60).content.decode("utf-8-sig")
+    except Exception:  # noqa: BLE001
         return None
-    with IG_QUEUE.open(encoding="utf-8-sig", newline="") as f:
-        rows = [r for r in csv.DictReader(f)
+    import io
+    rows = [r for r in csv.DictReader(io.StringIO(text))
                 if r.get("account") == account and r.get("type") == "reel" and r.get("status") == "已發"
                 and r.get("publish_at", "")[:10] == publish_at[:10] and r.get("publish_at", "") <= publish_at]
     if not rows:
