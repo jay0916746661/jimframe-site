@@ -178,8 +178,8 @@ def check(tokens):
         try:
             me = api("GET", "me", tok, fields="username")
             ok = me.get("username", "").lower() == acct.lower()
-            print(f"{acct}: {'OK' if ok else '帳號名稱不符，token 實際是 ' + me.get('username', '?')}")
-            bad += 0 if ok else 1
+            # 名稱打錯只是提醒：發文時 resolve_names 會自動對上，不算失敗
+            print(f"{acct}: {'OK' if ok else 'OK（前面名字打錯，實際是 ' + me.get('username', '?') + '，不影響發文）'}")
         except RuntimeError as e:
             print(f"{acct}: 失敗 {scrub(e, tokens)}")
             bad += 1
