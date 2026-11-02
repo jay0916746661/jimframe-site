@@ -2,6 +2,7 @@
 python meta.py --check   列出這個權杖能管的粉專和 IG 帳號、已授權的權限
 """
 import os, sys, requests
+from datetime import datetime, timezone
 
 API = "https://graph.facebook.com/v21.0"
 TOKEN = os.environ.get("META_USER_TOKEN", "").strip()
@@ -223,7 +224,54 @@ def captions(account="jimframe", n=100):
     return 0
 
 
+def ranking(days=7):
+    """全部帳號近 N 天成效排行：追蹤、發文數、觸及（粉絲／非粉絲）、觀看、分享、收藏。"""
+    import time as _t
+    since = int(_t.time()) - days * 86400
+    out = []
+    for p in pages():
+        ig = p.get("instagram_business_account") or {}
+        if not ig:
+            continue
+        tok = p["access_token"]
+        info = get(ig["id"], tok, fields="username,followers_count")
+        row = {"帳號": info["username"], "追蹤": info.get("followers_count", 0), "貼文": 0,
+               "觸及": 0, "觀看": 0, "分享": 0, "收藏": 0, "非粉絲%": "-", "最佳": ""}
+        best = -1
+        media = get(f"{ig['id']}/media", tok, fields="id,caption,timestamp,media_type", limit=40).get("data", [])
+        for m in media:
+            ts = datetime.strptime(m["timestamp"][:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+            if ts < since:
+                continue
+            row["貼文"] += 1
+            try:
+                ins = get(f"{m['id']}/insights", tok, metric="reach,views,saved,shares")
+                v = {x["name"]: x["values"][0]["value"] for x in ins.get("data", [])}
+            except RuntimeError:
+                continue
+            row["觸及"] += v.get("reach", 0); row["觀看"] += v.get("views", 0)
+            row["分享"] += v.get("shares", 0); row["收藏"] += v.get("saved", 0)
+            if v.get("views", 0) > best:
+                best = v.get("views", 0); row["最佳"] = f"{(m.get('caption') or '')[:14]}（{best}）"
+        try:
+            ins = get(f"{ig['id']}/insights", tok, metric="reach", period="day", metric_type="total_value",
+                      breakdown="follow_type", since=since, until=int(_t.time()))
+            res = ins["data"][0]["total_value"]["breakdowns"][0]["results"]
+            tot = sum(r["value"] for r in res) or 1
+            non = sum(r["value"] for r in res if r["dimension_values"][0] != "FOLLOWER")
+            row["非粉絲%"] = f"{non * 100 // tot}%"
+        except Exception:  # noqa: BLE001
+            pass
+        out.append(row)
+    out.sort(key=lambda r: r["觀看"], reverse=True)
+    for i, r in enumerate(out, 1):
+        print(f"RANK|{i}|" + "|".join(str(r[k]) for k in ["帳號", "追蹤", "貼文", "觸及", "觀看", "分享", "收藏", "非粉絲%", "最佳"]))
+    return 0
+
+
 if __name__ == "__main__":
+    if "--ranking" in sys.argv:
+        sys.exit(ranking())
     if "--captions" in sys.argv:
         sys.exit(captions())
     if "--research" in sys.argv:
