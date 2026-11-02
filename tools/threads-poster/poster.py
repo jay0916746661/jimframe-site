@@ -122,6 +122,25 @@ def publish(token, text, image_url="", topic_tag=""):
             time.sleep(30)
 
 
+PAGES = "https://jay0916746661.github.io/jimframe-site/"
+IG_QUEUE = Path(__file__).resolve().parent.parent / "meta-poster" / "ig_queue.csv"
+
+
+def repo_reel(account, publish_at):
+    """igvideo:today 優先用 repo 裡的原始 Reel 檔（GitHub Pages 網址）。
+    IG 的 CDN 影片網址常被 Threads 判「影片處理失敗：UNKNOWN」（11/2 tech、藝術、觀光客都因此變純文字）。"""
+    if not IG_QUEUE.exists():
+        return None
+    with IG_QUEUE.open(encoding="utf-8-sig", newline="") as f:
+        rows = [r for r in csv.DictReader(f)
+                if r.get("account") == account and r.get("type") == "reel" and r.get("status") == "已發"
+                and r.get("publish_at", "")[:10] == publish_at[:10] and r.get("publish_at", "") <= publish_at]
+    if not rows:
+        return None
+    r = max(rows, key=lambda x: x["publish_at"])
+    return PAGES + r["media"].strip().split()[0], r.get("caption", "")
+
+
 def resolve_ig_video(account, day):
     """igvideo:today → 找這個帳號在 IG 當天發的 Reel，回傳 (影片網址, IG 文案)。"""
     tok = os.environ.get("META_USER_TOKEN", "").strip()
@@ -233,7 +252,8 @@ def main():
             continue
         try:
             if r["image_url"].startswith("igvideo:"):
-                vurl, cap = resolve_ig_video(acct, r["publish_at"][:10])
+                hit = repo_reel(acct, r["publish_at"])
+                vurl, cap = hit if hit else resolve_ig_video(acct, r["publish_at"][:10])
                 r["text"] = r["text"] or short_caption(cap)
                 r["image_url"] = vurl
             try:
