@@ -36,6 +36,10 @@ jobs:
         env:
           META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
         run: |
+          # 先拉最新的佇列：排隊中的上一輪可能剛發完並寫回「已發」，用舊版本會重複發（11/2 坂本 EP01 重複事件）
+          git config user.name "ig-poster"
+          git config user.email "ig-poster@users.noreply.github.com"
+          git pull -q --rebase origin main
           cd tools/meta-poster
           if [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event.inputs.mode }}" = "check" ]; then python ig_publish.py --check; fi
           if [ "${{ github.event.inputs.mode }}" != "check" ]; then python ig_publish.py; fi
