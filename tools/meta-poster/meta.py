@@ -269,7 +269,40 @@ def ranking(days=7):
     return 0
 
 
+def videos():
+    """全部帳號已發布的影片（Reels）清單：日期、帳號、觀看、第一行文案。印成 VID| 開頭。"""
+    for p in pages():
+        ig = p.get("instagram_business_account") or {}
+        if not ig:
+            continue
+        tok = p["access_token"]
+        name = get(ig["id"], tok, fields="username").get("username", "")
+        url = f"{ig['id']}/media"
+        params = dict(fields="id,caption,timestamp,media_type,permalink", limit=50)
+        n = 0
+        while url and n < 200:
+            page = get(url, tok, **params)
+            for m in page.get("data", []):
+                n += 1
+                if m.get("media_type") != "VIDEO":
+                    continue
+                try:
+                    ins = get(f"{m['id']}/insights", tok, metric="views")
+                    views = ins["data"][0]["values"][0]["value"]
+                except Exception:  # noqa: BLE001
+                    views = "-"
+                cap = (m.get("caption") or "").strip().splitlines()
+                print(f"VID|{name}|{m['timestamp'][:10]}|{views}|{(cap[0] if cap else '')[:40]}|{m.get('permalink','')}")
+            nxt = page.get("paging", {}).get("cursors", {}).get("after")
+            if not page.get("paging", {}).get("next") or not nxt:
+                break
+            params["after"] = nxt
+    return 0
+
+
 if __name__ == "__main__":
+    if "--videos" in sys.argv:
+        sys.exit(videos())
     if "--ranking" in sys.argv:
         sys.exit(ranking())
     if "--captions" in sys.argv:
