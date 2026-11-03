@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{margin:0;box-sizing:border-box}body{background:#0E1620}
+.c{width:1080px;height:1350px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 40% 30%,#16222f 0%,#0E1620 65%);color:#E6EAEE;font-family:"Noto Sans CJK TC",sans-serif}
+.t{position:absolute;left:90px;right:90px;font-family:"Noto Serif CJK TC",serif;font-weight:900;line-height:1.3}
+.s{position:absolute;left:90px;right:90px;font-size:40px;line-height:1.75;color:#9AA6B2}
+.acc{color:#E3A544}.art{position:absolute;left:90px;right:90px}
+.pg{position:absolute;right:90px;bottom:70px;font:28px "DejaVu Sans Mono",monospace;color:#5d6b7a}
+.hd{position:absolute;left:90px;bottom:70px;font-size:28px;color:#5d6b7a}
+.tag{position:absolute;left:90px;top:90px;font:30px "DejaVu Sans Mono",monospace;letter-spacing:.12em;color:#E3A544}
+</style></head><body><div id="st"></div>
+<script src="../data.js"></script><script src="common.js"></script><script src="chord.js"></script><script src="slides.js"></script>
+<script>
+function cd(k,w,h){var C=[{f:['x',5,7,5,6,5],base:4,notes:['','D','A','C','F','A'],title:'Dm7',barre:{fret:5,from:1,to:5}},{f:[3,5,3,4,3,3],base:2,notes:['G','D','F','B','D','G'],title:'G7',barre:{fret:3,from:0,to:5}},{f:['x',3,5,4,5,'x'],base:2,notes:['','C','G','B','E',''],title:'Cmaj7'}][k];return chordSVG({f:C.f,base:C.base,notes:C.notes,title:C.title,barre:C.barre,w:w,h:h});}
+function art(k,w,h){if(k==='listen'||k==='library'||k==='chord')return sketchScene(k==='chord'?'board':k,w,h,DP,9,false);return sketchTile(k,w,h,DP,11,false);}
+function show(e,i){var S=SL[e],c=S.cards[i],tag='爵士小故事',h='<div class="c"><div class="tag">JAZZ 101 · '+tag+'</div>';
+ if(i===0)h+='<div class="art" style="top:170px;height:620px">'+art(S.art,900,620)+'</div><div class="t" style="top:840px;font-size:86px">'+c[0]+'</div>';
+ else if(c[1]==='CHORDS')h+='<div class="t" style="top:200px;font-size:72px">'+c[0]+'</div><div style="position:absolute;left:30px;top:380px;display:flex">'+cd(0,340,460)+cd(1,340,460)+cd(2,340,460)+'</div><div class="s" style="top:880px;text-align:center;left:0;right:0">x57565　｜　353433　｜　x3545x</div><div class="s" style="top:960px;text-align:center;left:0;right:0">第 5 格　→　第 3 格　→　第 3 格</div>';
+ else h+='<div class="t" style="top:200px;font-size:76px">'+c[0]+'</div><div class="s" style="top:'+(c[0].indexOf('<br>')>=0?520:400)+'px">'+c[1]+'</div>';
+ h+='<div class="hd">爵士101</div><div class="pg">'+(i+1)+' / 4</div></div>';document.getElementById('st').innerHTML=h;}
+</script></body></html>
