@@ -1,0 +1,7 @@
+"id","account","publish_at","type","media","link","caption","status","post_id","note"
+"example-text","範例粉專","2099-01-01 09:00","text","","https://example.com","範例：純文字，可加連結。這列不會發。","範例","","範例列，狀態不是待發，合併後不會發文"
+"example-link","範例粉專","2099-01-01 09:15","link","","https://example.com","範例：連結貼文。這列不會發。","範例","","範例列，狀態不是待發，合併後不會發文"
+"example-photo","範例粉專","2099-01-01 09:30","photo","social/media/_example/one.jpg","","範例：單張照片。這列不會發。","範例","","範例列，狀態不是待發，合併後不會發文"
+"example-photos","範例粉專","2099-01-01 10:00","photo","social/media/_example/a.jpg social/media/_example/b.jpg","","範例：多張照片，路徑用空白分開。這列不會發。","範例","","範例列，狀態不是待發，合併後不會發文"
+"example-video","範例粉專","2099-01-01 10:30","video","social/media/_example/clip.mp4","","範例：一般影片。這列不會發。","範例","","範例列，狀態不是待發，合併後不會發文"
+"example-reel","範例粉專","2099-01-01 11:00","reel","social/media/_example/reel.mp4","","範例：Reels。這列不會發。","範例","","範例列，狀態不是待發，合併後不會發文"
