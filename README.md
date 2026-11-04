@@ -16,3 +16,7 @@
 | `tasks/` | 任務板：Claude 寫任務 → Codex 實作開 PR → Claude 審查 → Jim 合併 | — |
 
 規則：兩邊都從 `main` 拉最新、開分支做、PR 合回 `main`。主站程式只改 `site-source/`，改完要記得同步回 ChatGPT Sites 那邊上線。
+
+## 粉專自動發文
+
+Facebook 粉專的排程在 [`tools/meta-poster/`](tools/meta-poster/README.md)（IG 發文在同一資料夾，彼此獨立）。加一則貼文：編輯 `fb_queue.csv`，`account` 填粉專名稱或數字 ID，`publish_at` 用台北時間（`2026-11-05 15:00`），`type` 填 `text`、`link`、`photo`、`video` 或 `reel`，`media` 填 repo 裡的檔案路徑，`status` 改成 `待發`。檔案裡現有的列是 `範例`，不會發出去。

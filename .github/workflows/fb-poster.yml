@@ -1,0 +1,81 @@
+name: FB 粉專定時發文
+
+on:
+  schedule:
+    # 跟 IG（:02/:17/:32/:47）和 Threads（:07/:37）錯開。時間是 UTC，貼文時間仍以台北時間在 csv 裡判斷。
+    - cron: "12,27,42,57 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - tools/meta-poster/fb_queue.csv
+      - tools/meta-poster/fb_publish.py
+      - .github/workflows/fb-poster.yml
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run / check / post（預設 dry-run，不會發文）"
+        default: "dry-run"
+        type: choice
+        options:
+          - dry-run
+          - check
+          - post
+
+permissions:
+  contents: write
+
+concurrency:
+  # 查詢不跟 5 小時守候搶同一個 runner；真正發文的排程、推送、手動 post 共用一條，避免同時改佇列。
+  group: ${{ (github.event.inputs.mode == 'check' || github.event.inputs.mode == 'dry-run') && 'fb-poster-read' || 'fb-poster' }}
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/meta-poster
+          fetch-depth: 100
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: 發文（定時或推送觸發時連續守 5 小時，每 5 分鐘檢查；手動 post 只跑一輪）
+        timeout-minutes: 330
+        env:
+          META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
+        run: |
+          git config user.name "fb-poster"
+          git config user.email "fb-poster@users.noreply.github.com"
+          cd tools/meta-poster
+          MODE="${{ github.event.inputs.mode }}"
+          if [ -z "$MODE" ]; then MODE=post; fi
+          commit_status() {
+            if [ -f fb_status.txt ]; then git add fb_status.txt; fi
+            if ! git diff --cached --quiet; then
+              git commit -q -m "FB 粉專權限檢查 $(date -u +%F' '%H:%M)"
+              git pull -q --rebase origin main && git push -q || true
+            fi
+          }
+          if [ "$MODE" = "check" ]; then
+            code=0
+            python -u fb_publish.py --check || code=$?
+            commit_status
+            exit $code
+          fi
+          if [ "$MODE" = "dry-run" ]; then python -u fb_publish.py --dry-run; exit 0; fi
+          if [ "$MODE" != "post" ]; then echo "不認得的 mode"; exit 1; fi
+          ROUNDS=1
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ]; then ROUNDS=60; fi
+          for i in $(seq 1 $ROUNDS); do
+            git pull -q --rebase origin main || true
+            python -u fb_publish.py || true
+            git add fb_queue.csv
+            if [ -f fb_status.txt ]; then git add fb_status.txt; fi
+            if ! git diff --cached --quiet; then
+              git commit -q -m "FB 發文結果 $(date -u +%F' '%H:%M)"
+              git pull -q --rebase origin main && git push -q || true
+            fi
+            if [ $i -lt $ROUNDS ]; then sleep 300; fi
+          done
