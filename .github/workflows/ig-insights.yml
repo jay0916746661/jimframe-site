@@ -1,0 +1,80 @@
+name: IG 數據抓取（只讀）
+
+# 手動抓 IG 成效。只打 Graph API GET，只提交 social/insights/。
+# 不要加 schedule，也不要加 push／pull_request 觸發。
+# 權杖沿用 META_USER_TOKEN，需要 pages_show_list、pages_read_engagement、
+# instagram_basic（或 instagram_business_basic）、
+# instagram_manage_insights（或 instagram_business_manage_insights）。
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "每個帳號最多抓幾則（預設 100，最多 200）"
+        default: "100"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ig-insights
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/meta-poster
+            social/insights
+          fetch-depth: 100
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests
+
+      - name: 抓取 IG 數據（只讀 GET）
+        id: fetch
+        continue-on-error: true
+        env:
+          META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
+          IG_INSIGHTS_LIMIT: ${{ github.event.inputs.limit }}
+        run: python -u tools/meta-poster/ig_insights.py
+
+      - name: 只把 social/insights 存回 repo
+        if: ${{ !cancelled() && (steps.fetch.outcome == 'success' || steps.fetch.outcome == 'failure') }}
+        run: |
+          set -euo pipefail
+          git config user.name "ig-insights"
+          git config user.email "ig-insights@users.noreply.github.com"
+          git sparse-checkout add social/insights
+          mkdir -p social/insights
+          if ! find social/insights -type f -print -quit | grep -q .; then
+            echo "沒有新的數據檔"
+            exit 0
+          fi
+          git add -- social/insights
+          bad=$(git diff --cached --name-only | grep -v '^social/insights/' || true)
+          if [ -n "${bad}" ]; then
+            echo "拒絕提交 social/insights 以外的檔案"
+            printf '%s\n' "${bad}"
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            echo "沒有新的數據檔"
+            exit 0
+          fi
+          git commit -m "IG 數據 $(TZ=Asia/Taipei date +%F)"
+          git pull --rebase origin "${GITHUB_REF_NAME:?}"
+          git push origin "HEAD:${GITHUB_REF_NAME:?}"
+
+      - name: 抓取失敗就讓這次執行變紅
+        if: ${{ !cancelled() && steps.fetch.outcome == 'failure' }}
+        run: exit 1
