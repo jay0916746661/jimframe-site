@@ -1,0 +1,5 @@
+# 語音只留在 Actions artifact 或本機試聽，不要進 git
+out/
+*.mp3
+__pycache__/
+*.pyc

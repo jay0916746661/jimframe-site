@@ -1,0 +1,59 @@
+name: ElevenLabs TTS（手動）
+
+# 手動把一段文字轉成 mp3，上傳成這次執行的 artifact。
+# 只有 workflow_dispatch。不排程、不跟著 push 跑。
+# 不發 FB／IG／Threads，也不把音檔 commit 回 repo。
+# 每次成功呼叫都會消耗 ElevenLabs credits。
+
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: "要轉成語音的文字（會消耗 ElevenLabs credits）"
+        required: true
+        type: string
+      voice_id:
+        description: "voice_id，空白就用 Secret ELEVENLABS_VOICE_ID"
+        required: false
+        default: ""
+        type: string
+      model_id:
+        description: "model_id，空白就用 eleven_multilingual_v2"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  tts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/elevenlabs-tts
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests
+
+      - name: 產生 mp3
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+          TTS_TEXT: ${{ inputs.text }}
+          TTS_VOICE_ID: ${{ inputs.voice_id }}
+          TTS_MODEL_ID: ${{ inputs.model_id }}
+        run: python -u tools/elevenlabs-tts/tts.py --out tools/elevenlabs-tts/out/speech.mp3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: elevenlabs-tts-mp3
+          path: tools/elevenlabs-tts/out/speech.mp3
+          if-no-files-found: error
