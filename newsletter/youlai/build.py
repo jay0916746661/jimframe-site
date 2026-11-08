@@ -2,6 +2,11 @@
 # 用法：python3 build.py  （需要 Pillow、Node.js＋playwright）
 # 資料夾結構：img/venus.jpg（名畫原圖）、img/jim.jpg（Jim 的照片）
 import base64, subprocess, pathlib
+
+# ★ 刊名：改這三行就能整份換名（暫名）
+NAME = "藝術101 電子報"
+MAST = "藝術101"
+NAME_EN = "Art 101 Letter"
 from PIL import Image
 
 D = pathlib.Path(__file__).parent
@@ -25,11 +30,12 @@ for name, box in crops.items():
 src.save(IMG / "venus_s.jpg", quality=82)
 
 # 2. 把圖片以 data URI 嵌進模板（artifact 不能讀外部圖片）
-t = (D / "tpl_v3.html").read_text(encoding="utf-8")
+t = (D / "tpl_v4.html").read_text(encoding="utf-8")
 slots = {"cover": "cover.jpg", "venus": "venus_s.jpg", "face": "c_face.jpg", "feet": "c_feet.jpg",
          "zephyr": "c_zephyr.jpg", "hora": "c_hora.jpg", "jim": "jim.jpg", "strip": "strip.jpg"}
 for k, f in slots.items():
     t = t.replace("{{" + k + "}}", "data:image/jpeg;base64," + base64.b64encode((IMG / f).read_bytes()).decode())
+t = t.replace("{{NAME}}", NAME).replace("{{MAST}}", MAST).replace("{{NAME_EN}}", NAME_EN)
 assert "{{" not in t, "還有沒填的圖片欄位"
 out = D / "newsletter_plan.html"
 out.write_text(t, encoding="utf-8")
@@ -40,7 +46,7 @@ const {{chromium}}=require('playwright');(async()=>{{
  const b=await chromium.launch();const p=await b.newPage();
  await p.goto('file://{out}');await p.waitForTimeout(2500);
  await p.emulateMedia({{media:'print'}});
- await p.pdf({{path:'{D}/由來_第1期_樣刊.pdf',format:'A4',printBackground:true,margin:{{top:0,bottom:0,left:0,right:0}}}});
+ await p.pdf({{path:'{D}/電子報_第1期_樣刊.pdf',format:'A4',printBackground:true,margin:{{top:0,bottom:0,left:0,right:0}}}});
  await b.close()}})()"""
 subprocess.run(["node", "-e", js], check=True)
-print("完成：newsletter_plan.html＋由來_第1期_樣刊.pdf")
+print("完成：newsletter_plan.html＋電子報_第1期_樣刊.pdf")

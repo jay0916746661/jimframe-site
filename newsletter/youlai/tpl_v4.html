@@ -1,0 +1,384 @@
+<title>{{NAME}}週報企劃</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Noto+Sans+TC:wght@400;500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+/* Layout: 一頁一頁的 A4 雜誌內頁，攤在桌上；紙張顏色固定（紙就是紙），只有桌面跟著深淺色切換 */
+:root{
+  --desk:#d9d6cf; --desk-ink:#3a3a3a;
+  --paper:#f6f1e6; --ink:#1c1b19; --soft:#4b4840; --muted:#857f72; --rule:#cfc6b4;
+  --ultra:#22397a; --gold:#9b7432; --wash:#ebe3d2;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --roman:"Cormorant Garamond","Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--desk:#1d1c1a;--desk-ink:#cfcac0;color-scheme:dark}}
+:root[data-theme="dark"]{--desk:#1d1c1a;--desk-ink:#cfcac0;color-scheme:dark}
+body{background:var(--desk);color:var(--desk-ink);font-family:var(--sans)}
+.desk{padding-block:28px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px;justify-items:center}
+.note{max-width:794px;width:100%;font-size:14px;line-height:1.8;display:grid;gap:6px}
+.note b{font-size:12px;letter-spacing:.18em}
+.note h1{font-family:var(--serif);font-weight:900;font-size:26px;margin:0;line-height:1.35;text-wrap:balance}
+.slot{width:min(794px,100%);}
+.pg{
+  width:794px;height:1123px;position:relative;overflow:hidden;
+  background-color:var(--paper);color:var(--ink);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .3  0 0 0 0 .22  0 0 0 .07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  box-shadow:0 1px 2px rgba(0,0,0,.12),0 18px 40px -22px rgba(0,0,0,.45);
+  zoom:var(--z,1);
+  font-family:var(--serif);
+}
+.in{position:absolute;inset:64px 70px 70px;display:flex;flex-direction:column;gap:22px}
+.run{position:absolute;top:28px;left:70px;right:70px;display:flex;justify-content:space-between;font:500 10.5px var(--sans);letter-spacing:.22em;color:var(--muted);border-bottom:.6px solid var(--rule);padding-bottom:8px}
+.folio{position:absolute;bottom:28px;left:70px;right:70px;display:flex;justify-content:space-between;align-items:baseline;font-family:var(--roman);font-size:14px;color:var(--muted)}
+.folio i{font-style:italic}
+p{margin:0}
+.cols{column-count:2;column-gap:34px;font-size:15px;line-height:2.05;text-align:justify}
+.cols p{margin:0 0 .9em;text-indent:2em}
+.cols p.ni{text-indent:0}
+.sec{display:flex;gap:14px;align-items:baseline;border-top:1.5px solid var(--ink);padding-top:10px}
+.sec b{font:700 11px var(--sans);letter-spacing:.24em;color:var(--gold)}
+.sec span{font-weight:900;font-size:26px;line-height:1.3}
+.sub{font-weight:900;font-size:15.5px;margin:1.1em 0 .4em;break-after:avoid;color:var(--ultra)}
+.sub:first-child{margin-top:0}
+.cap{font:400 10.5px/1.6 var(--sans);color:var(--muted)}
+.dropcap::first-letter{font-size:3.4em;float:left;line-height:.95;padding:.06em .1em 0 0;font-weight:900;color:var(--ultra)}
+
+/* 封面 */
+.cover .in{inset:44px 56px 56px;gap:0}
+.cover .top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.cover .mast{font-weight:900;font-size:118px;line-height:.92;letter-spacing:.08em}
+.cover .meta{text-align:right;font:500 11px/1.9 var(--sans);letter-spacing:.2em;color:var(--soft)}
+.cover .meta .en{font-family:var(--roman);font-style:italic;font-size:20px;letter-spacing:.04em;color:var(--ink)}
+.cover .body{flex:1;display:grid;grid-template-columns:1fr 250px;gap:30px;padding-top:26px;min-height:0}
+.cover .img{min-height:0;display:flex;flex-direction:column;gap:6px}
+.cover .img img{width:100%;flex:1;min-height:0;object-fit:cover;object-position:center top;display:block}
+.cover .lines{display:flex;flex-direction:column;justify-content:space-between;padding-bottom:4px}
+.cover .lead small{display:block;font:700 11px var(--sans);letter-spacing:.24em;color:var(--gold);margin-bottom:10px}
+.cover .lead h2{font-weight:900;font-size:36px;line-height:1.32;margin:0;text-wrap:balance}
+.cover .lead p{margin-top:14px;font-size:14px;line-height:1.9;color:var(--soft)}
+.cover ul{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.cover li{border-top:.6px solid var(--rule);padding-top:10px;font-size:14px;line-height:1.6}
+.cover li b{display:block;font:700 10.5px var(--sans);letter-spacing:.2em;color:var(--muted);margin-bottom:2px}
+
+/* 目錄＋編者 */
+.toc{display:grid;grid-template-columns:250px 1fr;gap:40px;flex:1}
+.toc .list{display:grid;align-content:start;gap:0}
+.toc .list div{display:grid;grid-template-columns:40px 1fr;gap:8px;padding:20px 0;border-bottom:.6px solid var(--rule)}
+.toc .n{font-family:var(--roman);font-size:24px;line-height:1;color:var(--gold)}
+.toc .t{font-weight:600;font-size:15px;line-height:1.4}
+.toc .t small{display:block;font:400 11.5px/1.6 var(--sans);color:var(--muted);margin-top:3px}
+.ed{display:flex;flex-direction:column;gap:16px}
+.ed .k{font:700 11px var(--sans);letter-spacing:.24em;color:var(--gold)}
+.ed h3{margin:0;font-weight:900;font-size:28px;line-height:1.35}
+.ed .txt{font-size:16px;line-height:2.15;display:grid;gap:12px}
+.ed .sig{font-family:var(--roman);font-style:italic;font-size:30px;align-self:flex-end;margin-top:auto}
+.ed .sig small{display:block;font:400 11px var(--sans);font-style:normal;letter-spacing:.14em;color:var(--muted);text-align:right}
+.ed .draft{font:400 11px var(--sans);color:var(--gold);border:.6px dashed var(--gold);padding:4px 8px;align-self:flex-start}
+
+/* 開場 */
+.open h2{margin:0;font-weight:900;font-size:44px;line-height:1.3;text-wrap:balance}
+.open .dek{font-size:17.5px;line-height:1.95;color:var(--soft);border-left:3px solid var(--gold);padding-left:16px}
+.open .grid{display:grid;grid-template-columns:1fr 170px;gap:32px}
+.open .txt{font-size:16.5px;line-height:2.15;display:grid;gap:14px;align-content:start;text-align:justify}
+.spec{font:400 12px/1.75 var(--sans);display:grid;gap:10px;align-content:start;border-top:1.5px solid var(--ink);padding-top:10px}
+.spec div{display:grid;gap:1px;border-bottom:.6px solid var(--rule);padding-bottom:8px}
+.spec dt{font-size:10px;letter-spacing:.22em;color:var(--muted)}
+.spec .big img{width:100%;display:block;margin-bottom:4px}
+
+/* 細讀 */
+.det{display:grid;grid-template-columns:1fr 1fr;gap:20px 26px}
+.det figure{margin:0;display:grid;gap:8px}
+.det img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.det figcaption{font-size:14px;line-height:1.9}
+.det figcaption b{display:flex;gap:8px;align-items:baseline;font:700 11px var(--sans);letter-spacing:.16em;color:var(--ultra);margin-bottom:2px}
+.det figcaption b i{font-family:var(--roman);font-style:italic;font-size:18px;color:var(--gold);letter-spacing:0}
+.closing{font-size:16px;line-height:2.05;margin-top:auto;border-top:.6px solid var(--rule);padding-top:14px}
+
+/* 概念 */
+.quote{font-weight:900;font-size:31px;line-height:1.6;text-wrap:balance;margin:6px 0}
+.quote::before{content:"「";color:var(--gold)}
+.quote::after{content:"」";color:var(--gold)}
+.entry{background:var(--wash);padding:18px 22px;display:grid;gap:6px;font-size:13.5px;line-height:1.9}
+.entry .h{display:flex;gap:12px;align-items:baseline}
+.entry .h b{font-weight:900;font-size:20px}
+.entry .h i{font-family:var(--roman);font-size:17px;color:var(--soft)}
+.entry .pos{font:400 11px var(--sans);letter-spacing:.14em;color:var(--muted)}
+
+/* 後來＋延伸 */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.tl{display:grid;gap:0;align-content:start}
+.tl div{display:grid;grid-template-columns:78px 1fr;gap:10px;padding:20px 0;border-bottom:.6px solid var(--rule);font-size:15px;line-height:2}
+.tl .y{font-family:var(--roman);font-weight:600;font-size:19px;line-height:1.3;color:var(--ultra)}
+.ext{display:grid;gap:24px;align-content:start}
+.ext div{display:grid;gap:6px;border-top:.6px solid var(--rule);padding-top:14px}
+.ext .y{font-family:var(--roman);font-style:italic;font-size:30px;line-height:1;color:var(--gold)}
+.ext .n{font-weight:900;font-size:16px}
+.ext p{font-size:14.5px;line-height:1.95;color:var(--soft)}
+
+/* 看展專欄 */
+.col-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.col-head h2{margin:0;font-weight:900;font-size:40px;line-height:1.2}
+.col-head .m{text-align:right;font:500 11px/1.8 var(--sans);letter-spacing:.2em;color:var(--soft)}
+.col-head .m b{display:block;font-family:var(--roman);font-size:44px;line-height:1;letter-spacing:0;color:var(--gold);font-weight:600}
+.ev{display:grid;gap:0}
+.ev article{display:grid;grid-template-columns:118px 1fr;gap:20px;padding:18px 0;border-bottom:.6px solid var(--rule)}
+.ev .d{font:500 11px/1.7 var(--sans);letter-spacing:.06em;color:var(--soft)}
+.ev .d b{display:block;font-family:var(--roman);font-size:22px;letter-spacing:0;color:var(--ink);line-height:1.15;font-weight:600}
+.ev h4{margin:0;font-weight:900;font-size:17px;line-height:1.45}
+.ev .v{font:400 11.5px var(--sans);color:var(--muted);margin:2px 0 6px}
+.ev p{font-size:13.6px;line-height:1.85}
+.ev .link{font:700 10.5px var(--sans);letter-spacing:.16em;color:var(--ultra);margin-top:6px;display:block}
+.small{font:400 10.5px/1.7 var(--sans);color:var(--muted)}
+
+/* 封底 */
+.lens{display:grid;grid-template-columns:300px 1fr;gap:28px}
+.lens img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.lens .k{font:700 11px var(--sans);letter-spacing:.24em;color:var(--gold)}
+.lens h3{margin:6px 0 10px;font-weight:900;font-size:24px;line-height:1.4}
+.lens p{font-size:15px;line-height:2.1}
+.take{font-weight:600;font-size:22px;line-height:1.8;border-top:1.5px solid var(--ink);border-bottom:.6px solid var(--rule);padding:16px 0}
+.back3{display:grid;grid-template-columns:1.2fr 1fr;gap:30px;font-size:12.5px;line-height:1.85}
+.back3 b{display:block;font:700 10.5px var(--sans);letter-spacing:.2em;color:var(--muted);margin-bottom:4px}
+.next{background:var(--ink);color:var(--paper);padding:16px 20px;display:grid;gap:4px}
+.next b{font:700 10.5px var(--sans);letter-spacing:.22em;color:#d8b67a}
+.next span{font-weight:900;font-size:18px;line-height:1.5}
+
+/* 企劃說明（桌上的便條） */
+.memo{max-width:794px;width:100%;background:var(--paper);color:var(--ink);padding:34px clamp(18px,6vw,56px);display:grid;gap:18px;font-size:14.5px;line-height:1.85;box-shadow:0 18px 40px -22px rgba(0,0,0,.45)}
+.memo h2{margin:0;font-family:var(--serif);font-weight:900;font-size:22px}
+.memo ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.memo .tbl{overflow-x:auto}
+.memo table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.6}
+.memo th,.memo td{border-bottom:1px solid var(--rule);padding:8px 10px;text-align:left;vertical-align:top}
+.memo th{font-size:11px;letter-spacing:.14em;color:var(--muted);white-space:nowrap}
+.memo td:first-child{white-space:nowrap;font-weight:700}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:none}
+  .desk{padding:0;gap:0}
+  .note,.memo{display:none}
+  .slot{width:auto}
+  .pg{zoom:1!important;box-shadow:none;break-after:page;width:210mm;height:297mm}
+}
+.credit{margin-top:14px;padding-top:8px;border-top:1px solid rgba(0,0,0,.25);font-size:10.5px;line-height:1.7;color:#5a5348}.credit b{margin-right:8px;letter-spacing:.1em}
+</style>
+
+<div class="desk">
+
+<div class="note">
+  <b>電子報企劃 v3 ｜ 紙本雜誌版</b>
+  <h1>《{{NAME}}》第 1 期，一頁一頁印出來的樣子</h1>
+  <p>每一頁都是 A4 尺寸。在網頁上往下翻就像翻雜誌，下載 PDF 印出來就是一本 9 頁的小刊物。最後一張便條寫的是每期固定的頁面順序。</p>
+</div>
+
+<!-- P1 封面 -->
+<div class="slot"><section class="pg cover"><div class="in">
+  <div class="top">
+    <div class="mast">{{MAST}}</div>
+    <div class="meta"><span class="en">{{NAME_EN}}</span><br>第 1 期 ｜ 2026 年 11 月<br>一件作品，讀到底</div>
+  </div>
+  <div class="body">
+    <div class="img"><img src="{{cover}}" alt="維納斯的誕生（中央局部）"><span class="cap">封面：波提切利《維納斯的誕生》中央局部，約 1484–1486，烏菲茲美術館。Wikimedia Commons，公有領域。</span></div>
+    <div class="lines">
+      <div class="lead"><small>封面故事</small><h2>她站不穩，卻站了五百年</h2><p>一個從古羅馬雕像借來的姿勢、一條不合理的脖子，和一幅「故意畫錯」的名畫。</p></div>
+      <ul>
+        <li><b>概念</b>新柏拉圖主義：為什麼可以畫裸體女神</li>
+        <li><b>專欄</b>這個月可以去看：坂本龍一、台日工藝、莫內預告</li>
+        <li><b>Jim 的鏡頭</b>Art Taipei 攤位上，一位直接開工的藝術家</li>
+      </ul>
+    </div>
+  </div>
+</div></section></div>
+
+<!-- P2 目錄＋編者的話 -->
+<div class="slot"><section class="pg"><div class="run"><span>{{NAME}} ｜ 第 1 期</span><span>目錄</span></div><div class="in">
+  <div class="toc">
+    <div class="list">
+      <div><span class="n">03</span><span class="t">她站不穩，卻站了五百年<small>封面故事｜開場</small></span></div>
+      <div><span class="n">04</span><span class="t">一個姿勢，一段神話，一位金主<small>起源</small></span></div>
+      <div><span class="n">05</span><span class="t">四個局部，四個線索<small>細讀</small></span></div>
+      <div><span class="n">06</span><span class="t">新柏拉圖主義<small>概念</small></span></div>
+      <div><span class="n">07</span><span class="t">被遺忘，又被找回來<small>後來與延伸</small></span></div>
+      <div><span class="n">08</span><span class="t">這個月可以去看<small>專欄｜2026 年 11 月</small></span></div>
+      <div><span class="n">09</span><span class="t">Jim 的鏡頭<small>封底</small></span></div>
+    </div>
+    <div class="ed">
+      <span class="k">寫在前面</span>
+      <h3>為什麼要花十二分鐘，只看一幅畫</h3>
+      <div class="txt">
+        <p>我平常拿相機，拍的多半是舞蹈和活動。拍久了會發現，一張照片好不好看是一回事，看的人知不知道發生了什麼，是另一回事。</p>
+        <p>這幾個月我在 IG 上做藝術、咖啡、爵士的短影片，一分鐘講一個故事。短片讓很多人停下來，但也常常剛講到有意思的地方就結束了。</p>
+        <p>《{{NAME}}》是我想慢下來的地方。每期只放一件作品，從它怎麼來的、畫面裡藏了什麼，一路讀到它後來的命運。第一期，從大家都看過的那位站在貝殼上的女神開始。</p>
+      </div>
+      <span class="draft">草稿：Jim 改成自己的話</span>
+      <div class="sig">Jim<small>《{{NAME}}》編者</small></div>
+    </div>
+  </div>
+</div><div class="folio"><i>{{NAME_EN}}</i><span>02</span></div></section></div>
+
+<!-- P3 開場 -->
+<div class="slot"><section class="pg open"><div class="run"><span>{{NAME}} ｜ 第 1 期</span><span>封面故事</span></div><div class="in">
+  <div class="sec"><b>封面故事</b></div>
+  <h2>她站不穩，<br>卻站了五百年</h2>
+  <p class="dek">一位女神的姿勢從古羅馬雕像借來，脖子長得不合理，重心也落在空中。為什麼這幅「畫錯」的畫，成了全世界最熟悉的裸體？</p>
+  <div class="grid">
+    <div class="txt">
+      <p class="dropcap">如果你在烏菲茲美術館的展廳裡站久一點，會發現大部分人看這幅畫的順序都一樣：先看臉，再看那頭被風吹開的金髮，最後才注意到貝殼。很少人會注意到，畫裡這個女人，其實是站不住的。</p>
+      <p>她的重量幾乎全壓在左腳，右腳只用腳尖輕點貝殼邊緣；左肩斜得像被拉長，脖子比常人長了一截。換成真人照著擺，大概三秒就會摔下貝殼。</p>
+      <p>波提切利不是畫不出正確的人體。同一個時代，佛羅倫斯的畫家早就把解剖和透視研究得很透徹。他是故意的。要知道他為什麼這樣畫，得先回到這幅畫的三個源頭。</p>
+    </div>
+    <dl class="spec">
+      <div><dt>作者</dt><dd>桑德羅．波提切利</dd></div>
+      <div><dt>年代</dt><dd>約 1484–1486，佛羅倫斯</dd></div>
+      <div><dt>材質</dt><dd>畫布、蛋彩</dd></div>
+      <div><dt>尺寸</dt><dd>172.5 × 278.5 公分</dd></div>
+      <div><dt>現藏</dt><dd>烏菲茲美術館</dd></div>
+    </dl>
+  </div>
+  <figure style="margin:auto 0 0;display:grid;gap:6px"><img src="{{venus}}" alt="維納斯的誕生全圖" style="width:100%;height:270px;object-fit:cover;object-position:center 60%;display:block"><span class="cap">全圖。波提切利《維納斯的誕生》，烏菲茲美術館。Wikimedia Commons，公有領域。</span></figure>
+</div><div class="folio"><i>The Birth of Venus</i><span>03</span></div></section></div>
+
+<!-- P4 起源 -->
+<div class="slot"><section class="pg"><div class="run"><span>{{NAME}} ｜ 第 1 期</span><span>起源</span></div><div class="in">
+  <div class="sec"><b>起源</b><span>一個姿勢，一段神話，一位金主</span></div>
+  <div class="cols">
+    <p class="sub">神話</p>
+    <p class="ni">古希臘詩人赫西俄德寫過，愛與美的女神阿芙蘿黛蒂從海浪的泡沫裡誕生，被風送到岸邊。羅馬人叫她維納斯。波提切利畫的，就是她剛上岸的那一刻：還沒穿上衣服，也還沒站穩。</p>
+    <p>這個題材在當時很少見。十五世紀的佛羅倫斯，大型畫作的主角幾乎都是聖母、聖人和聖經故事。一幅這麼大的畫，主角是一位異教女神，本身就說明了訂畫的人想要什麼。</p>
+    <p class="sub">姿勢</p>
+    <p class="ni">她一手遮胸、一手遮下身。這個動作有名字，叫「謙遜的維納斯」（Venus Pudica），是古希臘羅馬雕像裡反覆出現的造型。</p>
+    <p>文藝復興的佛羅倫斯人正在大量收藏、研究古代雕像，挖到一尊古羅馬的殘像，就像挖到一封來自過去的信。波提切利把一尊冰冷的大理石，畫成了有體溫的人；但他保留了雕像的那種「被擺好」的感覺，所以她看起來美，卻不太像活人。</p>
+    <p class="sub">金主</p>
+    <p class="ni">這幅畫是誰訂的，至今沒有留下合約。傳統說法認為和麥地奇家族的旁支有關；有記錄可查的，是半個多世紀後，美術史家瓦薩里在麥地奇家族的卡斯泰洛別墅看到了它。</p>
+    <p>還有一個細節常被忽略：這是一幅畫在畫布上的大畫。當時佛羅倫斯的大型作品多半畫在木板或牆上；畫布輕、便宜、好搬，適合掛在私人別墅，而不是教堂。換句話說，它從一開始就不是給所有人看的，是給一小群讀過古書、懂得這些典故的人看的。</p>
+    <p>這也解釋了那個奇怪的站姿。對這群人來說，畫裡的女人不是一個身體，而是一個想法。下一頁，我們從畫面裡的四個局部，看這個想法是怎麼被畫出來的。</p>
+  </div>
+</div><div class="folio"><i>Origins</i><span>04</span></div></section></div>
+
+<!-- P5 細讀 -->
+<div class="slot"><section class="pg"><div class="run"><span>{{NAME}} ｜ 第 1 期</span><span>細讀</span></div><div class="in">
+  <div class="sec"><b>細讀</b><span>四個局部，四個線索</span></div>
+  <div class="det">
+    <figure><img src="{{face}}" alt="臉部局部"><figcaption><b><i>i</i>臉</b>她沒有看我們，眼神落在畫外某個地方。這種有點出神的表情，讓她不像被觀看的身體，更像一個正在想事情的人。</figcaption></figure>
+    <figure><img src="{{feet}}" alt="腳與貝殼局部"><figcaption><b><i>ii</i>腳與貝殼</b>重心落在左腳，右腳幾乎沒有施力。貝殼的線條一路向下收，眼睛順著它回到她的腳，才發現她是「浮」著的。</figcaption></figure>
+    <figure><img src="{{zephyr}}" alt="西風之神局部"><figcaption><b><i>iii</i>西風</b>左邊鼓著臉頰吹氣的是西風之神，抱著他的女子身分有不同說法。玫瑰在風裡落下，傳說玫瑰是和維納斯一起誕生的花。</figcaption></figure>
+    <figure><img src="{{hora}}" alt="時序女神局部"><figcaption><b><i>iv</i>披風</b>右邊是掌管季節的時序女神，正要把一件繡滿小花的披風披到維納斯身上。神話剛發生完，人間的衣服已經等在岸邊。</figcaption></figure>
+  </div>
+  <p class="closing">把四個局部放在一起看，就知道波提切利要的不是一個真實的身體，而是一個剛從神話落到人間、還沒完全站穩的瞬間。左邊是吹她上岸的風，右邊是等著為她穿衣的人間；她夾在中間，兩邊都還不屬於。站不穩，正是重點。</p>
+</div><div class="folio"><i>Close Reading</i><span>05</span></div></section></div>
+
+<!-- P6 概念 -->
+<div class="slot"><section class="pg"><div class="run"><span>{{NAME}} ｜ 第 1 期</span><span>概念</span></div><div class="in">
+  <div class="sec"><b>概念</b><span>這一期講透一個詞</span></div>
+  <p class="quote">人看見美的東西，心會被往上拉。</p>
+  <div class="entry">
+    <div class="h"><b>新柏拉圖主義</b><i>Neoplatonism</i></div>
+    <span class="pos">名詞 ｜ 哲學、藝術史</span>
+    <p>一種從柏拉圖思想發展出來的看法：世界上看得見的美，是更高、更完整的美的影子。十五世紀的佛羅倫斯，一群以費奇諾為中心的學者重新翻譯、討論柏拉圖，讓這套想法在藝術家和贊助者之間流行起來。</p>
+  </div>
+  <div class="cols">
+    <p class="ni">在教會主導一切的年代，畫一個沒穿衣服的異教女神，聽起來很危險。但這群學者相信，人看見美的東西時，心會被往上拉：從喜歡一個身體，慢慢走到愛慕美本身，最後接近神。</p>
+    <p>他們甚至把維納斯分成兩位：一位是人間的維納斯，掌管身體的愛；一位是天上的維納斯，代表讓靈魂往上走的愛。從海裡誕生、沒有母親的那一位，被看作天上的維納斯。</p>
+    <p>照這個想法，畫裡的她可以是裸的，但不能是肉感的；可以美，但要美得不太像人間。那條過長的脖子、那個不可能的站姿、那張出神的臉，都在把她推離真實。</p>
+    <p>所以下次有人說「文藝復興就是開始畫裸體」，可以補一句：他們畫的不是身體，是一種往上走的方法。至於這套說法到底影響了波提切利多少，學者之間還在討論，這也是這幅畫一直被讀下去的原因。</p>
+  </div>
+  <figure style="margin:auto 0 0;display:grid;gap:6px"><img src="{{strip}}" alt="畫面中段：西風、維納斯、時序女神" style="width:100%;display:block"><span class="cap">畫面中段：左邊的風、中間的女神、右邊的人間。三個人物剛好排成「從天上到人間」的一條線。</span></figure>
+</div><div class="folio"><i>Concept</i><span>06</span></div></section></div>
+
+<!-- P7 後來＋延伸 -->
+<div class="slot"><section class="pg"><div class="run"><span>{{NAME}} ｜ 第 1 期</span><span>後來與延伸</span></div><div class="in">
+  <div class="two">
+    <div style="display:grid;gap:14px;align-content:start">
+      <div class="sec"><b>後來</b><span>被遺忘，又被找回來</span></div>
+      <div class="tl">
+        <div><span class="y">1490s</span><span>道明會修士薩佛納羅拉在佛羅倫斯掀起反奢華運動。據瓦薩里說，波提切利後來成了他的追隨者，畫風轉向沉重的宗教題材。</span></div>
+        <div><span class="y">1550</span><span>瓦薩里在《藝苑名人傳》裡記下這幅畫掛在麥地奇家族的卡斯泰洛別墅。</span></div>
+        <div><span class="y">1815</span><span>畫作移入烏菲茲美術館，但之後幾十年仍不算鎮館之寶。</span></div>
+        <div><span class="y">1870s</span><span>英國評論家與前拉斐爾派畫家重新迷上波提切利，他筆下的臉成了一代人的審美。</span></div>
+        <div><span class="y">今天</span><span>烏菲茲最多人排隊的一幅畫，也是被複製、戲仿最多次的名畫之一。</span></div>
+      </div>
+    </div>
+    <div style="display:grid;gap:14px;align-content:start">
+      <div class="sec"><b>延伸</b><span>同一條線上的三件</span></div>
+      <div class="ext">
+        <div><span class="y">古羅馬</span><span class="n">《謙遜的維納斯》雕像</span><p>姿勢的源頭。看雕像的手放在哪裡，再回頭看波提切利改了什麼。</p></div>
+        <div><span class="y">1538</span><span class="n">提香《烏爾比諾的維納斯》</span><p>五十年後，維納斯從海上回到臥室，躺下來，第一次直直看著你。</p></div>
+        <div><span class="y">1863</span><span class="n">馬奈《奧林匹亞》</span><p>同樣的姿勢換成一個巴黎的真實女人，整個沙龍憤怒了。這是另一期的故事。</p></div>
+      </div>
+    </div>
+  </div>
+  <p class="quote" style="margin-top:auto;font-size:27px">一幅畫的命運，常常比畫它的人活得更久。</p>
+</div><div class="folio"><i>Afterlife</i><span>07</span></div></section></div>
+
+<!-- P8 看展專欄 -->
+<div class="slot"><section class="pg"><div class="run"><span>{{NAME}} ｜ 第 1 期</span><span>專欄</span></div><div class="in">
+  <div class="col-head">
+    <h2>這個月<br>可以去看</h2>
+    <div class="m"><b>XI</b>2026 年 11 月 ｜ 台北</div>
+  </div>
+  <div class="ev">
+    <article><div class="d"><b>10.31</b>— 2027.03.14</div><div><h4>坂本龍一｜觀音．聽時</h4><div class="v">臺北市立美術館 一樓展覽室</div><p>坂本龍一在台灣的第一個大型個展，七組大型裝置，加上 1999 年歌劇《LIFE》的檔案。他晚年說想把聲音「放進空間裡」，這是最接近的一次。</p><span class="link">跟本期的關係：一位把聲音當作品的人</span></div></article>
+    <article><div class="d"><b>11.14</b>— 2027.02.21</div><div><h4>共流：台灣．金澤工藝展</h4><div class="v">北師美術館</div><p>83 組台灣與日本金澤的作品，談手藝怎麼進入生活。適合在看完一幅五百年前的畫之後，看看今天的人怎麼用手做東西。</p></div></article>
+    <article><div class="d"><b>即日起</b>— 2027.01.23</div><div><h4>露水幻夢 Liquid Dream</h4><div class="v">Tao Art（內湖區洲子街 79-1 號 8 樓）</div><p>曾建穎與班傑明．斯皮爾斯的雙人展，把東方宗教畫和西方文藝復興寫實放在一起對照。讀完本期再去，會看到不一樣的東西。</p><span class="link">跟本期的關係：文藝復興的寫實，放到今天</span></div></article>
+    <article><div class="d"><b>12.12</b>— 2027.04.13</div><div><h4>現代藝術百年：莫內到馬諦斯（預告）</h4><div class="v">富邦美術館 1 樓</div><p>托雷多美術館的 57 件館藏，包括一幅高、寬都超過兩公尺的莫內睡蓮。《{{NAME}}》第 4 期會講莫內，可以先把日期記下來。</p></div></article>
+  </div>
+  <div class="entry" style="margin-top:auto"><div class="h"><b>發表與分享</b><i>Your Work</i></div><span class="pos">每期一則 ｜ 讀者投稿</span><p>這一格留給讀者：你最近的展覽、發表、演出，或一件你做的作品。回信附一張圖和三句話，說它是什麼、在哪裡看得到、你最想讓人注意的細節。每期挑一則刊出。</p></div>
+  <p class="small">展期資料整理自各展覽公告，出發前請以場館官網為準。想推薦展覽、或你自己的發表與作品，直接回信給我。</p>
+</div><div class="folio"><i>On View</i><span>08</span></div></section></div>
+
+<!-- P9 封底 -->
+<div class="slot"><section class="pg"><div class="run"><span>{{NAME}} ｜ 第 1 期</span><span>封底</span></div><div class="in">
+  <div class="lens">
+    <img src="{{jim}}" alt="Art Taipei 現場，藝術家在攤位上工作">
+    <div style="display:grid;align-content:start;gap:4px">
+      <span class="k">Jim 的鏡頭</span>
+      <h3>藝博會的攤位上，有人直接開工</h3>
+      <p>Art Taipei 這幾天，大部分攤位都安靜得像美術館。這一攤不一樣：藝術家坐在畫布前面，一邊上色，一邊讓人看。</p>
+      <p>五百年前，波提切利的工作室也是這樣，訂畫的人會來看進度、指指點點。作品被裱框掛上牆之前，都曾經是桌上這一堆還沒乾的東西。</p>
+      <span class="cap" style="margin-top:6px">2026 年 10 月，Art Taipei 現場。攝影：Jim</span>
+    </div>
+  </div>
+  <p class="take">下次看到一幅「畫得不對」的畫，先別急著說畫家不會畫。問一句：他想讓我看見什麼，所以故意不讓我看見真實？</p>
+  <div class="back3">
+    <div><b>延伸閱讀與出處</b>喬爾喬．瓦薩里《藝苑名人傳》（1550／1568），波提切利篇<br>烏菲茲美術館官方作品頁：The Birth of Venus<br>E. H. Gombrich〈Botticelli’s Mythologies〉（1945）</div>
+    <div><b>回信告訴我</b>有沒有哪一件作品，你看了很久，後來才發現它其實「不對勁」？直接回覆這封信就好，下一期選幾則刊出來。</div>
+  </div>
+  <div class="credit"><b>本刊製作</b>主編・撰文｜Jim　封底攝影｜Jim Lin（JimFrame）　出品｜藝術101 @art101.tw<br>名畫圖片｜Wikimedia Commons（公有領域），局部裁切：本刊　投稿・合作｜私訊 IG @art101.tw</div>
+  <div class="next" style="margin-top:auto"><b>下一期</b><span>一個雕刻家，被教宗逼著畫了四年天花板：米開朗基羅與西斯汀禮拜堂</span></div>
+</div><div class="folio"><i>{{NAME_EN}} · No. 1</i><span>09</span></div></section></div>
+
+<!-- 便條 -->
+<div class="memo">
+  <h2>每期固定的 9 頁</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>頁</th><th>內容</th><th>字數／圖</th></tr></thead>
+    <tbody>
+      <tr><td>01 封面</td><td>刊名、期數、封面故事標題、三條「也在本期」</td><td>作品直式局部 1 張</td></tr>
+      <tr><td>02 目錄＋寫在前面</td><td>Jim 第一人稱 3 段：這期為什麼選這件作品</td><td>250–300 字</td></tr>
+      <tr><td>03 開場</td><td>標題、導言、資料卡、從一個沒人注意的細節進入</td><td>350 字＋全圖</td></tr>
+      <tr><td>04 起源</td><td>三條線：題材、形式、金主</td><td>1,100–1,300 字</td></tr>
+      <tr><td>05 細讀</td><td>四個局部各一個觀察，最後收成一個結論</td><td>局部 4 張＋400 字</td></tr>
+      <tr><td>06 概念</td><td>一句引言、一個詞條、講透一個概念</td><td>700–800 字</td></tr>
+      <tr><td>07 後來＋延伸</td><td>作品的命運時間軸；同一條線上的三件作品</td><td>5 個節點＋3 件</td></tr>
+      <tr><td>08 這個月可以去看</td><td>專欄：3–5 個展覽、發表、演出，每則寫「跟本期的關係」</td><td>每則 60–80 字</td></tr>
+      <tr><td>09 封底</td><td>Jim 的鏡頭（自己拍的一張照片＋短文）、帶走一句、出處、回信、下期預告</td><td>照片 1 張＋200 字</td></tr>
+    </tbody>
+  </table></div>
+  <ul>
+    <li>只有第 08 頁的專欄會跟著當月更新，其他頁不追時事，半年後重讀也成立。</li>
+    <li>第 02 頁和第 09 頁是你自己的位置：一段話、一張你拍的照片。讀者會因為這兩頁記得這是誰做的。</li>
+    <li>寄送時用同一份內容排成單欄信件；每月或每季把 PDF 版集結成冊，就是之後付費版或實體小誌的基礎。</li>
+  </ul>
+</div>
+
+</div>
+
+<script>
+(function(){
+  function fit(){var w=document.querySelector('.desk').clientWidth;var avail=Math.min(794,w-Math.max(32,0));var z=Math.min(1,avail/794);
+    document.querySelectorAll('.pg').forEach(function(p){p.style.setProperty('--z',z)});}
+  fit();addEventListener('resize',fit);
+})();
+</script>
