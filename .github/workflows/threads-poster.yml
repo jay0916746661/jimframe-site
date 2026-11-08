@@ -38,6 +38,7 @@ jobs:
         env:
           THREADS_TOKENS: ${{ secrets.THREADS_TOKENS }}
           THREADS_TOKENS_EXTRA: ${{ secrets.THREADS_TOKENS_EXTRA }}
+          THREADS_TOKENS_DRINK: ${{ secrets.THREADS_TOKENS_DRINK }}
           META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
         run: |
           MODE="${{ github.event.inputs.mode || 'post' }}"
