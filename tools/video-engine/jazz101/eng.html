@@ -5,13 +5,14 @@
 .card{position:absolute;left:90px;right:230px;top:300px;font-family:"Noto Serif CJK TC",serif;font-weight:900;font-size:100px;line-height:1.22;letter-spacing:.01em}
 .acc{color:#E3A544}
 .art{position:absolute;left:90px;top:760px;width:760px;height:560px}
+.en{position:absolute;left:90px;right:230px;top:1530px;font-family:"DejaVu Sans",sans-serif;font-size:32px;line-height:1.35;color:#C9D2DB;text-shadow:0 2px 8px #000}
 .sub{position:absolute;left:90px;right:230px;top:1360px;font-size:44px;line-height:1.5;color:#E6EAEE;font-weight:500;text-shadow:0 2px 8px #000}
 .tag{position:absolute;left:90px;top:240px;font:30px "DejaVu Sans Mono",monospace;letter-spacing:.12em;color:#E3A544}
 #bar{position:absolute;left:0;bottom:0;height:10px;background:#E3A544}
 .lightoff{position:absolute;inset:0;background:#000;pointer-events:none;opacity:0}
 </style></head><body><div id="v"><svg id="grain" width="1080" height="1920"><filter id="gn"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="1"/></filter><rect width="1080" height="1920" filter="url(#gn)"/></svg>
-<div class="tag" id="tag">JAZZ 101 · 爵士小故事</div><div class="card" id="card"></div><div class="art" id="art"></div><div class="sub" id="sub"></div><div class="lightoff" id="dark"></div><div id="bar"></div></div>
-<script src="../data.js"></script><script src="common.js"></script><script src="chord.js"></script><script src="scenes.js"></script><script src="fx2.js"></script><script src="epdata.js"></script>
+<div class="tag" id="tag">JAZZ 101 · 爵士小故事</div><div class="card" id="card"></div><div class="art" id="art"></div><div class="sub" id="sub"></div><div class="en" id="en"></div><div class="lightoff" id="dark"></div><div id="bar"></div></div>
+<script src="../data.js"></script><script src="common.js"></script><script src="chord.js"></script><script src="scenes.js"></script><script src="fx2.js"></script><script src="en.js"></script><script src="epdata.js"></script>
 <script>
 var EP=+(new URLSearchParams(location.search).get('ep')||0),E=EPS[EP],D=EPD[EP];
 var TOTAL=D.dur, ST=D.sst.concat([TOTAL]);
@@ -110,7 +111,7 @@ function render(t){
  var a=cl(lt/0.28),out=i===E.sc.length-1?1:cl((d-lt)/0.18),o=Math.min(a,out);
  var c=document.getElementById('card');c.style.opacity=o;c.style.transform='translateY('+((1-a)*40)+'px) scale('+(0.96+0.04*e3(lt/0.4))+')';c.style.transformOrigin='0 50%';
  var ar=document.getElementById('art');ar.innerHTML=artFor2(S.a,lt,d);ar.style.opacity=o;ar.style.transform='translateY('+((1-e3(lt/0.4))*30)+'px)';
- var cls=D.clauses,k=0;while(k<cls.length-1&&t>=cls[k+1].st-0.08)k++;var sb=document.getElementById('sub');var txt=cls[k].t.replace(/[，：]$/,'');if(sb.textContent!==txt)sb.textContent=txt;
+ var cls=D.clauses,k=0;while(k<cls.length-1&&t>=cls[k+1].st-0.08)k++;var sb=document.getElementById('sub');var txt=cls[k].t.replace(/[，：]$/,'');if(sb.textContent!==txt)sb.textContent=txt;var EE=(typeof EN!=='undefined')&&EN[EP];var eb2=document.getElementById('en');if(EE){var si=0;while(si<D.sst.length-1&&t>=D.sst[si+1]-0.08)si++;var et=EE[si]||'';if(eb2.textContent!==et)eb2.textContent=et;}
  var cst=cls[k].st-0.08;sb.style.opacity=cl((t-cst)/0.15);
  var dk=document.getElementById('dark');dk.style.opacity=(E.mood==='ballad'&&i>=1&&i<=2)?0.25*e3((lt-0.4)/0.5):0;
  document.getElementById('bar').style.width=(t/TOTAL*100)+'%';
