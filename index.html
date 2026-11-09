@@ -980,6 +980,20 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
   <div class="carousel" role="list" aria-label="每週精選照片" id="carousel"></div>
  </section>
 
+ <section class="section" id="support">
+  <div class="section-head"><div><h2 class="title2">支持下一場拍攝</h2><p class="footnote">器材、交通、拍攝與整理都需要成本。自願贊助，不影響瀏覽與下載。</p></div></div>
+  <div class="grouped">
+   <div class="grouped-row"><span>一杯咖啡</span><b>NT$100</b></div>
+   <div class="grouped-row is-featured"><span>支持一晚拍攝</span><b>NT$250</b></div>
+   <div class="grouped-row"><span>自由金額</span><b>隨意</b></div>
+  </div>
+  <p class="footnote grouped-note">加入 LINE 並告訴我想贊助，我會回傳 LINE Pay 收款資訊。LINE ID：<b class="selectable">jim0916746661</b></p>
+  <div class="button-stack">
+   <a class="button button-filled button-large" href="https://line.me/ti/p/~jim0916746661" target="_blank" rel="noreferrer">用 LINE 索取付款資訊</a>
+   <a class="button button-tinted button-large" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">Instagram 聯絡</a>
+  </div>
+ </section>
+
  <section class="section secondary-picks" aria-hidden="true">
   <div class="section-head"><div><h2 class="title2">精選照片</h2><p class="footnote">最近幾場活動的精選。</p></div></div>
   <div class="popular-row" id="popular"></div>
@@ -1008,19 +1022,6 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
 
 
 
- <section class="section" id="support">
-  <div class="section-head"><div><h2 class="title2">支持下一場拍攝</h2><p class="footnote">器材、交通、拍攝與整理都需要成本。自願贊助，不影響瀏覽與下載。</p></div></div>
-  <div class="grouped">
-   <div class="grouped-row"><span>一杯咖啡</span><b>NT$100</b></div>
-   <div class="grouped-row is-featured"><span>支持一晚拍攝</span><b>NT$250</b></div>
-   <div class="grouped-row"><span>自由金額</span><b>隨意</b></div>
-  </div>
-  <p class="footnote grouped-note">加入 LINE 並告訴我想贊助，我會回傳 LINE Pay 收款資訊。LINE ID：<b class="selectable">jim0916746661</b></p>
-  <div class="button-stack">
-   <a class="button button-filled button-large" href="https://line.me/ti/p/~jim0916746661" target="_blank" rel="noreferrer">用 LINE 索取付款資訊</a>
-   <a class="button button-tinted button-large" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer">Instagram 聯絡</a>
-  </div>
- </section>
 
  <section class="section" id="contact">
   <div class="section-head"><div><h2 class="title2">預約拍攝</h2><p class="footnote">活動紀錄、舞蹈派對、個人寫真。私訊時附上日期、場地與需求。</p></div></div>
@@ -1272,13 +1273,13 @@ function withCredit(action,official,photoId){
  root.innerHTML=`<div class="credit-backdrop" data-credit-close><div class="credit-sheet" role="dialog" aria-modal="true" aria-labelledby="credit-title">
   <span class="credit-grabber" aria-hidden="true"></span>
   <h2 id="credit-title">被標記的照片，攝影師一定會看到 👀</h2>
+  <a class="credit-support" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">☕ 贊助下一場拍攝</a>
+  <p class="credit-sub">贊助完全自願，不影響下載。謝謝你讓舞池被好好記錄 💛</p>
   <p><b>常出現在限動的你，下次也更容易出現在鏡頭裡。</b>發限動、貼文或拼圖時，記得標記${crush?"攝影師和官方帳號":"攝影師"}：</p>
   <div class="credit-tags">${tags.map(t=>`<span>${t}</span>`).join("")}</div>
   <button type="button" class="button button-gray" data-credit-copy>${icon("tag")}一鍵複製標記</button>
   <button type="button" class="button button-filled button-large" data-credit-go>好，我會標記 💛 下載</button>
   ${photoId?`<button type="button" class="credit-hw" data-credit-hw>🎃 萬聖節變身：特效＋相框</button>`:""}
-  <a class="credit-support" href="${LINE_SUPPORT}" target="_blank" rel="noreferrer">☕ 贊助下一場拍攝</a>
-  <p class="credit-sub">贊助完全自願，不影響下載。謝謝你讓舞池被好好記錄 💛</p>
   <button type="button" class="text-button credit-cancel" data-credit-close>取消</button>
  </div></div>`;
  const close=()=>{root.innerHTML="";};
