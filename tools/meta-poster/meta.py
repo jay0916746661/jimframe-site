@@ -55,7 +55,10 @@ def post(path, token, **data):
     r = requests.post(f"{API}/{path}", data=data, timeout=120)
     body = r.json()
     if "error" in body:
-        raise RuntimeError(body["error"].get("message", "").replace(token, "***"))
+        e = body["error"]
+        detail = " ".join(str(x) for x in (e.get("message", ""), e.get("code", ""), e.get("error_subcode", ""),
+                                            e.get("error_user_title", ""), e.get("error_user_msg", "")) if x)
+        raise RuntimeError(f"{path.split('/')[-1]}: {detail}".replace(token, "***"))
     return body
 
 
