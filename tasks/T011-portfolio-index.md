@@ -1,7 +1,7 @@
 ---
 id: T011
 title: 作品集首頁：三張案例卡＋其他工具
-status: open
+status: review
 size: S
 ---
 
@@ -21,3 +21,9 @@ size: S
 
 ## 不要動
 - 其他目錄
+
+## 實作紀錄
+- 新增 `portfolio/index.html` 與 `portfolio/content.json`，首頁內容可由 JSON 獨立替換。
+- 新增 3 張案例卡、6 個工具連結與聯絡方式占位，支援深淺色及 390px 響應式版面。
+- 擴充 `scripts/smoke.mjs`，驗證作品集兩種視口、卡片數、工具數、console error 與水平捲動。
+- `NODE_PATH=$(npm root -g) node scripts/smoke.mjs http://localhost:8000/` 通過，並產出 1280px／390px 截圖。
