@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Jim 的營運分析、AI 工程調度與數位工具作品集。">
+  <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme:light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme:dark)">
+  <title>作品集｜Jim</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d1d1f'/%3E%3Ctext x='32' y='41' fill='white' font-family='Arial' font-size='24' font-weight='700' text-anchor='middle'%3EJL%3C/text%3E%3C/svg%3E">
+  <style>
+    /* Existing JimFrame tokens; complete HTML below is the no-JS fallback. */
+    :root{--bg:#f2f2f7;--surface:#fff;--label:#1d1d1f;--label-2:rgba(60,60,67,.68);--label-3:rgba(60,60,67,.42);--separator:rgba(60,60,67,.18);--fill:rgba(118,118,128,.12);--tint:#007aff;--tint-soft:rgba(0,122,255,.11);--green:#248a3d;--green-soft:rgba(36,138,61,.11);--shadow:0 1px 2px rgba(0,0,0,.04),0 18px 48px rgba(0,0,0,.07);--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;--display:ui-serif,"Iowan Old Style","Songti TC","Noto Serif TC",serif;--content:1180px;color-scheme:light}
+    @media(prefers-color-scheme:dark){:root{--bg:#000;--surface:#1c1c1e;--label:#f5f5f7;--label-2:rgba(235,235,245,.66);--label-3:rgba(235,235,245,.38);--separator:rgba(84,84,88,.65);--fill:rgba(118,118,128,.24);--tint:#0a84ff;--tint-soft:rgba(10,132,255,.18);--green:#30d158;--green-soft:rgba(48,209,88,.14);--shadow:0 1px 2px rgba(0,0,0,.35),0 18px 48px rgba(0,0,0,.35);color-scheme:dark}}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{margin:0;min-width:0;overflow-x:hidden;background:var(--bg);color:var(--label);font:16px/1.75 var(--font);letter-spacing:-.01em;-webkit-font-smoothing:antialiased}a{color:inherit}:focus-visible{outline:3px solid var(--tint);outline-offset:3px;border-radius:6px}.shell{width:min(calc(100% - 40px),var(--content));margin-inline:auto}
+    header{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--separator)}.wordmark{font-size:14px;font-weight:750;letter-spacing:.08em;text-decoration:none}.header-note{color:var(--label-2);font-size:13px;text-align:right}
+    .hero{padding:clamp(64px,9vw,112px) 0 clamp(58px,8vw,92px)}.eyebrow{margin:0 0 18px;color:var(--tint);font-size:13px;font-weight:750;letter-spacing:.12em;text-transform:uppercase}h1{max-width:940px;margin:0;font:600 clamp(41px,7vw,86px)/1.07 var(--display);letter-spacing:-.055em;text-wrap:balance}.hero-sub{max-width:760px;margin:28px 0 0;color:var(--label-2);font-size:clamp(17px,1.7vw,21px);line-height:1.65;text-wrap:pretty}.audience-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}.audience{padding:7px 11px;border-radius:999px;background:var(--fill);color:var(--label-2);font-size:13px;font-weight:650}
+    .section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:22px}.section-heading h2{margin:0;font-size:14px;letter-spacing:.12em;text-transform:uppercase}.section-heading span{color:var(--label-2);font-size:13px;font-variant-numeric:tabular-nums}.cases{display:grid;gap:24px}.case{min-width:0;overflow:hidden;background:var(--surface);border:1px solid var(--separator);border-radius:24px;box-shadow:var(--shadow)}
+    .case-head{display:grid;grid-template-columns:68px minmax(0,1fr) minmax(210px,.42fr);gap:22px;align-items:start;padding:32px 34px 30px}.case-number{color:var(--label-3);font:650 13px/1 var(--font);letter-spacing:.08em;font-variant-numeric:tabular-nums}.case-kicker{margin:0 0 8px;color:var(--label-2);font-size:12px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}.case h3{max-width:650px;margin:0;font:600 clamp(27px,3.2vw,43px)/1.16 var(--display);letter-spacing:-.038em;text-wrap:balance}.metric{align-self:center;padding-left:22px;border-left:1px solid var(--separator)}.metric span{display:block;margin-bottom:6px;color:var(--label-2);font-size:12px;font-weight:750;letter-spacing:.08em}.metric strong{display:block;color:var(--green);font:700 clamp(21px,2.2vw,29px)/1.2 var(--font);letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-wrap:balance}
+    .case-body{display:grid;grid-template-columns:.8fr 1.2fr 1.05fr;border-top:1px solid var(--separator)}.detail{min-width:0;margin:0;padding:26px 30px 30px}.detail+.detail{border-left:1px solid var(--separator)}.detail dt{margin-bottom:9px;color:var(--label-2);font-size:12px;font-weight:750;letter-spacing:.1em}.detail dd{margin:0;font-size:15px;line-height:1.72;text-wrap:pretty}.case-result{background:var(--green-soft)}.case-result dd{font-weight:600}.case-foot{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;padding:22px 30px;border-top:1px solid var(--separator)}.role{margin:0;color:var(--label-2);font-size:14px;line-height:1.65;text-wrap:pretty}.role strong{color:var(--label)}.actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}.open-link{min-height:44px;display:inline-flex;align-items:center;gap:10px;padding:0 15px;border-radius:11px;background:var(--tint-soft);color:var(--tint);font-size:14px;font-weight:750;text-decoration:none;transition:background-color 160ms ease,transform 160ms ease}.open-link:hover{background:var(--fill)}.open-link:active{transform:scale(.985)}.open-link::after{content:"↗";font-size:16px}
+    .others{padding:clamp(74px,9vw,108px) 0}.tool-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--separator)}.tool-link{min-width:0;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding-right:22px;border-bottom:1px solid var(--separator);font-weight:650;text-decoration:none;transition:padding 160ms ease,color 160ms ease}.tool-link:nth-child(even){padding-left:22px;padding-right:0;border-left:1px solid var(--separator)}.tool-link:hover{padding-inline-start:8px;color:var(--tint)}.tool-link:nth-child(even):hover{padding-inline-start:30px}.tool-meta{flex:none;color:var(--label-2);font-size:12px;font-weight:500;font-variant-numeric:tabular-nums;text-align:right}
+    footer{display:grid;grid-template-columns:1fr auto;align-items:end;gap:32px;padding:40px 0 max(48px,env(safe-area-inset-bottom));border-top:1px solid var(--separator)}footer h2{margin:0 0 8px;font:600 clamp(28px,4vw,42px)/1.2 var(--display);letter-spacing:-.03em}footer p{margin:0;color:var(--label-2)}.contact-placeholder{padding:10px 14px;border-radius:10px;background:var(--fill);color:var(--label-2);font-size:14px}
+    @media(max-width:900px){.case-head{grid-template-columns:44px minmax(0,1fr)}.metric{grid-column:2;align-self:start;padding:18px 0 0;border-left:0;border-top:1px solid var(--separator)}.case-body{grid-template-columns:1fr}.detail+.detail{border-left:0;border-top:1px solid var(--separator)}.case-foot{grid-template-columns:1fr}.actions{justify-content:flex-start}}
+    @media(max-width:560px){.shell{width:min(calc(100% - 32px),var(--content))}header{min-height:64px}.header-note{display:none}.hero{padding-top:56px}h1{font-size:clamp(38px,11.8vw,50px)}.hero-sub{margin-top:22px;font-size:16px}.case{border-radius:19px}.case-head{grid-template-columns:1fr;gap:14px;padding:25px 23px 24px}.case h3{font-size:28px}.metric{grid-column:1}.detail{padding:22px 23px 24px}.detail dd{font-size:16px}.case-foot{gap:18px;padding:20px 23px 23px}.actions{display:grid;width:100%}.open-link{justify-content:space-between}.tool-list{grid-template-columns:1fr}.tool-link,.tool-link:nth-child(even){padding-inline:0;border-left:0}.tool-link:nth-child(even):hover{padding-inline-start:8px}footer{grid-template-columns:1fr;align-items:start}.contact-placeholder{justify-self:start}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header><a class="wordmark" href="../" aria-label="回到 JimFrame 首頁">JIM / PORTFOLIO</a><span class="header-note">營運分析・AI 工程調度・數位工具</span></header>
+    <main id="content">
+      <section class="hero" aria-labelledby="headline">
+        <p class="eyebrow">Selected work · 2026</p>
+        <h1 id="headline">把現場問題拆成資料、流程與可驗收的工具。</h1>
+        <p class="hero-sub" id="subhead">我從業務與營運現場定義問題，調度 AI 完成分析與實作，再用原始資料、正反例與使用情境驗收。</p>
+        <div class="audience-list" id="audiences" aria-label="適合職務"><span class="audience">業務企劃／營運企劃</span><span class="audience">AI 應用專員</span></div>
+      </section>
+      <section aria-labelledby="cases-title">
+        <div class="section-heading"><h2 id="cases-title">案例</h2><span>03 / 代表作品</span></div>
+        <div class="cases" id="cases">
+          <article class="case">
+            <div class="case-head"><span class="case-number">01</span><div><p class="case-kicker">ERP Data → 1-Page Decision</p><h3>通路代理商 ERP 庫存健檢與舊貨出清</h3></div><div class="metric"><span>關鍵結果</span><strong>10 分鐘 → 1 分鐘</strong></div></div>
+            <div class="case-body"><dl class="detail"><dt>問題</dt><dd>代理 40+ 品牌，哪個品牌吃庫存、哪個該縮採購過去靠印象；ERP 資料從未被拉出做結構化分析。</dd></dl><dl class="detail"><dt>做法</dt><dd>建立每週 30 分鐘 ERP 匯出 SOP；用 AI 將約 5,800 個品號、2020–2026 六年進貨明細算成 8 個核心指標，包括可賣月數、一年未動佔比、同期比與淡旺季指數；一頁一品牌附一句決策建議。</dd></dl><dl class="detail case-result"><dt>結果</dt><dd>抓出高進貨低售出率品牌；把一年未動的 75–82 個型號（P001–P082，成本指數 100、探價底線 120）接軌三平台出清，並串聯 203 家流失客戶回訪與報價台，查價從 10 分鐘縮至 1 分鐘。</dd></dl></div>
+            <div class="case-foot"><p class="role"><strong>我負責：</strong>定義 8 個核心指標、抽查原始單據核對總數驗收，並設計每週五 16:00、3 分鐘拍板的週報制度。</p><div class="actions"><a class="open-link" href="../sql/">看去識別化庫存查詢</a></div></div>
+          </article>
+          <article class="case">
+            <div class="case-head"><span class="case-number">02</span><div><p class="case-kicker">Private-by-design Photo Search</p><h3>JimFrame 活動攝影站：瀏覽器端人臉「找自己」與快修台</h3></div><div class="metric"><span>關鍵結果</span><strong>8 人實測・零誤認</strong></div></div>
+            <div class="case-body"><dl class="detail"><dt>問題</dt><dd>單場舞蹈活動拍攝 600+ 張照片、100+ 位參加者，多數人翻相簿翻到一半放棄，作品未被看見。</dd></dl><dl class="detail"><dt>做法</dt><dd>在靜態網站實作瀏覽器端人臉比對，照片不上傳伺服器；建立多角度索引與「相似照片錨點」二次確認防認錯，支援中英韓日四語，再搭配本機 Python／ffmpeg 快修台批次分流。</dd></dl><dl class="detail case-result"><dt>結果</dt><dd>上傳自拍後可在數秒內篩出個人照片；8 人實測零誤認。三晚活動共 663 張照片、51 支影片上線後，舞者可自主查找下載，維護壓在每週 2 小時內。</dd></dl></div>
+            <div class="case-foot"><p class="role"><strong>我負責：</strong>定義「認對標準」與二次確認流程、劃定本機比對的隱私紅線，並設計快修台驗收規格。</p><div class="actions"><a class="open-link" href="../#finder">打開 JimFrame 找自己</a></div></div>
+          </article>
+          <article class="case">
+            <div class="case-head"><span class="case-number">03</span><div><p class="case-kicker">Multi-AI Orchestration → Verified Output</p><h3>不寫程式的多 AI 工程調度與 SQL 實戰練習室</h3></div><div class="metric"><span>關鍵結果</span><strong>35 題驗證・70%+ 利用率</strong></div></div>
+            <div class="case-body"><dl class="detail"><dt>問題</dt><dd>非工程背景學 SQL 與開發工具容易停在看課；同時調度多家 AI，又容易遇到單一平台額度見底與上下文失憶。</dd></dl><dl class="detail"><dt>做法</dt><dd>打造瀏覽器內可直接執行的 SQL 練習室，以虛構樂器行的 12 品牌、80 商品、40 客戶與約 2,000 筆銷售，設計 35 題業務情境自動比對答案；再用 tasks/ 任務板與 brain/ 共同大腦分工、開分支、跑正反例測試並每週同步。</dd></dl><dl class="detail case-result"><dt>結果</dt><dd>完成 35 題業務邏輯驗證，並遷移至 ERP 8 大指標分析；把 Codex 週額度利用率從 5% 提升到 70%+。</dd></dl></div>
+            <div class="case-foot"><p class="role"><strong>我負責：</strong>設計真實業務痛點題目、制定三道派工閘門與防作弊正反例驗收標準，並審查、合併 PR。</p><div class="actions"><a class="open-link" href="../sql/">進入 SQL 練習室</a><a class="open-link" href="../sprint/">查看任務調度板</a></div></div>
+          </article>
+        </div>
+      </section>
+      <section class="others" aria-labelledby="others-title"><div class="section-heading"><h2 id="others-title">其他工具</h2><span>延伸作品 / 06</span></div><div class="tool-list" id="others">
+        <a class="tool-link" href="../sql/"><span>SQL 六週練習室</span><span class="tool-meta">35 題・瀏覽器執行 ↗</span></a><a class="tool-link" href="../sprint/"><span>轉職衝刺任務板</span><span class="tool-meta">T001–T018 ↗</span></a><a class="tool-link" href="../studio/"><span>活動素材工作台</span><span class="tool-meta">本機批次流程 ↗</span></a><a class="tool-link" href="../"><span>JimFrame 攝影相簿</span><span class="tool-meta">照片與影片 ↗</span></a><a class="tool-link" href="../dance/"><span>舞蹈練習工具</span><span class="tool-meta">情境式練習 ↗</span></a><a class="tool-link" href="../orale/"><span>發音練習室</span><span class="tool-meta">互動式回饋 ↗</span></a>
+      </div></section>
+    </main>
+    <footer><div><h2>從問題定義，到可驗收的成果。</h2><p>面試時可現場打開案例、資料邏輯與執行流程。</p></div><span class="contact-placeholder">聯絡方式待補</span></footer>
+  </div>
+  <script>
+    const escapeHtml=value=>String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    const safeUrl=value=>{const url=String(value||"").trim();return /^(?:https?:\/\/|\.\.\/|\.\/|#)/.test(url)?escapeHtml(url):"#"};
+    const renderActions=actions=>(Array.isArray(actions)?actions:[]).map(action=>`<a class="open-link" href="${safeUrl(action.url)}">${escapeHtml(action.label)}</a>`).join("");
+    function render(data){
+      if(!data||typeof data.headline!=="string"||!Array.isArray(data.cases)||!Array.isArray(data.others))throw new Error("content.json 格式不正確");
+      document.querySelector("#headline").textContent=data.headline;
+      document.querySelector("#subhead").textContent=data.subhead||"";
+      document.querySelector("#audiences").innerHTML=(data.audiences||[]).map(item=>`<span class="audience">${escapeHtml(item)}</span>`).join("");
+      document.querySelector("#cases").innerHTML=data.cases.map((item,index)=>`<article class="case"><div class="case-head"><span class="case-number">${String(index+1).padStart(2,"0")}</span><div><p class="case-kicker">${escapeHtml(item.kicker||"Case study")}</p><h3>${escapeHtml(item.title)}</h3></div><div class="metric"><span>關鍵結果</span><strong>${escapeHtml(item.resultMetric||item.result)}</strong></div></div><div class="case-body"><dl class="detail"><dt>問題</dt><dd>${escapeHtml(item.problem)}</dd></dl><dl class="detail"><dt>做法</dt><dd>${escapeHtml(item.approach)}</dd></dl><dl class="detail case-result"><dt>結果</dt><dd>${escapeHtml(item.result)}</dd></dl></div><div class="case-foot"><p class="role"><strong>我負責：</strong>${escapeHtml(item.role||"")}</p><div class="actions">${renderActions(item.actions||[{label:"打開案例",url:item.url}])}</div></div></article>`).join("");
+      document.querySelector("#others").innerHTML=data.others.map(item=>`<a class="tool-link" href="${safeUrl(item.url)}"><span>${escapeHtml(item.title)}</span><span class="tool-meta">${escapeHtml(item.meta||"打開")} ↗</span></a>`).join("");
+      document.documentElement.dataset.content="enhanced";
+    }
+    fetch("./content.json").then(response=>{if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.json()}).then(render).catch(error=>{document.documentElement.dataset.content="fallback";console.warn("作品內容改用內建版本：",error.message)});
+  </script>
+</body>
+</html>
