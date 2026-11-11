@@ -1,0 +1,41 @@
+name: 素材發出即刪
+
+# 每天台北時間 03:23 把 social/media 裡已經發完超過 2 天的素材刪掉（規則見 tools/media-prune/prune.py）。
+# 不需要任何 token，不碰佇列檔。手動執行預設只列清單。
+on:
+  schedule:
+    - cron: "23 19 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run / apply"
+        default: "dry-run"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: media-prune
+  cancel-in-progress: false
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 清理
+        run: |
+          MODE="${{ github.event.inputs.mode || 'apply' }}"
+          if [ "$MODE" != "apply" ]; then python tools/media-prune/prune.py; exit 0; fi
+          python tools/media-prune/prune.py --apply
+          git config user.name "media-prune"
+          git config user.email "media-prune@users.noreply.github.com"
+          git add -A social/media
+          if git diff --cached --quiet; then echo "沒有要刪的"; exit 0; fi
+          git commit -q -m "素材發出即刪 $(date -u +%F)"
+          for i in 1 2 3; do git pull -q --rebase && git push -q && exit 0; sleep 20; done
+          exit 1

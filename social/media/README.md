@@ -16,4 +16,4 @@ ffmpeg -i 原檔.mp4 -c:v libx264 -preset slow -crf 20 -maxrate 5M -bufsize 10M 
 
 ## 容量注意
 
-GitHub Pages 整站上限 1GB。已發出的素材之後會自動清掉（原檔留在雲端），不要放母帶、不要放沒排程的檔案。
+GitHub Pages 整站上限 1GB。已發出的素材每天 03:23 自動刪除（`tools/media-prune/prune.py`：三個佇列裡引用它的列全部「已發」且超過 2 天才刪；待發、失敗、逾時的都留著）。這裡不是存檔的地方，成品請留在各頻道自己的位置。不要放母帶、不要放沒排程的檔案。
