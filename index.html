@@ -991,7 +991,7 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
 .hero-b-bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 38% center; }
 .hero-b::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10,10,12,.72) 0%, rgba(10,10,12,0) 22%, rgba(10,10,12,0) 30%, rgba(10,10,12,.92) 62%, #0A0A0C 100%); }
 .hero-b-body { width: min(100% - 2 * var(--gutter), var(--content)); margin-inline: auto; padding-bottom: 104px; display: grid; gap: 12px; }
-.hero-b-eyebrow { margin: 0; font: 500 12px/1.4 var(--font-latin); letter-spacing: .22em; color: var(--tint); }
+.hero-b-eyebrow { margin: 0; font: 500 12px/1.4 var(--font-latin); letter-spacing: .22em; color: var(--eyebrow, var(--tint)); }
 .hero-b-title { margin: 0; font: 900 clamp(40px, 7vw, 76px)/1.2 var(--font-serif); letter-spacing: .01em; color: var(--label); }
 .hero-b-sub { margin: 0; max-width: 36em; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.7; color: #D9D6CF; }
 
@@ -1006,16 +1006,16 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
 #finder .finder-person, #finder .finder-add { aspect-ratio: 1 / 1; border-radius: 16px; }
 #finder .finder-add { border-color: #55555E; color: var(--label-2); font-weight: 500; }
 #finder .finder-add:first-child { border: 0; background: #26262C; color: var(--label); font-weight: 700; }
-#finder .finder-add:first-child .icon { width: 36px; height: 36px; padding: 9px; border-radius: 50%; background: var(--tint); color: #1A0E05; }
+#finder .finder-add:first-child .icon { width: 36px; height: 36px; padding: 9px; border-radius: 50%; background: var(--tint); color: var(--on-tint, #1A0E05); }
 #finder .finder-scope .segmented { width: 100%; padding: 3px; border-radius: 12px; background: #0F0F12; }
 #finder .finder-scope .segmented button { flex: 1 1 0; min-height: 40px; border-radius: 10px; font-size: 13px; }
 #finder .finder-scope .segmented button.is-selected { background: #33333B; box-shadow: none; }
-#finder [data-face-search] { flex: 1 1 100%; min-height: 56px; border-radius: 16px; background: var(--tint); color: #1A0E05; font-size: 17px; font-weight: 700; box-shadow: 0 10px 28px rgba(255, 138, 61, 0.32); }
+#finder [data-face-search] { flex: 1 1 100%; min-height: 56px; border-radius: 16px; background: var(--tint); color: var(--on-tint, #1A0E05); font-size: 17px; font-weight: 700; box-shadow: 0 10px 28px rgba(255, 138, 61, 0.32); }
 #finder [data-face-search]:disabled { box-shadow: none; }
 
 /* 區塊標題：橘色英文小標＋襯線大標 */
 .app > .section .section-head .title2 { font-family: var(--font-serif); font-weight: 900; font-size: clamp(28px, 3.2vw, 40px); line-height: 1.25; letter-spacing: 0; }
-.app > .section .section-head .title2::before { display: block; margin-bottom: 8px; font: 500 12px/1.4 var(--font-latin); letter-spacing: .22em; color: var(--tint); }
+.app > .section .section-head .title2::before { display: block; margin-bottom: 8px; font: 500 12px/1.4 var(--font-latin); letter-spacing: .22em; color: var(--eyebrow, var(--tint)); }
 #support .title2::before { content: "SUPPORT"; } #work .title2::before { content: "SELECTED MOMENTS"; }
 #latest .title2::before { content: "LATEST ALBUMS"; } #videos .title2::before { content: "DANCE CLIPS"; }
 #recap .title2::before { content: "LOOKING BACK"; } #archive .title2::before { content: "ARCHIVE · 2026"; }
@@ -1027,10 +1027,10 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
 #support .grouped-row { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 6px; min-height: 0; padding: 16px 12px; border: 1px solid var(--separator); border-radius: 16px; background: var(--surface); font-size: 12px; color: var(--label-2); }
 #support .grouped-row::before { content: none; }
 #support .grouped-row b { font: 700 19px/1.2 var(--font-latin); color: var(--label); }
-#support .grouped-row.is-featured { border: 1.5px solid var(--tint); background: #2A1B10; color: #FFB27D; }
+#support .grouped-row.is-featured { border: 1.5px solid var(--tint); background: var(--tint-deep, #2A1B10); color: var(--tint-pale, #FFB27D); }
 #support .grouped-row.is-featured b { color: var(--label); }
 #support .grouped-note { padding-inline: 0; }
-#support .button-filled { border-radius: 16px; background: var(--tint); color: #1A0E05; font-weight: 700; }
+#support .button-filled { border-radius: 16px; background: var(--tint); color: var(--on-tint, #1A0E05); font-weight: 700; }
 #support .button-stack { max-width: 680px; }
 
 /* 每週精選：直式大卡橫向滑動 */
@@ -1047,7 +1047,7 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
 #latest .latest-card:first-child { grid-column: 1 / -1; }
 #latest .latest-card:first-child img { aspect-ratio: auto; height: clamp(260px, 38vw, 460px); border-radius: 22px; }
 #latest .latest-card:first-child::after { content: ""; position: absolute; inset: 0; border-radius: 22px; background: linear-gradient(180deg, rgba(0,0,0,0) 48%, rgba(0,0,0,.8) 100%); pointer-events: none; }
-#latest .latest-card:first-child::before { content: "NEW"; position: absolute; z-index: 1; left: 16px; top: 16px; padding: 5px 12px; border-radius: 999px; background: var(--tint); color: #1A0E05; font: 700 12px/1.2 var(--font-latin); letter-spacing: .08em; }
+#latest .latest-card:first-child::before { content: "NEW"; position: absolute; z-index: 1; left: 16px; top: 16px; padding: 5px 12px; border-radius: 999px; background: var(--tint); color: var(--on-tint, #1A0E05); font: 700 12px/1.2 var(--font-latin); letter-spacing: .08em; }
 #latest .latest-card:first-child .latest-meta { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px; padding: 0; }
 #latest .latest-card:first-child .latest-meta b { font-size: 22px; font-weight: 700; color: #F4F1EA; }
 #latest .latest-card:first-child .latest-meta small { font-size: 13px; color: #D9D6CF; }
@@ -1075,6 +1075,29 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
 }
 @media (max-width: 720px) { .app > .navbar { height: 60px; margin-bottom: -60px; } }
 @media (prefers-reduced-motion: reduce) { .recap-card img { transition: none; } }
+
+/* TSC 限定版（Taiwan Salsa Carnival 2026）：只換配色、首屏與專區；11/30 後自動回到常駐版，?season=off 可關 */
+html.tsc, html.tsc[data-theme="dark"] { --bg: #0B0812; --surface: #161022; --separator: #2C2440; --tint: #F64BCB; --tint-soft: rgba(246, 75, 203, 0.14); --bar: rgba(11, 8, 18, 0.86); --on-tint: #1F0519; --eyebrow: #FFC857; --tint-deep: #2A1036; --tint-pale: #FBA6E6; --segment: #3A2C55; }
+html.tsc .hero-b::after { background: linear-gradient(180deg, rgba(11,8,18,.72) 0%, rgba(11,8,18,0) 22%, rgba(11,8,18,0) 30%, rgba(11,8,18,.92) 62%, #0B0812 100%); }
+html.tsc #finder .finder-card { background: rgba(24, 17, 36, 0.92); }
+html.tsc #finder .finder-add:first-child { background: #261C38; }
+html.tsc #finder .finder-scope .segmented { background: #0F0A1A; }
+html.tsc #finder .finder-scope .segmented button.is-selected { background: #3A2C55; }
+html.tsc #finder [data-face-search] { box-shadow: 0 10px 28px rgba(246, 75, 203, 0.32); }
+.hero-b-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.hero-b-chips span { padding: 6px 12px; border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 999px; background: rgba(11, 8, 18, 0.5); font-size: 12px; font-weight: 700; color: var(--label); }
+#tsc { order: 3; }
+#tsc .title2::before { content: "TSC 2026 · 11.20 – 11.22"; }
+.tsc-nights { display: grid; border: 1px solid var(--separator); border-radius: 20px; overflow: hidden; background: var(--surface); max-width: 760px; }
+.tsc-night { display: flex; align-items: center; gap: 14px; padding: 12px 16px 12px 12px; }
+.tsc-night + .tsc-night { border-top: 1px solid var(--separator); }
+.tsc-date { flex: none; width: 64px; height: 64px; border-radius: 14px; display: grid; place-content: center; justify-items: center; background: var(--tint-deep, #2A1036); font-family: var(--font-latin); }
+.tsc-date b { font-size: 22px; font-weight: 700; line-height: 1; color: var(--label); }
+.tsc-date small { margin-top: 4px; font-size: 11px; letter-spacing: .12em; color: var(--eyebrow, var(--tint)); }
+.tsc-night-text { display: grid; gap: 3px; min-width: 0; }
+.tsc-night-text b { font-size: 16px; font-weight: 700; }
+.tsc-night-text small { font-size: 12px; font-weight: 600; color: var(--label-2); }
+.tsc-follow { margin: 14px 0 0; font-size: 13px; line-height: 1.7; color: var(--label-2); }
 </style>
 </head><body>
 
@@ -1841,14 +1864,30 @@ ls.addEventListener("click",e=>{const b=e.target.closest("[data-lang]");if(!b)re
 
 /* ---------- Bachata Crush 主推 ---------- */
 const HERO_PHOTO="./photos/1031/A0009034.jpg"; // 首屏照片：換這一行即可
+// TSC 限定版：到 2026-11-30 為止自動啟用；?season=off 關閉、?season=tsc 強制開啟
+const TSC_ON=(()=>{let q="";try{q=new URLSearchParams(location.search).get("season")||"";}catch{}if(q==="tsc")return true;if(q)return false;return Date.now()<Date.UTC(2026,11,1)-8*36e5;})();
+const TSC_HERO_PHOTO="./photos/1017/A0007681.jpg"; // TSC 拍完後換成 TSC 現場照
+document.documentElement.classList.toggle("tsc",TSC_ON);
 const promo=document.createElement("section");promo.className="hero-b";promo.id="crush";
 document.querySelector(".hero").before(promo);
 function renderPromo(){
- promo.innerHTML=`<img class="hero-b-bg" src="${HERO_PHOTO}" alt="" fetchpriority="high"><div class="hero-b-body">
-  <p class="hero-b-eyebrow">TAIPEI · DANCE PHOTOGRAPHY</p>
-  <h1 class="hero-b-title">${L("舞池裡的你，<br>都在這裡。","Find yourself<br>on the dance floor.","댄스 플로어 위의 당신,<br>모두 여기에.","ダンスフロアのあなたが、<br>ここに。")}</h1>
-  <p class="hero-b-sub">${T("台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。")}</p></div>`;
+ promo.innerHTML=`<img class="hero-b-bg" src="${TSC_ON?TSC_HERO_PHOTO:HERO_PHOTO}" alt="" fetchpriority="high"><div class="hero-b-body">
+  <p class="hero-b-eyebrow">${TSC_ON?"TAIWAN SALSA CARNIVAL 2026":"TAIPEI · DANCE PHOTOGRAPHY"}</p>
+  <h1 class="hero-b-title">${TSC_ON?L("TSC 三個晚上，<br>你的舞台都在。","Three nights of TSC.<br>Your moments, all here.","TSC의 세 밤,<br>당신의 무대를 담습니다.","TSC の3夜、<br>あなたのステージをここに。"):L("舞池裡的你，<br>都在這裡。","Find yourself<br>on the dance floor.","댄스 플로어 위의 당신,<br>모두 여기에.","ダンスフロアのあなたが、<br>ここに。")}</h1>
+  <p class="hero-b-sub">${TSC_ON?L("11.20 – 11.22 · 台北流行音樂中心文化館。Salsa Room、Bachata Room 和舞台表演的照片影片，拍完就在這裡上線。","Nov 20–22 · Taipei Music Center Cultural Cube. Photos and clips from the Salsa Room, the Bachata Room and the shows go live here after each night.","11.20–11.22 · 타이베이 뮤직센터 컬처 큐브. 살사 룸, 바차타 룸, 공연의 사진과 영상이 매일 밤 이후 이곳에 올라옵니다.","11.20–11.22 · 台北流行音楽センター文化館。Salsa Room、Bachata Room、ショーの写真と動画を、各夜の後にここで公開します。"):T("台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。")}</p>
+  ${TSC_ON?`<div class="hero-b-chips">${L(["週五 11.20","週六 11.21","週日 11.22"],["Fri 11.20","Sat 11.21","Sun 11.22"],["금 11.20","토 11.21","일 11.22"],["金 11.20","土 11.21","日 11.22"]).map(x=>`<span>${x}</span>`).join("")}</div>`:""}</div>`;
 }
+const tscZone=document.createElement("section");tscZone.className="section";tscZone.id="tsc";tscZone.hidden=!TSC_ON;
+function renderTsc(){
+ if(!TSC_ON)return;
+ const soon=L("活動後上線","Going live after the night","행사 후 공개","終了後に公開");
+ const row=(d,w,n)=>`<div class="tsc-night"><span class="tsc-date"><b>${d}</b><small>${w}</small></span><span class="tsc-night-text"><b>${n}</b><small>${soon}</small></span></div>`;
+ tscZone.innerHTML=`<div class="section-head"><div><h2 class="title2">${L("TSC 專區","TSC zone","TSC 존","TSC エリア")}</h2><p class="footnote">${L("三個晚上、兩個舞池加上舞台表演。每晚整理好就上線，這裡會更新。","Three nights, two rooms and the shows. Each night goes live here as soon as it is edited.","세 밤, 두 개의 룸, 그리고 공연. 정리되는 대로 이곳에 공개됩니다.","3夜、2つのルーム、そしてショー。編集が終わり次第ここで公開します。")}</p></div></div>
+ <div class="tsc-nights">${row("20","FRI","Friday Night Party")}${row("21","SAT","Saturday Night Party")}${row("22","SUN","Sunday Night Party")}</div>
+ <p class="tsc-follow">${L("想第一時間知道上線，追蹤","To know the moment they go live, follow","공개 소식을 가장 먼저 받으려면 팔로우하세요:","公開のお知らせはこちらをフォロー：")} <a href="https://www.instagram.com/jimframe/" target="_blank" rel="noopener">@jimframe</a></p>`;
+}
+const _renderPromo=renderPromo;renderPromo=function(){_renderPromo();renderTsc();};
+(()=>{const sp=document.getElementById("support");if(sp)sp.after(tscZone);renderTsc();})();
 (()=>{const nb=document.querySelector(".app > .navbar");if(!nb)return;const f=()=>nb.classList.toggle("is-solid",scrollY>40);addEventListener("scroll",f,{passive:true});f();})();
 
 /* ---------- 熱度：聚焦最近 7 天的活動 ---------- */
