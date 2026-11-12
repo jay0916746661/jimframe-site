@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>T024 設計參考：JimFrame 手機首頁 B（390px 寬檢視）</title>
+
+</head>
+<body>
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+body{margin:0}
+a{color:#FF8A3D}a:hover{color:#FFB27D}
+.ph1{background-image:url(../../../photos/1031/A0009034.jpg)}
+.ph2{background-image:url(../../../photos/1019/A0008170.jpg)}
+.ph3{background-image:url(../../../photos/1019/A0008232.jpg)}
+.ph4{background-image:url(../../../photos/1018/A0007820.jpg)}
+.ph5{background-image:url(../../../photos/1031/A0008994.jpg)}
+.ph6{background-image:url(../../../photos/1031/A0008858.jpg)}
+.ph7{background-image:url(../../../photos/1016/A0006906.jpg)}
+</style>
+
+<div style="width: 390px; box-sizing: border-box; background: #0A0A0C; color: #F4F1EA; font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif; display: flex; flex-direction: column">
+
+<section class="ph1" style="position: relative; height: 600px; display: flex; flex-direction: column; justify-content: space-between; background-size: cover; background-position: 38% center">
+<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,10,12,0.72) 0%, rgba(10,10,12,0) 22%, rgba(10,10,12,0) 30%, rgba(10,10,12,0.92) 55%, #0A0A0C 100%)"></span>
+<header style="position: relative; padding: 10px 16px 0 20px; display: flex; align-items: center; justify-content: space-between">
+<a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #F4F1EA">
+<span style="width: 32px; height: 32px; border: 1.5px solid #F4F1EA; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 12px">JF</span>
+<span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.08em">JIMFRAME</span>
+</a>
+<div role="group" aria-label="語言" style="display: flex; padding: 3px; background: rgba(20,20,24,0.72); border: 1px solid rgba(255,255,255,0.16); border-radius: 999px">
+<button type="button" aria-pressed="true" style="min-width: 44px; height: 38px; padding: 0 10px; border: 0; border-radius: 999px; background: #F4F1EA; color: #0A0A0C; font: inherit; font-size: 13px; font-weight: 700">繁中</button>
+<button type="button" aria-pressed="false" style="min-width: 40px; height: 38px; padding: 0 8px; border: 0; border-radius: 999px; background: transparent; color: #F4F1EA; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 500">EN</button>
+<button type="button" aria-pressed="false" style="min-width: 40px; height: 38px; padding: 0 8px; border: 0; border-radius: 999px; background: transparent; color: #F4F1EA; font: inherit; font-size: 13px">한</button>
+<button type="button" aria-pressed="false" style="min-width: 40px; height: 38px; padding: 0 8px; border: 0; border-radius: 999px; background: transparent; color: #F4F1EA; font: inherit; font-size: 13px">日</button>
+</div>
+</header>
+<div style="position: relative; padding: 0 20px 96px; display: flex; flex-direction: column; gap: 12px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; color: #FF8A3D">TAIPEI · DANCE PHOTOGRAPHY</span>
+<h1 style="margin: 0; font-family: 'Noto Serif TC', 'Songti TC', serif; font-size: 44px; line-height: 1.22; font-weight: 900; letter-spacing: 0.01em">舞池裡的你，<br>都在這裡。</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.7; color: #D9D6CF">把現場的速度、連結和情緒留下來，讓每位舞者都能找到、收藏、分享自己的畫面。</p>
+</div>
+</section>
+
+<section id="finder" style="position: relative; margin: -72px 16px 0; padding: 20px 18px 20px; background: rgba(24,24,28,0.92); border: 1px solid rgba(255,255,255,0.14); border-radius: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<h2 style="margin: 0; font-size: 20px; font-weight: 700">找自己和朋友</h2>
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; letter-spacing: 0.08em; color: #A6A5AE">64 本相簿</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<label style="position: relative; height: 112px; border-radius: 16px; background: #26262C; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #F4F1EA; font-size: 13px; font-weight: 700">
+<span style="position: absolute; top: 9px; left: 9px; width: 14px; height: 14px; border-top: 2px solid #FF8A3D; border-left: 2px solid #FF8A3D; border-top-left-radius: 5px"></span>
+<span style="position: absolute; top: 9px; right: 9px; width: 14px; height: 14px; border-top: 2px solid #FF8A3D; border-right: 2px solid #FF8A3D; border-top-right-radius: 5px"></span>
+<span style="position: absolute; bottom: 9px; left: 9px; width: 14px; height: 14px; border-bottom: 2px solid #FF8A3D; border-left: 2px solid #FF8A3D; border-bottom-left-radius: 5px"></span>
+<span style="position: absolute; bottom: 9px; right: 9px; width: 14px; height: 14px; border-bottom: 2px solid #FF8A3D; border-right: 2px solid #FF8A3D; border-bottom-right-radius: 5px"></span>
+<span style="width: 36px; height: 36px; border-radius: 50%; background: #FF8A3D; color: #1A0E05; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span>
+加入自拍
+<input type="file" accept="image/*" style="position: absolute; inset: 0; opacity: 0">
+</label>
+<div style="height: 112px; border-radius: 16px; border: 1.5px dashed #55555E; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #A6A5AE; font-size: 13px">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+朋友 1
+</div>
+<div style="height: 112px; border-radius: 16px; border: 1.5px dashed #55555E; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #A6A5AE; font-size: 13px">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+朋友 2
+</div>
+</div>
+<div role="group" aria-label="搜尋範圍" style="display: flex; padding: 3px; background: #0F0F12; border-radius: 12px">
+<button type="button" aria-pressed="true" style="flex: 1 1 0; height: 40px; border: 0; border-radius: 10px; background: #33333B; color: #F4F1EA; font: inherit; font-size: 13px; font-weight: 700">全部已索引相簿</button>
+<button type="button" aria-pressed="false" style="flex: 1 1 0; height: 40px; border: 0; border-radius: 10px; background: transparent; color: #A6A5AE; font: inherit; font-size: 13px">最近的 Bachata Crush</button>
+</div>
+<button type="button" style="height: 56px; border: 0; border-radius: 16px; background: #FF8A3D; color: #1A0E05; font: inherit; font-size: 17px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 28px rgba(255,138,61,0.32)">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+開始找
+</button>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; line-height: 1.6; color: #A6A5AE">
+<span style="display: flex; gap: 8px; align-items: flex-start"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF8A3D" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 14px; margin-top: 3px"><path d="M5 12l5 5 9-10"></path></svg>一次最多找 3 個人，連合照也找得到</span>
+<span style="display: flex; gap: 8px; align-items: flex-start"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF8A3D" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 14px; margin-top: 3px"><path d="M5 12l5 5 9-10"></path></svg>自拍原圖只留在你的手機，比對完不保存</span>
+<span style="display: flex; gap: 8px; align-items: flex-start"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF8A3D" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 14px; margin-top: 3px"><path d="M5 12l5 5 9-10"></path></svg>找到的照片可以一鍵做成 IG 限動</span>
+</div>
+</section>
+
+<section id="support" style="padding: 40px 20px 0; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; color: #FF8A3D">SUPPORT</span>
+<h2 style="margin: 0; font-family: 'Noto Serif TC', 'Songti TC', serif; font-size: 28px; font-weight: 900">支持下一場拍攝</h2>
+<p style="margin: 4px 0 0; font-size: 14px; line-height: 1.7; color: #A6A5AE">器材、交通、拍攝和整理都有成本。自願贊助，不影響瀏覽和下載。</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<div style="padding: 16px 12px; background: #151518; border: 1px solid #2A2A30; border-radius: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; color: #A6A5AE">一杯咖啡</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 700">NT$100</span></div>
+<div style="padding: 16px 12px; background: #2A1B10; border: 1.5px solid #FF8A3D; border-radius: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; color: #FFB27D">支持一晚拍攝</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 700">NT$250</span></div>
+<div style="padding: 16px 12px; background: #151518; border: 1px solid #2A2A30; border-radius: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; color: #A6A5AE">自由金額</span><span style="font-size: 19px; font-weight: 700">隨意</span></div>
+</div>
+<a href="https://line.me/ti/p/~jim0916746661" style="height: 54px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: #FF8A3D; color: #1A0E05; text-decoration: none; font-size: 16px; font-weight: 700">用 LINE 索取付款資訊</a>
+</section>
+
+<section style="padding: 52px 0 0; display: flex; flex-direction: column; gap: 18px">
+<div style="padding: 0 20px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; color: #FF8A3D">SELECTED MOMENTS</span>
+<h2 style="margin: 0; font-family: 'Noto Serif TC', 'Songti TC', serif; font-size: 28px; font-weight: 900">每週精選</h2>
+</div>
+<div role="list" aria-label="每週精選照片" style="display: flex; gap: 12px; padding: 0 20px; overflow-x: auto">
+<a role="listitem" href="#pick-1" class="ph2" style="position: relative; flex: 0 0 258px; height: 344px; border-radius: 20px; overflow: hidden; display: block; background-size: cover; background-position: 42% center; text-decoration: none; color: #F4F1EA">
+<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(0,0,0,0.72) 100%)"></span>
+<span style="position: absolute; left: 16px; bottom: 14px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Bachata Crush</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #D9D6CF">10.19</span></span>
+<span style="position: absolute; right: 14px; top: 14px; padding: 4px 10px; border-radius: 999px; background: rgba(10,10,12,0.66); font-family: 'Space Grotesk', sans-serif; font-size: 12px">01 / 08</span>
+</a>
+<a role="listitem" href="#pick-2" class="ph3" style="position: relative; flex: 0 0 258px; height: 344px; border-radius: 20px; overflow: hidden; display: block; background-size: cover; background-position: 60% center; text-decoration: none; color: #F4F1EA">
+<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(0,0,0,0.72) 100%)"></span>
+<span style="position: absolute; left: 16px; bottom: 14px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Bachata Crush</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #D9D6CF">10.19</span></span>
+<span style="position: absolute; right: 14px; top: 14px; padding: 4px 10px; border-radius: 999px; background: rgba(10,10,12,0.66); font-family: 'Space Grotesk', sans-serif; font-size: 12px">02 / 08</span>
+</a>
+<a role="listitem" href="#pick-3" class="ph4" style="position: relative; flex: 0 0 258px; height: 344px; border-radius: 20px; overflow: hidden; display: block; background-size: cover; background-position: center; text-decoration: none; color: #F4F1EA">
+<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(0,0,0,0.72) 100%)"></span>
+<span style="position: absolute; left: 16px; bottom: 14px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Bachata Crush</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #D9D6CF">10.18</span></span>
+<span style="position: absolute; right: 14px; top: 14px; padding: 4px 10px; border-radius: 999px; background: rgba(10,10,12,0.66); font-family: 'Space Grotesk', sans-serif; font-size: 12px">03 / 08</span>
+</a>
+</div>
+</section>
+
+<section id="latest" style="padding: 52px 20px 0; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; align-items: flex-end; justify-content: space-between">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; color: #FF8A3D">LATEST ALBUMS</span>
+<h2 style="margin: 0; font-family: 'Noto Serif TC', 'Songti TC', serif; font-size: 28px; font-weight: 900">最新相簿</h2>
+</div>
+<a href="#archive" style="min-height: 44px; display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 500; text-decoration: none">全部 64 本<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg></a>
+</div>
+<a href="#album-1031" class="ph5" style="position: relative; height: 260px; border-radius: 22px; overflow: hidden; display: block; background-size: cover; background-position: center; text-decoration: none; color: #F4F1EA">
+<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 48%, rgba(0,0,0,0.8) 100%)"></span>
+<span style="position: absolute; left: 16px; top: 16px; padding: 5px 12px; border-radius: 999px; background: #FF8A3D; color: #1A0E05; font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em">NEW</span>
+<span style="position: absolute; left: 18px; right: 18px; bottom: 16px; display: flex; align-items: flex-end; justify-content: space-between">
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 22px; font-weight: 700">La Salsa</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: #D9D6CF">2026.10.31</span></span>
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: #F4F1EA">364 張</span>
+</span>
+</a>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<a href="#album-1030" style="display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1031/A0008858.jpg" alt="" style="width: 100%; height: 110px; object-fit: cover; border-radius: 14px; display: block"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Flow · 萬聖節</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #A6A5AE">10.30 · 271</span></span></a>
+<a href="#album-1023" style="display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1019/A0008170.jpg" alt="" style="width: 100%; height: 110px; object-fit: cover; border-radius: 14px; display: block"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Flow</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #A6A5AE">10.23 · 158</span></span></a>
+<a href="#album-1019" style="display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1019/A0008232.jpg" alt="" style="width: 100%; height: 110px; object-fit: cover; border-radius: 14px; display: block"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Bachata Crush</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #A6A5AE">10.19 · 162</span></span></a>
+</div>
+</section>
+
+<section id="videos" style="padding: 52px 20px 0; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; color: #FF8A3D">DANCE CLIPS</span>
+<h2 style="margin: 0; font-family: 'Noto Serif TC', 'Songti TC', serif; font-size: 28px; font-weight: 900">影片 · Bachata Crush</h2>
+<p style="margin: 4px 0 0; font-size: 14px; line-height: 1.7; color: #A6A5AE">每支都能免費下載 25 秒試看和限動照片。</p>
+</div>
+<a href="#video-1018" class="ph4" style="position: relative; height: 200px; border-radius: 22px; overflow: hidden; display: block; background-size: cover; background-position: center; text-decoration: none; color: #F4F1EA">
+<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.82) 100%)"></span>
+<span style="position: absolute; left: 50%; top: 50%; width: 60px; height: 60px; margin: -42px 0 0 -30px; border-radius: 50%; background: rgba(244,241,234,0.94); color: #0A0A0C; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span>
+<span style="position: absolute; left: 18px; right: 18px; bottom: 16px; display: flex; align-items: flex-end; justify-content: space-between"><span style="font-size: 19px; font-weight: 700">10.18 · PJ 睡衣派對</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 13px">36 支</span></span>
+</a>
+<div style="display: flex; flex-direction: column; background: #151518; border: 1px solid #2A2A30; border-radius: 20px; overflow: hidden">
+<a href="#video-1017" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px 10px 10px; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1017/A0007681.jpg" alt="" style="width: 84px; height: 56px; object-fit: cover; border-radius: 10px; display: block"><span style="flex: 1 1 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">10.17 · Dressy &amp; Sultry 華麗微醺</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #A6A5AE">9 支</span></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A6A5AE" stroke-width="2" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg></a>
+<a href="#video-1016" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px 10px 10px; border-top: 1px solid #2A2A30; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1016/A0006906.jpg" alt="" style="width: 84px; height: 56px; object-fit: cover; border-radius: 10px; display: block"><span style="flex: 1 1 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">10.16 · Neon 螢光狂潮</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #A6A5AE">46 支</span></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A6A5AE" stroke-width="2" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg></a>
+<a href="#video-1015" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px 10px 10px; border-top: 1px solid #2A2A30; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1018/A0007926.jpg" alt="" style="width: 84px; height: 56px; object-fit: cover; border-radius: 10px; display: block"><span style="flex: 1 1 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">10.15 · Preparty</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #A6A5AE">23 支</span></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A6A5AE" stroke-width="2" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg></a>
+</div>
+<p style="margin: 0; padding: 14px 16px; background: #1D1710; border: 1px solid #4A3320; border-radius: 16px; font-size: 13px; line-height: 1.7; color: #E9D9C8"><strong style="color: #FF8A3D">想要完整版？每支 NT$300／US$10。</strong>點影片下方「完整版」，用 LINE 告訴我影片編號，付款後傳雲端連結給你。</p>
+</section>
+
+<section style="margin: 52px 20px 0; padding: 22px 0 22px 20px; background: #151518; border: 1px solid #2A2A30; border-radius: 24px; display: flex; gap: 16px; align-items: center; overflow: hidden">
+<div style="flex: 1 1 0; display: flex; flex-direction: column; gap: 12px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; color: #FF8A3D">IG STUDIO</span>
+<h2 style="margin: 0; font-family: 'Noto Serif TC', 'Songti TC', serif; font-size: 24px; line-height: 1.35; font-weight: 900">把照片做成<br>你的限動</h2>
+<p style="margin: 0; font-size: 13px; line-height: 1.7; color: #A6A5AE">選照片、選版型、留好標記位置，直接輸出 9:16。</p>
+<a href="./studio/" style="align-self: flex-start; height: 46px; padding: 0 20px; display: flex; align-items: center; border-radius: 14px; background: #F4F1EA; color: #0A0A0C; text-decoration: none; font-size: 14px; font-weight: 700">開啟限動工具</a>
+</div>
+<div aria-hidden="true" class="ph6" style="position: relative; flex: 0 0 126px; height: 224px; margin-right: -14px; border-radius: 18px; border: 3px solid #33333B; overflow: hidden; transform: rotate(5deg); background-size: cover; background-position: 30% center">
+<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.7) 100%)"></span>
+<span style="position: absolute; left: 10px; bottom: 12px; padding: 3px 8px; border-radius: 6px; background: #F4F1EA; color: #0A0A0C; font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 700">@jimframe</span>
+</div>
+</section>
+
+<section style="padding: 52px 0 0; display: flex; flex-direction: column; gap: 18px">
+<div style="padding: 0 20px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; color: #FF8A3D">LOOKING BACK</span>
+<h2 style="margin: 0; font-family: 'Noto Serif TC', 'Songti TC', serif; font-size: 28px; font-weight: 900">活動回顧</h2>
+</div>
+<div style="display: flex; gap: 12px; padding: 0 20px; overflow-x: auto">
+<a href="Recap.dc.html" class="ph5" style="position: relative; flex: 0 0 270px; height: 180px; border-radius: 20px; overflow: hidden; display: block; background-size: cover; background-position: center; text-decoration: none; color: #F4F1EA">
+<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.84) 100%)"></span>
+<span style="position: absolute; left: 16px; right: 16px; bottom: 14px; display: flex; flex-direction: column; gap: 3px"><span style="font-size: 18px; font-weight: 700">萬聖節 2026</span><span style="font-size: 12px; color: #D9D6CF">特效相框 · 小遊戲 · 排行榜</span></span>
+</a>
+<a href="Recap.dc.html" class="ph7" style="position: relative; flex: 0 0 270px; height: 180px; border-radius: 20px; overflow: hidden; display: block; background-size: cover; background-position: center; text-decoration: none; color: #F4F1EA">
+<span aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.84) 100%)"></span>
+<span style="position: absolute; left: 16px; right: 16px; bottom: 14px; display: flex; flex-direction: column; gap: 3px"><span style="font-size: 18px; font-weight: 700">Taiwan Bachata Crush 2026</span><span style="font-size: 12px; color: #D9D6CF">1,306 張照片 · 114 支影片</span></span>
+</a>
+</div>
+</section>
+
+<section id="archive" style="padding: 52px 20px 0; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; color: #FF8A3D">ARCHIVE · 2026</span>
+<h2 style="margin: 0; font-family: 'Noto Serif TC', 'Songti TC', serif; font-size: 28px; font-weight: 900">活動相簿</h2>
+</div>
+<label style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 14px; background: #151518; border: 1px solid #2A2A30; border-radius: 14px">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A6A5AE" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<input type="text" inputmode="numeric" aria-label="搜尋相簿日期" placeholder="搜尋日期，例如 08.31" style="flex: 1 1 0; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 15px; color: #F4F1EA">
+</label>
+<div role="group" aria-label="依場地篩選" style="display: flex; gap: 8px; overflow-x: auto">
+<button type="button" aria-pressed="true" style="flex: 0 0 auto; height: 44px; padding: 0 18px; border: 0; border-radius: 999px; background: #F4F1EA; color: #0A0A0C; font: inherit; font-size: 14px; font-weight: 700">全部</button>
+<button type="button" aria-pressed="false" style="flex: 0 0 auto; height: 44px; padding: 0 18px; border: 1px solid #3A3A42; border-radius: 999px; background: transparent; color: #F4F1EA; font: inherit; font-size: 14px">Bachata Crush</button>
+<button type="button" aria-pressed="false" style="flex: 0 0 auto; height: 44px; padding: 0 18px; border: 1px solid #3A3A42; border-radius: 999px; background: transparent; color: #F4F1EA; font: inherit; font-size: 14px">Flow</button>
+<button type="button" aria-pressed="false" style="flex: 0 0 auto; height: 44px; padding: 0 18px; border: 1px solid #3A3A42; border-radius: 999px; background: transparent; color: #F4F1EA; font: inherit; font-size: 14px">Barcade</button>
+<button type="button" aria-pressed="false" style="flex: 0 0 auto; height: 44px; padding: 0 18px; border: 1px solid #3A3A42; border-radius: 999px; background: transparent; color: #F4F1EA; font: inherit; font-size: 14px">La Salsa</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px">
+<a href="#album-1018" style="display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1018/A0007820.jpg" alt="" style="width: 100%; height: 210px; object-fit: cover; border-radius: 18px; display: block"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Bachata Crush</span><span style="font-size: 12px; color: #A6A5AE">10.18 · PJ 睡衣派對</span></span></a>
+<a href="#album-1017" style="display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1017/A0007681.jpg" alt="" style="width: 100%; height: 210px; object-fit: cover; border-radius: 18px; display: block"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Bachata Crush</span><span style="font-size: 12px; color: #A6A5AE">10.17 · Dressy &amp; Sultry</span></span></a>
+<a href="#album-1016" style="display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1016/A0006906.jpg" alt="" style="width: 100%; height: 210px; object-fit: cover; border-radius: 18px; display: block"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Bachata Crush</span><span style="font-size: 12px; color: #A6A5AE">10.16 · Neon 螢光狂潮</span></span></a>
+<a href="#album-1015" style="display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: #F4F1EA"><img src="../../../photos/1018/A0007926.jpg" alt="" style="width: 100%; height: 210px; object-fit: cover; border-radius: 18px; display: block"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Bachata Crush</span><span style="font-size: 12px; color: #A6A5AE">10.15 · Preparty</span></span></a>
+</div>
+<button type="button" style="height: 52px; border: 1px solid #3A3A42; border-radius: 16px; background: #151518; color: #F4F1EA; font: inherit; font-size: 15px; font-weight: 700">載入更多相簿</button>
+<p style="margin: 0; padding: 14px 16px; background: #151518; border: 1px solid #2A2A30; border-radius: 16px; font-size: 13px; line-height: 1.7; color: #A6A5AE"><strong style="color: #F4F1EA">分享時請標記攝影師 <a href="https://www.instagram.com/jimframe/" style="text-decoration: none">@jimframe</a></strong><br>從拍攝、挑選到整理都需要時間，你的標記能讓我繼續記錄舞池。</p>
+</section>
+
+<section id="contact" style="padding: 52px 20px 0; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; color: #FF8A3D">BOOKING</span>
+<h2 style="margin: 0; font-family: 'Noto Serif TC', 'Songti TC', serif; font-size: 28px; font-weight: 900">預約拍攝</h2>
+<p style="margin: 4px 0 0; font-size: 14px; line-height: 1.7; color: #A6A5AE">活動紀錄、舞蹈派對、個人寫真。私訊時附上日期、場地和需求。</p>
+</div>
+<div style="display: flex; flex-direction: column; background: #151518; border: 1px solid #2A2A30; border-radius: 20px; overflow: hidden">
+<a href="https://www.instagram.com/jimframe/" style="min-height: 56px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: #F4F1EA; font-size: 15px"><span>Instagram 私訊預約</span><span style="display: flex; align-items: center; gap: 4px; color: #FF8A3D; font-weight: 700">@jimframe<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg></span></a>
+<div style="min-height: 56px; padding: 0 16px; border-top: 1px solid #2A2A30; display: flex; align-items: center; justify-content: space-between; font-size: 15px"><span>拍攝類型</span><span style="color: #A6A5AE">活動 · 舞蹈 · 人像</span></div>
+<div style="min-height: 56px; padding: 0 16px; border-top: 1px solid #2A2A30; display: flex; align-items: center; justify-content: space-between; font-size: 15px"><span>地區</span><span style="color: #A6A5AE">台北</span></div>
+</div>
+</section>
+
+<footer style="margin-top: 48px; padding: 22px 20px 26px; border-top: 1px solid #2A2A30; display: flex; justify-content: space-between; font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: #A6A5AE">
+<span>© 2026 Jim Lin Photography</span><span>Taipei, Taiwan</span>
+</footer>
+
+<nav aria-label="快速切換" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 6px 8px 10px; background: #16161A; border-top: 1px solid #2A2A30">
+<a href="#top" style="min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #FF8A3D; font-size: 11px; font-weight: 700"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg>首頁</a>
+<a href="#finder" style="min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #A6A5AE; font-size: 11px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>找自己</a>
+<a href="#archive" style="min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #A6A5AE; font-size: 11px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M7 7V4h10v3"></path></svg>相簿</a>
+<a href="#contact" style="min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #A6A5AE; font-size: 11px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="3"></rect><circle cx="12" cy="13" r="3.5"></circle><path d="M8 6l1.5-2h5L16 6"></path></svg>預約</a>
+</nav>
+
+</div>
+
+
+</body>
+</html>

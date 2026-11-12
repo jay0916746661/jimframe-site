@@ -961,6 +961,121 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
   .hw-ghost, .hw-spore, .hw-flash { display: none; }
 }
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@900&family=Space+Grotesk:wght@500;700&display=swap">
+<style id="home-b">
+/* T024 首頁改版 B：找自己放首屏、贊助緊接在後；只疊加外觀，不改功能。 */
+:root, :root[data-theme="dark"] {
+  --bg: #0A0A0C; --surface: #151518; --label: #F4F1EA; --label-2: #A6A5AE; --separator: #2A2A30;
+  --tint: #FF8A3D; --bar: rgba(10, 10, 12, 0.86);
+  --font-serif: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --font-latin: "Space Grotesk", var(--font-display);
+}
+.app { display: flex; flex-direction: column; }
+.app > * { flex: none; }
+.app > .navbar { order: 0; } #crush { order: 1; } #finder { order: 2; } #support { order: 3; } #work { order: 4; }
+#latest { order: 5; } #videos { order: 6; } .app > .studio-feature { order: 7; } #recap { order: 8; }
+#archive { order: 9; } #contact { order: 10; } .app > .footer { order: 11; } .app > .secondary-picks { order: 12; }
+.app > .section, .app > .section + .section { border-top: 0; padding-block: 26px; }
+
+/* 導覽列：疊在首屏照片上，往下滑才出現底色 */
+.app > .navbar { height: 64px; margin-bottom: -64px; background: transparent; border-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; transition: background .25s, border-color .25s; }
+.app > .navbar.is-solid { background: var(--bar); border-color: var(--separator); -webkit-backdrop-filter: saturate(130%) blur(22px); backdrop-filter: saturate(130%) blur(22px); }
+.navbar .brand em { display: none; }
+.navbar .brand { font-family: var(--font-latin); }
+.lang-switch { padding: 3px; background: rgba(20, 20, 24, 0.72); border: 1px solid rgba(255, 255, 255, 0.16); }
+.lang-switch button { min-width: 38px; min-height: 36px; font-size: 13px; color: var(--label); }
+.lang-switch button.is-selected { background: var(--label); color: #0A0A0C; }
+
+/* 首屏 */
+.app > section.hero-b { position: relative; width: 100%; margin: 0; min-height: clamp(560px, 82vh, 760px); display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; }
+.hero-b-bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 38% center; }
+.hero-b::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10,10,12,.72) 0%, rgba(10,10,12,0) 22%, rgba(10,10,12,0) 30%, rgba(10,10,12,.92) 62%, #0A0A0C 100%); }
+.hero-b-body { width: min(100% - 2 * var(--gutter), var(--content)); margin-inline: auto; padding-bottom: 104px; display: grid; gap: 12px; }
+.hero-b-eyebrow { margin: 0; font: 500 12px/1.4 var(--font-latin); letter-spacing: .22em; color: var(--tint); }
+.hero-b-title { margin: 0; font: 900 clamp(40px, 7vw, 76px)/1.2 var(--font-serif); letter-spacing: .01em; color: var(--label); }
+.hero-b-sub { margin: 0; max-width: 36em; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.7; color: #D9D6CF; }
+
+/* 找自己：浮在首屏下緣的卡片 */
+.app > #finder { position: relative; z-index: 2; margin-top: -72px; padding-block: 0; width: min(100% - 32px, 880px); }
+#finder .finder-card { padding: 20px 18px; background: rgba(24, 24, 28, 0.92); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 22px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+#finder .finder-icon { display: none; }
+#finder .title2 { font: 700 20px/1.3 var(--font-display); letter-spacing: 0; }
+#finder .title2::before { content: none; }
+#finder .finder-head .footnote { font-size: 12px; line-height: 1.6; }
+#finder .finder-people { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 420px; }
+#finder .finder-person, #finder .finder-add { aspect-ratio: 1 / 1; border-radius: 16px; }
+#finder .finder-add { border-color: #55555E; color: var(--label-2); font-weight: 500; }
+#finder .finder-add:first-child { border: 0; background: #26262C; color: var(--label); font-weight: 700; }
+#finder .finder-add:first-child .icon { width: 36px; height: 36px; padding: 9px; border-radius: 50%; background: var(--tint); color: #1A0E05; }
+#finder .finder-scope .segmented { width: 100%; padding: 3px; border-radius: 12px; background: #0F0F12; }
+#finder .finder-scope .segmented button { flex: 1 1 0; min-height: 40px; border-radius: 10px; font-size: 13px; }
+#finder .finder-scope .segmented button.is-selected { background: #33333B; box-shadow: none; }
+#finder [data-face-search] { flex: 1 1 100%; min-height: 56px; border-radius: 16px; background: var(--tint); color: #1A0E05; font-size: 17px; font-weight: 700; box-shadow: 0 10px 28px rgba(255, 138, 61, 0.32); }
+#finder [data-face-search]:disabled { box-shadow: none; }
+
+/* 區塊標題：橘色英文小標＋襯線大標 */
+.app > .section .section-head .title2 { font-family: var(--font-serif); font-weight: 900; font-size: clamp(28px, 3.2vw, 40px); line-height: 1.25; letter-spacing: 0; }
+.app > .section .section-head .title2::before { display: block; margin-bottom: 8px; font: 500 12px/1.4 var(--font-latin); letter-spacing: .22em; color: var(--tint); }
+#support .title2::before { content: "SUPPORT"; } #work .title2::before { content: "SELECTED MOMENTS"; }
+#latest .title2::before { content: "LATEST ALBUMS"; } #videos .title2::before { content: "DANCE CLIPS"; }
+#recap .title2::before { content: "LOOKING BACK"; } #archive .title2::before { content: "ARCHIVE · 2026"; }
+#contact .title2::before { content: "BOOKING"; }
+
+/* 贊助：緊接在找自己下面 */
+.app > #support { padding-top: 40px; max-width: none; width: min(100% - 2 * var(--gutter), var(--content)); }
+#support .grouped { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; max-width: 680px; overflow: visible; background: none; }
+#support .grouped-row { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 6px; min-height: 0; padding: 16px 12px; border: 1px solid var(--separator); border-radius: 16px; background: var(--surface); font-size: 12px; color: var(--label-2); }
+#support .grouped-row::before { content: none; }
+#support .grouped-row b { font: 700 19px/1.2 var(--font-latin); color: var(--label); }
+#support .grouped-row.is-featured { border: 1.5px solid var(--tint); background: #2A1B10; color: #FFB27D; }
+#support .grouped-row.is-featured b { color: var(--label); }
+#support .grouped-note { padding-inline: 0; }
+#support .button-filled { border-radius: 16px; background: var(--tint); color: #1A0E05; font-weight: 700; }
+#support .button-stack { max-width: 680px; }
+
+/* 每週精選：直式大卡橫向滑動 */
+.app > #work.brand-story { padding-block: 26px; }
+#work .carousel { grid-auto-columns: min(66vw, 300px); gap: 12px; }
+#work .carousel-card { aspect-ratio: 3 / 4; border-radius: 20px; }
+
+/* 最新相簿：第一本大卡＋三本小卡 */
+.latest-albums.section { padding-top: 26px; }
+#latest .latest-row { display: grid; grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 10px; overflow: visible; padding-inline: 0; scroll-snap-type: none; }
+#latest .latest-card { position: relative; scroll-snap-align: none; }
+#latest .latest-card img { aspect-ratio: 1 / 1; border-radius: 14px; }
+#latest .latest-meta b { font-size: 14px; } #latest .latest-meta small { font-size: 12px; }
+#latest .latest-card:first-child { grid-column: 1 / -1; }
+#latest .latest-card:first-child img { aspect-ratio: auto; height: clamp(260px, 38vw, 460px); border-radius: 22px; }
+#latest .latest-card:first-child::after { content: ""; position: absolute; inset: 0; border-radius: 22px; background: linear-gradient(180deg, rgba(0,0,0,0) 48%, rgba(0,0,0,.8) 100%); pointer-events: none; }
+#latest .latest-card:first-child::before { content: "NEW"; position: absolute; z-index: 1; left: 16px; top: 16px; padding: 5px 12px; border-radius: 999px; background: var(--tint); color: #1A0E05; font: 700 12px/1.2 var(--font-latin); letter-spacing: .08em; }
+#latest .latest-card:first-child .latest-meta { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px; padding: 0; }
+#latest .latest-card:first-child .latest-meta b { font-size: 22px; font-weight: 700; color: #F4F1EA; }
+#latest .latest-card:first-child .latest-meta small { font-size: 13px; color: #D9D6CF; }
+#latest .text-link { color: var(--tint); }
+
+/* 影片、限動工具、相簿卡片：圓角與邊框 */
+.vev-card, .video-card { border-radius: 20px; }
+.studio-feature-card { border-radius: 24px; }
+.app > .studio-feature { padding-block: 26px; }
+.album-cover { border-radius: 18px; }
+#archive .search-field { height: 48px; padding-inline: 14px; border: 1px solid var(--separator); border-radius: 14px; background: var(--surface); }
+.credit-note { border: 1px solid var(--separator); border-radius: 16px; }
+
+/* 活動回顧入口 */
+.recap-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.recap-card { position: relative; display: block; height: clamp(180px, 24vw, 300px); border-radius: 20px; overflow: hidden; color: #F4F1EA; text-decoration: none; }
+.recap-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.recap-card:hover img { transform: scale(1.03); }
+.recap-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.84) 100%); }
+.recap-card span { position: absolute; z-index: 1; left: 16px; right: 16px; bottom: 14px; display: grid; gap: 3px; }
+.recap-card b { font-size: 18px; font-weight: 700; } .recap-card small { font-size: 12px; color: #D9D6CF; }
+@media (max-width: 640px) {
+  .recap-row { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 74%; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); }
+  .recap-row::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 720px) { .app > .navbar { height: 60px; margin-bottom: -60px; } }
+@media (prefers-reduced-motion: reduce) { .recap-card img { transition: none; } }
+</style>
 </head><body>
 
 <main class="app" id="app">
@@ -971,12 +1086,8 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
   <a class="nav-pill" href="https://www.instagram.com/jimframe/" target="_blank" rel="noreferrer" data-i18n="預約拍攝">預約拍攝</a>
  </header>
 
- <section class="hero brand-story" id="work">
-  <div class="hero-copy">
-   <p class="eyebrow">SELECTED MOMENTS · JIMFRAME</p>
-   <h1 class="large-title">舞池不只是一晚，而是值得留下的身份。</h1>
-   <p class="hero-sub">台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。</p>
-  </div>
+ <section class="section hero brand-story" id="work">
+  <div class="section-head"><div><h2 class="title2" data-i18n="每週精選">每週精選</h2></div></div>
   <div class="carousel" role="list" aria-label="每週精選照片" id="carousel"></div>
  </section>
 
@@ -1008,6 +1119,13 @@ html.halloween .crush-promo { box-shadow: 0 0 0 1px rgba(255,122,26,.5), 0 0 60p
  </section>
 
  <section class="section studio-feature"><a class="studio-feature-card" href="./studio/"><span><b class="title2" data-i18n="把照片做成你的限動">把照片做成你的限動</b><p data-i18n="選擇照片、版型與標記空間，直接輸出適合 Instagram 的 9:16 圖片。">選擇照片、版型與標記空間，直接輸出適合 Instagram 的 9:16 圖片。</p></span><span class="button button-filled button-large" data-i18n="開啟限動工具">開啟限動工具</span></a></section>
+ <section class="section" id="recap">
+  <div class="section-head"><div><h2 class="title2" data-i18n="活動回顧">活動回顧</h2></div></div>
+  <div class="recap-row">
+   <a class="recap-card" href="./recap/#halloween"><img src="./photos/1031/A0008994.jpg" alt="" loading="lazy"><span><b data-i18n="萬聖節 2026">萬聖節 2026</b><small data-i18n="特效相框 · 小遊戲">特效相框 · 小遊戲</small></span></a>
+   <a class="recap-card" href="./recap/#crush"><img src="./photos/1016/A0006906.jpg" alt="" loading="lazy"><span><b>Taiwan Bachata Crush 2026</b><small data-i18n="四個晚上的照片與影片">四個晚上的照片與影片</small></span></a>
+  </div>
+ </section>
  <section class="section" id="archive">
   <div class="section-head">
    <div><h2 class="title2">活動相簿</h2><p class="footnote" id="album-count"></p></div>
@@ -1698,6 +1816,9 @@ Object.assign(DICT.en,{"首頁":"Home","最新":"Latest","圖庫":"Library","預
 Object.assign(DICT.ko,{"首頁":"홈","最新":"최신","圖庫":"라이브러리","預約拍攝":"촬영 예약","舞池不只是一晚，而是值得留下的身份。":"댄스 플로어의 순간은 하룻밤을 넘어, 나를 보여주는 기록입니다.","台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。":"타이베이 댄스·이벤트 사진. 나만의 순간을 찾고 저장하고 공유하세요.","把照片做成你的限動":"사진을 스토리로 만들기","選擇照片、版型與標記空間，直接輸出適合 Instagram 的 9:16 圖片。":"사진과 레이아웃, 태그 공간을 선택해 Instagram용 9:16 이미지를 만드세요.","開啟限動工具":"IG 스튜디오 열기","載入更多相簿":"앨범 더 보기"});
 Object.assign(DICT.ja,{"首頁":"ホーム","最新":"最新","圖庫":"ライブラリー","預約拍攝":"撮影を予約","舞池不只是一晚，而是值得留下的身份。":"ダンスフロアの一夜を、自分らしさの記録に。","台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。":"台北のダンス・イベント写真。自分だけの瞬間を見つけ、保存し、シェアできます。","把照片做成你的限動":"写真をストーリーに","選擇照片、版型與標記空間，直接輸出適合 Instagram 的 9:16 圖片。":"写真・レイアウト・タグスペースを選び、Instagram向け9:16画像を書き出せます。","開啟限動工具":"IG スタジオを開く","載入更多相簿":"アルバムをさらに表示"});
 DICT.en["彩虹霓虹"]="Neon";DICT.ko["彩虹霓虹"]="네온";DICT.ja["彩虹霓虹"]="ネオン";DICT.en["彩虹條紋"]="Rainbow stripes";DICT.ko["彩虹條紋"]="레인보우";DICT.ja["彩虹條紋"]="レインボー";DICT.en["顏色"]="Color";DICT.ko["顏色"]="색상";DICT.ja["顏色"]="カラー";DICT.en["彩虹"]="Rainbow";DICT.ko["彩虹"]="무지개";DICT.ja["彩虹"]="レインボー";DICT.en["粉紅"]="Pink";DICT.ko["粉紅"]="핑크";DICT.ja["粉紅"]="ピンク";DICT.en["紫"]="Purple";DICT.ko["紫"]="보라";DICT.ja["紫"]="パープル";DICT.en["藍"]="Blue";DICT.ko["藍"]="파랑";DICT.ja["藍"]="ブルー";DICT.en["青"]="Cyan";DICT.ko["青"]="청록";DICT.ja["青"]="シアン";DICT.en["綠"]="Green";DICT.ko["綠"]="초록";DICT.ja["綠"]="グリーン";DICT.en["黃"]="Yellow";DICT.ko["黃"]="노랑";DICT.ja["黃"]="イエロー";DICT.en["橘"]="Orange";DICT.ko["橘"]="주황";DICT.ja["橘"]="オレンジ";DICT.en["限動工具"]="IG Studio";DICT.ko["限動工具"]="IG 스튜디오";DICT.ja["限動工具"]="IG スタジオ";
+Object.assign(DICT.en,{"每週精選":"Weekly picks","活動回顧":"Event recaps","萬聖節 2026":"Halloween 2026","特效相框 · 小遊戲":"Photo frames · Mini games","四個晚上的照片與影片":"Four nights of photos and clips"});
+Object.assign(DICT.ko,{"每週精選":"이번 주 픽","活動回顧":"지난 이벤트","萬聖節 2026":"할로윈 2026","特效相框 · 小遊戲":"포토 프레임 · 미니 게임","四個晚上的照片與影片":"나흘 밤의 사진과 영상"});
+Object.assign(DICT.ja,{"每週精選":"今週のピックアップ","活動回顧":"イベントの記録","萬聖節 2026":"ハロウィン 2026","特效相框 · 小遊戲":"フォトフレーム · ミニゲーム","四個晚上的照片與影片":"4夜分の写真と動画"});
 const T=s=>LANG==="zh"?s:(DICT[LANG]&&DICT[LANG][s])||s;
 const L=(zh,en,ko,ja)=>LANG==="zh"?zh:LANG==="ko"?(ko||en):LANG==="ja"?(ja||en):en;window.jfL=L;
 const applyLang=()=>{try{renderLatest();}catch{}
@@ -1719,20 +1840,16 @@ pill&&pill.parentNode.insertBefore(ls,pill);
 ls.addEventListener("click",e=>{const b=e.target.closest("[data-lang]");if(!b)return;LANG=b.dataset.lang;try{localStorage.setItem("jf_lang",LANG);}catch{}applyLang();});
 
 /* ---------- Bachata Crush 主推 ---------- */
-const promo=document.createElement("section");promo.className="crush-promo";promo.id="crush";
+const HERO_PHOTO="./photos/1031/A0009034.jpg"; // 首屏照片：換這一行即可
+const promo=document.createElement("section");promo.className="hero-b";promo.id="crush";
 document.querySelector(".hero").before(promo);
 function renderPromo(){
- if(!crushAlbum){promo.hidden=true;return;}
- const a16=albums.find(a=>a.date==="1016"),a17=albums.find(a=>a.date==="1017");const NPH=crushAlbum.photos.length+(a16?a16.photos.length:0)+(a17?a17.photos.length:0);const NVID=VIDEO_DATA.length;
- const bg=crushAlbum.photos.filter((_,i)=>i%35===4).slice(0,6).map(id=>`<img src="${PBASE}${id}.jpg" alt="" loading="lazy">`).join("");
- promo.innerHTML=`<div class="crush-promo-bg" aria-hidden="true">${bg}</div><div class="crush-promo-body">
-  <p class="crush-eyebrow">${T("活動照片＋影片上線")} · 2026.10.15–10.17</p>
-  <img class="crush-logo" src="${VBASE}crush-logo.png" alt="Taiwan Bachata Crush" width="420" height="246">
-  <p class="crush-sub">${L(`${NPH} 張照片、${NVID} 支影片。上傳一張自拍，AI 幫你從整晚的照片裡找出你和朋友。`,`${NPH} photos and ${NVID} dance clips. Upload a selfie and we’ll find you — and your friends — in every photo.`,`사진 ${NPH}장, 영상 ${NVID}개. 셀카 한 장으로 나와 친구가 나온 사진을 찾아드려요.`,`${NPH} 枚の写真と ${NVID} 本の動画。自撮りを1枚アップロードすると、AI が一晩の写真の中からあなたと友だちを見つけます。`)}</p>
-  <div class="crush-actions"><a class="crush-cta crush-cta-primary" href="#finder">${icon("search")}${T("找自己和朋友")}</a><button type="button" class="crush-cta" data-crush-photos>${icon("albums")}${T("看照片")}</button><a class="crush-cta" href="#videos">${icon("play")}${T("看影片")}</a></div>
-  <ul class="crush-points"><li>${L("✓ 一次上傳 3 張，連朋友一起找，還能找出你們同框的照片","✓ Up to 3 people at once — even photos of you together","✓ 최대 3명까지 — 함께 찍힌 사진도 찾아요","✓ 3人まで同時に検索、一緒に写っている写真も見つかります")}</li><li>${L("✓ 找到的照片一鍵做成 IG 限動","✓ Turn any result into an IG Story in one tap","✓ 찾은 사진을 바로 IG 스토리로","✓ 見つかった写真をワンタップで IG ストーリーに")}</li></ul></div>`;
+ promo.innerHTML=`<img class="hero-b-bg" src="${HERO_PHOTO}" alt="" fetchpriority="high"><div class="hero-b-body">
+  <p class="hero-b-eyebrow">TAIPEI · DANCE PHOTOGRAPHY</p>
+  <h1 class="hero-b-title">${L("舞池裡的你，<br>都在這裡。","Find yourself<br>on the dance floor.","댄스 플로어 위의 당신,<br>모두 여기에.","ダンスフロアのあなたが、<br>ここに。")}</h1>
+  <p class="hero-b-sub">${T("台北舞蹈與活動攝影。把現場的速度、連結與情緒留下，讓每位舞者都能找到、收藏並分享屬於自己的畫面。")}</p></div>`;
 }
-promo.addEventListener("click",e=>{if(e.target.closest("[data-crush-photos]"))openAlbum(albums.find(a=>a.date==="1017")||albums.find(a=>a.date==="1016")||crushAlbum);});
+(()=>{const nb=document.querySelector(".app > .navbar");if(!nb)return;const f=()=>nb.classList.toggle("is-solid",scrollY>40);addEventListener("scroll",f,{passive:true});f();})();
 
 /* ---------- 熱度：聚焦最近 7 天的活動 ---------- */
 (()=>{
@@ -2089,7 +2206,7 @@ applyLang();
 <script>
 (()=>{const q=new URLSearchParams(location.search).get("season");const d=new Date(),m=d.getMonth()+1,day=d.getDate();
 const inSeason=(m===10&&day>=15)||(m===11&&day<=3);
-if(q==="off"||(!inSeason&&q!=="halloween"))return;
+if(q!=="halloween")return; // T024：萬聖節已收進活動回顧，只有 ?season=halloween 才啟用
 document.documentElement.classList.add("halloween");
 const dz=document.querySelector(".hw-deco");if(dz){const small=innerWidth<720;const batSvg=dz.querySelector(".hw-bat")?.innerHTML||"";
 for(let i=0;i<(small?6:12);i++){const b=document.createElement("div");b.className="hw-bat";b.innerHTML=batSvg;const w=14+Math.random()*(small?26:44);
@@ -2100,7 +2217,7 @@ const cs=["#ff9a3c","#b6f36a","#a78bfa","#ff7a1a"];for(let i=0;i<(small?14:30);i
 p.style.cssText=`left:${Math.random()*100}%;width:${z}px;height:${z}px;--c:${cs[i%4]};--d:${10+Math.random()*14}s;--w:${-Math.random()*20}s`;dz.appendChild(p);}}
 document.querySelector('meta[name="theme-color"]')?.setAttribute("content","#0b0710");
 const eb=document.querySelector(".brand-story .eyebrow");if(eb)eb.textContent="HALLOWEEN NIGHT · JIMFRAME";
-let gone=false;try{gone=sessionStorage.getItem("hwBanner")==="x"}catch(e){}
+let gone=true;
 if(!gone){const nb=document.querySelector(".navbar");const b=document.createElement("div");b.className="hw-banner";b.setAttribute("role","note");
 const zh=(document.documentElement.lang||"").startsWith("zh");
 b.innerHTML=`<span>🎃 <b>HALLOWEEN WEEK</b> ${zh?"下載照片可以變身萬聖節特效":"Turn any photo into a Halloween look"} · <a class="hw-play" href="./halloween/">${zh?"🎮 玩小遊戲":"🎮 Play games"}</a></span><button type="button" aria-label="${zh?"關閉":"Close"}">×</button>`;
