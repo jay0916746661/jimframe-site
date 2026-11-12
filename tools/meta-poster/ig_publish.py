@@ -47,7 +47,10 @@ def publish(row, igid, tok):
     urls = [BASE + m for m in row["media"].split()]
     cap = row["caption"]
     if row["type"] == "reel":
-        c = meta.post(f"{igid}/media", tok, media_type="REELS", video_url=urls[0], caption=cap, share_to_feed="true")
+        extra = {}
+        if len(urls) > 1 and urls[1].lower().endswith((".jpg", ".jpeg", ".png")):
+            extra["cover_url"] = urls[1]  # media 第二個是圖片＝Reel 封面
+        c = meta.post(f"{igid}/media", tok, media_type="REELS", video_url=urls[0], caption=cap, share_to_feed="true", **extra)
         wait_ready(c["id"], tok)
         cid = c["id"]
     elif row["type"] == "carousel":
