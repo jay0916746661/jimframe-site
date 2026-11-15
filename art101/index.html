@@ -169,6 +169,7 @@ footer a{color:var(--gold)}
 
 <script>
 const S = "../newsletter/mh/";
+const LONG = {1:"birth-of-venus", 4:"impression-sunrise"};  // 有長篇的集數連到長篇
 const WORKS = [
   [1,"維納斯的誕生","波提切利","約 1484–1486","她站不穩，卻站了五百年。","classic"],
   [2,"西斯汀禮拜堂天頂畫","米開朗基羅","1508–1512","一個雕刻家，被教宗逼著畫了四年天花板。","classic"],
@@ -203,7 +204,7 @@ let cat = "all";
 function render(){
   const k = q.value.trim();
   const list = WORKS.filter(w => (cat === "all" || w[5] === cat) && (!k || (w[1]+w[2]+w[4]).includes(k)));
-  grid.innerHTML = list.map(w => `<a class="card" href="${S}${pad(w[0])}.html"><img loading="lazy" src="img/${pad(w[0])}.jpg" alt="${esc(w[1])}"><div class="b"><h3>${esc(w[1])}</h3><p class="who">${esc(w[2])}・${esc(w[3])}</p><p>${esc(w[4])}</p></div></a>`).join("");
+  grid.innerHTML = list.map(w => `<a class="card" href="${LONG[w[0]] ? "zh/"+LONG[w[0]]+"/" : S+pad(w[0])+".html"}"><img loading="lazy" src="img/${pad(w[0])}.jpg" alt="${esc(w[1])}"><div class="b"><h3>${esc(w[1])}</h3><p class="who">${esc(w[2])}・${esc(w[3])}</p><p>${esc(w[4])}</p></div></a>`).join("");
   document.getElementById("empty").style.display = list.length ? "none" : "block";
   document.getElementById("count").textContent = `共 ${WORKS.length} 篇完整故事，免費閱讀`;
 }
