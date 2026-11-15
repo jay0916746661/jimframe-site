@@ -1,99 +1,169 @@
 <!doctype html>
-<html lang="zh-Hant" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Asia City Cup 2026 · Jim Lin Photography</title>
-<meta name="description" content="Asia City Cup 2026 活動照片與影片：11/13 BA、11/14 比賽與晚上。攝影 Jim Lin（@jimframe）。">
-<meta property="og:title" content="Asia City Cup 2026 · JimFrame">
-<meta property="og:image" content="https://jay0916746661.github.io/jimframe-site/photos/1113cc/A0009846.jpg">
-<meta name="theme-color" content="#0A0A0C">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@900&family=Space+Grotesk:wght@500;700&display=swap">
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Asia City Cup 2026 · 西門紅樓 · Jim Lin Photography</title>
+<meta name="description" content="Asia City Cup 2026 @ 西門紅樓：11/13 BA、11/14 比賽與晚會、11/15 照片與影片。攝影 Jim Lin（@jimframe）。">
+<meta property="og:title" content="Asia City Cup 2026 @ 西門紅樓 · JimFrame">
+<meta property="og:image" content="https://jay0916746661.github.io/jimframe-site/photos/1113/A0009846.jpg">
+<meta name="theme-color" content="#2A0B09">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Limelight&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
-:root{--bg:#0A0A0C;--surface:#151518;--label:#F4F1EA;--label-2:#A6A5AE;--separator:#2A2A30;--tint:#FF8A3D;
---font-text:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
---font-serif:"Noto Serif TC","Songti TC","PMingLiU",serif;--font-latin:"Space Grotesk",var(--font-text);color-scheme:dark}
+:root{--brick:#A3302A;--brick-d:#6E1E1A;--bg:#1E0806;--bg2:#2A0B09;--cream:#F3E6D0;--cream-2:#CDB89A;--gold:#D4AF6A;--line:rgba(212,175,106,.35);
+--font-text:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+--font-serif:"Noto Serif TC","Songti TC",serif;--font-deco:"Limelight","Noto Serif TC",serif;--font-latin:"Space Grotesk",var(--font-text);color-scheme:dark}
 *{box-sizing:border-box}
 html,body{overflow-x:hidden}
-body{margin:0;background:var(--bg);color:var(--label);font:16px/1.6 var(--font-text);-webkit-text-size-adjust:100%}
-a{color:var(--tint)}
-:focus-visible{outline:2px solid var(--tint);outline-offset:2px}
-.wrap{width:min(100% - 32px,1200px);margin-inline:auto}
-header{height:60px;display:flex;align-items:center}
-.back{min-height:44px;display:flex;align-items:center;gap:6px;color:var(--label);text-decoration:none;font-weight:700;font-size:15px}
-.hero{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:3/2;max-height:560px;width:100%;background:#111}
-.hero img{width:100%;height:100%;object-fit:cover;display:block}
-.hero .cap{position:absolute;inset:auto 0 0 0;padding:28px 20px 20px;background:linear-gradient(transparent,rgba(0,0,0,.82))}
-.eyebrow{font:500 12px/1.4 var(--font-latin);letter-spacing:.22em;color:var(--tint)}
-h1{margin:4px 0 0;font:900 clamp(30px,6vw,58px)/1.15 var(--font-serif)}
-.lead{margin:6px 0 0;color:#ddd;font-size:14px}
-.tabs{display:flex;gap:8px;overflow-x:auto;margin:22px 0 6px;padding-bottom:4px;scrollbar-width:none}
-.tabs button{flex:none;min-height:42px;padding:0 16px;border-radius:999px;border:1px solid #3A3A42;background:none;color:var(--label);font:600 14px var(--font-text);cursor:pointer;white-space:nowrap}
-.tabs button.on{background:var(--label);color:#0A0A0C;border-color:var(--label)}
-.tabs small{opacity:.6;margin-left:6px;font-weight:500}
-.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--label-2);font-size:13px;margin:10px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
-@media(max-width:600px){.grid{grid-template-columns:repeat(3,1fr);gap:3px}}
-.grid button{padding:0;border:0;background:#1a1a1e;aspect-ratio:1;overflow:hidden;cursor:pointer;border-radius:6px}
+body{margin:0;color:var(--cream);font:16px/1.6 var(--font-text);-webkit-text-size-adjust:100%;
+ background:var(--bg);
+ background-image:
+  linear-gradient(180deg,rgba(30,8,6,.2),var(--bg) 70%),
+  repeating-linear-gradient(0deg,transparent 0 22px,rgba(0,0,0,.35) 22px 24px),
+  repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.35) 46px 48px),
+  linear-gradient(var(--brick-d),var(--brick-d));
+ background-size:auto,auto,96px 48px,auto;background-attachment:fixed}
+/* 磚牆：每兩層錯位 */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+ background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(0,0,0,.35) 22px 24px,transparent 24px 48px);background-size:48px 48px;
+ -webkit-mask:repeating-linear-gradient(0deg,transparent 0 24px,#000 24px 48px);mask:repeating-linear-gradient(0deg,transparent 0 24px,#000 24px 48px);opacity:.6}
+a{color:var(--gold)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wrap{width:min(100% - 28px,1180px);margin-inline:auto}
+header{height:58px;display:flex;align-items:center;justify-content:space-between}
+.back{min-height:44px;display:flex;align-items:center;gap:6px;color:var(--cream);text-decoration:none;font-weight:700;font-size:14px}
+.stamp{font:12px/1 var(--font-latin);letter-spacing:.2em;color:var(--gold);border:1px solid var(--line);padding:8px 12px;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,10px 100%,0 50%)}
+/* 主視覺：八角窗框 */
+.hero{position:relative;padding:10px;background:linear-gradient(135deg,#C9A45C,#7A5A2A 50%,#E3C584);clip-path:polygon(28px 0,calc(100% - 28px) 0,100% 28px,100% calc(100% - 28px),calc(100% - 28px) 100%,28px 100%,0 calc(100% - 28px),0 28px)}
+.hero-in{position:relative;aspect-ratio:3/2;max-height:600px;width:100%;overflow:hidden;background:#111;clip-path:polygon(22px 0,calc(100% - 22px) 0,100% 22px,100% calc(100% - 22px),calc(100% - 22px) 100%,22px 100%,0 calc(100% - 22px),0 22px)}
+.hero-in img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-in .cap{position:absolute;inset:auto 0 0 0;padding:40px 22px 22px;background:linear-gradient(transparent,rgba(30,6,4,.92))}
+.eyebrow{font:500 11px/1.4 var(--font-latin);letter-spacing:.24em;color:var(--gold)}
+h1{margin:6px 0 0;font:400 clamp(34px,7vw,72px)/1 var(--font-deco);letter-spacing:.02em;color:var(--cream);text-shadow:0 2px 0 var(--brick-d)}
+h1 small{display:block;font:900 clamp(15px,2.4vw,22px)/1.5 var(--font-serif);letter-spacing:.3em;margin-top:8px;color:var(--gold)}
+.lead{margin:8px 0 0;color:var(--cream-2);font-size:13px}
+/* 分隔線：裝飾藝術風 */
+.orn{display:flex;align-items:center;gap:12px;margin:34px 0 14px;color:var(--gold)}
+.orn::before,.orn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.orn h2{margin:0;font:900 20px/1.3 var(--font-serif);letter-spacing:.2em;white-space:nowrap}
+.orn i{font-style:normal;font-size:12px}
+/* 三天行程：票根 */
+.days{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px}
+.ticket{position:relative;display:flex;text-align:left;border:0;padding:0;cursor:pointer;color:var(--bg);background:var(--cream);border-radius:10px;overflow:hidden;min-height:96px;font:inherit}
+.ticket .stub{width:76px;flex:none;background:var(--brick);color:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:2px dashed var(--cream);font-family:var(--font-latin)}
+.ticket .stub b{font:400 28px/1 var(--font-deco)}
+.ticket .stub small{font-size:10px;letter-spacing:.2em;opacity:.85}
+.ticket .tx{padding:12px 14px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.ticket .tx b{font:900 17px/1.3 var(--font-serif)}
+.ticket .tx span{font-size:12px;color:#6b4b3a}
+.ticket .badge{position:absolute;top:8px;right:8px;font:700 10px/1 var(--font-latin);letter-spacing:.1em;padding:5px 8px;border-radius:999px;background:var(--brick);color:var(--cream)}
+.ticket .badge.wait{background:#bba98d;color:#3b2a20}
+.ticket.on{outline:3px solid var(--gold);outline-offset:2px}
+/* 精彩瞬間 */
+.rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
+.rail button{flex:none;width:min(70vw,300px);aspect-ratio:3/2;border:0;padding:0;cursor:pointer;scroll-snap-align:start;background:#111;overflow:hidden;border-radius:6px;box-shadow:0 0 0 1px var(--line)}
+.rail img{width:100%;height:100%;object-fit:cover;display:block}
+/* 相片牆 */
+.meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:var(--cream-2);font-size:13px;margin:6px 0 10px}
+.full{min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;background:var(--gold);color:#2A0B09;text-decoration:none;font-weight:700;font-size:13px}
+.panel{background:rgba(30,8,6,.82);border:1px solid var(--line);border-radius:14px;padding:12px;backdrop-filter:blur(2px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px}
+@media(max-width:600px){.days{grid-template-columns:1fr 1fr;gap:8px}.ticket{min-height:78px}.ticket .stub{width:50px}.ticket .stub b{font-size:22px}.ticket .tx{padding:8px 10px}.ticket .tx b{font-size:15px}.ticket .tx span{font-size:11px}.ticket .badge{top:auto;bottom:6px;right:6px;font-size:9px}.eyebrow{font-size:9px;letter-spacing:.14em}.grid{grid-template-columns:repeat(3,1fr);gap:3px}.panel{padding:6px}}
+.grid button{padding:0;border:0;background:#2a1512;aspect-ratio:1;overflow:hidden;cursor:pointer;border-radius:4px}
 .grid img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-.grid button:hover img{transform:scale(1.04)}
-.soon{padding:48px 20px;text-align:center;color:var(--label-2);background:var(--surface);border:1px solid var(--separator);border-radius:20px}
-.soon b{display:block;color:var(--label);font:900 22px/1.4 var(--font-serif);margin-bottom:6px}
+.grid button:hover img{transform:scale(1.05)}
+.soon{padding:40px 20px;text-align:center;color:var(--cream-2)}
+.soon b{display:block;color:var(--cream);font:900 22px/1.4 var(--font-serif);margin-bottom:6px}
+/* 場地 */
+.venue{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center}
+@media(max-width:600px){.venue{grid-template-columns:84px 1fr;gap:12px}}
+.venue svg{width:100%;height:auto}
+.venue h3{margin:0 0 4px;font:900 20px var(--font-serif);letter-spacing:.1em}
+.venue p{margin:0;color:var(--cream-2);font-size:14px;line-height:1.75}
+.venue .addr{margin-top:8px;font-size:13px}
+/* 燈箱 */
 .lb{position:fixed;inset:0;background:#000;z-index:10;display:none;flex-direction:column}
 .lb.on{display:flex}
 .lb-top{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));gap:8px}
-.lb-top span{color:var(--label-2);font:500 13px var(--font-latin)}
-.ib{min-width:44px;min-height:44px;border-radius:999px;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer}
-.dl{min-height:44px;padding:0 18px;border-radius:999px;border:0;background:var(--tint);color:#1A0E05;font:700 14px var(--font-text);cursor:pointer}
+.lb-top span{color:var(--cream-2);font:500 13px var(--font-latin)}
+.ib{min-width:44px;min-height:44px;border-radius:999px;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.dl{min-height:44px;padding:0 18px;border-radius:999px;border:0;background:var(--gold);color:#2A0B09;font:700 14px var(--font-text);cursor:pointer}
 .lb-img{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;position:relative;touch-action:pan-y}
 .lb-img img{max-width:100%;max-height:100%;object-fit:contain}
-.nav{position:absolute;top:50%;transform:translateY(-50%)}
-.nav.l{left:10px}.nav.r{right:10px}
+.nav{position:absolute;top:50%;transform:translateY(-50%)}.nav.l{left:10px}.nav.r{right:10px}
 @media(max-width:600px){.nav{display:none}}
 .credit{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
 .credit.on{display:flex}
-.credit div{width:min(100%,460px);background:var(--surface);border-radius:24px 24px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom))}
+.credit>div{width:min(100%,460px);background:var(--bg2);border-top:2px solid var(--gold);border-radius:20px 20px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom))}
 .credit h3{margin:0 0 6px;font:900 20px var(--font-serif)}
-.credit p{margin:0 0 14px;color:var(--label-2);font-size:14px}
+.credit p{margin:0 0 14px;color:var(--cream-2);font-size:14px}
 .credit label{display:flex;gap:10px;align-items:center;margin-bottom:16px;font-size:15px}
-.credit input{width:20px;height:20px;accent-color:var(--tint)}
+.credit input{width:20px;height:20px;accent-color:var(--gold)}
 .credit .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.credit button{min-height:48px;border-radius:14px;border:1px solid #3A3A42;background:none;color:var(--label);font:700 15px var(--font-text);cursor:pointer}
-.credit button.go{background:var(--tint);color:#1A0E05;border:0}
+.credit button{min-height:48px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--cream);font:700 15px var(--font-text);cursor:pointer}
+.credit button.go{background:var(--gold);color:#2A0B09;border:0}
 .credit button.go:disabled{opacity:.4}
-footer{margin:48px 0 32px;text-align:center;color:var(--label-2);font-size:13px}
+footer{margin:44px 0 30px;text-align:center;color:var(--cream-2);font-size:13px}
+footer .sig{font:400 22px var(--font-deco);color:var(--gold);display:block;margin-bottom:6px}
 </style></head><body>
 <div class="wrap">
-<header><a class="back" href="../">‹ Jim Lin Photography</a></header>
-<div class="hero"><img src="../photos/1113cc/A0009846.jpg" alt="Asia City Cup 2026"><div class="cap"><div class="eyebrow">ASIA CITY CUP 2026 · TAIPEI</div><h1>City Cup 2026</h1><p class="lead">11/13 – 11/15 · 照片與影片 · 攝影 Jim Lin @jimframe</p></div></div>
-<nav class="tabs" id="tabs"></nav>
-<div id="view"></div>
-<footer>使用照片請標記 <a href="https://instagram.com/jimframe" target="_blank" rel="noopener">@jimframe</a> · 謝謝 🙏</footer>
+<header><a class="back" href="../">‹ Jim Lin Photography</a><span class="stamp">EST. 1908</span></header>
+
+<div class="hero"><div class="hero-in"><img src="../photos/1113/A0009846.jpg" alt="Asia City Cup 2026"><div class="cap"><div class="eyebrow">ASIA CITY CUP 2026 · 11.13 — 11.15</div><h1>City Cup<small>西門紅樓</small></h1><p class="lead">三天的照片與影片 · 攝影 Jim Lin @jimframe</p></div></div></div>
+
+<div class="orn"><i>◆</i><h2>三日節目</h2><i>◆</i></div>
+<div class="days" id="days"></div>
+
+<div class="orn"><i>◆</i><h2>精彩瞬間</h2><i>◆</i></div>
+<div class="rail" id="rail"></div>
+
+<div class="orn"><i>◆</i><h2 id="wall-title">照片</h2><i>◆</i></div>
+<div class="panel" id="view"></div>
+
+<div class="orn"><i>◆</i><h2>關於場地</h2><i>◆</i></div>
+<div class="panel venue">
+<svg viewBox="0 0 120 120" aria-hidden="true" fill="none" stroke="#D4AF6A" stroke-width="2">
+ <path d="M60 8 L72 22 H48 Z"/><path d="M44 22 H76 L84 34 H36 Z"/>
+ <path d="M30 34 H90 L100 48 V104 H20 V48 Z"/>
+ <path d="M20 48 H100"/><path d="M40 34 V104 M80 34 V104"/>
+ <path d="M52 104 V80 a8 8 0 0 1 16 0 V104"/>
+ <rect x="26" y="58" width="8" height="14" rx="4"/><rect x="86" y="58" width="8" height="14" rx="4"/>
+ <rect x="46" y="56" width="8" height="12" rx="4"/><rect x="66" y="56" width="8" height="12" rx="4"/>
+ <path d="M10 104 H110"/>
+</svg>
+<div><h3>西門紅樓</h3><p>1908 年落成的紅磚八角樓，原本是西門町第一座公營市場，一百多年來當過市場、戲院、書場，現在是文創與表演場地。這次 City Cup 的舞池就在這棟紅磚建築裡。</p><p class="addr">台北市萬華區成都路 10 號（捷運西門站 1 號出口）</p></div>
 </div>
-<div class="lb" id="lb"><div class="lb-top"><button class="ib" data-x aria-label="關閉">✕</button><span id="cnt"></span><button class="dl" data-dl>下載這張</button></div>
+
+<footer><span class="sig">JimFrame</span>使用照片請標記 <a href="https://instagram.com/jimframe" target="_blank" rel="noopener">@jimframe</a> · 謝謝 🙏</footer>
+</div>
+
+<div class="lb" id="lb"><div class="lb-top"><button class="ib" data-x aria-label="關閉">✕</button><span id="cnt"></span><span style="display:flex;gap:8px"><a class="ib" id="edit" href="#" title="調色／做限動">🎨</a><button class="dl" data-dl>下載這張</button></span></div>
 <div class="lb-img" id="stage"><button class="ib nav l" data-p aria-label="上一張">‹</button><img id="big" alt=""><button class="ib nav r" data-n aria-label="下一張">›</button></div></div>
 <div class="credit" id="credit"><div><h3>下載前的小提醒</h3><p>分享到 IG／臉書時，請標記攝影師，讓更多人看到這些畫面。</p><label><input type="checkbox" id="ok">我會標記 @jimframe</label><div class="row"><button data-cc>取消</button><button class="go" data-go disabled>下載</button></div></div></div>
 <script>
 const P13=[["A0000001",480,320],["A0000007",480,320],["A0000008",480,320],["A0000010",480,320],["A0000011",480,320],["A0000012",480,320],["A0000013",480,320],["A0000014",480,320],["A0000016",480,320],["A0000019",480,320],["A0000020",480,320],["A0000021",480,320],["A0000022",480,320],["A0000027",480,320],["A0000028",480,320],["A0000030",480,320],["A0000033",480,320],["A0000042",480,320],["A0000043",480,320],["A0000048",480,320],["A0000049",480,320],["A0000050",480,320],["A0000052",480,320],["A0000053",480,320],["A0000055",480,320],["A0000056",480,320],["A0000057",480,320],["A0000058",480,320],["A0000059",480,320],["A0000060",480,320],["A0000061",480,320],["A0000062",480,320],["A0000063",480,320],["A0000064",480,320],["A0000065",480,320],["A0000066",480,320],["A0000067",480,320],["A0000068",480,320],["A0000069",480,320],["A0000070",480,320],["A0000071",480,320],["A0000072",480,320],["A0000073",480,320],["A0000074",480,320],["A0000075",480,320],["A0000076",480,320],["A0000078",480,320],["A0000079",480,320],["A0000080",480,320],["A0000081",480,320],["A0000082",480,320],["A0000083",480,320],["A0000084",480,320],["A0000085",480,320],["A0000086",480,320],["A0000087",480,320],["A0000088",480,320],["A0000089",480,320],["A0000092",480,320],["A0000093",480,320],["A0000094",480,320],["A0000095",480,320],["A0000096",480,320],["A0000097",480,320],["A0000098",480,320],["A0000099",480,320],["A0000100",480,320],["A0000101",480,320],["A0000102",480,320],["A0000104",480,320],["A0000105",480,320],["A0000106",480,320],["A0000107",480,320],["A0000108",480,320],["A0000109",480,320],["A0000110",480,320],["A0000111",480,320],["A0000112",480,320],["A0000113",480,320],["A0000114",480,320],["A0000115",480,320],["A0000116",480,320],["A0000117",480,320],["A0000118",480,320],["A0000119",480,320],["A0000120",480,320],["A0000121",480,320],["A0000124",480,320],["A0000125",480,320],["A0000127",480,320],["A0000128",480,320],["A0000129",480,320],["A0000130",480,320],["A0000131",480,320],["A0000132",480,320],["A0000133",480,320],["A0000134",480,320],["A0000135",480,320],["A0000137",480,320],["A0000140",480,320],["A0000147",480,320],["A0000149",480,320],["A0000150",480,320],["A0000151",480,320],["A0000152",480,320],["A0000155",480,320],["A0000156",480,320],["A0000160",480,320],["A0000162",480,320],["A0000163",480,320],["A0000164",480,320],["A0000165",480,320],["A0000166",480,320],["A0000167",480,320],["A0000169",480,320],["A0000170",480,320],["A0000174",480,320],["A0000175",480,320],["A0000177",480,320],["A0000178",480,320],["A0000179",480,320],["A0000180",480,320],["A0000181",480,320],["A0000182",480,320],["A0000186",480,320],["A0000187",480,320],["A0000188",480,320],["A0000194",480,320],["A0000195",480,320],["A0000198",480,320],["A0000200",480,320],["A0000202",480,320],["A0000203",480,320],["A0000204",480,320],["A0000205",480,320],["A0000208",480,320],["A0000209",480,320],["A0000211",480,320],["A0000212",480,320],["A0000213",480,320],["A0000214",480,320],["A0000215",480,320],["A0000218",480,320],["A0000219",480,320],["A0000220",480,320],["A0000221",480,320],["A0000222",480,320],["A0000223",480,320],["A0000224",480,320],["A0000226",480,320],["A0000227",480,320],["A0000228",480,320],["A0000229",480,320],["A0000231",480,320],["A0000232",480,320],["A0000233",480,320],["A0000234",480,320],["A0000235",480,320],["A0000240",480,320],["A0000241",480,320],["A0000242",480,320],["A0000243",480,320],["A0000245",480,320],["A0000246",480,320],["A0000247",480,320],["A0000251",480,320],["A0000254",480,320],["A0000255",480,320],["A0000260",480,320],["A0000261",480,320],["A0000262",480,320],["A0000263",480,320],["A0000264",480,320],["A0000265",480,320],["A0000266",480,320],["A0000267",480,320],["A0000268",480,320],["A0000269",480,320],["A0000272",480,320],["A0000273",480,320],["A0000274",480,320],["A0000275",480,320],["A0000276",480,320],["A0000277",480,320],["A0000278",480,320],["A0000279",480,320],["A0000280",480,320],["A0000281",480,320],["A0000284",480,320],["A0000285",480,320],["A0000286",480,320],["A0000287",480,320],["A0000288",480,320],["A0000289",480,320],["A0000290",480,320],["A0000291",480,320],["A0000292",480,320],["A0000293",480,320],["A0000294",480,320],["A0000295",480,320],["A0000296",480,320],["A0000297",480,320],["A0000298",480,320],["A0000299",480,320],["A0000300",480,320],["A0000301",480,320],["A0000302",480,320],["A0000303",480,320],["A0000304",480,320],["A0000305",480,320],["A0000306",480,320],["A0000307",480,320],["A0000308",480,320],["A0000309",480,320],["A0000310",480,320],["A0000311",480,320],["A0000312",480,320],["A0000313",480,320],["A0000314",480,320],["A0000315",480,320],["A0000316",480,320],["A0000318",480,320],["A0000319",480,320],["A0000320",480,320],["A0000321",480,320],["A0000323",480,320],["A0000329",480,320],["A0000330",480,320],["A0000333",480,320],["A0000334",480,320],["A0000335",480,320],["A0000339",480,320],["A0000341",480,320],["A0000342",480,320],["A0000345",480,320],["A0000347",480,320],["A0000348",480,320],["A0000349",480,320],["A0000351",480,320],["A0000353",480,320],["A0000357",480,320],["A0000358",480,320],["A0000359",480,320],["A0000360",480,320],["A0000362",480,320],["A0000363",480,320],["A0000364",480,320],["A0000365",480,320],["A0000366",480,320],["A0000367",480,320],["A0000368",480,320],["A0000369",480,320],["A0000370",480,320],["A0000371",480,320],["A0000372",480,320],["A0000373",480,320],["A0000374",480,320],["A0000375",480,320],["A0000376",480,320],["A0000377",480,320],["A0000378",480,320],["A0000379",480,320],["A0000381",480,320],["A0000382",480,320],["A0000383",480,320],["A0000384",480,320],["A0000388",480,320],["A0000390",480,320],["A0000391",480,320],["A0000393",480,320],["A0000396",480,320],["A0000399",480,320],["A0000400",480,320],["A0000402",480,320],["A0000407",480,320],["A0000410",480,320],["A0000418",480,320],["A0000423",480,320],["A0000428",480,320],["A0000429",480,320],["A0000435",480,320],["A0000436",480,320],["A0000439",480,320],["A0000440",480,320],["A0000441",480,320],["A0000442",480,320],["A0000443",480,320],["A0000444",480,320],["A0009463",480,320],["A0009464",480,320],["A0009466",480,320],["A0009467",480,320],["A0009468",480,320],["A0009469",480,320],["A0009471",480,320],["A0009473",480,320],["A0009474",480,320],["A0009475",480,320],["A0009476",480,320],["A0009478",480,320],["A0009480",480,320],["A0009482",480,320],["A0009485",480,320],["A0009487",480,320],["A0009488",480,320],["A0009505",480,320],["A0009506",480,320],["A0009507",480,320],["A0009512",480,320],["A0009529",480,320],["A0009544",480,320],["A0009545",480,320],["A0009556",480,320],["A0009560",480,320],["A0009563",480,320],["A0009564",480,320],["A0009573",480,320],["A0009578",480,320],["A0009580",480,320],["A0009582",480,320],["A0009583",480,320],["A0009584",480,320],["A0009585",480,320],["A0009586",480,320],["A0009587",480,320],["A0009588",480,320],["A0009596",480,320],["A0009598",480,320],["A0009599",480,320],["A0009600",480,320],["A0009604",480,320],["A0009606",480,320],["A0009607",480,320],["A0009609",480,320],["A0009611",480,320],["A0009620",480,320],["A0009621",480,320],["A0009622",480,320],["A0009623",480,320],["A0009624",480,320],["A0009639",480,320],["A0009640",480,320],["A0009641",480,320],["A0009645",480,320],["A0009646",480,320],["A0009648",480,320],["A0009649",480,320],["A0009650",480,320],["A0009651",480,320],["A0009652",480,320],["A0009653",480,320],["A0009654",480,320],["A0009655",480,320],["A0009656",480,320],["A0009657",480,320],["A0009658",480,320],["A0009659",480,320],["A0009662",480,320],["A0009663",480,320],["A0009664",480,320],["A0009666",480,320],["A0009667",480,320],["A0009669",480,320],["A0009670",480,320],["A0009671",480,320],["A0009672",480,320],["A0009673",480,320],["A0009674",480,320],["A0009676",480,320],["A0009677",480,320],["A0009678",480,320],["A0009679",480,320],["A0009680",480,320],["A0009681",480,320],["A0009682",480,320],["A0009683",480,320],["A0009688",480,320],["A0009690",480,320],["A0009693",480,320],["A0009694",480,320],["A0009696",480,320],["A0009700",480,320],["A0009702",480,320],["A0009704",480,320],["A0009705",480,320],["A0009715",480,320],["A0009717",480,320],["A0009718",480,320],["A0009720",480,320],["A0009726",480,320],["A0009727",480,320],["A0009729",480,320],["A0009730",480,320],["A0009732",480,320],["A0009734",480,320],["A0009735",480,320],["A0009740",480,320],["A0009742",480,320],["A0009744",480,320],["A0009745",480,320],["A0009746",480,320],["A0009747",480,320],["A0009748",480,320],["A0009749",480,320],["A0009750",480,320],["A0009751",480,320],["A0009752",480,320],["A0009753",480,320],["A0009754",480,320],["A0009758",480,320],["A0009759",480,320],["A0009760",480,320],["A0009762",480,320],["A0009763",480,320],["A0009764",480,320],["A0009765",480,320],["A0009766",480,320],["A0009767",480,320],["A0009769",480,320],["A0009771",480,320],["A0009772",480,320],["A0009774",480,320],["A0009775",480,320],["A0009776",480,320],["A0009779",480,320],["A0009780",480,320],["A0009781",480,320],["A0009782",480,320],["A0009783",480,320],["A0009784",480,320],["A0009785",480,320],["A0009786",480,320],["A0009787",480,320],["A0009788",480,320],["A0009789",480,320],["A0009790",480,320],["A0009791",480,320],["A0009792",480,320],["A0009793",480,320],["A0009794",480,320],["A0009795",480,320],["A0009796",480,320],["A0009797",480,320],["A0009798",480,320],["A0009799",480,320],["A0009800",480,320],["A0009801",480,320],["A0009802",480,320],["A0009803",480,320],["A0009804",480,320],["A0009805",480,320],["A0009806",480,320],["A0009807",480,320],["A0009808",480,320],["A0009809",480,320],["A0009810",480,320],["A0009812",480,320],["A0009815",480,320],["A0009816",480,320],["A0009817",480,320],["A0009818",480,320],["A0009819",480,320],["A0009820",480,320],["A0009821",480,320],["A0009822",480,320],["A0009823",480,320],["A0009824",480,320],["A0009825",480,320],["A0009826",480,320],["A0009827",480,320],["A0009828",480,320],["A0009829",480,320],["A0009830",480,320],["A0009831",480,320],["A0009833",480,320],["A0009834",480,320],["A0009835",480,320],["A0009836",480,320],["A0009837",480,320],["A0009838",480,320],["A0009839",480,320],["A0009840",480,320],["A0009841",480,320],["A0009842",480,320],["A0009844",480,320],["A0009845",480,320],["A0009846",480,320],["A0009847",480,320],["A0009848",480,320],["A0009850",480,320],["A0009851",480,320],["A0009852",480,320],["A0009853",480,320],["A0009854",480,320],["A0009855",480,320],["A0009856",480,320],["A0009857",480,320],["A0009858",480,320],["A0009859",480,320],["A0009860",480,320],["A0009862",480,320],["A0009863",480,320],["A0009864",480,320],["A0009871",480,320],["A0009874",480,320],["A0009875",480,320],["A0009884",480,320],["A0009885",480,320],["A0009887",480,320],["A0009888",480,320],["A0009889",480,320],["A0009901",480,320],["A0009902",480,320],["A0009904",320,480],["A0009905",320,480],["A0009906",320,480],["A0009908",320,480],["A0009912",480,320],["A0009920",480,320],["A0009927",480,320],["A0009936",480,320],["A0009939",480,320],["A0009943",480,320],["A0009945",480,320],["A0009946",480,320],["A0009962",480,320],["A0009963",480,320],["A0009965",480,320],["A0009967",480,320],["A0009974",480,320],["A0009976",480,320],["A0009981",480,320],["A0009984",480,320],["A0009989",480,320],["A0009992",480,320],["A0009993",480,320],["A0009994",480,320],["A0009996",480,320]];
 const DAYS=[
- {id:"1113",name:"11/13 BA",dir:"../photos/1113cc/",photos:P13},
- {id:"1114a",name:"11/14 比賽",soon:"調色整理中，11/18–19 上線"},
- {id:"1114b",name:"11/14 晚上",soon:"調色整理中，11/18–19 上線"},
- {id:"1115",name:"11/15",soon:"整理中"},
- {id:"video",name:"精華影片",soon:"30 秒精華影片製作中"}
+ {id:"1113",d:"13",wk:"FRI",name:"BA 前夜派對",sub:"開幕晚會 · 社交舞",dir:"../photos/1113/",photos:P13,full:"1113"},
+ {id:"1114a",d:"14",wk:"SAT",name:"競賽",sub:"各組比賽 · 頒獎",soon:"安全牌搶先看準備中，之後陸續補上"},
+ {id:"1114b",d:"14",wk:"SAT",name:"晚會",sub:"表演 · 社交舞",soon:"安全牌搶先看準備中，之後陸續補上"},
+ {id:"1115",d:"15",wk:"SUN",name:"最終日",sub:"比賽 · 晚會",soon:"整理中"},
+ {id:"video",d:"▶",wk:"FILM",name:"精華影片",sub:"30 秒直式精華",soon:"30 秒精華影片製作中"}
 ];
+const HL=[["1113","A0009846"],["1113","A0000312"],["1113","A0000360"],["1113","A0009587"],["1113","A0000058"],["1113","A0009904"],["1113","A0009475"],["1113","A0000001"]];
 let day=DAYS.find(d=>d.id===location.hash.slice(1))||DAYS[0],idx=0,acked=false;
 try{acked=localStorage.getItem("jf_cc_ack")==="1"}catch(e){}
 const $=s=>document.querySelector(s);
-function tabs(){$("#tabs").innerHTML=DAYS.map(d=>`<button class="${d===day?"on":""}" data-d="${d.id}">${d.name}${d.photos?`<small>${d.photos.length}</small>`:""}</button>`).join("")}
-function view(){tabs();const v=$("#view");
- if(!day.photos){v.innerHTML=`<div class="meta"></div><div class="soon"><b>${day.name}</b>${day.soon}</div>`;return}
- v.innerHTML=`<div class="meta"><span>${day.photos.length} 張 · 點照片看大圖與下載</span></div><div class="grid">${day.photos.map((p,i)=>`<button data-i="${i}" aria-label="照片 ${p[0]}"><img src="${day.dir}t/${p[0]}.jpg" loading="lazy" width="${p[1]}" height="${p[2]}" alt=""></button>`).join("")}</div>`}
-function show(){const p=day.photos[idx];$("#big").src=day.dir+p[0]+".jpg";$("#cnt").textContent=`${idx+1} / ${day.photos.length}`;
+function days(){$("#days").innerHTML=DAYS.map(d=>`<button class="ticket${d===day?" on":""}" data-d="${d.id}"><span class="stub"><b>${d.d}</b><small>${d.wk}</small></span><span class="tx"><b>${d.name}</b><span>${d.sub}</span></span><span class="badge${d.photos?"":" wait"}">${d.photos?d.photos.length+" 張":"整理中"}</span></button>`).join("")}
+function rail(){$("#rail").innerHTML=HL.map(([k,n])=>`<button data-h="${k}:${n}" aria-label="精彩瞬間"><img src="../photos/${k}/${n}.jpg" loading="lazy" alt=""></button>`).join("")}
+function view(){days();$("#wall-title").textContent=day.name;const v=$("#view");
+ if(!day.photos){v.innerHTML=`<div class="soon"><b>${day.name}</b>${day.soon}</div>`;return}
+ v.innerHTML=`<div class="meta"><span>${day.photos.length} 張 · 點照片看大圖、下載</span>${day.full?`<a class="full" href="../?album=${day.full}">完整相簿：調色・多選下載・做限動 ›</a>`:""}</div><div class="grid">${day.photos.map((p,i)=>`<button data-i="${i}" aria-label="照片 ${p[0]}"><img src="${day.dir}t/${p[0]}.jpg" loading="lazy" width="${p[1]}" height="${p[2]}" alt=""></button>`).join("")}</div>`}
+function show(){const p=day.photos[idx];$("#big").src=day.dir+p[0]+".jpg";$("#edit").href=day.full?`../?album=${day.full}&photo=${p[0]}`:"#";$("#cnt").textContent=`${idx+1} / ${day.photos.length}`;
  [idx+1,idx-1].forEach(j=>{const q=day.photos[(j+day.photos.length)%day.photos.length];new Image().src=day.dir+q[0]+".jpg"})}
 function open(i){idx=i;$("#lb").classList.add("on");document.body.style.overflow="hidden";show()}
 function close(){$("#lb").classList.remove("on");document.body.style.overflow=""}
 function step(d){idx=(idx+d+day.photos.length)%day.photos.length;show()}
 function dl(){const p=day.photos[idx];const a=document.createElement("a");a.href=day.dir+p[0]+".jpg";a.download="CityCup2026_"+p[0]+".jpg";document.body.appendChild(a);a.click();a.remove()}
 document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;
- if(t.dataset.d){day=DAYS.find(d=>d.id===t.dataset.d);history.replaceState(null,"","#"+day.id);view()}
+ if(t.dataset.d){day=DAYS.find(d=>d.id===t.dataset.d);history.replaceState(null,"","#"+day.id);view();$("#wall-title").scrollIntoView({behavior:"smooth",block:"start"})}
+ else if(t.dataset.h){const [k,n]=t.dataset.h.split(":");const d=DAYS.find(x=>x.photos&&x.full===k);if(d){day=d;view();open(d.photos.findIndex(p=>p[0]===n))}}
  else if(t.dataset.i!==undefined)open(+t.dataset.i);
  else if("x" in t.dataset)close();else if("p" in t.dataset)step(-1);else if("n" in t.dataset)step(1);
  else if("dl" in t.dataset){if(acked)dl();else{$("#ok").checked=false;$("[data-go]").disabled=true;$("#credit").classList.add("on")}}
@@ -103,5 +173,5 @@ $("#ok").addEventListener("change",e=>{$("[data-go]").disabled=!e.target.checked
 document.addEventListener("keydown",e=>{if(!$("#lb").classList.contains("on"))return;if(e.key==="Escape")close();if(e.key==="ArrowLeft")step(-1);if(e.key==="ArrowRight")step(1)});
 let sx=null;$("#stage").addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});
 $("#stage").addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)step(dx<0?1:-1);sx=null});
-view();
+rail();view();
 </script></body></html>
