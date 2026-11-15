@@ -1,0 +1,58 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>台北咖啡地圖｜咖啡101</title><meta name="description" content="20 家有故事的台北咖啡館：老店、公館、冠軍與連鎖的起點。"><meta property="og:title" content="台北咖啡地圖｜咖啡101"><meta property="og:description" content="20 家有故事的台北咖啡館：老店、公館、冠軍與連鎖的起點。">
+<meta property="og:image" content="https://jay0916746661.github.io/jimframe-site/coffee101/img/t02_1.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script><style>
+:root{--bg:#f6eee2;--paper:#fcf6ee;--ink:#34201a;--mute:#7d655a;--brick:#9c2e24;--deep:#762a22;--gold:#c89242;--line:#e4cebb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.85 'Noto Sans TC',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+header{position:sticky;top:0;z-index:1000;background:rgba(246,238,226,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}
+.logo{font-weight:700;color:var(--deep);letter-spacing:.08em;white-space:nowrap}.logo b{color:var(--brick)}
+nav{display:flex;gap:16px;font-size:14px;color:var(--mute)}nav a:hover{color:var(--brick)}
+h1,h2,h3{font-family:'Noto Serif TC',serif;color:var(--deep)}
+.badge{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.s-open{color:#3c7a3a}.s-check{color:#a86b12}.s-closed{color:#8a7a70}.s-any{color:var(--brick)}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--mute);font-size:14px;margin-top:60px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}footer a{color:var(--brick)}
+.hero{padding:56px 0 30px;text-align:center}.eyebrow{color:var(--brick);letter-spacing:.3em;font-size:13px;margin:0 0 10px}
+.hero h1{font-size:clamp(34px,7vw,56px);line-height:1.25;margin:0 0 14px}.lead{max-width:600px;margin:0 auto;color:var(--mute);font-size:18px}
+#map{height:460px;border-radius:8px;border:1px solid var(--line);margin:30px 0 10px;z-index:1}
+.note{font-size:13px;color:var(--mute);margin:0 0 50px}
+.sec-h{display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 18px}.sec-h h2{font-size:28px;margin:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{background:none;border:1px solid var(--line);color:var(--mute);padding:5px 14px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer}
+.chip.on{border-color:var(--brick);color:var(--brick);background:var(--paper)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s}
+.card:hover{transform:translateY(-3px)}.card img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+.card .b{padding:12px 14px 16px}.card h3{font-size:18px;line-height:1.4;margin:0 0 4px}
+.card .m{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--mute);margin:0 0 6px}
+.card p{margin:0;font-size:14.5px;line-height:1.65}
+.nl{margin:64px 0 0;padding:36px 24px;text-align:center;background:var(--deep);color:#fbefe2;border-radius:10px}
+.nl h2{color:#fff6ea;font-size:28px;margin:0 0 8px}.nl p{margin:0 0 20px;color:#ecd9c6}
+.nl a{display:inline-block;padding:11px 24px;border-radius:999px;background:var(--gold);color:#2a1a10;font-weight:700}
+.leaflet-popup-content{font:14px/1.6 'Noto Sans TC',sans-serif}.leaflet-popup-content b{color:#762a22}.leaflet-popup-content a{color:#9c2e24;font-weight:700}
+@media (max-width:640px){#map{height:360px}.grid{grid-template-columns:1fr 1fr;gap:12px}.card h3{font-size:15.5px}.card p{font-size:13px}.card .b{padding:9px 10px 12px}.card .m{flex-direction:column;align-items:flex-start;gap:3px}}</style></head><body>
+<header><div class="wrap"><a class="logo" href="./">咖啡101・<b>台北咖啡地圖</b></a>
+<nav><a href="./#map">地圖</a><a href="./#list">店家</a><a href="https://www.instagram.com/coffeestory101/" target="_blank" rel="noopener">IG</a></nav></div></header>
+<main class="wrap"><section class="hero"><p class="eyebrow">COFFEE 101・TAIPEI</p>
+<h1>台北咖啡地圖</h1><p class="lead">九十年前的西餐廳、公館的地下室、世界冠軍的吧台。20 家有故事的台北咖啡館，每一家都值得專程去坐一下。</p></section>
+<div id="map"></div><p class="note">地圖上的點是大約位置，導航請用各店頁面的「在 Google 地圖打開」。營業時間常有變動，出發前請再確認。</p>
+<section id="list"><div class="sec-h"><h2>20 家店的故事</h2><div class="chips" id="chips"><button class="chip on" data-g="all">全部</button><button class="chip" data-g="old">老店與老街</button><button class="chip" data-g="gongguan">公館溫羅汀</button><button class="chip" data-g="new">咖啡新浪潮</button></div></div>
+<div class="grid" id="grid"></div></section>
+<section class="nl"><h2>每週一家，寄給你</h2><p>台北咖啡地圖電子報即將推出。先追蹤 IG，第一期上線時會通知你。</p><a href="https://www.instagram.com/coffeestory101/" target="_blank" rel="noopener">追蹤 @coffeestory101</a></section>
+</main><footer><div class="wrap"><span>© 咖啡101｜文：Jim</span><span>Instagram <a href="https://www.instagram.com/coffeestory101/" target="_blank" rel="noopener">@coffeestory101</a>　營業時間請出發前再確認</span></div></footer><script>
+const D=[{"n": 1, "t": "台北第一家咖啡館，到底是哪家？", "h": "台北第一家咖啡館是哪一家？答案其實不只一個。", "s": "維特咖啡原址", "a": "延平北路二段與南京西路口", "st": "check", "g": "old", "p": [25.0533, 121.5112]}, {"n": 2, "t": "波麗路", "h": "這家餐廳的椅背特別高，據說是因為相親。", "s": "波麗路西餐廳", "a": "台北市大同區民生西路 314 號", "st": "open", "g": "old", "p": [25.0578, 121.5132]}, {"n": 3, "t": "蜂大咖啡", "h": "西門町這家咖啡館，名字裡有個「蜂」字，因為它一開始是賣蜂蜜的。", "s": "蜂大咖啡", "a": "台北市萬華區成都路 42 號", "st": "open", "g": "old", "p": [25.0427, 121.5066]}, {"n": 4, "t": "南美咖啡", "h": "西門町成都路，有兩家同一年開的老咖啡館，就住隔壁。", "s": "南美咖啡", "a": "台北市萬華區成都路 44 號", "st": "open", "g": "old", "p": [25.0425, 121.5068]}, {"n": 5, "t": "野人咖啡", "h": "一九六〇年代末，西門町有一家咖啡館，開在防空洞裡。", "s": "野人咖啡（已歇業）", "a": "台北市萬華區峨嵋街一帶", "st": "closed", "g": "old", "p": [25.0432, 121.506]}, {"n": 6, "t": "溫羅汀", "h": "台北有一塊街區，名字是用三條路拼起來的。", "s": "溫羅汀", "a": "台北市大安區、中正區 溫州街・羅斯福路・汀州路一帶", "st": "open", "g": "gongguan", "p": [25.0175, 121.533]}, {"n": 7, "t": "海邊的卡夫卡", "h": "公館巷子裡，曾經有一家咖啡館，借了村上春樹的書名。", "s": "海邊的卡夫卡（已歇業）", "a": "原址 台北市中正區羅斯福路三段244巷2號", "st": "closed", "g": "gongguan", "p": [25.0158, 121.5318]}, {"n": 8, "t": "女巫店", "h": "台大對面的巷子裡，樓上是書店，樓下是一家叫「女巫店」的咖啡館。", "s": "女巫店", "a": "台北市大安區新生南路三段56巷7號1樓", "st": "open", "g": "gongguan", "p": [25.0198, 121.5338]}, {"n": 9, "t": "興波咖啡與吳則霖", "h": "二〇一六年六月，都柏林。61 位各國冠軍，只有一個人站上第一名：台灣的吳則霖。", "s": "興波咖啡 Simple Kaffa 華山店", "a": "台北市中正區忠孝東路二段27號", "st": "open", "g": "new", "p": [25.0443, 121.5268]}, {"n": 10, "t": "Fika Fika 陳志煌", "h": "北歐有一場烘豆比賽，沒有評審，由兩百多位業界人士盲測投票。二〇一三年，拿下冠軍的是一位台灣人。", "s": "Fika Fika Cafe", "a": "台北市中山區伊通街33號（伊通公園旁）", "st": "check", "g": "new", "p": [25.0527, 121.5338]}, {"n": 11, "t": "台灣第一家星巴克", "h": "一九九八年三月二十八日，台灣第一家星巴克在台北天母開幕。隔年的雜誌寫著：一杯熱拿鐵，105 元。", "s": "星巴克天玉門市", "a": "台北市士林區天玉街38巷18弄1號", "st": "check", "g": "new", "p": [25.1178, 121.5318]}, {"n": 12, "t": "小貓花園", "h": "全世界還在營業、最老的貓咖啡，不在日本，在台北士林。", "s": "小貓花園", "a": "台北市士林區福華路129號1樓（芝山站附近）", "st": "open", "g": "new", "p": [25.1032, 121.5228]}, {"n": 13, "t": "CITY CAFE", "h": "你每天買的超商咖啡，其實失敗過兩次。", "s": "7-ELEVEN CITY CAFE", "a": "全台門市", "st": "any", "g": "new", "p": null}, {"n": 14, "t": "丹堤咖啡", "h": "一杯咖啡 35 元，這句口號，最早不是超商喊的。", "s": "丹堤咖啡第一家店", "a": "台北市南京東路、光復南路口", "st": "closed", "g": "new", "p": [25.0522, 121.5577]}, {"n": 15, "t": "美而廉", "h": "一九五〇年代的台北，有一家西餐廳，樓上是攝影界的大本營。", "s": "美而廉原址", "a": "台北市中正區博愛路114號（已歇業）", "st": "closed", "g": "old", "p": [25.0423, 121.5117]}, {"n": 16, "t": "中山北路的美軍年代", "h": "台北市立美術館那一帶，七十多年前，是一片美軍營區。", "s": "亞里士餐廳", "a": "台北市中山區長安東路一段27號B1", "st": "open", "g": "old", "p": [25.049, 121.5248]}, {"n": 17, "t": "王策", "h": "十五克粉、兩百五十毫升水、兩分鐘。這是一杯世界冠軍手沖。", "s": "VWI by CHADWANG", "a": "台北市大安區忠孝東路三段251巷4弄16號", "st": "check", "g": "new", "p": [25.0424, 121.5398]}, {"n": 18, "t": "富錦街", "h": "附近沒有捷運站，卻有很多人專程來喝咖啡：台北富錦街。", "s": "富錦街", "a": "台北市松山區（民生社區，敦化北路至三民路一帶）", "st": "open", "g": "new", "p": [25.0612, 121.5566]}, {"n": 19, "t": "cama", "h": "有一家連鎖咖啡店，每一家門市都放著自己的烘豆機。", "s": "CAMA COFFEE ROASTERS 豆留文青", "a": "台北市信義區光復南路133號（松山文創園區）", "st": "open", "g": "new", "p": [25.044, 121.5603]}, {"n": 20, "t": "湛盧", "h": "二〇〇二年失業，買下倒閉公司留下的一台咖啡機。二十年後，一年賣八百萬包濾掛。", "s": "湛盧咖啡 大安店", "a": "台北市大安區新生南路一段161巷2-1號", "st": "open", "g": "new", "p": [25.0368, 121.5303]}];
+const ST={open:"營業中",check:"出發前先確認",closed:"已歇業・可看原址",any:"到處都有"};
+const pad=n=>String(n).padStart(2,"0"),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let g="all";const grid=document.getElementById("grid");
+function render(){grid.innerHTML=D.filter(d=>g==="all"||d.g===g).map(d=>`<a class="card" href="t${pad(d.n)}.html"><img loading="lazy" src="img/t${pad(d.n)}_1.jpg" alt="${esc(d.t)}"><div class="b"><h3>${esc(d.t)}</h3><div class="m"><span>${esc(d.s)}</span><span class="badge s-${d.st}">${ST[d.st]}</span></div><p>${esc(d.h)}</p></div></a>`).join("");}
+document.getElementById("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;g=b.dataset.g;document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b));render();});
+render();
+try{const m=L.map("map",{scrollWheelZoom:false}).setView([25.055,121.53],12);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap"}).addTo(m);
+const C={open:"#9c2e24",check:"#c89242",closed:"#8a7a70"};const pts=[];
+D.filter(d=>d.p).forEach(d=>{pts.push(d.p);L.circleMarker(d.p,{radius:8,color:"#fff",weight:2,fillColor:C[d.st]||"#9c2e24",fillOpacity:1}).addTo(m)
+.bindPopup(`<b>${esc(d.s)}</b><br>${esc(d.h)}<br><a href="t${pad(d.n)}.html">讀這家的故事 →</a>`);});
+m.fitBounds(pts,{padding:[30,30]});}catch(e){document.getElementById("map").style.display="none";}
+</script></body></html>
