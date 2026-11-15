@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>藝術101｜名畫背後的故事</title>
+<meta name="description" content="一次只讀懂一件作品。藝術101 用說故事的方式，講每一幅名畫怎麼來的、畫裡藏了什麼、後來影響了誰。">
+<meta property="og:title" content="藝術101｜名畫背後的故事">
+<meta property="og:description" content="一次只讀懂一件作品。20 篇名畫完整故事，免費閱讀。">
+<meta property="og:image" content="https://jay0916746661.github.io/jimframe-site/art101/img/01.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#14120f;--ink:#efe8db;--mute:#a59b8a;--gold:#d8b46a;--card:#1d1a16;--line:#2e2a24;--hi:#fff8ea}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.8 'Noto Sans TC',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+header{position:sticky;top:0;z-index:5;background:rgba(20,18,15,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}
+.logo{color:var(--gold);font-weight:700;letter-spacing:.18em;font-size:16px;white-space:nowrap}
+nav{display:flex;gap:18px;font-size:14px;color:var(--mute)}
+nav a:hover{color:var(--hi)}
+.hero{padding:72px 0 48px;text-align:center}
+.eyebrow{color:var(--gold);letter-spacing:.3em;font-size:13px;margin:0 0 14px}
+h1{font:900 clamp(34px,7vw,60px)/1.25 'Noto Serif TC',serif;margin:0 0 18px;color:var(--hi)}
+.lead{max-width:560px;margin:0 auto 30px;color:var(--mute);font-size:18px}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:12px 24px;border-radius:999px;font-weight:700;font-size:15px;border:1px solid var(--gold)}
+.btn.main{background:var(--gold);color:#1a150c}
+.btn.ghost{color:var(--gold)}
+.btn:hover{filter:brightness(1.08)}
+.feat{display:grid;grid-template-columns:1.25fr 1fr;gap:0;background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:0 0 64px}
+.feat img{width:100%;height:100%;object-fit:cover;display:block;min-height:280px}
+.feat .tx{padding:32px 30px;display:flex;flex-direction:column;justify-content:center}
+.tag{display:inline-block;color:var(--gold);font-size:12px;letter-spacing:.2em;margin-bottom:10px}
+.feat h2{font:900 30px/1.35 'Noto Serif TC',serif;margin:0 0 6px;color:var(--hi)}
+.who{color:var(--gold);font-size:14px;margin:0 0 14px}
+.feat .hook{font:700 20px/1.6 'Noto Serif TC',serif;color:var(--hi);margin:0 0 20px}
+.more{color:var(--gold);font-weight:700;font-size:15px}
+.sec-h{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0 0 20px}
+.sec-h h2{font:900 28px/1.3 'Noto Serif TC',serif;margin:0;color:var(--hi)}
+.sec-h p{margin:4px 0 0;color:var(--mute);font-size:15px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{background:none;border:1px solid var(--line);color:var(--mute);padding:6px 14px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer}
+.chip.on{border-color:var(--gold);color:var(--gold)}
+#q{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 14px;font:inherit;font-size:14px;width:170px;max-width:100%}
+#q::placeholder{color:#6f675b}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px;margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:#4a4234}
+.card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#221e19}
+.card .b{padding:14px 16px 18px}
+.card h3{font:800 19px/1.4 'Noto Serif TC',serif;margin:0 0 2px;color:var(--hi)}
+.card .who{font-size:13px;margin:0 0 8px}
+.card p{margin:0;font-size:15px;line-height:1.7;color:var(--ink)}
+.empty{color:var(--mute);text-align:center;padding:30px 0;display:none}
+.nl{margin:72px 0;padding:44px 30px;border:1px solid var(--gold);border-radius:8px;text-align:center;background:linear-gradient(180deg,#1d1a16,#17140f)}
+.nl h2{font:900 30px/1.35 'Noto Serif TC',serif;margin:0 0 10px;color:var(--hi)}
+.nl .lead{margin-bottom:22px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:760px;margin:0 auto 28px;text-align:left}
+.steps div{background:#14120f;border:1px solid var(--line);border-radius:6px;padding:14px}
+.steps b{display:block;color:var(--gold);font-size:13px;letter-spacing:.1em;margin-bottom:4px}
+.steps span{font-size:15px}
+.small{font-size:13px;color:var(--mute);margin-top:14px}
+.small a{color:var(--gold);text-decoration:underline}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin:0 0 72px}
+.about h2{font:900 26px/1.35 'Noto Serif TC',serif;margin:0 0 12px;color:var(--hi)}
+.about p{margin:0 0 12px;color:var(--ink)}
+.about ul{margin:0;padding-left:20px;color:var(--ink)}
+.about li{margin-bottom:6px}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--mute);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--gold)}
+@media (max-width:760px){
+  nav{gap:12px;font-size:13px}
+  nav .hide-s{display:none}
+  .hero{padding:48px 0 36px}
+  .feat{grid-template-columns:1fr}
+  .feat img{min-height:220px;max-height:300px}
+  .feat .tx{padding:22px 20px}
+  .feat h2{font-size:25px}
+  .steps{grid-template-columns:1fr 1fr}
+  .about{grid-template-columns:1fr;gap:28px}
+  .nl{padding:32px 18px}
+  #q{width:100%}
+  .grid{grid-template-columns:1fr 1fr;gap:12px}
+  .card .b{padding:10px 11px 13px}
+  .card h3{font-size:16px}
+  .card .who{font-size:12px;margin-bottom:4px}
+  .card p{font-size:13px;line-height:1.6}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="#top">藝術101</a>
+  <nav><a href="#stories">名畫故事</a><a href="#newsletter">電子報</a><a href="#about" class="hide-s">關於</a><a href="https://www.instagram.com/art101.tw/" target="_blank" rel="noopener">IG</a></nav>
+</div></header>
+
+<main id="top">
+<section class="hero wrap">
+  <p class="eyebrow">ART 101</p>
+  <h1>一次，只讀懂一件作品</h1>
+  <p class="lead">每一幅名畫背後，都有一個沒人跟你講的故事：它怎麼來的、畫裡藏了什麼、後來影響了誰。</p>
+  <div class="btns">
+    <a class="btn main" href="#stories">看名畫故事</a>
+    <a class="btn ghost" href="#newsletter">免費訂閱電子報</a>
+  </div>
+</section>
+
+<section class="wrap">
+  <a class="feat" id="feat"></a>
+</section>
+
+<section class="wrap" id="stories">
+  <div class="sec-h">
+    <div><h2>名畫背後的故事</h2><p id="count"></p></div>
+    <div class="tools" id="chips">
+      <button class="chip on" data-c="all">全部</button>
+      <button class="chip" data-c="classic">古典名作</button>
+      <button class="chip" data-c="modern">近代與現代</button>
+      <button class="chip" data-c="east">東方與台灣</button>
+      <input id="q" type="search" placeholder="搜尋作品或畫家" aria-label="搜尋作品或畫家">
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty">找不到符合的作品，換個關鍵字試試。</p>
+</section>
+
+<section class="wrap" id="newsletter">
+  <div class="nl">
+    <p class="eyebrow">NEWSLETTER</p>
+    <h2>藝術101 電子報</h2>
+    <p class="lead">每期只深讀一件作品，寄到你的信箱。免費。</p>
+    <div class="steps">
+      <div><b>起源</b><span>它是怎麼被畫出來的</span></div>
+      <div><b>細讀</b><span>畫裡藏了哪些細節</span></div>
+      <div><b>概念</b><span>一個帶得走的藝術觀念</span></div>
+      <div><b>後來</b><span>它影響了誰、去了哪裡</span></div>
+    </div>
+    <a class="btn main" href="https://jimlin3.substack.com" target="_blank" rel="noopener">免費訂閱</a>
+    <p class="small">想先看看長什麼樣子？<a href="https://jay0916746661.github.io/jimframe-site/newsletter/youlai/%E9%9B%BB%E5%AD%90%E5%A0%B1_%E7%AC%AC1%E6%9C%9F_%E6%A8%A3%E5%88%8A.pdf" target="_blank" rel="noopener">看第 1 期樣刊</a></p>
+  </div>
+</section>
+
+<section class="wrap about" id="about">
+  <div>
+    <h2>關於藝術101</h2>
+    <p>藝術101 是 Jim 在 Instagram 經營的藝術帳號。我們不背年代、不考名詞，只講故事：一幅畫為什麼長這樣、畫家當時遇到了什麼、它又怎麼一路走到今天。</p>
+    <p>IG 上是一分鐘的短影片和輪播，這裡是完整版。</p>
+  </div>
+  <div>
+    <h2>我們的原則</h2>
+    <ul>
+      <li>事實都附出處，說法不一的地方會寫清楚。</li>
+      <li>作品圖片只用公有領域或開放授權，並標示來源。</li>
+      <li>一次只講一件作品，講到看得懂為止。</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">
+  <span>© 藝術101｜文：Jim</span>
+  <span>Instagram <a href="https://www.instagram.com/art101.tw/" target="_blank" rel="noopener">@art101.tw</a>　English version coming soon</span>
+</div></footer>
+
+<script>
+const S = "../newsletter/mh/";
+const WORKS = [
+  [1,"維納斯的誕生","波提切利","約 1484–1486","她站不穩，卻站了五百年。","classic"],
+  [2,"西斯汀禮拜堂天頂畫","米開朗基羅","1508–1512","一個雕刻家，被教宗逼著畫了四年天花板。","classic"],
+  [3,"戴珍珠耳環的少女","維梅爾","約 1665","那顆珍珠，可能根本不是珍珠。","classic"],
+  [4,"印象．日出","莫內","1872","一句嘲笑，變成一整個畫派的名字。","modern"],
+  [5,"神奈川沖浪裏","葛飾北齋","約 1830–1832","這道浪的藍色，是從德國漂到日本的。","east"],
+  [6,"犀牛","杜勒","1515","他從沒見過犀牛，卻畫出了歐洲兩百年的標準犀牛。","classic"],
+  [7,"甘露水","黃土水","約 1919–1921","一尊少女雕像，被藏起來半個世紀。","east"],
+  [8,"大碗島的星期天下午","秀拉","1884–1886","這幅畫，是用無數個小點花兩年點出來的。","modern"],
+  [9,"三等艙","史蒂格利茲","1907","一張照片，讓攝影第一次被當成藝術。","modern"],
+  [10,"吻","克林姆","1907–1908","這幅畫上，真的貼了金箔。","modern"],
+  [11,"聖馬太蒙召","卡拉瓦喬","1599–1600","一個背著命案的畫家，把光畫成了主角。","classic"],
+  [12,"草地上的午餐","馬奈","1863","被沙龍拒絕的畫，最後有了自己的展。","modern"],
+  [13,"侍女","委拉斯奎茲","1656","畫裡的人，正在看你。","classic"],
+  [14,"星夜","梵谷","1889","這片夜空，是從療養院的窗戶看出去的。","modern"],
+  [15,"1808 年 5 月 3 日","哥雅","1814","第一幅把戰爭畫成屠殺、沒有英雄的畫。","modern"],
+  [16,"拾穗","米勒","1857","三個彎腰的女人，讓巴黎上流社會不安。","modern"],
+  [17,"龍安寺石庭","作者不詳","15 世紀後半","十五顆石頭，你永遠只看得到十四顆。","east"],
+  [18,"谿山行旅圖","范寬","北宋・約 11 世紀初","畫家把名字藏在樹叢裡，九百年後才被找到。","east"],
+  [19,"最後的晚餐","達文西","約 1495–1498","完成沒多久，它就開始剝落。","classic"],
+  [20,"嘉義街外（一）","陳澄波","1926","一個畫家，用油彩畫自己長大的街。","east"]
+];
+const pad = n => String(n).padStart(2,"0");
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const f = WORKS[0], feat = document.getElementById("feat");
+feat.href = S + pad(f[0]) + ".html";
+feat.innerHTML = `<img src="img/${pad(f[0])}.jpg" alt="${esc(f[1])}"><div class="tx"><span class="tag">本期推薦</span><h2>${esc(f[1])}</h2><p class="who">${esc(f[2])}・${esc(f[3])}</p><p class="hook">${esc(f[4])}</p><span class="more">讀完整故事 →</span></div>`;
+
+const grid = document.getElementById("grid"), q = document.getElementById("q");
+let cat = "all";
+function render(){
+  const k = q.value.trim();
+  const list = WORKS.filter(w => (cat === "all" || w[5] === cat) && (!k || (w[1]+w[2]+w[4]).includes(k)));
+  grid.innerHTML = list.map(w => `<a class="card" href="${S}${pad(w[0])}.html"><img loading="lazy" src="img/${pad(w[0])}.jpg" alt="${esc(w[1])}"><div class="b"><h3>${esc(w[1])}</h3><p class="who">${esc(w[2])}・${esc(w[3])}</p><p>${esc(w[4])}</p></div></a>`).join("");
+  document.getElementById("empty").style.display = list.length ? "none" : "block";
+  document.getElementById("count").textContent = `共 ${WORKS.length} 篇完整故事，免費閱讀`;
+}
+document.getElementById("chips").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if(!b) return;
+  cat = b.dataset.c;
+  document.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x === b));
+  render();
+});
+q.addEventListener("input", render);
+render();
+</script>
+</body>
+</html>
