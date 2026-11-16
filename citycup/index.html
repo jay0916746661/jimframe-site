@@ -81,6 +81,13 @@ h1 small{display:block;font:900 clamp(15px,2.4vw,22px)/1.5 var(--font-serif);let
 .facts span{font:600 11px/1 var(--font-latin);letter-spacing:.08em;padding:6px 10px;border:1px solid var(--gold);color:var(--gold);border-radius:999px;background:rgba(30,8,6,.5)}
 .map{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:600}
 /* 燈箱 */
+.fbar{display:flex;gap:8px;overflow-x:auto;padding:10px 12px calc(10px + env(safe-area-inset-bottom));scrollbar-width:none;flex:none}
+.fbar button{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;color:var(--cream-2);font:600 11px var(--font-text);cursor:pointer;padding:0}
+.fbar img{width:58px;height:58px;object-fit:cover;border-radius:10px;border:2px solid transparent}
+.fbar button.on{color:var(--gold)}.fbar button.on img{border-color:var(--gold)}
+.vig{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .2s}
+.zb{bottom:12px!important}
+
 .lb{position:fixed;inset:0;background:#000;z-index:10;display:none;flex-direction:column}
 .lb.on{display:flex}
 .lb-top{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));gap:8px}
@@ -88,7 +95,8 @@ h1 small{display:block;font:900 clamp(15px,2.4vw,22px)/1.5 var(--font-serif);let
 .ib{min-width:44px;min-height:44px;border-radius:999px;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none}
 .dl{min-height:44px;padding:0 18px;border-radius:999px;border:0;background:var(--gold);color:#2A0B09;font:700 14px var(--font-text);cursor:pointer}
 .lb-img{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;position:relative;touch-action:pan-y}
-.lb-img img{max-width:100%;max-height:100%;object-fit:contain}
+.lb-img{overflow:hidden;touch-action:none}.lb-img img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:0 0;will-change:transform;user-select:none;-webkit-user-drag:none}.lb-img.zoomed{cursor:grab}
+.zb{position:absolute;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:2}
 .nav{position:absolute;top:50%;transform:translateY(-50%)}.nav.l{left:10px}.nav.r{right:10px}
 @media(max-width:600px){.nav{display:none}}
 .credit{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
@@ -133,7 +141,7 @@ footer .sig{font:400 22px var(--font-deco);color:var(--gold);display:block;margi
 </div>
 
 <div class="lb" id="lb"><div class="lb-top"><button class="ib" data-x aria-label="關閉">✕</button><span id="cnt"></span><span style="display:flex;gap:8px"><a class="ib" id="edit" href="#" title="調色／做限動">🎨</a><button class="ib" id="lbdel" data-lbdel style="display:none;background:#c62828" aria-label="刪除這張">🗑</button><button class="dl" data-dl data-t="dlthis">下載這張</button></span></div>
-<div class="lb-img" id="stage"><button class="ib nav l" data-p aria-label="上一張">‹</button><img id="big" alt=""><button class="ib nav r" data-n aria-label="下一張">›</button></div></div>
+<div class="lb-img" id="stage"><button class="ib nav l" data-p aria-label="上一張">‹</button><img id="big" alt=""><button class="ib nav r" data-n aria-label="下一張">›</button><button class="ib zb" data-zoom aria-label="放大">🔍</button><div class="vig" id="vig"></div></div><div class="fbar" id="fbar"></div></div>
 <div class="credit" id="credit"><div><h3 data-t="c1">下載前的小提醒</h3><p data-t="c2">分享到 IG／臉書時，請標記攝影師，讓更多人看到這些畫面。</p><label><input type="checkbox" id="ok"><span data-t="c3">我會標記 @jimframe</span></label><div class="row"><button data-cc data-t="cancel">取消</button><button class="go" data-go disabled data-t="dl">下載</button></div></div></div>
 <script>
 const P14=[["A0000446",480,320],["A0000448",480,320],["A0000451",480,320],["A0000454",480,320],["A0000456",480,320],["A0000484",480,320],["A0000507",480,320],["A0000519",480,320],["A0000529",480,320],["A0000566",480,320],["A0000573",480,320],["A0000587",480,320],["A0000606",480,320],["A0000618",480,320],["A0000651",480,320],["A0000731",480,320],["A0000744",480,320],["A0000746",480,320],["A0000757",480,320],["A0000782",480,320],["A0000819",480,320],["A0000933",480,320],["A0000954",480,320],["A0000981",480,320],["A0001063",480,320],["A0001097",480,320],["A0001123",480,320],["A0001135",480,320],["A0001183",480,320],["A0001224",480,320],["A0001252",480,320],["A0001357",480,320],["A0001361",480,320],["A0001394",480,320],["A0001486",480,320],["A0001504",480,320]];
@@ -148,7 +156,7 @@ const DAYS=[
 const HL=[["1114","A0000519"],["1114","A0001183"],["1114","A0000782"],["1113","A0009846"],["1113","A0000312"],["1113","A0000360"],["1113","A0009587"],["1113","A0000058"],["1113","A0009904"],["1113","A0009475"],["1113","A0000001"]];
 
 // ===== 隱藏照片（與主站共用 hidden.json）＋管理員刪除：網址加 ?admin =====
-const ADMIN=/[?&]admin\b/.test(location.search);
+const ADMIN=(()=>{try{if(/[?&]admin\b/.test(location.search))localStorage.setItem("jf_admin","1");if(/[?&]noadmin\b/.test(location.search))localStorage.removeItem("jf_admin");return localStorage.getItem("jf_admin")==="1"}catch(e){return /[?&]admin\b/.test(location.search)}})();
 const HID=new Set((()=>{try{return JSON.parse(localStorage.getItem("jf_hidden_cache")||"[]")}catch(e){return[]}})());
 DAYS.forEach(d=>{if(d.photos){d.all=d.photos.slice();d.key=d.dir.split("/").slice(-2,-1)[0]}});
 const pid=(d,p)=>`L${d.key}-${p[0]}`;
@@ -161,7 +169,7 @@ async function ghGet(){const r=await fetch(GHU+"?ref=main&t="+Date.now(),{cache:
 (ADMIN&&ghTok()?ghGet().then(x=>x.ids):fetch("../hidden.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>j&&j.ids)).then(ids=>{if(!Array.isArray(ids))return;HID.clear();ids.forEach(i=>HID.add(i));try{localStorage.setItem("jf_hidden_cache",JSON.stringify(ids))}catch(e){}filt();rail();view()}).catch(()=>{});
 let pend=new Set(),tm=null;
 function needTok(){if(ghTok())return true;const t=prompt("第一次使用：貼上 GitHub token（只存在這台裝置，跟主站共用）\n\nGitHub → Settings → Developer settings → Fine-grained tokens → 只選 jimframe-site → Contents: Read and write");if(!t||!t.trim())return false;try{localStorage.setItem("jf_gh_token",t.trim())}catch(e){}return true}
-function badge(msg){let b=document.getElementById("admb");if(!b){b=document.createElement("div");b.id="admb";b.style.cssText="position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:30;padding:8px 14px;border-radius:999px;background:#c62828;color:#fff;font:600 13px var(--font-text)";document.body.appendChild(b)}b.textContent=msg}
+function badge(msg){let b=document.getElementById("admb");if(!b){b=document.createElement("div");b.id="admb";b.style.cssText="position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;pointer-events:none;max-width:calc(100vw - 24px);padding:8px 14px;border-radius:999px;background:#c62828;color:#fff;font:600 13px var(--font-text)";document.body.appendChild(b)}b.textContent=msg}
 async function flush(n=0){const add=[...pend];if(!add.length)return;badge("儲存中…");try{const cur=await ghGet();const s=new Set(cur.ids);add.forEach(i=>s.add(i));const ids=[...s].sort();
  const r=await fetch(GHU,{method:"PUT",headers:ghH(),body:JSON.stringify({message:`Hide ${add.length} photo(s) (City Cup admin)`,content:btoa(unescape(encodeURIComponent(JSON.stringify({ids},null,1)+"\n"))),branch:"main",...(cur.sha?{sha:cur.sha}:{})})});
  if(r.status===409&&n<2)return flush(n+1);if(r.status===401||r.status===403){try{localStorage.removeItem("jf_gh_token")}catch(e){}throw new Error("token")}if(!r.ok)throw new Error(r.status);
@@ -202,25 +210,85 @@ function rail(){$("#rail").innerHTML=HL.filter(([k,n])=>!HID.has(`L${k}-${n}`)).
 function view(){days();$("#wall-title").textContent=dn(day);const v=$("#view");
  if(!day.photos){v.innerHTML=`<div class="soon"><b>${dn(day)}</b>${t(day.id==="video"?"soonV":day.id==="1115"?"soonB":"soonA")}</div>`;return}
  v.innerHTML=`<div class="meta"><span>${day.early?`<b style="color:var(--gold)">${t("early")}</b> · `:""}${day.photos.length} ${t("photos")} · ${t("tap")}</span>${day.full?`<a class="full" href="../?album=${encodeURIComponent(day.full)}">${t("full")}</a>`:""}</div><div class="grid">${day.photos.map((p,i)=>`<button data-i="${i}" aria-label="照片 ${p[0]}"><img src="${day.dir}t/${p[0]}.jpg" loading="lazy" width="${p[1]}" height="${p[2]}" alt="">${ADMIN?`<i class="adm-x" data-del="${pid(day,p)}">×</i>`:""}</button>`).join("")}</div>`}
-function show(){const p=day.photos[idx];$("#big").src=day.dir+p[0]+".jpg";$("#edit").href=day.full?`../?album=${encodeURIComponent(day.full)}&photo=${p[0]}`:"#";$("#cnt").textContent=`${idx+1} / ${day.photos.length}`;
+function show(){const p=day.photos[idx];$("#big").src=day.dir+p[0]+".jpg";fxBar(day.dir+"t/"+p[0]+".jpg");$("#edit").href=day.full?`../?album=${encodeURIComponent(day.full)}&photo=${p[0]}`:"#";$("#cnt").textContent=`${idx+1} / ${day.photos.length}`;
  [idx+1,idx-1].forEach(j=>{const q=day.photos[(j+day.photos.length)%day.photos.length];new Image().src=day.dir+q[0]+".jpg"})}
 function open(i){idx=i;$("#lbdel").style.display=ADMIN?"flex":"none";$("#lb").classList.add("on");document.body.style.overflow="hidden";show()}
-function close(){$("#lb").classList.remove("on");document.body.style.overflow=""}
-function step(d){idx=(idx+d+day.photos.length)%day.photos.length;show()}
-function dl(){const p=day.photos[idx];const a=document.createElement("a");a.href=day.dir+p[0]+".jpg";a.download="CityCup2026_"+p[0]+".jpg";document.body.appendChild(a);a.click();a.remove()}
+function close(){zReset();$("#lb").classList.remove("on");document.body.style.overflow=""}
+function step(d){zReset();idx=(idx+d+day.photos.length)%day.photos.length;show()}
+function dl(){const p=day.photos[idx];fxDownload(day.dir+p[0]+".jpg","CityCup2026_"+p[0]+".jpg").catch(()=>{})}
 document.addEventListener("click",e=>{const x=e.target.closest("[data-del]");if(x){e.stopPropagation();hide(x.dataset.del);view();return}const t=e.target.closest("button");if(!t)return;
  if(t.dataset.lang){LANG=t.dataset.lang;try{localStorage.setItem("jf_lang",LANG)}catch(e){}applyLang();return}
  if(t.dataset.d){day=DAYS.find(d=>d.id===t.dataset.d);history.replaceState(null,"","#"+day.id);view();$("#wall-title").scrollIntoView({behavior:"smooth",block:"start"})}
  else if(t.dataset.h){const [k,n]=t.dataset.h.split(":");const d=DAYS.find(x=>x.photos&&x.dir.includes("/"+k+"/"));if(d){day=d;view();open(d.photos.findIndex(p=>p[0]===n))}}
  else if(t.dataset.i!==undefined)open(+t.dataset.i);
+ else if(t.dataset.fx){fx=FX.find(x=>x.id===t.dataset.fx);fxApply()}
+ else if("zoom" in t.dataset){const r=stg.getBoundingClientRect();zAt(Z.s>1.01?1:2.5,r.left+r.width/2,r.top+r.height/2)}
  else if("x" in t.dataset)close();else if("p" in t.dataset)step(-1);else if("n" in t.dataset)step(1);
  else if("lbdel" in t.dataset){const p=day.photos[idx];hide(pid(day,p));if(!day.photos.length){close();view();return}idx=Math.min(idx,day.photos.length-1);show();view()}
  else if("dl" in t.dataset){if(acked)dl();else{$("#ok").checked=false;$("[data-go]").disabled=true;$("#credit").classList.add("on")}}
  else if("cc" in t.dataset)$("#credit").classList.remove("on");
  else if("go" in t.dataset){acked=true;try{localStorage.setItem("jf_cc_ack","1")}catch(e){}$("#credit").classList.remove("on");dl()}});
 $("#ok").addEventListener("change",e=>{$("[data-go]").disabled=!e.target.checked});
-document.addEventListener("keydown",e=>{if(!$("#lb").classList.contains("on"))return;if(e.key==="Escape")close();if(e.key==="ArrowLeft")step(-1);if(e.key==="ArrowRight")step(1)});
-let sx=null;$("#stage").addEventListener("touchstart",e=>{sx=e.touches[0].clientX},{passive:true});
-$("#stage").addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)step(dx<0?1:-1);sx=null});
+document.addEventListener("keydown",e=>{if(!$("#lb").classList.contains("on"))return;if(e.key==="Escape"){if(Z.s>1.01)zReset();else close()}if(e.key==="+"||e.key==="="){const r=stg.getBoundingClientRect();zAt(Z.s*1.4,r.left+r.width/2,r.top+r.height/2)}if(e.key==="-"){const r=stg.getBoundingClientRect();zAt(Z.s/1.4,r.left+r.width/2,r.top+r.height/2)}if(e.key==="ArrowLeft")step(-1);if(e.key==="ArrowRight")step(1)});
+// ===== 放大檢視：雙擊／雙指縮放／滾輪／🔍，放大後可拖曳 =====
+const Z={s:1,x:0,y:0};const big=$("#big"),stg=$("#stage");
+function zApply(){big.style.transform=`translate(${Z.x}px,${Z.y}px) scale(${Z.s})`;stg.classList.toggle("zoomed",Z.s>1.01)}
+function zReset(){Z.s=1;Z.x=0;Z.y=0;zApply()}
+function zClamp(){const r=stg.getBoundingClientRect(),w=big.offsetWidth*Z.s,h=big.offsetHeight*Z.s,bx=big.offsetLeft,by=big.offsetTop;
+ const minX=Math.min(0,r.width-w-bx),maxX=Math.max(0,-bx),minY=Math.min(0,r.height-h-by),maxY=Math.max(0,-by);
+ if(w<=r.width)Z.x=(r.width-w)/2-bx;else Z.x=Math.min(maxX,Math.max(minX,Z.x));if(h<=r.height)Z.y=(r.height-h)/2-by;else Z.y=Math.min(maxY,Math.max(minY,Z.y))}
+function zAt(ns,cx,cy){const r=stg.getBoundingClientRect();ns=Math.min(5,Math.max(1,ns));const px=cx-r.left-big.offsetLeft,py=cy-r.top-big.offsetTop;
+ Z.x=px-(px-Z.x)*ns/Z.s;Z.y=py-(py-Z.y)*ns/Z.s;Z.s=ns;if(ns<=1.01){Z.s=1;Z.x=0;Z.y=0}else zClamp();zApply()}
+big.addEventListener("load",zReset);
+stg.addEventListener("wheel",e=>{e.preventDefault();zAt(Z.s*(e.deltaY<0?1.15:1/1.15),e.clientX,e.clientY)},{passive:false});
+stg.addEventListener("dblclick",e=>{if(e.target.closest("button"))return;zAt(Z.s>1.01?1:2.5,e.clientX,e.clientY)});
+const pts=new Map();let g=null,lastTap=0,sx=null,sy=null;
+stg.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;stg.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pts.size===2){const[a,b]=[...pts.values()];g={d:Math.hypot(a.x-b.x,a.y-b.y),s:Z.s,cx:(a.x+b.x)/2,cy:(a.y+b.y)/2}}
+ else{g={px:e.clientX,py:e.clientY,x:Z.x,y:Z.y};sx=e.clientX;sy=e.clientY;
+  if(e.pointerType!=="mouse"){const n=Date.now();if(n-lastTap<300){zAt(Z.s>1.01?1:2.5,e.clientX,e.clientY);lastTap=0;sx=null}else lastTap=n}}});
+stg.addEventListener("pointermove",e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pts.size===2&&g&&g.d){const[a,b]=[...pts.values()];zAt(g.s*Math.hypot(a.x-b.x,a.y-b.y)/g.d,(a.x+b.x)/2,(a.y+b.y)/2)}
+ else if(pts.size===1&&g&&Z.s>1.01&&g.px!==undefined){Z.x=g.x+e.clientX-g.px;Z.y=g.y+e.clientY-g.py;zClamp();zApply()}});
+const pend2=e=>{if(!pts.has(e.pointerId))return;pts.delete(e.pointerId);
+ if(pts.size===0){if(Z.s<=1.01&&sx!==null&&g&&g.px!==undefined){const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy))step(dx<0?1:-1)}g=null;sx=null}
+ else{const[a]=[...pts.values()];g={px:a.x,py:a.y,x:Z.x,y:Z.y}}};
+stg.addEventListener("pointerup",pend2);stg.addEventListener("pointercancel",pend2);
+
+// ===== 復古濾鏡：預覽用 CSS filter，下載時在畫布上套同樣效果（含暗角、顆粒）=====
+const FX=[
+ {id:"none",zh:"原圖",en:"Original",ko:"원본",ja:"オリジナル",f:[]},
+ {id:"warm",zh:"暖調復古",en:"Warm Retro",ko:"웜 레트로",ja:"ウォームレトロ",f:[["sepia",.35],["saturate",1.2],["contrast",1.05],["brightness",1.03]],v:.25},
+ {id:"fade",zh:"褪色底片",en:"Faded Film",ko:"바랜 필름",ja:"色あせフィルム",f:[["contrast",.82],["saturate",.78],["sepia",.18],["brightness",1.08]],lift:22,grain:10},
+ {id:"redhouse",zh:"紅樓膠片",en:"Red House Film",ko:"홍루 필름",ja:"紅楼フィルム",f:[["sepia",.25],["saturate",1.35],["hue",-8],["contrast",1.1]],v:.45,grain:8},
+ {id:"70s",zh:"70 年代",en:"’70s",ko:"70년대",ja:"70年代",f:[["sepia",.3],["saturate",1.5],["hue",-12],["contrast",1.08],["brightness",1.04]],lift:12,v:.3,grain:12},
+ {id:"sepia",zh:"老照片",en:"Old Photo",ko:"옛날 사진",ja:"古写真",f:[["sepia",.85],["contrast",1.12],["brightness",.96]],v:.6,grain:14},
+ {id:"bw",zh:"經典黑白",en:"Classic B&W",ko:"클래식 흑백",ja:"クラシック白黒",f:[["grayscale",1],["contrast",1.2]],v:.35,grain:10},
+ {id:"noir",zh:"黑色電影",en:"Film Noir",ko:"필름 누아르",ja:"フィルムノワール",f:[["grayscale",1],["contrast",1.55],["brightness",.9]],v:.7,grain:16}];
+let fx=FX[0];
+const cssF=x=>x.f.map(([k,v])=>k==="hue"?`hue-rotate(${v}deg)`:`${k}(${v})`).join(" ")||"none";
+function fxApply(){big.style.filter=cssF(fx)+(fx.lift?` brightness(1)`:"");const g=$("#vig");g.style.opacity=fx.v?1:0;g.style.background=`radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,${fx.v||0}) 100%)`;
+ [...$("#fbar").children].forEach(b=>b.classList.toggle("on",b.dataset.fx===fx.id))}
+function fxBar(src){$("#fbar").innerHTML=FX.map(x=>`<button data-fx="${x.id}"><img src="${src}" style="filter:${cssF(x)}" alt=""><span>${LANG==="zh"?x.zh:(x[LANG]||x.en)}</span></button>`).join("");fxApply()}
+// 色彩矩陣（依 CSS Filter Effects 規格）
+function mat(k,a){const I=[1,0,0,0,1,0,0,0,1];
+ if(k==="grayscale"){const s=1-a;return[.2126+.7874*s,.7152-.7152*s,.0722-.0722*s,.2126-.2126*s,.7152+.2848*s,.0722-.0722*s,.2126-.2126*s,.7152-.7152*s,.0722+.9278*s]}
+ if(k==="sepia"){const s=1-a;return[.393+.607*s,.769-.769*s,.189-.189*s,.349-.349*s,.686+.314*s,.168-.168*s,.272-.272*s,.534-.534*s,.131+.869*s]}
+ if(k==="saturate"){const s=a;return[.213+.787*s,.715-.715*s,.072-.072*s,.213-.213*s,.715+.285*s,.072-.072*s,.213-.213*s,.715-.715*s,.072+.928*s]}
+ if(k==="hue"){const r=a*Math.PI/180,C=Math.cos(r),S=Math.sin(r);return[.213+C*.787-S*.213,.715-C*.715-S*.715,.072-C*.072+S*.928,.213-C*.213+S*.143,.715+C*.285+S*.140,.072-C*.072-S*.283,.213-C*.213-S*.787,.715-C*.715+S*.715,.072+C*.928+S*.072]}
+ return I}
+async function fxDownload(url,name){if(fx.id==="none"){const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();return}
+ const im=new Image();im.crossOrigin="anonymous";im.src=url;await im.decode();const cv=document.createElement("canvas");cv.width=im.naturalWidth;cv.height=im.naturalHeight;const ctx=cv.getContext("2d");ctx.drawImage(im,0,0);
+ const d=ctx.getImageData(0,0,cv.width,cv.height),p=d.data,W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=Math.hypot(cx,cy);
+ const ops=fx.f.map(([k,v])=>[k,v,mat(k,v)]);const lift=(fx.lift||0)/255,gr=fx.grain||0,vg=fx.v||0;
+ for(let i=0,n=0;i<p.length;i+=4,n++){let r=p[i]/255,g=p[i+1]/255,b=p[i+2]/255;
+  for(const[k,v,m]of ops){if(k==="brightness"){r*=v;g*=v;b*=v}else if(k==="contrast"){r=(r-.5)*v+.5;g=(g-.5)*v+.5;b=(b-.5)*v+.5}else{const R2=m[0]*r+m[1]*g+m[2]*b,G2=m[3]*r+m[4]*g+m[5]*b,B2=m[6]*r+m[7]*g+m[8]*b;r=R2;g=G2;b=B2}
+   r=Math.min(1,Math.max(0,r));g=Math.min(1,Math.max(0,g));b=Math.min(1,Math.max(0,b))}
+  if(lift){r=lift+r*(1-lift);g=lift+g*(1-lift);b=lift+b*(1-lift)}
+  if(vg){const x=n%W,y=(n/W)|0,t=Math.hypot(x-cx,y-cy)/R,k=t<.45?1:1-vg*Math.min(1,(t-.45)/.55)**1.6;r*=k;g*=k;b*=k}
+  if(gr){const z=(Math.random()-.5)*gr/255;r+=z;g+=z;b+=z}
+  p[i]=r*255;p[i+1]=g*255;p[i+2]=b*255}
+ ctx.putImageData(d,0,0);const blob=await new Promise(res=>cv.toBlob(res,"image/jpeg",.92));const u=URL.createObjectURL(blob);const a=document.createElement("a");a.href=u;a.download=name.replace(".jpg",`_${fx.id}.jpg`);document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+
 rail();applyLang();
 </script></body></html>
