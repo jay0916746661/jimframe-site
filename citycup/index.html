@@ -166,16 +166,24 @@ const ghTok=()=>{try{return localStorage.getItem("jf_gh_token")||""}catch(e){ret
 const GHU="https://api.github.com/repos/jay0916746661/jimframe-site/contents/hidden.json";
 const ghH=()=>({Authorization:`Bearer ${ghTok()}`,Accept:"application/vnd.github+json"});
 async function ghGet(){const r=await fetch(GHU+"?ref=main&t="+Date.now(),{cache:"no-store",headers:ghH()});if(r.status===404)return{ids:[],sha:null};if(!r.ok)throw new Error(r.status);const j=await r.json();return{ids:JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g,""))))).ids||[],sha:j.sha}}
-(ADMIN&&ghTok()?ghGet().then(x=>x.ids):fetch("../hidden.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>j&&j.ids)).then(ids=>{if(!Array.isArray(ids))return;HID.clear();ids.forEach(i=>HID.add(i));try{localStorage.setItem("jf_hidden_cache",JSON.stringify(ids))}catch(e){}filt();rail();view()}).catch(()=>{});
+(ADMIN&&ghTok()?ghGet().then(x=>x.ids):fetch("../hidden.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>j&&j.ids)).then(ids=>{if(!Array.isArray(ids))return;HID.clear();ids.forEach(i=>HID.add(i));try{LQ.forEach(i=>{if(ids.includes(i))LQ.delete(i);else HID.add(i)});saveQ();if(ADMIN)qBadge()}catch(e){}try{localStorage.setItem("jf_hidden_cache",JSON.stringify(ids))}catch(e){}filt();rail();view()}).catch(()=>{});
 let pend=new Set(),tm=null;
 function needTok(){if(ghTok())return true;const t=prompt("第一次使用：貼上 GitHub token（只存在這台裝置，跟主站共用）\n\nGitHub → Settings → Developer settings → Fine-grained tokens → 只選 jimframe-site → Contents: Read and write");if(!t||!t.trim())return false;try{localStorage.setItem("jf_gh_token",t.trim())}catch(e){}return true}
-function badge(msg){let b=document.getElementById("admb");if(!b){b=document.createElement("div");b.id="admb";b.style.cssText="position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;pointer-events:none;max-width:calc(100vw - 24px);padding:8px 14px;border-radius:999px;background:#c62828;color:#fff;font:600 13px var(--font-text)";document.body.appendChild(b)}b.textContent=msg}
+function badge(msg){let b=document.getElementById("admb");if(!b){b=document.createElement("div");b.id="admb";b.style.cssText="position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;max-width:calc(100vw - 24px);cursor:pointer;padding:8px 14px;border-radius:999px;background:#c62828;color:#fff;font:600 13px var(--font-text)";document.body.appendChild(b);b.addEventListener("click",()=>{if(LQ.size)copyQ()})}b.textContent=msg}
 async function flush(n=0){const add=[...pend];if(!add.length)return;badge("儲存中…");try{const cur=await ghGet();const s=new Set(cur.ids);add.forEach(i=>s.add(i));const ids=[...s].sort();
  const r=await fetch(GHU,{method:"PUT",headers:ghH(),body:JSON.stringify({message:`Hide ${add.length} photo(s) (City Cup admin)`,content:btoa(unescape(encodeURIComponent(JSON.stringify({ids},null,1)+"\n"))),branch:"main",...(cur.sha?{sha:cur.sha}:{})})});
  if(r.status===409&&n<2)return flush(n+1);if(r.status===401||r.status===403){try{localStorage.removeItem("jf_gh_token")}catch(e){}throw new Error("token")}if(!r.ok)throw new Error(r.status);
  add.forEach(i=>pend.delete(i));try{localStorage.setItem("jf_hidden_cache",JSON.stringify(ids))}catch(e){}badge(`管理模式 · 已刪 ${ids.filter(i=>i.startsWith("L111")).length} 張（City Cup）`)}catch(e){badge(e.message==="token"?"token 無效，請重貼":"儲存失敗，稍後重試");setTimeout(()=>flush(),8000)}}
-function hide(id){if(!needTok())return;HID.add(id);pend.add(id);filt();clearTimeout(tm);tm=setTimeout(flush,1500);badge(`待儲存 ${pend.size} 張…`)}
-if(ADMIN){badge("管理模式：點縮圖右上 × 刪除（只是隱藏，可在主站 ?admin 復原）");
+// 沒有 token 也能刪：先在這支手機隱藏並記進「待刪清單」，按左下按鈕複製清單傳給 Claude，由 Claude 正式刪除
+const LQ=new Set((()=>{try{return JSON.parse(localStorage.getItem("jf_cc_queue")||"[]")}catch(e){return[]}})());
+LQ.forEach(i=>HID.add(i));filt();
+function saveQ(){try{localStorage.setItem("jf_cc_queue",JSON.stringify([...LQ]))}catch(e){}}
+function qBadge(){if(!LQ.size){badge("管理模式：點 × 或 🗑 刪除");return}badge(`待刪 ${LQ.size} 張 · 點這裡複製清單`)}
+function hide(id){HID.add(id);filt();if(ghTok()){pend.add(id);clearTimeout(tm);tm=setTimeout(flush,1500);badge(`待儲存 ${pend.size} 張…`)}else{LQ.add(id);saveQ();qBadge()}}
+async function copyQ(){const ids=[...LQ].sort();const txt="City Cup 刪除 "+ids.length+" 張：\n"+ids.join("\n");
+ try{await navigator.clipboard.writeText(txt);badge(`已複製 ${ids.length} 張，貼給 Claude 就好`)}catch(e){prompt("長按全選複製，貼給 Claude：",txt)}}
+
+if(ADMIN){qBadge();
  const st=document.createElement("style");st.textContent=".grid button{position:relative}.adm-x{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;background:rgba(198,40,40,.92);color:#fff;font:700 17px/28px var(--font-text);text-align:center;font-style:normal;z-index:2}";document.head.appendChild(st)}
 
 let day=DAYS.find(d=>d.id===location.hash.slice(1))||DAYS[0],idx=0,acked=false;
@@ -212,8 +220,8 @@ function view(){days();$("#wall-title").textContent=dn(day);const v=$("#view");
  v.innerHTML=`<div class="meta"><span>${day.early?`<b style="color:var(--gold)">${t("early")}</b> · `:""}${day.photos.length} ${t("photos")} · ${t("tap")}</span>${day.full?`<a class="full" href="../?album=${encodeURIComponent(day.full)}">${t("full")}</a>`:""}</div><div class="grid">${day.photos.map((p,i)=>`<button data-i="${i}" aria-label="照片 ${p[0]}"><img src="${day.dir}t/${p[0]}.jpg" loading="lazy" width="${p[1]}" height="${p[2]}" alt="">${ADMIN?`<i class="adm-x" data-del="${pid(day,p)}">×</i>`:""}</button>`).join("")}</div>`}
 function show(){const p=day.photos[idx];$("#big").src=day.dir+p[0]+".jpg";fxBar(day.dir+"t/"+p[0]+".jpg");$("#edit").href=day.full?`../?album=${encodeURIComponent(day.full)}&photo=${p[0]}`:"#";$("#cnt").textContent=`${idx+1} / ${day.photos.length}`;
  [idx+1,idx-1].forEach(j=>{const q=day.photos[(j+day.photos.length)%day.photos.length];new Image().src=day.dir+q[0]+".jpg"})}
-function open(i){idx=i;$("#lbdel").style.display=ADMIN?"flex":"none";$("#lb").classList.add("on");document.body.style.overflow="hidden";show()}
-function close(){zReset();$("#lb").classList.remove("on");document.body.style.overflow=""}
+function open(i){idx=i;const ab=document.getElementById("admb");if(ab)ab.style.display="none";$("#lbdel").style.display=ADMIN?"flex":"none";$("#lb").classList.add("on");document.body.style.overflow="hidden";show()}
+function close(){zReset();const ab=document.getElementById("admb");if(ab)ab.style.display="";$("#lb").classList.remove("on");document.body.style.overflow=""}
 function step(d){zReset();idx=(idx+d+day.photos.length)%day.photos.length;show()}
 function dl(){const p=day.photos[idx];fxDownload(day.dir+p[0]+".jpg","CityCup2026_"+p[0]+".jpg").catch(()=>{})}
 document.addEventListener("click",e=>{const x=e.target.closest("[data-del]");if(x){e.stopPropagation();hide(x.dataset.del);view();return}const t=e.target.closest("button");if(!t)return;
