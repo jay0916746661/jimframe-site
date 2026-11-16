@@ -135,7 +135,7 @@ footer .sig{font:400 22px var(--font-deco);color:var(--gold);display:block;margi
 <footer><span class="sig">JimFrame</span><span data-t="foot1">使用照片請標記</span> <a href="https://instagram.com/jimframe" target="_blank" rel="noopener">@jimframe</a> · <span data-t="thanks">謝謝</span> 🙏</footer>
 </div>
 
-<div class="lb" id="lb"><div class="lb-top"><button class="ib" data-x aria-label="關閉">✕</button><span id="cnt"></span><span style="display:flex;gap:8px"><a class="ib" id="edit" href="#" title="調色／做限動">🎨</a><button class="dl" data-dl data-t="dlthis">下載這張</button></span></div>
+<div class="lb" id="lb"><div class="lb-top"><button class="ib" data-x aria-label="關閉">✕</button><span id="cnt"></span><span style="display:flex;gap:8px"><a class="ib" id="edit" href="#" title="調色／做限動">🎨</a><button class="ib" id="lbdel" data-lbdel style="display:none;background:#c62828" aria-label="刪除這張">🗑</button><button class="dl" data-dl data-t="dlthis">下載這張</button></span></div>
 <div class="lb-img" id="stage"><button class="ib nav l" data-p aria-label="上一張">‹</button><img id="big" alt=""><button class="ib nav r" data-n aria-label="下一張">›</button></div></div>
 <div class="credit" id="credit"><div><h3 data-t="c1">下載前的小提醒</h3><p data-t="c2">分享到 IG／臉書時，請標記攝影師，讓更多人看到這些畫面。</p><label><input type="checkbox" id="ok"><span data-t="c3">我會標記 @jimframe</span></label><div class="row"><button data-cc data-t="cancel">取消</button><button class="go" data-go disabled data-t="dl">下載</button></div></div></div>
 <script>
@@ -149,6 +149,30 @@ const DAYS=[
  {id:"video",d:"▶",wk:"FILM",name:"精華影片",sub:"30 秒直式精華",soon:"30 秒精華影片製作中"}
 ];
 const HL=[["1114","A0000519"],["1114","A0001183"],["1114","A0000782"],["1113","A0009846"],["1113","A0000312"],["1113","A0000360"],["1113","A0009587"],["1113","A0000058"],["1113","A0009904"],["1113","A0009475"],["1113","A0000001"]];
+
+// ===== 隱藏照片（與主站共用 hidden.json）＋管理員刪除：網址加 ?admin =====
+const ADMIN=/[?&]admin\b/.test(location.search);
+const HID=new Set((()=>{try{return JSON.parse(localStorage.getItem("jf_hidden_cache")||"[]")}catch(e){return[]}})());
+DAYS.forEach(d=>{if(d.photos){d.all=d.photos.slice();d.key=d.dir.split("/").slice(-2,-1)[0]}});
+const pid=(d,p)=>`L${d.key}-${p[0]}`;
+function filt(){DAYS.forEach(d=>{if(d.all){d.photos=d.all.filter(p=>!HID.has(pid(d,p)))}})}
+filt();
+const ghTok=()=>{try{return localStorage.getItem("jf_gh_token")||""}catch(e){return""}};
+const GHU="https://api.github.com/repos/jay0916746661/jimframe-site/contents/hidden.json";
+const ghH=()=>({Authorization:`Bearer ${ghTok()}`,Accept:"application/vnd.github+json"});
+async function ghGet(){const r=await fetch(GHU+"?ref=main&t="+Date.now(),{cache:"no-store",headers:ghH()});if(r.status===404)return{ids:[],sha:null};if(!r.ok)throw new Error(r.status);const j=await r.json();return{ids:JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g,""))))).ids||[],sha:j.sha}}
+(ADMIN&&ghTok()?ghGet().then(x=>x.ids):fetch("../hidden.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>j&&j.ids)).then(ids=>{if(!Array.isArray(ids))return;HID.clear();ids.forEach(i=>HID.add(i));try{localStorage.setItem("jf_hidden_cache",JSON.stringify(ids))}catch(e){}filt();rail();view()}).catch(()=>{});
+let pend=new Set(),tm=null;
+function needTok(){if(ghTok())return true;const t=prompt("第一次使用：貼上 GitHub token（只存在這台裝置，跟主站共用）\n\nGitHub → Settings → Developer settings → Fine-grained tokens → 只選 jimframe-site → Contents: Read and write");if(!t||!t.trim())return false;try{localStorage.setItem("jf_gh_token",t.trim())}catch(e){}return true}
+function badge(msg){let b=document.getElementById("admb");if(!b){b=document.createElement("div");b.id="admb";b.style.cssText="position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:30;padding:8px 14px;border-radius:999px;background:#c62828;color:#fff;font:600 13px var(--font-text)";document.body.appendChild(b)}b.textContent=msg}
+async function flush(n=0){const add=[...pend];if(!add.length)return;badge("儲存中…");try{const cur=await ghGet();const s=new Set(cur.ids);add.forEach(i=>s.add(i));const ids=[...s].sort();
+ const r=await fetch(GHU,{method:"PUT",headers:ghH(),body:JSON.stringify({message:`Hide ${add.length} photo(s) (City Cup admin)`,content:btoa(unescape(encodeURIComponent(JSON.stringify({ids},null,1)+"\n"))),branch:"main",...(cur.sha?{sha:cur.sha}:{})})});
+ if(r.status===409&&n<2)return flush(n+1);if(r.status===401||r.status===403){try{localStorage.removeItem("jf_gh_token")}catch(e){}throw new Error("token")}if(!r.ok)throw new Error(r.status);
+ add.forEach(i=>pend.delete(i));try{localStorage.setItem("jf_hidden_cache",JSON.stringify(ids))}catch(e){}badge(`管理模式 · 已刪 ${ids.filter(i=>i.startsWith("L111")).length} 張（City Cup）`)}catch(e){badge(e.message==="token"?"token 無效，請重貼":"儲存失敗，稍後重試");setTimeout(()=>flush(),8000)}}
+function hide(id){if(!needTok())return;HID.add(id);pend.add(id);filt();clearTimeout(tm);tm=setTimeout(flush,1500);badge(`待儲存 ${pend.size} 張…`)}
+if(ADMIN){badge("管理模式：點縮圖右上 × 刪除（只是隱藏，可在主站 ?admin 復原）");
+ const st=document.createElement("style");st.textContent=".grid button{position:relative}.adm-x{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;background:rgba(198,40,40,.92);color:#fff;font:700 17px/28px var(--font-text);text-align:center;font-style:normal;z-index:2}";document.head.appendChild(st)}
+
 let day=DAYS.find(d=>d.id===location.hash.slice(1))||DAYS[0],idx=0,acked=false;
 try{acked=localStorage.getItem("jf_cc_ack")==="1"}catch(e){}
 const $=s=>document.querySelector(s);
@@ -177,22 +201,23 @@ function applyLang(){document.documentElement.lang=LANG==="zh"?"zh-Hant":LANG;do
  $("#langs").innerHTML=[["zh","中"],["en","EN"],["ko","한"],["ja","日"]].map(([k,l])=>`<button data-lang="${k}" class="${k===LANG?"on":""}">${l}</button>`).join("");view()}
 
 function days(){$("#days").innerHTML=DAYS.map(d=>`<button class="ticket${d===day?" on":""}" data-d="${d.id}"><span class="stub"><b>${d.d}</b><small>${d.wk}</small></span><span class="tx"><b>${dn(d)}</b><span>${ds(d)}</span></span><span class="badge${d.photos?"":" wait"}">${d.photos?d.photos.length+" "+t("photos"):t("wait")}</span></button>`).join("")}
-function rail(){$("#rail").innerHTML=HL.map(([k,n])=>`<button data-h="${k}:${n}" aria-label="精彩瞬間"><img src="../photos/${k}/${n}.jpg" loading="lazy" alt=""></button>`).join("")}
+function rail(){$("#rail").innerHTML=HL.filter(([k,n])=>!HID.has(`L${k}-${n}`)).map(([k,n])=>`<button data-h="${k}:${n}" aria-label="精彩瞬間"><img src="../photos/${k}/${n}.jpg" loading="lazy" alt=""></button>`).join("")}
 function view(){days();$("#wall-title").textContent=dn(day);const v=$("#view");
  if(!day.photos){v.innerHTML=`<div class="soon"><b>${dn(day)}</b>${t(day.id==="video"?"soonV":day.id==="1115"?"soonB":"soonA")}</div>`;return}
- v.innerHTML=`<div class="meta"><span>${day.early?`<b style="color:var(--gold)">${t("early")}</b> · `:""}${day.photos.length} ${t("photos")} · ${t("tap")}</span>${day.full?`<a class="full" href="../?album=${encodeURIComponent(day.full)}">${t("full")}</a>`:""}</div><div class="grid">${day.photos.map((p,i)=>`<button data-i="${i}" aria-label="照片 ${p[0]}"><img src="${day.dir}t/${p[0]}.jpg" loading="lazy" width="${p[1]}" height="${p[2]}" alt=""></button>`).join("")}</div>`}
+ v.innerHTML=`<div class="meta"><span>${day.early?`<b style="color:var(--gold)">${t("early")}</b> · `:""}${day.photos.length} ${t("photos")} · ${t("tap")}</span>${day.full?`<a class="full" href="../?album=${encodeURIComponent(day.full)}">${t("full")}</a>`:""}</div><div class="grid">${day.photos.map((p,i)=>`<button data-i="${i}" aria-label="照片 ${p[0]}"><img src="${day.dir}t/${p[0]}.jpg" loading="lazy" width="${p[1]}" height="${p[2]}" alt="">${ADMIN?`<i class="adm-x" data-del="${pid(day,p)}">×</i>`:""}</button>`).join("")}</div>`}
 function show(){const p=day.photos[idx];$("#big").src=day.dir+p[0]+".jpg";$("#edit").href=day.full?`../?album=${encodeURIComponent(day.full)}&photo=${p[0]}`:"#";$("#cnt").textContent=`${idx+1} / ${day.photos.length}`;
  [idx+1,idx-1].forEach(j=>{const q=day.photos[(j+day.photos.length)%day.photos.length];new Image().src=day.dir+q[0]+".jpg"})}
-function open(i){idx=i;$("#lb").classList.add("on");document.body.style.overflow="hidden";show()}
+function open(i){idx=i;$("#lbdel").style.display=ADMIN?"flex":"none";$("#lb").classList.add("on");document.body.style.overflow="hidden";show()}
 function close(){$("#lb").classList.remove("on");document.body.style.overflow=""}
 function step(d){idx=(idx+d+day.photos.length)%day.photos.length;show()}
 function dl(){const p=day.photos[idx];const a=document.createElement("a");a.href=day.dir+p[0]+".jpg";a.download="CityCup2026_"+p[0]+".jpg";document.body.appendChild(a);a.click();a.remove()}
-document.addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;
+document.addEventListener("click",e=>{const x=e.target.closest("[data-del]");if(x){e.stopPropagation();hide(x.dataset.del);view();return}const t=e.target.closest("button");if(!t)return;
  if(t.dataset.lang){LANG=t.dataset.lang;try{localStorage.setItem("jf_lang",LANG)}catch(e){}applyLang();return}
  if(t.dataset.d){day=DAYS.find(d=>d.id===t.dataset.d);history.replaceState(null,"","#"+day.id);view();$("#wall-title").scrollIntoView({behavior:"smooth",block:"start"})}
  else if(t.dataset.h){const [k,n]=t.dataset.h.split(":");const d=DAYS.find(x=>x.photos&&x.dir.includes("/"+k+"/"));if(d){day=d;view();open(d.photos.findIndex(p=>p[0]===n))}}
  else if(t.dataset.i!==undefined)open(+t.dataset.i);
  else if("x" in t.dataset)close();else if("p" in t.dataset)step(-1);else if("n" in t.dataset)step(1);
+ else if("lbdel" in t.dataset){const p=day.photos[idx];hide(pid(day,p));if(!day.photos.length){close();view();return}idx=Math.min(idx,day.photos.length-1);show();view()}
  else if("dl" in t.dataset){if(acked)dl();else{$("#ok").checked=false;$("[data-go]").disabled=true;$("#credit").classList.add("on")}}
  else if("cc" in t.dataset)$("#credit").classList.remove("on");
  else if("go" in t.dataset){acked=true;try{localStorage.setItem("jf_cc_ack","1")}catch(e){}$("#credit").classList.remove("on");dl()}});
