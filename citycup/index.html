@@ -149,7 +149,7 @@ const P13=[["A0000001",480,320],["A0000007",480,320],["A0000008",480,320],["A000
 const DAYS=[
  {id:"1113",d:"13",wk:"FRI",name:"BA 前夜派對",sub:"BA 教室 · 開幕社交舞",dir:"../photos/1113/",photos:P13,full:"1113"},
  {id:"1114a",d:"14",wk:"SAT",name:"競賽",sub:"西門紅樓 · 比賽 · 頒獎",dir:"../photos/1114/",photos:P14,full:"1114-Asia City Cup 競賽",early:true},
- {id:"1114b",d:"14",wk:"SAT",name:"晚會",sub:"西門紅樓 · 表演 · 社交舞",soon:"安全牌搶先看準備中，之後陸續補上"},
+ {id:"1114b",d:"14",wk:"SAT",name:"晚會",sub:"西門紅樓 · 表演 · 社交舞",soon:"精選準備中"},
  {id:"1115",d:"15",wk:"SUN",name:"最終日",sub:"西門紅樓 · 比賽 · 晚會",soon:"整理中"},
  {id:"video",d:"▶",wk:"FILM",name:"精華影片",sub:"30 秒直式精華",soon:"30 秒精華影片製作中"}
 ];
@@ -191,22 +191,22 @@ let day=DAYS.find(d=>d.id===location.hash.slice(1))||DAYS[0],idx=0,acked=false;
 try{acked=localStorage.getItem("jf_cc_ack")==="1"}catch(e){}
 const $=s=>document.querySelector(s);
 const I18N={
-en:{f2:"Red-brick octagon",f3:"Municipal heritage site",early:"Early picks · more coming",lead:"Three days of photos & videos · Photography by Jim Lin @jimframe",venue:"Ximen Red House",prog:"Programme",hl:"Highlights",about:"The Venue",
+en:{f2:"Red-brick octagon",f3:"Municipal heritage site",early:"Highlights · more coming",lead:"Three days of photos & videos · Photography by Jim Lin @jimframe",venue:"Ximen Red House",prog:"Programme",hl:"Highlights",about:"The Venue",
 vdesc:"Built in 1908, this red-brick octagonal hall was Ximending's first public market, and over a century has served as a market, theatre and storytelling house. Today it hosts arts and performances. City Cup's Saturday and Sunday competitions and parties took place inside these red bricks; Friday's opening night was at the BA studio.",
 addr:"No. 10, Chengdu Rd, Wanhua, Taipei (MRT Ximen Exit 1)",foot1:"Using a photo? Please tag",thanks:"Thank you",dlthis:"Download",c1:"Before you download",c2:"When you share on IG or Facebook, please tag the photographer so more people can see these moments.",c3:"I'll tag @jimframe",cancel:"Cancel",dl:"Download",
 n1113:"BA Opening Party",s1113:"BA studio · Opening social",n1114a:"Competition",s1114a:"Ximen Red House · Contests · Awards",n1114b:"Evening Party",s1114b:"Ximen Red House · Shows · Social",n1115:"Final Day",s1115:"Ximen Red House · Contests · Party",nvideo:"Highlight Film",svideo:"30-sec vertical highlight",
-photos:"photos",wait:"Coming soon",soonA:"Early picks coming soon, more to follow",soonB:"In progress",soonV:"30-sec highlight film in production",tap:"Tap a photo to view & download",full:"Full album: edit · multi-download · Stories ›"},
-ko:{f2:"붉은 벽돌 팔각루",f3:"시 지정 문화재",early:"먼저 공개 · 계속 추가 예정",lead:"3일간의 사진과 영상 · 사진 Jim Lin @jimframe",venue:"시먼 홍루",prog:"3일 일정",hl:"하이라이트",about:"장소 소개",
+photos:"photos",wait:"Coming soon",soonA:"Highlights coming soon, more to follow",soonB:"In progress",soonV:"30-sec highlight film in production",tap:"Tap a photo to view & download",full:"Full album: edit · multi-download · Stories ›"},
+ko:{f2:"붉은 벽돌 팔각루",f3:"시 지정 문화재",early:"베스트 컷 · 계속 추가 예정",lead:"3일간의 사진과 영상 · 사진 Jim Lin @jimframe",venue:"시먼 홍루",prog:"3일 일정",hl:"하이라이트",about:"장소 소개",
 vdesc:"1908년에 지어진 붉은 벽돌 팔각 건물로, 시먼딩 최초의 공영 시장이었습니다. 100여 년 동안 시장, 극장, 공연장으로 쓰였고 지금은 문화·공연 공간입니다. City Cup 토·일요일 대회와 파티가 이곳에서 열렸고, 금요일 오프닝은 BA 스튜디오에서 열렸습니다.",
 addr:"타이베이시 완화구 청두로 10호 (MRT 시먼역 1번 출구)",foot1:"사진 사용 시 태그해 주세요",thanks:"감사합니다",dlthis:"다운로드",c1:"다운로드 전에",c2:"IG/페이스북에 공유할 때 사진작가를 태그해 주세요.",c3:"@jimframe 태그할게요",cancel:"취소",dl:"다운로드",
 n1113:"BA 오프닝 파티",s1113:"BA 스튜디오 · 오프닝 소셜",n1114a:"대회",s1114a:"시먼 홍루 · 대회 · 시상",n1114b:"저녁 파티",s1114b:"시먼 홍루 · 공연 · 소셜",n1115:"마지막 날",s1115:"시먼 홍루 · 대회 · 파티",nvideo:"하이라이트 영상",svideo:"30초 세로 영상",
-photos:"장",wait:"준비 중",soonA:"베스트 컷 먼저 공개 예정",soonB:"정리 중",soonV:"30초 하이라이트 제작 중",tap:"사진을 눌러 크게 보기·다운로드",full:"전체 앨범: 보정 · 여러 장 다운로드 · 스토리 ›"},
-ja:{f2:"赤レンガの八角楼",f3:"市定古跡",early:"先行公開・順次追加",lead:"3日間の写真と動画 · 撮影 Jim Lin @jimframe",venue:"西門紅楼",prog:"3日間のプログラム",hl:"ハイライト",about:"会場について",
+photos:"장",wait:"준비 중",soonA:"베스트 컷 준비 중, 계속 추가 예정",soonB:"정리 중",soonV:"30초 하이라이트 제작 중",tap:"사진을 눌러 크게 보기·다운로드",full:"전체 앨범: 보정 · 여러 장 다운로드 · 스토리 ›"},
+ja:{f2:"赤レンガの八角楼",f3:"市定古跡",early:"セレクト・順次追加",lead:"3日間の写真と動画 · 撮影 Jim Lin @jimframe",venue:"西門紅楼",prog:"3日間のプログラム",hl:"ハイライト",about:"会場について",
 vdesc:"1908年に建てられた赤レンガの八角形の建物で、西門町初の公設市場でした。100年以上、市場・劇場・演芸場として使われ、今は文化・公演スペースです。City Cup の土日の大会とパーティーはここで、金曜のオープニングは BA スタジオで行われました。",
 addr:"台北市萬華区成都路10号（MRT西門駅1番出口）",foot1:"写真を使うときはタグ付けを",thanks:"ありがとう",dlthis:"ダウンロード",c1:"ダウンロードの前に",c2:"IG・Facebookでシェアするときは、撮影者をタグ付けしてください。",c3:"@jimframe をタグ付けします",cancel:"キャンセル",dl:"ダウンロード",
 n1113:"BA オープニング",s1113:"BA スタジオ · オープニング",n1114a:"コンテスト",s1114a:"西門紅楼 · 大会 · 表彰",n1114b:"イブニング",s1114b:"西門紅楼 · ショー · ソーシャル",n1115:"最終日",s1115:"西門紅楼 · 大会 · パーティー",nvideo:"ハイライト動画",svideo:"30秒の縦型動画",
-photos:"枚",wait:"準備中",soonA:"ベストショットを順次公開予定",soonB:"準備中",soonV:"30秒ハイライト制作中",tap:"写真をタップして拡大・ダウンロード",full:"アルバム全体：補正・まとめてDL・ストーリー ›"}};
-const ZH={f2:"紅磚八角樓",f3:"市定古蹟",early:"搶先看・完整版陸續補上",photos:"張",wait:"整理中",soonA:"安全牌搶先看準備中，之後陸續補上",soonB:"整理中",soonV:"30 秒精華影片製作中",tap:"點照片看大圖、下載",full:"完整相簿：調色・多選下載・做限動 ›"};
+photos:"枚",wait:"準備中",soonA:"セレクト準備中・順次追加",soonB:"準備中",soonV:"30秒ハイライト制作中",tap:"写真をタップして拡大・ダウンロード",full:"アルバム全体：補正・まとめてDL・ストーリー ›"}};
+const ZH={f2:"紅磚八角樓",f3:"市定古蹟",early:"精選・完整版陸續補上",photos:"張",wait:"整理中",soonA:"精選準備中，之後陸續補上",soonB:"整理中",soonV:"30 秒精華影片製作中",tap:"點照片看大圖、下載",full:"完整相簿：調色・多選下載・做限動 ›"};
 let LANG=(()=>{try{const v=localStorage.getItem("jf_lang");if(v)return v}catch(e){}const n=(navigator.language||"").toLowerCase();return n.startsWith("zh")?"zh":n.startsWith("ko")?"ko":n.startsWith("ja")?"ja":n?"en":"zh"})();
 const ZHS={};document.querySelectorAll("[data-t]").forEach(el=>ZHS[el.dataset.t]=el.textContent);
 const t=k=>LANG==="zh"?(ZH[k]??ZHS[k]??k):((I18N[LANG]||I18N.en)[k]??ZH[k]??k);
