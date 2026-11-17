@@ -73,7 +73,16 @@ h1 small{display:block;font:900 clamp(15px,2.4vw,22px)/1.5 var(--font-serif);let
 .soon{padding:40px 20px;text-align:center;color:var(--cream-2)}
 .vchips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}.vchip{border:1px solid var(--line);background:transparent;color:var(--cream);border-radius:999px;padding:7px 14px;font:600 13px var(--font-text);cursor:pointer}.vchip.on{background:var(--gold);color:#2A0B09;border-color:var(--gold)}.vchip small{opacity:.7;margin-left:3px}
 .vlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}.vcard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2)}
-.vbox{position:relative;aspect-ratio:16/9;background:#000 radial-gradient(circle at 50% 50%,#3a1612,#000)}.vbox iframe,.vbox video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}.voff{opacity:.45}.vtrim{display:inline-flex;gap:6px;flex-wrap:wrap}
+.vbox{position:relative;aspect-ratio:16/9;background:#000 radial-gradient(circle at 50% 50%,#3a1612,#000)}.vbox iframe,.vbox video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}.voff{opacity:.45}.vsel{background:#3a1d17;color:#f3e3c8;border:1px solid #6b3a2c;border-radius:999px;padding:8px 12px;font:inherit}.ved{font-weight:700}
+#ved{position:fixed;inset:0;z-index:999;background:rgba(10,4,3,.96);overflow:auto;-webkit-overflow-scrolling:touch}.vedin{max-width:900px;margin:0 auto;padding:10px 12px 40px;color:#f3e3c8}
+.vedh{display:flex;justify-content:space-between;align-items:center;padding:6px 0}.vedh button{background:none;border:0;color:#f3e3c8;font-size:26px}
+#vedv{width:100%;max-height:52vh;background:#000;border-radius:8px}.vedt{display:flex;justify-content:space-between;font-size:14px;margin:6px 2px;opacity:.9}#vedc{font-size:20px;font-weight:700;color:#e7b766}
+.vedbar{position:relative;height:22px;background:#3a1d17;border-radius:6px;margin:6px 0;touch-action:none}#vedsel{position:absolute;top:0;bottom:0;background:rgba(231,183,102,.55);border-radius:6px}#vedhd{position:absolute;top:-3px;bottom:-3px;width:3px;background:#fff;margin-left:-1px}
+.vedn{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.vedn button,.vedf button{flex:1;min-width:60px;padding:10px 6px;border-radius:10px;border:1px solid #6b3a2c;background:#2a1410;color:#f3e3c8;font:inherit}.vedn .hi{background:#5a2d1c;font-weight:700}
+.vedg{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:4px;margin:10px 0;max-height:40vh;overflow:auto}.vedg button{aspect-ratio:16/9;border:0;border-radius:4px;background-repeat:no-repeat;position:relative;padding:0;transform-origin:0 0}
+.vedg button small{position:absolute;left:2px;bottom:1px;font-size:11px;color:#fff;text-shadow:0 0 3px #000}.vedg button.out{opacity:.25;filter:grayscale(1)}
+.vedin label{display:block;margin:8px 0;font-size:14px}.vedin input{width:100%;padding:9px;border-radius:8px;border:1px solid #6b3a2c;background:#1d0d0a;color:#f3e3c8;font:inherit;margin-top:4px}.vedin input[type=number]{width:90px}
+.vedf{display:flex;gap:8px;margin-top:12px}.vedf .ok{background:#e7b766;color:#2a1410;font-weight:700}.vedf .warn{color:#ff9a8a}.vtrim{display:inline-flex;gap:6px;flex-wrap:wrap}
 .vplay{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;border:2px solid var(--gold);background:rgba(0,0,0,.4);color:var(--gold);font-size:24px;cursor:pointer}
 .vinfo{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px}.vinfo b{font:900 16px/1.3 var(--font-serif)}.vinfo span{font-size:12px;color:var(--cream-2)}.vtag{font-style:normal;color:var(--gold)}
 .vbtn{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;align-items:center}.vbtn .dl{text-decoration:none;display:inline-flex;align-items:center}.vset{width:auto!important;border-radius:999px!important;padding:0 10px!important;font-size:12px!important}.vset.on{background:var(--gold)!important;color:#2A0B09!important}
@@ -284,6 +293,38 @@ function applyLang(){document.documentElement.lang=LANG==="zh"?"zh-Hant":LANG;do
 // ===== 影片：Drive 播放＋網站直接下載（videos.json）；管理模式可分類 比賽／表演／其他 =====
 let VID=[],vcat="all";const VIS=()=>ADMIN?VID:VID.filter(x=>!x.off);
 const fmt=t=>{t=Math.max(0,t||0);const m=Math.floor(t/60),q=t-m*60;return m+":"+(q<10?"0":"")+q.toFixed(1)};
+const vb=x=>x.k.slice(1,5)+"_"+x.k.slice(6,8);
+document.addEventListener("change",e=>{const t=e.target;if(t.dataset&&t.dataset.vcs){vsave(t.dataset.vcs,{cat:t.value||null},"分類 "+(t.value?VC[t.value][0]:"未分類"))}});
+function vedit(k){const x=VID.find(y=>y.k===k);if(!x)return;let S=x.s||0,E=x.e||0;const D=x.d||0,N=Math.ceil(D/2);
+ const m=document.createElement("div");m.id="ved";m.innerHTML=`<div class="vedin"><div class="vedh"><b>✂️ ${x.t||vb(x)}</b><button data-vx>✕</button></div>
+ ${x.px?`<video id="vedv" controls playsinline preload="auto" src="vp/${vb(x)}.mp4"></video>`:`<iframe src="https://drive.google.com/file/d/${x.id}/preview" allowfullscreen style="width:100%;aspect-ratio:16/9;border:0"></iframe>`}
+ <div class="vedt"><span id="vedc">0:00.0</span><span id="vedr"></span></div>
+ <div class="vedbar" id="vedbar"><i id="vedsel"></i><i id="vedhd"></i></div>
+ <div class="vedn">${[-5,-1,-.1,.1,1,5].map(n=>`<button data-vn="${n}">${n>0?"+":""}${n}s</button>`).join("")}</div>
+ <div class="vedn"><button data-vin2 class="hi">⏮ 這裡當開頭</button><button data-vout2 class="hi">⏭ 這裡當結尾</button><button data-vpv>▶ 預覽剪好的</button></div>
+ <div class="vedg">${Array.from({length:N},(_,i)=>`<button data-vg="${i*2}" style="background-image:url(vs/${vb(x)}.jpg);background-size:1000% ${Math.ceil(N/10)*100}%;background-position:${(i%10)/9*100}% ${Math.ceil(N/10)>1?Math.floor(i/10)/(Math.ceil(N/10)-1)*100:0}%"><small>${fmt(i*2).replace(/\.0$/,"")}</small></button>`).join("")}</div>
+ <label>比賽名稱 <input id="vedname" value="${(x.t||"").replace(/"/g,"&quot;")}" placeholder="例：Open Mix & Match 決賽"></label>
+ <label>結尾接下一段 <input id="vednx" type="number" min="0" step="1" value="${x.nx||0}"> 秒（0＝不接）</label>
+ <div class="vedf"><button data-vdel class="warn">${x.off?"↩ 恢復這支":"🗑 刪除這支"}</button><button data-vrs>↺ 回原長</button><button data-vsv class="ok">💾 儲存</button></div></div>`;
+ document.body.appendChild(m);document.body.style.overflow="hidden";const v=m.querySelector("#vedv");const g=m.querySelector(".vedg");
+ const dur=()=>D||(v&&v.duration)||1;
+ const draw=()=>{const ee=E||dur();m.querySelector("#vedr").textContent=`開頭 ${fmt(S)} · 結尾 ${E?fmt(E):"原結尾"} · 長 ${fmt(ee-S)}`;const sel=m.querySelector("#vedsel");sel.style.left=(S/dur()*100)+"%";sel.style.width=((ee-S)/dur()*100)+"%";
+  g.querySelectorAll("[data-vg]").forEach(b=>{const tt=+b.dataset.vg;b.classList.toggle("out",tt+2<=S||tt>=ee)})};
+ const cur=()=>v?v.currentTime:0;const seek=tt=>{if(v){v.currentTime=Math.max(0,Math.min(dur(),tt))}};
+ if(v){v.addEventListener("timeupdate",()=>{m.querySelector("#vedc").textContent=fmt(v.currentTime);m.querySelector("#vedhd").style.left=(v.currentTime/dur()*100)+"%";if(m._pv&&E&&v.currentTime>=E){v.pause();m._pv=0}});v.addEventListener("loadedmetadata",()=>{seek(S);draw()})}
+ m.querySelector("#vedbar").addEventListener("click",ev=>{const r=ev.currentTarget.getBoundingClientRect();seek((ev.clientX-r.left)/r.width*dur())});
+ m.addEventListener("click",ev=>{const b=ev.target.closest("button");if(!b)return;const d=b.dataset;
+  if("vx" in d){m.remove();document.body.style.overflow="";return}
+  if(d.vn){seek(cur()+ +d.vn);return}
+  if(d.vg){seek(+d.vg);if(v)v.play().catch(()=>{});return}
+  if("vin2" in d){const tt=Math.round(cur()*10)/10;if(E&&tt>=E){badge("開頭要在結尾之前");return}S=tt;draw();return}
+  if("vout2" in d){const tt=Math.round(cur()*10)/10;if(tt<=S){badge("結尾要在開頭之後");return}E=tt;draw();return}
+  if("vpv" in d){seek(S);m._pv=1;v&&v.play().catch(()=>{});return}
+  if("vrs" in d){S=0;E=0;draw();return}
+  if("vdel" in d){m.remove();document.body.style.overflow="";vsave(k,{off:x.off?null:1},x.off?"恢復":"刪除");return}
+  if("vsv" in d){const nm=m.querySelector("#vedname").value.trim(),nx=Math.max(0,parseFloat(m.querySelector("#vednx").value)||0);m.remove();document.body.style.overflow="";
+   vsave(k,{s:S||null,e:E||null,t:nm||null,nx:nx||null},`剪輯 ${fmt(S)}–${E?fmt(E):"結尾"}`);return}});
+ draw()}
 const GHV="https://api.github.com/repos/jay0916746661/jimframe-site/contents/citycup/videos.json";
 async function vsave(k,patch,msg){badge("影片儲存中…");if(!ghTok()){badge("沒有權杖，改複製給 Claude");const x=VID.find(y=>y.k===k);Object.assign(x,patch);view();try{await navigator.clipboard.writeText("City Cup 影片 "+k+" "+JSON.stringify(patch))}catch(e){}return}
  try{const r0=await fetch(GHV+"?ref=main&t="+Date.now(),{cache:"no-store",headers:ghH()});const j=await r0.json();const J=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g,"")))));const x=J.videos.find(y=>y.k===k);for(const q in patch){if(patch[q]===null)delete x[q];else x[q]=patch[q]}
@@ -298,7 +339,7 @@ function vview(v){const dn2=d=>d==="1113"?"11/13 BA":d==="1114"?"11/14 西門紅
  <div class="vchips">${cats.map(c=>`<button class="vchip${vcat===c?" on":""}" data-vcat="${c}">${c==="all"?(LANG==="zh"?"全部":"All"):vlab(c)} <small>${c==="all"?V.length:V.filter(x=>vc(x)===c).length}</small></button>`).join("")}</div>
  <div class="vlist">${L.map(x=>`<div class="vcard${x.off?" voff":""}" data-vk="${x.k}"><div class="vbox"><button class="vplay" data-vplay="${x.id}" data-vs="${x.s||0}" data-ve="${x.e||""}" data-vnx="${x.nx?((VID[VID.indexOf(x)+1]||{}).id||"")+":"+x.nx:""}" aria-label="播放">▶</button></div>
  <div class="vinfo"><b>${x.t?x.t+` <small style="opacity:.6;font-weight:400">${dn2(x.day)}</small>`:`${dn2(x.day)} · ${LANG==="zh"?"第":"Part "}${x.n}${LANG==="zh"?" 段":""}`}</b><span>${LANG==="zh"?"錄影 "+x.at+" 起":"from "+x.at.replace("分",":").replace("秒","")} · ${x.mb>=1000?(x.mb/1000).toFixed(1)+" GB":x.mb+" MB"} · <i class="vtag">${vlab(vc(x))}</i>${x.nx?` · ⏩ 接下段 ${x.nx}s`:""}${x.s||x.e?` · ✂️ ${fmt(x.s||0)}–${x.e?fmt(x.e):(LANG==="zh"?"結尾":"end")}${x.e?` (${LANG==="zh"?"約":"~"}${Math.round((x.e-(x.s||0))/60*10)/10} ${LANG==="zh"?"分鐘":"min"})`:""}`:""}${x.off?" · 🗑 已隱藏":""}</span>
- <div class="vbtn"><a class="dl" href="https://drive.usercontent.google.com/download?id=${x.id}&export=download&confirm=t" data-vdl>⬇ ${LANG==="zh"?"下載":"Download"}</a>${ADMIN?Object.keys(VC).map(c=>`<button class="ib vset${vc(x)===c?" on":""}" data-vset="${x.k}:${c}">${VC[c][0]}</button>`).join("")+`<span class="vtrim"><button class="ib vset" data-vin="${x.k}" title="把現在播放位置設成開頭">⏮ 設開頭</button><button class="ib vset" data-vout="${x.k}" title="把現在播放位置設成結尾">⏭ 設結尾</button>${x.s||x.e?`<button class="ib vset" data-vrst="${x.k}">↺ 原長</button>`:""}<button class="ib vset${x.t?" on":""}" data-vname="${x.k}" title="填比賽名稱">🏷 名稱</button><button class="ib vset${x.nx?" on":""}" data-vnxs="${x.k}" title="結尾接著播下一段開頭幾秒">⏩ 接下段${x.nx?" "+x.nx+"s":""}</button><button class="ib vset${x.off?" on":""}" data-voff="${x.k}">${x.off?"↩ 恢復":"🗑 刪除"}</button></span>`:""}</div></div></div>`).join("")}</div>`}
+ <div class="vbtn"><a class="dl" href="https://drive.usercontent.google.com/download?id=${x.id}&export=download&confirm=t" data-vdl>⬇ ${LANG==="zh"?"下載":"Download"}</a>${ADMIN?`<select class="vsel" data-vcs="${x.k}">${["",...Object.keys(VC)].map(c=>`<option value="${c}"${vc(x)===c?" selected":""}>${c?VC[c][0]:"未分類"}</option>`).join("")}</select><button class="ib vset ved" data-ved="${x.k}">✂️ 編輯</button>`:""}</div></div></div>`).join("")}</div>`}
 function days(){$("#days").innerHTML=DAYS.map(d=>`<button class="ticket${d===day?" on":""}" data-d="${d.id}"><span class="stub"><b>${d.d}</b><small>${d.wk}</small></span><span class="tx"><b>${dn(d)}</b><span>${ds(d)}</span>${d.pk&&!ADMIN?`<i class="more">${t("more")}</i>`:""}</span><span class="badge${d.photos||(d.vid&&VID.length)?"":" wait"}">${d.photos?d.photos.length+" "+t("photos"):d.vid&&VID.length?VIS().length+(LANG==="zh"?" 支":" clips"):t("wait")}</span></button>`).join("")}
 function rail(){$("#rail").innerHTML=HL.filter(([k,n])=>!HID.has(`L${k}-${n}`)).map(([k,n])=>`<button data-h="${k}:${n}" aria-label="精彩瞬間"><img src="../photos/${k}/${n}.jpg" loading="lazy" alt=""></button>`).join("")}
 function view(){setTimeout(()=>{if(ADMIN)mk()});days();$("#wall-title").textContent=dn(day);const v=$("#view");
@@ -319,12 +360,12 @@ async function dlEdited(u,v,c){const im=new Image();im.crossOrigin="anonymous";i
 document.addEventListener("click",e=>{const ok=e.target.closest("[data-ok]");if(ok){e.stopPropagation();e.preventDefault();okT(ok.dataset.ok);return}const x=e.target.closest("[data-del]");if(x){e.stopPropagation();e.preventDefault();hide(x.dataset.del);return}const vd=e.target.closest("[data-vdl]");if(vd&&!acked){e.preventDefault();$("#ok").checked=false;$("[data-go]").disabled=true;$("#credit").classList.add("on");window._vdl=vd.href;return}
  const t=e.target.closest("button");if(!t)return;
  if(t.dataset.vcat!==undefined){vcat=t.dataset.vcat;view();return}
- if(t.dataset.vplay){const b=t.closest(".vbox"),id=t.dataset.vplay,S=+t.dataset.vs||0,E=+t.dataset.ve||0;b.innerHTML=`<video controls autoplay playsinline crossorigin="anonymous" preload="metadata" src="https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t#t=${S}${E?","+E:""}"></video>`;const vd=b.querySelector("video");vd.addEventListener("loadedmetadata",()=>{if(vd.src.indexOf(id)>=0&&vd.currentTime<S-.3)vd.currentTime=S});vd.addEventListener("timeupdate",()=>{if(vd.src.indexOf(id)<0)return;if(!ADMIN&&E&&!NX[0]&&vd.currentTime>=E){vd.pause();vd.currentTime=E}if(!ADMIN&&vd.currentTime<S-.5)vd.currentTime=S});const NX=(t.dataset.vnx||"").split(":");let ph=0;const goNx=()=>{if(ph||!NX[0])return false;ph=1;vd.src=`https://drive.usercontent.google.com/download?id=${NX[0]}&export=download&confirm=t#t=0,${NX[1]}`;vd.play().catch(()=>{});return true};vd.addEventListener("ended",goNx);vd.addEventListener("timeupdate",()=>{if(ph===1&&vd.currentTime>=+NX[1]){vd.pause();ph=2}if(!ph&&E&&vd.currentTime>=E-.05&&NX[0])goNx()});vd.addEventListener("error",()=>{b.innerHTML=`<iframe src="https://drive.google.com/file/d/${id}/preview" allow="autoplay; fullscreen" allowfullscreen></iframe>`});return}
- if(t.dataset.vin||t.dataset.vout){const k=t.dataset.vin||t.dataset.vout;const vd=t.closest(".vcard").querySelector("video");if(!vd){badge("先按 ▶ 播放，停在要切的位置再按");return}const tt=Math.round(vd.currentTime*10)/10;const x=VID.find(y=>y.k===k);if(t.dataset.vin){if(x.e&&tt>=x.e){badge("開頭要在結尾之前");return}vsave(k,{s:tt||null},"開頭 "+fmt(tt))}else{if(tt<=(x.s||0)){badge("結尾要在開頭之後");return}vsave(k,{e:tt},"結尾 "+fmt(tt))}return}
- if(t.dataset.vname){const k=t.dataset.vname,x=VID.find(y=>y.k===k);const a=prompt("比賽／表演名稱（留空＝取消）",x.t||"");if(a===null)return;const n=a.trim();vsave(k,{t:n||null},n?"名稱 "+n:"取消名稱");return}
- if(t.dataset.vnxs){const k=t.dataset.vnxs,x=VID.find(y=>y.k===k);const a=prompt("結尾接著播下一段的前幾秒？（0＝不接）",x.nx||10);if(a===null)return;const n=Math.max(0,parseFloat(a)||0);vsave(k,{nx:n||null},n?"接下段 "+n+"s":"取消接下段");return}
- if(t.dataset.vrst){vsave(t.dataset.vrst,{s:null,e:null},"恢復原長");return}
- if(t.dataset.voff){const k=t.dataset.voff,x=VID.find(y=>y.k===k);vsave(k,{off:x.off?null:1},x.off?"恢復":"刪除");return}
+ if(t.dataset.vplay){const b=t.closest(".vbox"),x=VID.find(y=>y.k===t.closest(".vcard").dataset.vk);if(!x.px){b.innerHTML=`<iframe src="https://drive.google.com/file/d/${x.id}/preview" allow="autoplay; fullscreen" allowfullscreen></iframe>`;return}
+ const S=x.s||0,E=x.e||0,nxt=x.nx?VID[VID.indexOf(x)+1]:null;b.innerHTML=`<video controls autoplay playsinline preload="auto" src="vp/${vb(x)}.mp4#t=${S}${E?","+E:""}"></video>`;const vd=b.querySelector("video");let ph=0;
+ vd.addEventListener("loadedmetadata",()=>{if(!ph&&vd.currentTime<S-.3)vd.currentTime=S});
+ const goNx=()=>{if(ph||!nxt||!nxt.px)return;ph=1;vd.src=`vp/${vb(nxt)}.mp4#t=0,${x.nx}`;vd.play().catch(()=>{})};
+ vd.addEventListener("ended",goNx);vd.addEventListener("timeupdate",()=>{if(ph===1&&vd.currentTime>=x.nx){vd.pause();ph=2;return}if(ph)return;if(E&&vd.currentTime>=E){if(nxt)goNx();else{vd.pause();vd.currentTime=E}}if(vd.currentTime<S-.5)vd.currentTime=S});return}
+ if(t.dataset.ved){vedit(t.dataset.ved);return}
  if(t.dataset.vset){const [k,c]=t.dataset.vset.split(":");VQ[k]=VQ[k]===c?"":c;try{localStorage.setItem("jf_cc_vcat",JSON.stringify(VQ))}catch(e){}view();qBadge();return}
  if(t.dataset.lang){LANG=t.dataset.lang;try{localStorage.setItem("jf_lang",LANG)}catch(e){}applyLang();return}
  if(t.dataset.d){day=DAYS.find(d=>d.id===t.dataset.d);cf=null;history.replaceState(null,"","#"+day.id);view();$("#wall-title").scrollIntoView({behavior:"smooth",block:"start"})}
