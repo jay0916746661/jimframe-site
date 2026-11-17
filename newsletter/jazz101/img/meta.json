@@ -1,0 +1,23 @@
+{
+ "village": {
+  "file": "village.jpg",
+  "title": "Village_Vanguard_2018.jpg",
+  "artist": "Alwin Tong",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Village_Vanguard_2018.jpg"
+ },
+ "rollins": {
+  "file": "rollins.jpg",
+  "title": "Sonny_Rollins_1974_press_photo.jpg",
+  "artist": "Distributed by Milestone Records",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Sonny_Rollins_1974_press_photo.jpg"
+ },
+ "vangelder": {
+  "file": "vangelder.jpg",
+  "title": "RogerDawsonSeptet_(cropped_-_Rudy_Van_Gelder).jpg",
+  "artist": "Stephborel",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:RogerDawsonSeptet_(cropped_-_Rudy_Van_Gelder).jpg"
+ }
+}
