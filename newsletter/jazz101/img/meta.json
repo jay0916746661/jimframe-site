@@ -47,5 +47,68 @@
   "artist": "Steve Schapiro",
   "license": "Public domain",
   "page": "https://commons.wikimedia.org/wiki/File:Bill_Evans_(1961_publicity_photo_by_Steve_Schapiro).jpg"
+ },
+ "louis-armstrong": {
+  "file": "louis-armstrong.jpg",
+  "title": "Louis_Armstrong_in_Color_(restored).jpg",
+  "artist": "Harry Warnecke / Gus Schoenbaechler",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Louis_Armstrong_in_Color_(restored).jpg"
+ },
+ "duke-ellington": {
+  "file": "duke-ellington.jpg",
+  "title": "Duke_Ellington_-_publicity.JPG",
+  "artist": "Unknown authorUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Duke_Ellington_-_publicity.JPG"
+ },
+ "charlie-parker": {
+  "file": "charlie-parker.jpg",
+  "title": "Portrait_of_Charlie_Parker_in_1947.jpg",
+  "artist": "William P. Gottlieb",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Portrait_of_Charlie_Parker_in_1947.jpg"
+ },
+ "billie-holiday": {
+  "file": "billie-holiday.jpg",
+  "title": "Portrait_of_Billie_Holiday_and_Mister,_Downbeat,_New_York,_N.Y.,_ca._Feb._1947_(LOC,_5020400274,_cropped).jpg",
+  "artist": "William P. Gottlieb",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Portrait_of_Billie_Holiday_and_Mister,_Downbeat,_New_York,_N.Y.,_ca._Feb._1947_(LOC,_5020400274,_cropped).jpg"
+ },
+ "ella-fitzgerald": {
+  "file": "ella-fitzgerald.jpg",
+  "title": "Ella_Fitzgerald_6_(cropped).jpg",
+  "artist": "Carl Van Vechten",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Ella_Fitzgerald_6_(cropped).jpg"
+ },
+ "thelonious-monk": {
+  "file": "thelonious-monk.jpg",
+  "title": "Thelonious_Monk,_Minton's_Playhouse,_New_York,_N.Y.,_ca._Sept._1947_(William_P._Gottlieb_06191).jpg",
+  "artist": "William P. Gottlieb / Adam Cuerden",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Thelonious_Monk,_Minton%27s_Playhouse,_New_York,_N.Y.,_ca._Sept._1947_(William_P._Gottlieb_06191).jpg"
+ },
+ "miles-davis": {
+  "file": "miles-davis.jpg",
+  "title": "Miles_Davis_by_Palumbo_cropped.jpg",
+  "artist": "Tom Palumbo from New York City, USA",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Miles_Davis_by_Palumbo_cropped.jpg"
+ },
+ "art-blakey": {
+  "file": "art-blakey.jpg",
+  "title": "Art_blakey_studio_portrait.jpg",
+  "artist": "Distributed by Shaw Artists Corporation",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Art_blakey_studio_portrait.jpg"
+ },
+ "charles-mingus": {
+  "file": "charles-mingus.jpg",
+  "title": "Charles_Mingus_1976_cropped.jpg",
+  "artist": "Charles_Mingus_1976.jpg: Tom Marcello Webster, New York, USA",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Charles_Mingus_1976_cropped.jpg"
  }
 }
