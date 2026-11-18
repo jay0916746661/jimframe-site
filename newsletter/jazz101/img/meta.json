@@ -110,5 +110,19 @@
   "artist": "Charles_Mingus_1976.jpg: Tom Marcello Webster, New York, USA",
   "license": "CC BY-SA 2.0",
   "page": "https://commons.wikimedia.org/wiki/File:Charles_Mingus_1976_cropped.jpg"
+ },
+ "wayne-shorter": {
+  "file": "wayne-shorter.jpg",
+  "title": "Wayne-Shorter_in_Amsterdam,_1980.jpg",
+  "artist": "Chris Hakkens",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Wayne-Shorter_in_Amsterdam,_1980.jpg"
+ },
+ "herbie-hancock": {
+  "file": "herbie-hancock.jpg",
+  "title": "Herbie_Hancock_2023.jpg",
+  "artist": "Library of Congress Life",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Herbie_Hancock_2023.jpg"
  }
 }
