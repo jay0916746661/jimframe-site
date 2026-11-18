@@ -269,6 +269,12 @@ footer{max-width:1000px;margin:0 auto;padding:30px 22px 60px;font-size:12px;colo
 .ev h3{font-size:20px;font-weight:600;margin-top:4px}
 .ev p{color:var(--graphite);font-size:16px;line-height:1.75;margin-top:4px;max-width:36em}
 .ev a{font-size:14px;color:var(--brass);text-decoration:none;display:inline-block;margin-top:6px}
+.ev.wp{display:grid;grid-template-columns:1fr 260px;gap:28px;align-items:start}
+.evpic{margin:6px 0 0;border-radius:14px;overflow:hidden;background:#111;aspect-ratio:4/3;position:relative}
+.evpic img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;filter:sepia(.18) contrast(1.02)}
+.evpic figcaption{position:absolute;left:0;right:0;bottom:0;font-size:10px;line-height:1.4;color:rgba(255,255,255,.78);padding:14px 9px 5px;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+@media (max-width:640px){.ev.wp{grid-template-columns:1fr;gap:12px}.ev.wp .evpic{order:-1;margin-top:0}}
+.tlmini img{display:block;width:134px;height:90px;object-fit:cover;border-radius:10px;margin-bottom:10px;filter:sepia(.18)}
 .tlmini{display:flex;gap:0;margin-top:34px;overflow-x:auto;border-top:2px solid var(--hair);scrollbar-width:thin}
 .tlmini a{flex:0 0 150px;padding:16px 16px 10px 0;text-decoration:none;position:relative}
 .tlmini a:before{content:"";position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--graphite)}

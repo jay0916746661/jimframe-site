@@ -363,6 +363,12 @@ CSS2 = r"""
 .ev h3{font-size:20px;font-weight:600;margin-top:4px}
 .ev p{color:var(--graphite);font-size:16px;line-height:1.75;margin-top:4px;max-width:36em}
 .ev a{font-size:14px;color:var(--brass);text-decoration:none;display:inline-block;margin-top:6px}
+.ev.wp{display:grid;grid-template-columns:1fr 260px;gap:28px;align-items:start}
+.evpic{margin:6px 0 0;border-radius:14px;overflow:hidden;background:#111;aspect-ratio:4/3;position:relative}
+.evpic img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;filter:sepia(.18) contrast(1.02)}
+.evpic figcaption{position:absolute;left:0;right:0;bottom:0;font-size:10px;line-height:1.4;color:rgba(255,255,255,.78);padding:14px 9px 5px;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+@media (max-width:640px){.ev.wp{grid-template-columns:1fr;gap:12px}.ev.wp .evpic{order:-1;margin-top:0}}
+.tlmini img{display:block;width:134px;height:90px;object-fit:cover;border-radius:10px;margin-bottom:10px;filter:sepia(.18)}
 .tlmini{display:flex;gap:0;margin-top:34px;overflow-x:auto;border-top:2px solid var(--hair);scrollbar-width:thin}
 .tlmini a{flex:0 0 150px;padding:16px 16px 10px 0;text-decoration:none;position:relative}
 .tlmini a:before{content:"";position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--graphite)}
@@ -524,12 +530,23 @@ W('', 'words.html', HEAD.format(title='小辭典｜爵士101', desc='聽爵士�
   '<script>document.getElementById("q").addEventListener("input",function(){var v=this.value.trim().toLowerCase();document.querySelectorAll(".word").forEach(function(w){w.style.display=!v||w.dataset.k.indexOf(v)>-1?"":"none"})})</script>' + letter() + foot())
 
 # ---------- 時間軸 ----------
+TLPH = {'1890s': ['bolden'], '1917': ['odjb'], '1925': ['hotfive', 'louis-armstrong'], '1927': ['cottonclub', 'duke-ellington'],
+        '1935': ['goodman'], '1938': ['carnegie', 'goodman'], '1939': ['hawkins'], '1940s': ['mintons', 'gillespie', 'charlie-parker'],
+        '1949': ['mulligan', 'miles-davis'], '1953': ['vangelder'], '1954': ['newport'], '1956': ['rollins'], '1959': ['brubeck', 'coltrane'],
+        '1961': ['village'], '1962': ['getz'], '1965': ['coltrane'], '1970': ['miles-davis'], '1970s': ['berklee', 'fakebook'],
+        '1975': ['koln'], '1987': ['capitol'], '2004': ['fakebook', 'berklee']}
+def tlph(y):
+    for k in TLPH.get(y, []):
+        if META.get(k): return META[k]
+    return None
 tl = ''
 for (y, t, d, st) in TIMELINE:
     a = f'<a href="story/{st}.html">讀這個故事：{e(BYSLUG[st]["title"])}</a>' if st else ''
-    tl += f'<div class="ev{" has" if st else ""}"><div class="yr">{e(y)}</div><h3>{e(t)}</h3><p>{e(d)}</p>{a}</div>'
+    ph = tlph(y)
+    fig = f'<figure class="evpic"><img src="img/{ph["file"]}" alt="{e(t)}" loading="lazy"><figcaption>{credit(ph)}</figcaption></figure>' if ph else ''
+    tl += f'<div class="ev{" has" if st else ""}{" wp" if ph else ""}"><div class="evt"><div class="yr">{e(y)}</div><h3>{e(t)}</h3><p>{e(d)}</p>{a}</div>{fig}</div>'
 W('', 'timeline.html', HEAD.format(title='時間軸｜爵士101', desc='從紐奧良街頭到今天，爵士一百多年的重要時刻。', p='', ogimg='') + nav('', 'timeline') +
-  phead('一百多年的爵士，走一遍。', '從紐奧良的街頭到今天。金色的點，代表這個站上有完整的故事。') + f'<div class="wrap" style="max-width:760px"><div class="tl">{tl}</div></div>' + letter() + foot())
+  phead('一百多年的爵士，走一遍。', '從紐奧良的街頭到今天。金色的點，代表這個站上有完整的故事。') + f'<div class="wrap" style="max-width:900px"><div class="tl">{tl}</div></div>' + letter() + foot())
 
 # ---------- 選品 ----------
 sh = ''
@@ -552,7 +569,7 @@ doors = ('<div class="doors">'
          '<a href="listen.html"><b>用耳朵學</b><span>十個可以按的聲音示範，搖擺、藍調、二五一。</span><i>聽懂爵士</i></a>'
          f'<a href="words.html"><b>查名詞</b><span>{len(WORDS)} 個名詞，用白話講清楚。</span><i>小辭典</i></a></div>')
 pmini = ''.join(f'<a href="start.html"><div class="disc2" style="--c:{COL[n % len(COL)]}" aria-hidden="true"></div><b>{n+1}．《{e(a)}》</b><span>{e(b)}・{e(y)}</span></a>' for n, (a, b, y, *_r) in enumerate(START[:6]))
-tlm = ''.join(f'<a href="timeline.html" class="{"has" if st else ""}"><b>{e(y)}</b><span>{e(t)}</span></a>' for (y, t, d, st) in TIMELINE)
+tlm = ''.join(f'<a href="timeline.html" class="{"has" if st else ""}">{(f"<img src='img/{tlph(y)['file']}' alt='' loading='lazy'>" if tlph(y) else "")}<b>{e(y)}</b><span>{e(t)}</span></a>' for (y, t, d, st) in TIMELINE)
 peo = ''.join(f'<a href="people.html#{p[0]}">{portrait(p[0], p[1], p[4], n)}<b>{e(p[1])}</b><span>{e(p[4])}・{e(p[3])}</span></a>' for n, p in enumerate(PEOPLE[:8]))
 wjs = json.dumps([[w[0], w[1], w[2], w[3]] for w in WORDS], ensure_ascii=False)
 shopmini = ''.join(f'<div class="item"><b>{e(n)}</b><p>{e(d)}</p></div>' for n, d, k in [SHOP[0][2][3], SHOP[1][2][0], SHOP[2][2][0]])
