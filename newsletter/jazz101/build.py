@@ -309,6 +309,15 @@ CSS2 = r"""
 /* people */
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:20px;overflow:hidden;margin-top:40px}
 .person{background:var(--paper);padding:26px 24px;scroll-margin-top:120px}
+.pic{margin:-26px -24px 18px;aspect-ratio:4/3;position:relative;overflow:hidden;background:#111}
+.pic img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;filter:grayscale(.15) contrast(1.02)}
+.pic figcaption{position:absolute;left:0;right:0;bottom:0;font-size:10px;line-height:1.4;color:rgba(255,255,255,.75);padding:16px 10px 6px;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.pic.ill{background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--c) 70%,#fff) 0,var(--c) 70%);color:#fbf5ea;display:grid;place-items:center}
+.pic.ill svg{width:62%;height:auto;opacity:.92}
+.pic .tag{position:absolute;left:10px;bottom:8px;font-size:11px;color:#fbf5ea;background:rgba(0,0,0,.28);padding:3px 9px;border-radius:999px}
+.pmini .pic{margin:-18px -18px 12px;aspect-ratio:1/1}
+.pmini .pic figcaption{display:none}
+.pmini .pic .tag{font-size:10px}
 .person:target{background:var(--lamp)}
 .person img.mono2{object-fit:cover;filter:grayscale(.2)}
 .person .mono2{width:46px;height:46px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:16px;font-weight:600;letter-spacing:.02em}
@@ -474,11 +483,32 @@ STORY_OF = {}
 for s in S:
     for p in s.get('people', []):
         STORY_OF.setdefault(p, []).append(s)
+
+ICON = {
+ 'trumpet': '<path d="M30 78h88M30 70v16M118 64l52-22v72l-52-22z"/><path d="M58 78V58m14 20V58m14 20V58"/><circle cx="58" cy="54" r="4"/><circle cx="72" cy="54" r="4"/><circle cx="86" cy="54" r="4"/><path d="M40 78c0 18 70 18 70 0"/>',
+ 'sax': '<path d="M96 20v70c0 22-14 34-30 34s-26-10-26-24c0-8 6-12 12-12"/><path d="M110 20v72c0 30-20 44-44 44"/><path d="M96 20h14l10-8"/><path d="M52 100c-6 4-10 10-10 18"/><circle cx="103" cy="44" r="4"/><circle cx="103" cy="60" r="4"/><circle cx="103" cy="76" r="4"/><circle cx="103" cy="92" r="4"/>',
+ 'piano': '<rect x="24" y="44" width="152" height="64" rx="4"/><path d="M43 44v64M62 44v64M81 44v64M100 44v64M119 44v64M138 44v64M157 44v64"/><path d="M38 44h10v38H38zM57 44h10v38H57zM95 44h10v38H95zM114 44h10v38h-10zM133 44h10v38h-10z" fill="currentColor"/>',
+ 'mic': '<rect x="78" y="18" width="44" height="62" rx="22"/><path d="M84 36h32M84 48h32M84 60h32"/><path d="M66 60c0 30 68 30 68 0"/><path d="M100 90v34M76 128h48"/>',
+ 'drums': '<ellipse cx="100" cy="104" rx="42" ry="32"/><ellipse cx="100" cy="104" rx="14" ry="11"/><ellipse cx="52" cy="70" rx="24" ry="8"/><path d="M28 70v18c0 5 11 8 24 8s24-3 24-8V70"/><path d="M128 40l44-8M150 36v80M44 26l40 22M88 52l10-18"/>',
+ 'bass': '<path d="M100 14v40"/><path d="M92 14h16"/><path d="M84 58c-20 0-24 18-14 30-14 8-18 20-14 34 6 16 30 20 44 20s38-4 44-20c4-14 0-26-14-34 10-12 6-30-14-30-6 0-10 4-16 4s-10-4-16-4z"/><path d="M96 54v80M104 54v80"/><path d="M84 92c4 4 4 10 0 14M116 92c-4 4-4 10 0 14"/>',
+}
+def icon_for(ins):
+    for k, v in [('小號', 'trumpet'), ('人聲', 'mic'), ('薩克斯風', 'sax'), ('鋼琴', 'piano'), ('鼓', 'drums'), ('貝斯', 'bass')]:
+        if ins.startswith(k) or (k in ins and k != '人聲'):
+            return v
+    return 'piano'
+def portrait(sl, en, ins, n, pre=''):
+    k = PPH.get(sl, sl); ph = META.get(k)
+    if ph:
+        return f'<figure class="pic"><img src="{pre}img/{ph["file"]}" alt="{e(en)}" loading="lazy"><figcaption>{credit(ph)}</figcaption></figure>'
+    return (f'<figure class="pic ill" style="--c:{COL[n % len(COL)]}"><svg viewBox="0 0 200 150" role="img" aria-label="{e(en)}的樂器示意圖" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">{ICON[icon_for(ins)]}</svg>'
+            f'<span class="tag">示意圖・{e(ins.split("、")[0])}</span></figure>')
+
 def initials(n): return ''.join(w[0] for w in n.split()[:2])
 pg = ''
 for n, (sl, en, zh, yrs, ins, one, bio, (song, where)) in enumerate(PEOPLE):
     rel = ''.join(f'<div class="rel">相關故事：<a href="story/{s["slug"]}.html">{e(s["title"])}</a></div>' for s in STORY_OF.get(sl, [])[:2])
-    pg += (f'<article class="person" id="{sl}">{(f'<img class="mono2" src="img/{META[PPH[sl]]["file"]}" alt="" title="{credit(META[PPH[sl]])}">' if PPH.get(sl) in META else f'<div class="mono2" style="--c:{COL[n % len(COL)]}" aria-hidden="true">{e(initials(en))}</div>')}<h3>{e(en)}</h3><div class="meta">{e(zh)}・{e(yrs)}・{e(ins)}</div>'
+    pg += (f'<article class="person" id="{sl}">{portrait(sl, en, ins, n)}<h3>{e(en)}</h3><div class="meta">{e(zh)}・{e(yrs)}・{e(ins)}</div>'
            f'<p class="one">{e(one)}</p><p class="bio">{e(bio)}</p><p class="first">先聽：<a href="https://music.apple.com/search?term={e(q(en + " " + song))}" target="_blank" rel="noopener">〈{e(song)}〉</a>　<span class="meta">{e(where)}</span></p>{rel}</article>')
 W('', 'people.html', HEAD.format(title='樂手｜爵士101', desc='十五位改變爵士的人，各用一段話認識，附上先聽哪一首。', p='', ogimg='') + nav('', 'people') +
   phead('十五個改變爵士的人。', '依出生年份排列。每個人先記住一句話，再聽一首。') + f'<div class="wrap"><div class="pgrid">{pg}</div></div>' + letter() + foot())
@@ -523,7 +553,7 @@ doors = ('<div class="doors">'
          f'<a href="words.html"><b>查名詞</b><span>{len(WORDS)} 個名詞，用白話講清楚。</span><i>小辭典</i></a></div>')
 pmini = ''.join(f'<a href="start.html"><div class="disc2" style="--c:{COL[n % len(COL)]}" aria-hidden="true"></div><b>{n+1}．《{e(a)}》</b><span>{e(b)}・{e(y)}</span></a>' for n, (a, b, y, *_r) in enumerate(START[:6]))
 tlm = ''.join(f'<a href="timeline.html" class="{"has" if st else ""}"><b>{e(y)}</b><span>{e(t)}</span></a>' for (y, t, d, st) in TIMELINE)
-peo = ''.join(f'<a href="people.html#{p[0]}"><b>{e(p[1])}</b><span>{e(p[4])}・{e(p[3])}</span></a>' for p in PEOPLE[:8])
+peo = ''.join(f'<a href="people.html#{p[0]}">{portrait(p[0], p[1], p[4], n)}<b>{e(p[1])}</b><span>{e(p[4])}・{e(p[3])}</span></a>' for n, p in enumerate(PEOPLE[:8]))
 wjs = json.dumps([[w[0], w[1], w[2], w[3]] for w in WORDS], ensure_ascii=False)
 shopmini = ''.join(f'<div class="item"><b>{e(n)}</b><p>{e(d)}</p></div>' for n, d, k in [SHOP[0][2][3], SHOP[1][2][0], SHOP[2][2][0]])
 index = HEAD.format(title='爵士101｜一分鐘講不完的爵士故事', desc='爵士史上的人、晚上和唱片，一篇講完整，附上該怎麼聽。還有入門路線、聲音示範、樂手和名詞小辭典。', p='', ogimg='') + nav('') + \
