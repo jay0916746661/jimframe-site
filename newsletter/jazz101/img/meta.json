@@ -26,5 +26,26 @@
   "artist": "Praneeth Thalla",
   "license": "CC BY-SA 4.0",
   "page": "https://commons.wikimedia.org/wiki/File:Williamsburg_Bridge_full.jpg"
+ },
+ "koln": {
+  "file": "koln.jpg",
+  "title": "Keith_Jarrett.jpg",
+  "artist": "Published by ABC/Impulse! Records. Photographer uncredited a",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Keith_Jarrett.jpg"
+ },
+ "coltrane": {
+  "file": "coltrane.jpg",
+  "title": "John_Coltrane_1963_cropped_ver2.jpg",
+  "artist": "Gelderen, Hugo van / Anefo",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:John_Coltrane_1963_cropped_ver2.jpg"
+ },
+ "evans": {
+  "file": "evans.jpg",
+  "title": "Bill_Evans_(1961_publicity_photo_by_Steve_Schapiro).jpg",
+  "artist": "Steve Schapiro",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Bill_Evans_(1961_publicity_photo_by_Steve_Schapiro).jpg"
  }
 }

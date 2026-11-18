@@ -13,7 +13,8 @@ IMGSRC = os.path.join(HERE, 'img')
 META = json.load(open(os.path.join(IMGSRC, 'meta.json'), encoding='utf-8')) if os.path.exists(os.path.join(IMGSRC, 'meta.json')) else {}
 PHOTO = {'village-vanguard-1961': 'village', 'koln-concert': 'koln', 'sonny-rollins-bridge': 'rollins',
          'van-gelder-living-room': 'vangelder', 'giant-steps': 'coltrane', 'real-book': None}
-PHOTO2 = {'sonny-rollins-bridge': 'bridge'}   # 文中第二張照片
+PHOTO2 = {'sonny-rollins-bridge': 'bridge', 'village-vanguard-1961': 'evans'}
+PPH = {'bill-evans': 'evans', 'john-coltrane': 'coltrane', 'keith-jarrett': 'koln', 'sonny-rollins': 'rollins'}   # 文中第二張照片
 for s in S:
     n = sum(len(x) for _, ps in s['sections'] for x in ps) + sum(len(a) + len(b) for a, b in s['listen'])
     s['chars'] = n
@@ -309,6 +310,7 @@ CSS2 = r"""
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:20px;overflow:hidden;margin-top:40px}
 .person{background:var(--paper);padding:26px 24px;scroll-margin-top:120px}
 .person:target{background:var(--lamp)}
+.person img.mono2{object-fit:cover;filter:grayscale(.2)}
 .person .mono2{width:46px;height:46px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:16px;font-weight:600;letter-spacing:.02em}
 .person h3{font-size:20px;font-weight:600;margin-top:14px;line-height:1.35}
 .person .meta{font-size:13px;color:var(--graphite)}
@@ -476,7 +478,7 @@ def initials(n): return ''.join(w[0] for w in n.split()[:2])
 pg = ''
 for n, (sl, en, zh, yrs, ins, one, bio, (song, where)) in enumerate(PEOPLE):
     rel = ''.join(f'<div class="rel">相關故事：<a href="story/{s["slug"]}.html">{e(s["title"])}</a></div>' for s in STORY_OF.get(sl, [])[:2])
-    pg += (f'<article class="person" id="{sl}"><div class="mono2" style="--c:{COL[n % len(COL)]}" aria-hidden="true">{e(initials(en))}</div><h3>{e(en)}</h3><div class="meta">{e(zh)}・{e(yrs)}・{e(ins)}</div>'
+    pg += (f'<article class="person" id="{sl}">{(f'<img class="mono2" src="img/{META[PPH[sl]]["file"]}" alt="" title="{credit(META[PPH[sl]])}">' if PPH.get(sl) in META else f'<div class="mono2" style="--c:{COL[n % len(COL)]}" aria-hidden="true">{e(initials(en))}</div>')}<h3>{e(en)}</h3><div class="meta">{e(zh)}・{e(yrs)}・{e(ins)}</div>'
            f'<p class="one">{e(one)}</p><p class="bio">{e(bio)}</p><p class="first">先聽：<a href="https://music.apple.com/search?term={e(q(en + " " + song))}" target="_blank" rel="noopener">〈{e(song)}〉</a>　<span class="meta">{e(where)}</span></p>{rel}</article>')
 W('', 'people.html', HEAD.format(title='樂手｜爵士101', desc='十五位改變爵士的人，各用一段話認識，附上先聽哪一首。', p='', ogimg='') + nav('', 'people') +
   phead('十五個改變爵士的人。', '依出生年份排列。每個人先記住一句話，再聽一首。') + f'<div class="wrap"><div class="pgrid">{pg}</div></div>' + letter() + foot())
