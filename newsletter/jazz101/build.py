@@ -1,22 +1,28 @@
-"""爵士101 網站產生器 v3（蘋果質感・暖光・會出聲的唱片）
+"""爵士101 網站產生器 v4（故事加長＋入門路線＋聽懂爵士＋樂手＋小辭典＋時間軸＋選品）
 用法：python3 build.py [Substack網址]
-輸出 jazz/index.html、jazz/story/<slug>.html、jazz/style.css、jazz/player.js、jazz/img/"""
-import os, sys, json, html, shutil
+輸出位置預設 jimframe-site/jazz/；設 JAZZ_OUT=/路徑 可改輸出到獨立 repo"""
+import os, sys, json, html, shutil, random
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
-OUT = os.path.join(ROOT, 'jazz')
+OUT = os.environ.get('JAZZ_OUT') or os.path.join(ROOT, 'jazz')
 sys.path.insert(0, HERE)
 from stories import S
+from extras import PEOPLE, WORDS, TIMELINE, START, BRANCH, SHOP
 
-IMGSRC = os.path.join(HERE, 'img')            # 照片放這裡（含 meta.json）
+IMGSRC = os.path.join(HERE, 'img')
 META = json.load(open(os.path.join(IMGSRC, 'meta.json'), encoding='utf-8')) if os.path.exists(os.path.join(IMGSRC, 'meta.json')) else {}
 PHOTO = {'village-vanguard-1961': 'village', 'koln-concert': 'koln', 'sonny-rollins-bridge': 'rollins',
          'van-gelder-living-room': 'vangelder', 'giant-steps': 'coltrane', 'real-book': None}
+PHOTO2 = {'sonny-rollins-bridge': 'bridge'}   # 文中第二張照片
 for s in S:
     n = sum(len(x) for _, ps in s['sections'] for x in ps) + sum(len(a) + len(b) for a, b in s['listen'])
+    s['chars'] = n
     s['read'] = f"{max(2, round(n / 400))} 分鐘"
-    k = PHOTO.get(s['slug'])
-    s['ph'] = META.get(k) if k else None
+    k = PHOTO.get(s['slug']); s['ph'] = META.get(k) if k else None
+    k2 = PHOTO2.get(s['slug']); s['ph2'] = META.get(k2) if k2 else None
+BYSLUG = {s['slug']: s for s in S}
+PBY = {p[0]: p for p in PEOPLE}
+WBY = {w[0]: w for w in WORDS}
 
 SUB = sys.argv[1] if len(sys.argv) > 1 else ''
 IG = 'https://www.instagram.com/jazz101tw/'
@@ -24,6 +30,28 @@ SUB_HREF = SUB or IG
 SUB_TXT = '免費訂閱' if SUB else '先追蹤 IG，電子報開放時通知你'
 COMING = json.load(open(os.path.join(HERE, 'coming.json'), encoding='utf-8'))
 e = html.escape
+
+# 示範說明：id → (標題, 說明, 聽什麼, [選項])
+DEMOS = {
+ 'swing': ('搖擺：同一段旋律，直的和搖的', '兩個八分音符平均分，聽起來像進行曲；第一個拉長、第二個縮短，就開始搖了。', '切換兩種，注意你的頭什麼時候開始想跟著點。', ['直的', '搖擺']),
+ 'walking': ('走路低音：貝斯一步一步走', '貝斯可以只彈每小節的兩個音，也可以一拍一個音往下一個和弦走。', '聽「走路」的時候，整首歌是不是突然往前推了？', ['兩拍', '走路']),
+ 'blues': ('十二小節藍調：爵士的母語', '十二個小節為一輪，三組和弦反覆循環。幾乎所有爵士樂手都會彈。', '跟著亮起來的格子數，第 5 小節和第 9 小節和弦會換，聽得出來嗎？', ['慢', '快']),
+ 'bluescale': ('藍調音階：那幾個「歪」的音', '一般的大調音階很明亮；藍調音階多了降三、降五、降七，一下子就有了憂傷。', '比較兩種，哪一種讓你想到深夜的酒吧？', ['大調音階', '藍調音階']),
+ 'iivi': ('二五一：一句話的起、承、合', '從 Dm7 到 G7 再到 Cmaj7，耳朵會覺得「回到家了」。', '切到「不回家」，G7 之後又回到 Dm7，你會一直等那個家。', ['回到家', '不回家']),
+ 'giant': ('Giant Steps：三個調不停跳', 'Coltrane 在 B、G、降 E 三個調之間快速跳動，每個和弦只停一兩拍。', '先用慢速聽和弦怎麼換，再切到接近原速，想像要在上面即興。', ['慢速', '接近原速']),
+ 'comping': ('伴奏：鋼琴什麼時候插話', '鋼琴在獨奏後面伴奏，可以每拍都彈，也可以挑空隙回一句。', '聽「挑空隙」的版本，鋼琴是不是比較像在跟旋律聊天？', ['每拍都彈', '挑空隙']),
+ 'trading': ('交換四小節：你一句、我一句', '薩克斯風吹四小節，鼓手接著即興四小節，輪流對話。', '每次聽旋律都會不一樣，因為它是現場隨機即興的。', []),
+ 'motif': ('主題式即興：同一句話換五種說法', 'Sonny Rollins 常拿一小段旋律反覆變化。這裡把同一句話用五種方式說一次。', '跟著格子看：移高、晚半拍、只留前半、尾巴加長。', []),
+ 'vamp': ('反覆段：一直轉的左手', '左手不斷重複同樣的節奏，右手在上面慢慢長出旋律，就像《The Köln Concert》那樣。', '右手每一輪都是隨機的，左手永遠一樣。聽久了會有一點催眠。', []),
+}
+DEMO_ORDER = ['swing', 'walking', 'blues', 'bluescale', 'iivi', 'comping', 'trading', 'motif', 'giant', 'vamp']
+
+def demo_card(i, small=False):
+    t, d, h, opts = DEMOS[i]
+    o = ''.join(f'<button data-o="{k}" class="{"on" if k == 0 else ""}" aria-pressed="{"true" if k == 0 else "false"}">{e(x)}</button>' for k, x in enumerate(opts))
+    return (f'<div class="demo{" sm" if small else ""}" data-demo="{i}" id="d-{i}"><div class="dtop"><h3>{e(t)}</h3><p>{e(d)}</p></div>'
+            f'<div class="dctl"><button class="dplay" aria-pressed="false"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span>播放</span></button>'
+            f'{"<div class=opts>" + o + "</div>" if opts else ""}</div><div class="cells" aria-hidden="true"></div><p class="hint">{e(h)}</p></div>')
 
 CSS = r"""
 :root{
@@ -192,16 +220,171 @@ PLAYER = r"""
 })();
 """
 
+CSS2 = r"""
+/* nav v4 */
+.nav .in{gap:18px}
+.nav nav{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;min-width:0}
+.nav nav::-webkit-scrollbar{display:none}
+.nav nav a{white-space:nowrap;margin-left:0;margin-right:20px;padding:4px 0}
+.nav nav a.cur{color:var(--ink)}
+@media (max-width:640px){.nav .in{height:auto;flex-direction:column;align-items:stretch;padding:10px 22px 0;gap:4px}.nav nav{padding-bottom:8px}}
+/* doors */
+.doors{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:20px;overflow:hidden;margin-top:40px}
+.doors a{background:var(--paper);padding:26px 22px 24px;text-decoration:none;display:block}
+.doors a:hover{background:var(--wash)}
+.doors b{display:block;font-size:19px;font-weight:600;margin-bottom:4px}
+.doors span{display:block;color:var(--graphite);font-size:14px;line-height:1.6}
+.doors i{font-style:normal;color:var(--brass);font-size:13px;display:block;margin-top:12px}
+@media (max-width:760px){.doors{grid-template-columns:1fr 1fr}}
+@media (max-width:420px){.doors{grid-template-columns:1fr}}
+.more-link{display:inline-block;margin-top:26px;color:var(--brass);text-decoration:none;font-size:16px}
+.more-link:hover{text-decoration:underline}
+/* demo */
+.demo{background:var(--wash);border-radius:22px;padding:28px 26px 24px;margin-top:20px}
+.band .demo{background:rgba(255,255,255,.05);color:#f2efe9}
+.dtop h3{font-size:20px;font-weight:600;line-height:1.4}
+.dtop p{color:var(--graphite);font-size:15px;margin-top:4px;line-height:1.7}
+.band .dtop p,.band .hint{color:#b9bdc7}
+.dctl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+.dplay{display:inline-flex;align-items:center;gap:9px;background:var(--ink);color:var(--paper);border:0;font:inherit;font-size:15px;padding:10px 20px;border-radius:999px;cursor:pointer}
+.band .dplay{background:#f2efe9;color:#172033}
+.dplay svg{width:13px;height:13px}
+.dplay.playing{background:var(--brass);color:#1d1408}
+.opts{display:inline-flex;background:var(--paper);border:1px solid var(--hair);border-radius:999px;padding:3px}
+.band .opts{background:transparent;border-color:#2e3a52}
+.opts button{background:none;border:0;font:inherit;font-size:14px;color:var(--graphite);padding:7px 14px;border-radius:999px;cursor:pointer}
+.opts button.on{background:var(--ink);color:var(--paper)}
+.band .opts button.on{background:#f2efe9;color:#172033}
+.cells{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;margin-top:18px}
+.cells.notes{grid-template-columns:repeat(auto-fill,minmax(42px,1fr))}
+.cell{font-size:13px;text-align:center;padding:10px 4px;border-radius:10px;border:1px solid var(--hair);color:var(--graphite);transition:background .08s,color .08s;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.band .cell{border-color:#2e3a52;color:#8e93a0}
+.cell.on{background:var(--brass);border-color:var(--brass);color:#1d1408}
+.hint{font-size:14px;color:var(--graphite);margin-top:14px}
+.demos{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px}
+.demos .demo{margin-top:0}
+@media (max-width:760px){.demos{grid-template-columns:1fr}}
+/* article v4 */
+.facts{max-width:660px;margin:34px auto 0;padding:0 22px}
+.facts dl{display:grid;grid-template-columns:auto 1fr;border-top:1px solid var(--hair)}
+.facts dt,.facts dd{padding:11px 0;border-bottom:1px solid var(--hair);font-size:15px}
+.facts dt{color:var(--graphite);padding-right:22px;white-space:nowrap}
+.pull{font-size:clamp(22px,3.4vw,28px);line-height:1.55;font-weight:600;letter-spacing:-.01em;color:var(--brass);margin:44px 0;padding-left:20px;border-left:3px solid var(--brass)}
+.body figure{margin:36px -22px}
+.body figure img{border-radius:18px;width:100%;filter:sepia(.12)}
+.body figure figcaption{font-size:12px;color:var(--graphite);padding:8px 22px 0}
+.chips{max-width:660px;margin:50px auto 0;padding:0 22px}
+.chips h3{font-size:15px;font-weight:600;color:var(--graphite);margin:18px 0 10px}
+.chips a{display:inline-block;font-size:14px;text-decoration:none;border:1px solid var(--hair);border-radius:999px;padding:6px 14px;margin:0 8px 8px 0}
+.chips a:hover{border-color:var(--brass);color:var(--brass)}
+.ademo{max-width:700px;margin:60px auto 0;padding:0 22px}
+.ademo>h2{font-size:26px;font-weight:700;margin-bottom:2px}
+/* page head */
+.phead{max-width:760px;margin:0 auto;padding:80px 22px 10px;text-align:center}
+.phead h1{font-size:clamp(34px,6vw,60px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.phead p{color:var(--graphite);font-size:19px;margin-top:14px;line-height:1.7}
+/* path */
+.path{list-style:none;margin-top:40px;counter-reset:p}
+.step{display:grid;grid-template-columns:84px 1fr;gap:22px;padding:30px 0;border-top:1px solid var(--hair);counter-increment:p}
+.step .disc2{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,#0f0f0f 0 4%,var(--c) 4.5% 29%,#141414 30% 100%);box-shadow:inset 0 0 0 1px #000;position:relative}
+.step .disc2:after{content:counter(p);position:absolute;right:-6px;top:-6px;width:28px;height:28px;border-radius:50%;background:var(--paper);border:1px solid var(--hair);display:grid;place-items:center;font-size:13px;font-weight:600}
+.step h3{font-size:22px;font-weight:600;line-height:1.35}
+.step h3 small{display:block;font-size:14px;color:var(--graphite);font-weight:400;margin-top:2px}
+.step p{margin-top:8px;font-size:16px;line-height:1.75}
+.step .lf{color:var(--graphite);font-size:15px}
+.step .lf b{color:var(--ink);font-weight:600}
+.step a.st{font-size:14px;color:var(--brass);text-decoration:none;display:inline-block;margin-top:8px}
+@media (max-width:520px){.step{grid-template-columns:56px 1fr;gap:16px}.step .disc2{width:56px;height:56px}}
+.branch{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:18px;overflow:hidden;margin-top:30px}
+.branch div{background:var(--paper);padding:22px}
+.branch b{display:block;font-size:17px;margin-bottom:4px}
+.branch span{color:var(--graphite);font-size:15px}
+@media (max-width:640px){.branch{grid-template-columns:1fr}}
+.pathmini{display:flex;gap:18px;margin-top:34px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.pathmini a{flex:0 0 150px;text-decoration:none}
+.pathmini .disc2{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,#0f0f0f 0 3%,var(--c) 3.5% 30%,#141414 31% 100%),#141414;box-shadow:0 20px 40px -24px rgba(0,0,0,.6)}
+.pathmini b{display:block;font-size:15px;margin-top:12px;line-height:1.4}
+.pathmini span{display:block;font-size:13px;color:var(--graphite)}
+/* people */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:20px;overflow:hidden;margin-top:40px}
+.person{background:var(--paper);padding:26px 24px;scroll-margin-top:120px}
+.person:target{background:var(--lamp)}
+.person .mono2{width:46px;height:46px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:16px;font-weight:600;letter-spacing:.02em}
+.person h3{font-size:20px;font-weight:600;margin-top:14px;line-height:1.35}
+.person .meta{font-size:13px;color:var(--graphite)}
+.person .one{font-weight:500;margin-top:10px;font-size:16px}
+.person p.bio{color:var(--graphite);font-size:15px;line-height:1.75;margin-top:8px}
+.person .first{font-size:14px;margin-top:12px}
+.person .first a{color:var(--brass);text-decoration:none}
+.person .rel{font-size:13px;margin-top:8px}
+.person .rel a{color:var(--graphite)}
+.pmini{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:18px;overflow:hidden;margin-top:34px}
+.pmini a{background:var(--paper);padding:18px;text-decoration:none}
+.pmini a:hover{background:var(--wash)}
+.pmini b{display:block;font-size:16px}
+.pmini span{font-size:13px;color:var(--graphite)}
+@media (max-width:760px){.pmini{grid-template-columns:1fr 1fr}}
+/* words */
+.search{display:block;width:100%;max-width:420px;margin:30px auto 0;font:inherit;font-size:16px;padding:12px 18px;border-radius:999px;border:1px solid var(--hair);background:var(--paper);color:var(--ink)}
+.wlist{margin-top:30px;border-top:1px solid var(--hair)}
+.word{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid var(--hair);scroll-margin-top:120px}
+.word:target{background:var(--lamp)}
+.word h3{font-size:20px;font-weight:600;line-height:1.35}
+.word h3 small{display:block;font-size:13px;color:var(--graphite);font-weight:400}
+.word p{font-size:16px;line-height:1.8}
+.word .ex{color:var(--graphite);font-size:14px;margin-top:6px}
+.word .ex a{color:var(--brass);text-decoration:none}
+@media (max-width:640px){.word{grid-template-columns:1fr;gap:6px}}
+.today{background:var(--wash);border-radius:22px;padding:34px 30px;margin-top:34px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end}
+.today h3{font-size:clamp(28px,4vw,38px);font-weight:700;letter-spacing:-.01em}
+.today h3 small{font-size:15px;color:var(--graphite);font-weight:400;margin-left:10px}
+.today p{font-size:17px;margin-top:8px;max-width:36em}
+.today button{background:none;border:1px solid var(--hair);color:var(--ink);font:inherit;font-size:14px;padding:8px 16px;border-radius:999px;cursor:pointer}
+@media (max-width:640px){.today{grid-template-columns:1fr}}
+/* timeline */
+.tl{position:relative;margin-top:44px;padding-left:34px}
+.tl:before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--hair)}
+.ev{position:relative;padding:0 0 34px}
+.ev:before{content:"";position:absolute;left:-31px;top:10px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--graphite)}
+.ev.has:before{background:var(--brass);border-color:var(--brass)}
+.ev .yr{font-size:34px;font-weight:200;letter-spacing:-.03em;line-height:1.1;color:var(--graphite)}
+.ev.has .yr{color:var(--brass)}
+.ev h3{font-size:20px;font-weight:600;margin-top:4px}
+.ev p{color:var(--graphite);font-size:16px;line-height:1.75;margin-top:4px;max-width:36em}
+.ev a{font-size:14px;color:var(--brass);text-decoration:none;display:inline-block;margin-top:6px}
+.tlmini{display:flex;gap:0;margin-top:34px;overflow-x:auto;border-top:2px solid var(--hair);scrollbar-width:thin}
+.tlmini a{flex:0 0 150px;padding:16px 16px 10px 0;text-decoration:none;position:relative}
+.tlmini a:before{content:"";position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--graphite)}
+.tlmini a.has:before{background:var(--brass);border-color:var(--brass)}
+.tlmini b{display:block;font-size:22px;font-weight:300;letter-spacing:-.02em}
+.tlmini span{font-size:13px;color:var(--graphite);line-height:1.5;display:block}
+/* shop */
+.shop{margin-top:20px}
+.shop h2{font-size:clamp(26px,3.6vw,34px);font-weight:700;margin-top:60px}
+.shop .sd{color:var(--graphite);font-size:17px;margin-top:6px;max-width:36em}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:22px}
+.item{border:1px solid var(--hair);border-radius:18px;padding:22px;display:flex;flex-direction:column}
+.item b{font-size:17px;font-weight:600;line-height:1.45}
+.item p{color:var(--graphite);font-size:15px;line-height:1.7;margin-top:6px;flex:1}
+.item .lk{margin-top:14px;font-size:13px}
+.item .lk a{color:var(--brass);text-decoration:none;margin-right:14px}
+.note2{background:var(--wash);border-radius:18px;padding:22px 24px;margin-top:50px;color:var(--graphite);font-size:15px;line-height:1.8}
+"""
+
 HEAD = """<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title><meta name="description" content="{desc}"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}">{ogimg}
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{p}style.css"></head><body>"""
 
-def nav(p):
-    return f'<div class="nav"><div class="in"><a class="brand" href="{p}index.html">爵士101</a><nav><a href="{p}index.html#stories">故事</a><a href="{p}index.html#letter">電子報</a><a href="{IG}" target="_blank" rel="noopener">Instagram</a></nav></div></div>'
+NAV = [('index.html#stories', '故事', 'stories'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('people.html', '樂手', 'people'),
+       ('words.html', '小辭典', 'words'), ('timeline.html', '時間軸', 'timeline'), ('shop.html', '選品', 'shop'), ('index.html#letter', '電子報', 'letter')]
+def nav(p, cur=''):
+    links = ''.join(f'<a href="{p}{h}"{" class=cur aria-current=page" if k == cur else ""}>{t}</a>' for h, t, k in NAV)
+    return f'<div class="nav"><div class="in"><a class="brand" href="{p}index.html">爵士101</a><nav aria-label="網站導覽">{links}</nav></div></div>'
 
-def foot():
-    return f'<footer>爵士101 由 Jim 在台北整理。每篇故事都附出處，查不到的不寫；照片來自 Wikimedia Commons，作者與授權標在照片下方。<br>一分鐘版在 Instagram <a href="{IG}" target="_blank" rel="noopener">@jazz101tw</a>。</footer></body></html>'
+def foot(p='', js=''):
+    return (f'<footer>爵士101 由 Jim 在台北整理。每篇故事都附出處，查不到的不寫；照片來自 Wikimedia Commons，作者與授權標在照片下方。聲音示範全部由瀏覽器現場合成。<br>'
+            f'一分鐘版在 Instagram <a href="{IG}" target="_blank" rel="noopener">@jazz101tw</a>。</footer>{js}</body></html>')
 
 def letter():
     return f'<section class="letter" id="letter"><h2>每兩週，一張唱片。</h2><p>電子報〈慢慢聽〉每期只講一張爵士唱片：那天在哪裡錄、台上是誰、你該聽哪一段。不用懂樂理，戴上耳機照著聽。</p><a class="btn" href="{SUB_HREF}" target="_blank" rel="noopener">{SUB_TXT}</a></section>'
@@ -209,55 +392,157 @@ def letter():
 def credit(ph):
     return f'照片：{e(ph["artist"])}，{e(ph["license"])}，Wikimedia Commons' if ph else ''
 
-COL=['#a97a2b','#8c2f2b','#2f5d6b','#c9b48a','#4b3a6b','#6d7a3a']
+COL = ['#a97a2b', '#8c2f2b', '#2f5d6b', '#c9b48a', '#4b3a6b', '#6d7a3a', '#b4532a', '#3e6b52', '#7a2f4f', '#5a6e8c']
 def img(ph, pre, cls='', alt='', i=0):
-    return f'<img class="{cls}" src="{pre}img/{ph["file"]}" alt="{e(alt)}" loading="lazy">' if ph else f'<div class="{cls} empty" style="--c:{COL[i%len(COL)]}" aria-hidden="true"></div>'
+    return f'<img class="{cls}" src="{pre}img/{ph["file"]}" alt="{e(alt)}" loading="lazy">' if ph else f'<div class="{cls} empty" style="--c:{COL[i % len(COL)]}" aria-hidden="true"></div>'
+
+def q(s): return s.replace(' ', '+')
+def links(song):
+    return f'<div><a href="https://music.apple.com/search?term={e(q(song))}" target="_blank" rel="noopener">在 Apple Music 找</a><a href="https://open.spotify.com/search/{e(q(song))}" target="_blank" rel="noopener">在 Spotify 找</a></div>'
+def W(p, name, page):
+    open(os.path.join(OUT, name), 'w', encoding='utf-8').write(page)
 
 os.makedirs(os.path.join(OUT, 'story'), exist_ok=True)
 os.makedirs(os.path.join(OUT, 'img'), exist_ok=True)
 for k, m in META.items():
     if m and os.path.exists(os.path.join(IMGSRC, m['file'])):
         shutil.copy(os.path.join(IMGSRC, m['file']), os.path.join(OUT, 'img', m['file']))
-open(os.path.join(OUT, 'style.css'), 'w', encoding='utf-8').write(CSS)
+open(os.path.join(OUT, 'style.css'), 'w', encoding='utf-8').write(CSS + CSS2)
 open(os.path.join(OUT, 'player.js'), 'w', encoding='utf-8').write(PLAYER)
+shutil.copy(os.path.join(HERE, 'audio.js'), os.path.join(OUT, 'audio.js'))
+AUD = lambda p: f'<script src="{p}audio.js"></script>'
 
-def q(s): return s.replace(' ', '+')
-
+# ---------- 故事頁 ----------
 for i, s in enumerate(S):
-    body = ''.join(f'<h2>{e(h)}</h2>' + ''.join(f'<p>{e(p)}</p>' for p in ps) for h, ps in s['sections'])
+    body = ''
+    for n, (h, ps) in enumerate(s['sections']):
+        body += f'<h2>{e(h)}</h2>' + ''.join(f'<p>{e(x)}</p>' for x in ps)
+        if n == 1 and s.get('pull'):
+            body += f'<blockquote class="pull">{e(s["pull"])}</blockquote>'
+        if n == 3 and s['ph2']:
+            body += f'<figure><img src="../img/{s["ph2"]["file"]}" alt="" loading="lazy"><figcaption>{credit(s["ph2"])}</figcaption></figure>'
     tr = ''
     for n, (a, b) in enumerate(s['listen'], 1):
-        song = a if not a.startswith(('再', '注意', 'Part')) else ''
-        links = f'<div><a href="https://music.apple.com/search?term={e(q(song))}" target="_blank" rel="noopener">在 Apple Music 找</a><a href="https://open.spotify.com/search/{e(q(song))}" target="_blank" rel="noopener">在 Spotify 找</a></div>' if song else ''
-        tr += f'<div class="tr"><div class="n">{n}</div><div><b>{e(a)}</b><p>{e(b)}</p>{links}</div></div>'
+        song = a if not a.startswith(('再', '注意', 'Part', '聽他', '比一比', '同一首')) else ''
+        tr += f'<div class="tr"><div class="n">{n}</div><div><b>{e(a)}</b><p>{e(b)}</p>{links(song) if song else ""}</div></div>'
     more = ''.join(f'<li>{e(m)}</li>' for m in s['more'])
     prev = S[i - 1] if i > 0 else None
     nxt = S[i + 1] if i < len(S) - 1 else None
     pn = '<div class="pn">' + (f'<a href="{prev["slug"]}.html"><small>上一篇</small>{e(prev["title"])}</a>' if prev else '<span></span>') + (f'<a href="{nxt["slug"]}.html"><small>下一篇</small>{e(nxt["title"])}</a>' if nxt else '<span></span>') + '</div>'
     ph = s['ph']
     hero = f'<div class="hero-img"><img src="../img/{ph["file"]}" alt="{e(s["title"])}"><p class="credit">{credit(ph)}</p></div>' if ph else ''
-    page = HEAD.format(title=e(s['title']) + '｜爵士101', desc=e(s['dek']), p='../', ogimg=(f'<meta property="og:image" content="../img/{ph["file"]}">' if ph else '')) + nav('../') + \
-        f'<header class="ahead"><div class="yearbig">{e(s["year"])}</div><h1>{e(s["title"])}</h1><p class="dek">{e(s["dek"])}</p><p class="rt">閱讀約 {e(s["read"])}</p></header>{hero}' + \
-        f'<article class="body">{body}</article>' + \
+    facts = '<section class="facts" aria-label="基本資料"><dl>' + ''.join(f'<dt>{e(a)}</dt><dd>{e(b)}</dd>' for a, b in s.get('facts', [])) + '</dl></section>'
+    chips = '<section class="chips">'
+    if s.get('people'):
+        chips += '<h3>這篇裡的人</h3>' + ''.join(f'<a href="../people.html#{p}">{e(PBY[p][1])}</a>' for p in s['people'] if p in PBY)
+    if s.get('words'):
+        chips += '<h3>這篇用到的名詞</h3>' + ''.join(f'<a href="../words.html#{w}">{e(WBY[w][1])}</a>' for w in s['words'] if w in WBY)
+    chips += '</section>'
+    dm = f'<section class="ademo"><h2>先用耳朵聽懂</h2>{demo_card(s["demo"])}</section>' if s.get('demo') else ''
+    page = HEAD.format(title=e(s['title']) + '｜爵士101', desc=e(s['dek']), p='../', ogimg=(f'<meta property="og:image" content="../img/{ph["file"]}">' if ph else '')) + nav('../', 'stories') + \
+        f'<header class="ahead"><div class="yearbig">{e(s["year"])}</div><h1>{e(s["title"])}</h1><p class="dek">{e(s["dek"])}</p><p class="rt">約 {s["chars"]:,} 字・閱讀約 {e(s["read"])}</p></header>{hero}{facts}' + \
+        f'<article class="body">{body}</article>{dm}' + \
         f'<section class="tracks"><h2>這樣聽</h2><p class="sub">戴上耳機，照這個順序。</p>{tr}</section>' + \
-        f'<section class="more"><h2>聽完再去聽</h2><ul>{more}</ul></section>' + \
-        f'<p class="src">出處：{"、".join(e(x) for x in s["src"])}</p>{pn}{letter()}' + foot()
-    open(os.path.join(OUT, 'story', s['slug'] + '.html'), 'w', encoding='utf-8').write(page)
+        f'<section class="more"><h2>聽完再去聽</h2><ul>{more}</ul></section>{chips}' + \
+        f'<p class="src">出處：{"、".join(e(x) for x in s["src"])}</p>{pn}{letter()}' + foot('../', AUD('../') if s.get('demo') else '')
+    W('../', os.path.join('story', s['slug'] + '.html'), page)
 
+def phead(t, d):
+    return f'<header class="phead"><h1>{e(t)}</h1><p>{e(d)}</p></header>'
+
+# ---------- 入門路線 ----------
+steps = ''
+for n, (alb, art, yr, why, song, lf, st) in enumerate(START):
+    stl = f'<a class="st" href="story/{st}.html">相關故事：{e(BYSLUG[st]["title"])}</a>' if st else ''
+    steps += (f'<li class="step"><div class="disc2" style="--c:{COL[n % len(COL)]}" aria-hidden="true"></div><div><h3>《{e(alb)}》<small>{e(art)}・{e(yr)}</small></h3>'
+              f'<p>{e(why)}</p><p class="lf"><b>先聽〈{e(song)}〉</b>：{e(lf)}</p><div class="tr" style="border:0;padding:6px 0 0;display:block">{links(art + " " + song)}</div>{stl}</div></li>')
+br = ''.join(f'<div><b>{e(a)}</b><span>{e(b)}</span></div>' for a, b in BRANCH)
+W('', 'start.html', HEAD.format(title='入門路線｜爵士101', desc='第一次聽爵士，照這十張的順序聽。', p='', ogimg='') + nav('', 'start') +
+  phead('第一次聽爵士，照這十張的順序。', '從最好入口的開始，一張比一張多一點東西。每張只要先聽一首，知道該注意什麼就好。') +
+  f'<div class="wrap"><ol class="path">{steps}</ol><section class="sec" style="padding-top:60px"><h2>聽完十張之後</h2><p class="lede">看你最喜歡哪一種，往那個方向繼續。</p><div class="branch">{br}</div></section></div>' + letter() + foot())
+
+# ---------- 聽懂爵士 ----------
+cards = ''.join(demo_card(i) for i in DEMO_ORDER)
+W('', 'listen.html', HEAD.format(title='聽懂爵士｜爵士101', desc='十個可以按的聲音示範：搖擺、走路低音、藍調、二五一、Giant Steps。', p='', ogimg='') + nav('', 'listen') +
+  phead('不用懂樂理，用耳朵聽懂爵士。', '十個可以按的聲音示範。每一個都在你的瀏覽器裡現場彈出來，可以切換比較。建議戴耳機。') +
+  f'<div class="wrap"><div class="demos">{cards}</div></div>' + letter() + foot('', AUD('')))
+
+# ---------- 樂手 ----------
+STORY_OF = {}
+for s in S:
+    for p in s.get('people', []):
+        STORY_OF.setdefault(p, []).append(s)
+def initials(n): return ''.join(w[0] for w in n.split()[:2])
+pg = ''
+for n, (sl, en, zh, yrs, ins, one, bio, (song, where)) in enumerate(PEOPLE):
+    rel = ''.join(f'<div class="rel">相關故事：<a href="story/{s["slug"]}.html">{e(s["title"])}</a></div>' for s in STORY_OF.get(sl, [])[:2])
+    pg += (f'<article class="person" id="{sl}"><div class="mono2" style="--c:{COL[n % len(COL)]}" aria-hidden="true">{e(initials(en))}</div><h3>{e(en)}</h3><div class="meta">{e(zh)}・{e(yrs)}・{e(ins)}</div>'
+           f'<p class="one">{e(one)}</p><p class="bio">{e(bio)}</p><p class="first">先聽：<a href="https://music.apple.com/search?term={e(q(en + " " + song))}" target="_blank" rel="noopener">〈{e(song)}〉</a>　<span class="meta">{e(where)}</span></p>{rel}</article>')
+W('', 'people.html', HEAD.format(title='樂手｜爵士101', desc='十五位改變爵士的人，各用一段話認識，附上先聽哪一首。', p='', ogimg='') + nav('', 'people') +
+  phead('十五個改變爵士的人。', '依出生年份排列。每個人先記住一句話，再聽一首。') + f'<div class="wrap"><div class="pgrid">{pg}</div></div>' + letter() + foot())
+
+# ---------- 小辭典 ----------
+wl = ''
+for (wid, zh, en, ex, eg, dm) in WORDS:
+    dl = f'　<a href="listen.html#d-{dm}">去聽示範</a>' if dm else ''
+    wl += f'<div class="word" id="{wid}" data-k="{e((zh + en + ex).lower())}"><h3>{e(zh)}<small>{e(en)}</small></h3><div><p>{e(ex)}</p><p class="ex">例子：{e(eg)}{dl}</p></div></div>'
+W('', 'words.html', HEAD.format(title='小辭典｜爵士101', desc='聽爵士會遇到的名詞，用白話講清楚。', p='', ogimg='') + nav('', 'words') +
+  phead('聽爵士會遇到的名詞。', f'{len(WORDS)} 個詞，用白話講一次，附一個可以去聽的例子。有些可以直接聽示範。') +
+  '<div class="wrap"><input class="search" type="search" id="q" placeholder="搜尋，例如：搖擺、bebop" aria-label="搜尋名詞">' + f'<div class="wlist">{wl}</div></div>' +
+  '<script>document.getElementById("q").addEventListener("input",function(){var v=this.value.trim().toLowerCase();document.querySelectorAll(".word").forEach(function(w){w.style.display=!v||w.dataset.k.indexOf(v)>-1?"":"none"})})</script>' + letter() + foot())
+
+# ---------- 時間軸 ----------
+tl = ''
+for (y, t, d, st) in TIMELINE:
+    a = f'<a href="story/{st}.html">讀這個故事：{e(BYSLUG[st]["title"])}</a>' if st else ''
+    tl += f'<div class="ev{" has" if st else ""}"><div class="yr">{e(y)}</div><h3>{e(t)}</h3><p>{e(d)}</p>{a}</div>'
+W('', 'timeline.html', HEAD.format(title='時間軸｜爵士101', desc='從紐奧良街頭到今天，爵士一百多年的重要時刻。', p='', ogimg='') + nav('', 'timeline') +
+  phead('一百多年的爵士，走一遍。', '從紐奧良的街頭到今天。金色的點，代表這個站上有完整的故事。') + f'<div class="wrap" style="max-width:760px"><div class="tl">{tl}</div></div>' + letter() + foot())
+
+# ---------- 選品 ----------
+sh = ''
+for (cat, desc, items) in SHOP:
+    its = ''.join(f'<div class="item"><b>{e(n)}</b><p>{e(d)}</p><div class="lk"><a href="https://www.google.com/search?q={e(q(k))}" target="_blank" rel="noopener">搜尋這個</a></div></div>' for n, d, k in items)
+    sh += f'<h2>{e(cat)}</h2><p class="sd">{e(desc)}</p><div class="items">{its}</div>'
+W('', 'shop.html', HEAD.format(title='選品｜爵士101', desc='開始聽爵士需要的唱片、書和器材。', p='', ogimg='') + nav('', 'shop') +
+  phead('開始聽爵士，需要的東西不多。', '幾張唱片、一兩本書、一副能聽見貝斯的耳機。這裡是我們挑的起點。') +
+  f'<div class="wrap"><div class="shop">{sh}</div><p class="note2">爵士101 自己的周邊（帆布袋、明信片、唱片標籤貼紙）正在設計中，做好會先通知電子報讀者。</p></div>' + letter() + foot())
+
+# ---------- 首頁 ----------
 f0 = S[0]
 rows = ''.join(f'<a class="row" href="story/{s["slug"]}.html"><div class="y">{e(s["year"])}</div><div><h3>{e(s["title"])}</h3><p>{e(s["dek"])}</p></div>{img(s["ph"], "", "t", s["title"], S.index(s))}</a>' for s in sorted(S, key=lambda x: x['year']))
 soon = ''.join(f'<li>{e(t)}</li>' for t in COMING)
 fph = f0['ph']
 fig = f'<figure><img src="img/{fph["file"]}" alt="{e(f0["title"])}"><figcaption>{credit(fph)}</figcaption></figure>' if fph else '<div class="yearbig">' + e(f0['year']) + '</div>'
-index = HEAD.format(title='爵士101｜一分鐘講不完的爵士故事', desc='爵士史上的人、晚上和唱片，一篇講完整，附上該怎麼聽。', p='', ogimg='') + nav('') + \
+doors = ('<div class="doors">'
+         f'<a href="#stories"><b>讀故事</b><span>{len(S)} 篇長篇，每篇兩三千字，附「這樣聽」。</span><i>從這裡開始</i></a>'
+         '<a href="start.html"><b>照路線聽</b><span>第一次聽爵士，十張唱片照順序聽。</span><i>入門路線</i></a>'
+         '<a href="listen.html"><b>用耳朵學</b><span>十個可以按的聲音示範，搖擺、藍調、二五一。</span><i>聽懂爵士</i></a>'
+         f'<a href="words.html"><b>查名詞</b><span>{len(WORDS)} 個名詞，用白話講清楚。</span><i>小辭典</i></a></div>')
+pmini = ''.join(f'<a href="start.html"><div class="disc2" style="--c:{COL[n % len(COL)]}" aria-hidden="true"></div><b>{n+1}．《{e(a)}》</b><span>{e(b)}・{e(y)}</span></a>' for n, (a, b, y, *_r) in enumerate(START[:6]))
+tlm = ''.join(f'<a href="timeline.html" class="{"has" if st else ""}"><b>{e(y)}</b><span>{e(t)}</span></a>' for (y, t, d, st) in TIMELINE)
+peo = ''.join(f'<a href="people.html#{p[0]}"><b>{e(p[1])}</b><span>{e(p[4])}・{e(p[3])}</span></a>' for p in PEOPLE[:8])
+wjs = json.dumps([[w[0], w[1], w[2], w[3]] for w in WORDS], ensure_ascii=False)
+shopmini = ''.join(f'<div class="item"><b>{e(n)}</b><p>{e(d)}</p></div>' for n, d, k in [SHOP[0][2][3], SHOP[1][2][0], SHOP[2][2][0]])
+index = HEAD.format(title='爵士101｜一分鐘講不完的爵士故事', desc='爵士史上的人、晚上和唱片，一篇講完整，附上該怎麼聽。還有入門路線、聲音示範、樂手和名詞小辭典。', p='', ogimg='') + nav('') + \
     '<section class="hero"><h1><span class="nw">一分鐘講不完的爵士，</span><span class="nw">在這裡慢慢聽。</span></h1><p>那些錄音室、俱樂部和唱片背後的故事，一篇講完，再告訴你該聽哪一段。</p>' + \
-    '<div class="ctas"><a class="btn" href="#stories">開始讀故事</a><a class="btn alt" href="#letter">訂閱電子報</a></div>' + \
+    '<div class="ctas"><a class="btn" href="#stories">開始讀故事</a><a class="btn alt" href="start.html">第一次聽？從這裡</a></div>' + \
     '<div class="glow" aria-hidden="true"></div><div class="stage" id="stage"><div class="platter"><div class="disc"></div><div class="label"><div><b>JAZZ 101</b><span>Side A　ii–V–I</span></div></div></div><div class="arm"><i></i></div></div>' + \
     '<button class="play" id="play" aria-pressed="false"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg><span>放一段二五一</span></button>' + \
     '<p class="playnote">爵士樂最常聽到的和弦進行，用瀏覽器現場彈給你聽。</p></section>' + \
+    f'<div class="wrap">{doors}</div>' + \
     f'<section class="band"><div class="in">{fig}<div><small>這次先讀這篇</small><h2>{e(f0["title"])}</h2><p>{e(f0["dek"])}</p><a class="btn" href="story/{f0["slug"]}.html">讀這篇故事</a></div></div></section>' + \
     f'<div class="wrap"><section class="sec" id="stories"><h2>所有故事</h2><p class="lede">依年份排列的人、晚上和唱片。每一篇都附上「這樣聽」。</p><div class="list">{rows}</div></section>' + \
+    f'<section class="sec"><h2>第一次聽，照這個順序。</h2><p class="lede">十張唱片，一張比一張多一點東西。每張先聽一首就好。</p><div class="pathmini">{pmini}</div><a class="more-link" href="start.html">看完整的入門路線</a></section></div>' + \
+    f'<section class="band"><div class="in" style="display:block"><small>聽懂爵士</small><h2>先按下去，再讀解釋。</h2><p>同一段旋律，直的和搖擺的差在哪裡？十二小節藍調長什麼樣子？用瀏覽器現場彈給你聽。</p>' + \
+    f'<div class="demos">{demo_card("swing")}{demo_card("blues")}</div><a class="btn" href="listen.html">聽全部十個示範</a></div></section>' + \
+    f'<div class="wrap"><section class="sec"><h2>一百多年，走一遍。</h2><p class="lede">從紐奧良的街頭到今天。金色的點，這裡有完整的故事。</p><div class="tlmini">{tlm}</div><a class="more-link" href="timeline.html">看完整時間軸</a></section>' + \
+    f'<section class="sec"><h2>先認識這些人。</h2><p class="lede">每個人一句話、一首歌。</p><div class="pmini">{peo}</div><a class="more-link" href="people.html">看全部 {len(PEOPLE)} 位樂手</a></section>' + \
+    '<section class="sec"><h2>今天學一個詞。</h2><div class="today" id="today"><div><h3 id="tw"></h3><p id="tx"></p></div><div><button id="tn">換一個</button></div></div><a class="more-link" href="words.html">打開小辭典</a></section>' + \
+    f'<section class="sec"><h2>開始聽，需要的東西不多。</h2><p class="lede">幾張唱片、一本書、一副能聽見貝斯的耳機。</p><div class="items">{shopmini}</div><a class="more-link" href="shop.html">看全部選品</a></section>' + \
     f'<section class="sec"><h2>正在寫的故事</h2><p class="lede">IG 上已經講過一分鐘版本，長篇陸續放上來。</p><ul class="soon">{soon}</ul></section></div>' + \
-    letter() + '<script src="player.js"></script>' + foot()
-open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8').write(index)
-print('ok', len(S), 'stories;', sum(1 for s in S if s['ph']), 'with photos')
+    letter() + '<script src="player.js"></script>' + AUD('') + \
+    '<script>(function(){var W=' + wjs + ',i=Math.floor(Math.random()*W.length);function s(){var w=W[i%W.length];document.getElementById("tw").innerHTML=w[1]+"<small>"+w[2]+"</small>";document.getElementById("tx").textContent=w[3];document.getElementById("today").onclick=null}s();document.getElementById("tn").onclick=function(){i++;s()}})()</script>' + foot()
+W('', 'index.html', index)
+total = sum(s['chars'] for s in S)
+print('ok', len(S), 'stories,', total, '字;', len(PEOPLE), 'people;', len(WORDS), 'words;', len(TIMELINE), 'events;', 'out=', OUT)
