@@ -442,7 +442,7 @@ let fx=FX[0];
 const cssF=x=>x.f.map(([k,v])=>k==="hue"?`hue-rotate(${v}deg)`:`${k}(${v})`).join(" ")||"none";
 function fxApply(){big.style.filter=cssF(fx)+(fx.lift?` brightness(1)`:"");const g=$("#vig");g.style.opacity=fx.v?1:0;g.style.background=`radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,${fx.v||0}) 100%)`;
  [...$("#fbar").children].forEach(b=>b.classList.toggle("on",b.dataset.fx===fx.id))}
-function fxBar(src){$("#gbar").innerHTML=GLOW.filter(g=>!g.era).map(g=>`<button data-glow="${g.id}" class="gchip${gfx===g.id?" on":""}">✨ ${LANG==="zh"?g.zh:(g[LANG]||g.en)}</button>`).join("");$("#ebar").innerHTML=`<span class="elab">${LANG==="zh"?"年代肖像":LANG==="ja"?"年代":LANG==="ko"?"연대":"Eras"}</span>`+GLOW.filter(g=>g.era).map(g=>`<button data-glow="${g.id}" class="gchip echip${g.era===2?" mood":""}${gfx===g.id?" on":""}">${g.era===1?"🎞":"🌫"} ${LANG==="zh"?g.zh:(g[LANG]||g.en)}</button>`).join("");$("#fbar").innerHTML=FX.map(x=>`<button data-fx="${x.id}"><img src="${src}" style="filter:${cssF(x)}" alt=""><span>${LANG==="zh"?x.zh:(x[LANG]||x.en)}</span></button>`).join("");fxApply()}
+function fxBar(src){$("#gbar").innerHTML=GLOW.filter(g=>!g.era).map(g=>`<button data-glow="${g.id}" class="gchip${gfx===g.id?" on":""}">✨ ${LANG==="zh"?g.zh:(g[LANG]||g.en)}</button>`).join("");$("#ebar").innerHTML=`<span class="elab">${LANG==="zh"?"年代肖像":LANG==="ja"?"年代":LANG==="ko"?"연대":"Eras"}</span>`+GLOW.filter(g=>g.era).map(g=>`<button data-glow="${g.id}" class="gchip echip${g.era===2?" mood":""}${gfx===g.id?" on":""}">${g.era===1?"🎞":g.era===3?"🎮":"🌫"} ${LANG==="zh"?g.zh:(g[LANG]||g.en)}</button>`).join("");$("#fbar").innerHTML=FX.map(x=>`<button data-fx="${x.id}"><img src="${src}" style="filter:${cssF(x)}" alt=""><span>${LANG==="zh"?x.zh:(x[LANG]||x.en)}</span></button>`).join("");fxApply()}
 // 色彩矩陣（依 CSS Filter Effects 規格）
 function mat(k,a){const I=[1,0,0,0,1,0,0,0,1];
  if(k==="grayscale"){const s=1-a;return[.2126+.7874*s,.7152-.7152*s,.0722-.0722*s,.2126-.2126*s,.7152+.2848*s,.0722-.0722*s,.2126-.2126*s,.7152-.7152*s,.0722+.9278*s]}
@@ -521,7 +521,7 @@ const GLOW=[{id:"bloom",zh:"泛光",en:"Bloom",ko:"블룸",ja:"ブルーム"},{i
  {id:"e1970",era:1,zh:"1970 柯達暖陽",en:"1970s Kodachrome",ko:"1970 코다크롬",ja:"1970 コダクローム"},{id:"e1980",era:1,zh:"1980 錄影帶",en:"1980s VHS",ko:"1980 VHS",ja:"1980 VHS"},
  {id:"e1990",era:1,zh:"1990 港片",en:"1990s HK Cinema",ko:"1990 홍콩영화",ja:"1990 香港映画"},{id:"e2000",era:1,zh:"2000 Y2K",en:"2000s Y2K CCD",ko:"2000 Y2K",ja:"2000 Y2K"},
  {id:"mwind",era:2,zh:"風的形狀",en:"Shape of Wind",ko:"바람의 모양",ja:"風のかたち"},{id:"mblue",era:2,zh:"藍色時刻",en:"Blue Hour",ko:"블루 아워",ja:"ブルーアワー"},
- {id:"mdream",era:2,zh:"午後的夢",en:"Afternoon Dream",ko:"오후의 꿈",ja:"午後の夢"},{id:"mneon",era:2,zh:"霓虹殘夢",en:"Neon Afterglow",ko:"네온 잔상",ja:"ネオンの残像"}];
+ {id:"mdream",era:2,zh:"午後的夢",en:"Afternoon Dream",ko:"오후의 꿈",ja:"午後の夢"},{id:"mneon",era:2,zh:"霓虹殘夢",en:"Neon Afterglow",ko:"네온 잔상",ja:"ネオンの残像"},{id:"gta",era:3,zh:"GTA 封面",en:"GTA Cover Art",ko:"GTA 커버",ja:"GTA カバー"}];
 // ===== 年代肖像／意境：純畫布運算（不送出照片），強度用同一條滑桿 =====
 function eraRender(img,kind,amt,maxW){const W0=img.naturalWidth,H0=img.naturalHeight,s=Math.min(1,(maxW||W0)/W0),W=Math.round(W0*s),H=Math.round(H0*s),k=amt/100,L=Math.max(W,H);
  const cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");x.drawImage(img,0,0,W,H);
@@ -538,6 +538,7 @@ function eraRender(img,kind,amt,maxW){const W0=img.naturalWidth,H0=img.naturalHe
   else if(kind==="e2000"){r=r*.88;g=g*1.0+.01;b=b*1.14+.03;const m=(r+g+b)/3;r=m+(r-m)*.85;g=m+(g-m)*.85;b=m+(b-m)*.85;r=sc(r,1.08);g=sc(g,1.08);b=sc(b,1.08)}
   else if(kind==="mblue"){r=.04+r*.68;g=.08+g*.86;b=.16+b*1.08;const m=(r+g+b)/3;r=m+(r-m)*.85;g=m+(g-m)*.85;b=m+(b-m)*.85}
   else if(kind==="mdream"){const m=y;r=.12+(m+(r-m)*.75)*.92+.05;g=.1+(m+(g-m)*.75)*.88+.03;b=.1+(m+(b-m)*.75)*.82}
+  else if(kind==="gta"){const m=y;r=m+(r-m)*1.7;g=m+(g-m)*1.55;b=m+(b-m)*1.7;r=sc(r,1.3);g=sc(g,1.3);b=sc(b,1.3);const sh=(1-y)*(1-y),hi=y*y;r+=.12*hi-.05*sh;g+=.04*hi+.03*sh;b+=-.08*hi+.10*sh;const P=6;r=Math.round(C(r)*P)/P*.55+C(r)*.45;g=Math.round(C(g)*P)/P*.55+C(g)*.45;b=Math.round(C(b)*P)/P*.55+C(b)*.45}
   else if(kind==="mneon"){const m=y,sh=(1-y)*(1-y);r=m+(r-m)*1.5+.16*sh;g=m+(g-m)*1.35+.08*y-.03*sh;b=m+(b-m)*1.5+.18*sh-.04*y}
   const kk=(kind==="e1920"||kind==="e1960"||kind==="mwind")?Math.max(k,.85+.15*k):k;d[i]=C(r0+(r-r0)*kk)*255;d[i+1]=C(g0+(g-g0)*kk)*255;d[i+2]=C(b0+(b-b0)*kk)*255}
  x.putImageData(id,0,0);
@@ -547,9 +548,12 @@ function eraRender(img,kind,amt,maxW){const W0=img.naturalWidth,H0=img.naturalHe
   x.fillStyle="rgba(0,0,0,.12)";for(let yy=0;yy<H;yy+=3)x.fillRect(0,yy,W,1);
   x.font=`700 ${Math.round(L*.028)}px monospace`;x.fillStyle="rgba(255,170,40,.9)";x.textAlign="right";x.fillText("NOV 14 2026",W*.95,H*.94)}
  if(kind==="e1970"||kind==="mdream"){const gr=x.createRadialGradient(W*.95,H*.08,0,W*.95,H*.08,L*.6);gr.addColorStop(0,kind==="e1970"?"rgba(255,120,30,.75)":"rgba(255,220,170,.6)");gr.addColorStop(1,"rgba(255,120,30,0)");x.globalCompositeOperation="screen";x.globalAlpha=k;x.fillStyle=gr;x.fillRect(0,0,W,H);x.globalAlpha=1;x.globalCompositeOperation="source-over"}
+ if(kind==="gta"){const t=document.createElement("canvas");t.width=W;t.height=H;const z=t.getContext("2d");z.filter=`blur(${Math.max(1,Math.round(L*.0012))}px)`;z.drawImage(cv,0,0);const s=z.getImageData(0,0,W,H).data,o=x.getImageData(0,0,W,H),q=o.data;const lum=i=>.3*s[i]+.59*s[i+1]+.11*s[i+2];const th=38;
+  for(let yy=1;yy<H-1;yy++)for(let xx=1;xx<W-1;xx++){const i=(yy*W+xx)*4,w4=W*4;const gx=lum(i+4)-lum(i-4),gy=lum(i+w4)-lum(i-w4);const e=Math.sqrt(gx*gx+gy*gy);if(e>th){const f=1-Math.min(.85,(e-th)/90)*k;q[i]*=f;q[i+1]*=f;q[i+2]*=f}}
+  x.putImageData(o,0,0);const gr=x.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(255,60,140,.55)");gr.addColorStop(.35,"rgba(255,150,60,.25)");gr.addColorStop(.6,"rgba(255,150,60,0)");gr.addColorStop(1,"rgba(40,0,90,.25)");x.globalCompositeOperation="soft-light";x.globalAlpha=k;x.fillStyle=gr;x.fillRect(0,0,W,H);x.globalAlpha=1;x.globalCompositeOperation="source-over";glow(.01,.18)}
  if(kind==="mdream")glow(.012,.45);if(kind==="mneon")glow(.015,.4);if(kind==="mblue")glow(.01,.25);if(kind==="e1990")glow(.01,.2);
  // 暗角
- const vv={e1920:.75,e1960:.45,e1970:.3,e1980:.3,e1990:.45,e2000:.15,mwind:.2,mblue:.35,mdream:.1,mneon:.5}[kind]||0;if(vv){const gr=x.createRadialGradient(W/2,H/2,L*.25,W/2,H/2,L*.75);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,`rgba(0,0,0,${vv*k})`);x.fillStyle=gr;x.fillRect(0,0,W,H)}
+ const vv={e1920:.75,e1960:.45,e1970:.3,e1980:.3,e1990:.45,e2000:.15,mwind:.2,mblue:.35,mdream:.1,mneon:.5,gta:.35}[kind]||0;if(vv){const gr=x.createRadialGradient(W/2,H/2,L*.25,W/2,H/2,L*.75);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,`rgba(0,0,0,${vv*k})`);x.fillStyle=gr;x.fillRect(0,0,W,H)}
  // 顆粒
  const gn={e1920:22,e1960:30,e1970:12,e1980:14,e1990:18,e2000:8,mwind:20,mblue:10,mdream:8,mneon:14}[kind]||0;if(gn){const id2=x.getImageData(0,0,W,H),q=id2.data;const a=gn*k;for(let i=0;i<q.length;i+=4){const n=(Math.random()-.5)*a;q[i]+=n;q[i+1]+=n;q[i+2]+=n}x.putImageData(id2,0,0)}
  if(kind==="e1920"){x.strokeStyle=`rgba(255,245,225,${.3*k})`;x.lineWidth=Math.max(.6,L*.0005);for(let i=0;i<6;i++){const xx=Math.random()*W,y0=Math.random()*H*.6;x.globalAlpha=.3+Math.random()*.5;x.beginPath();x.moveTo(xx,y0);x.quadraticCurveTo(xx+(Math.random()-.5)*L*.03,y0+H*.2,xx+(Math.random()-.5)*L*.04,y0+H*(.15+Math.random()*.35));x.stroke()}x.globalAlpha=1;x.fillStyle=`rgba(30,20,10,${.5*k})`;for(let i=0;i<80;i++){x.beginPath();x.arc(Math.random()*W,Math.random()*H,Math.random()*L*.0018+.5,0,7);x.fill()}}
