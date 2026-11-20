@@ -21,7 +21,16 @@ h2 small{color:#9a9aa2;font-weight:400;margin-left:6px;font-size:13px}
 button{background:#d8b46a;color:#111;border:0;border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;cursor:pointer}
 button:disabled{background:#555;color:#bbb;cursor:default}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin-top:12px}
-.grid a{display:block;aspect-ratio:3/2;overflow:hidden;border-radius:4px;background:#1a1a1e}
+.grid a{position:relative;display:block;aspect-ratio:3/2;overflow:hidden;border-radius:4px;background:#1a1a1e;-webkit-tap-highlight-color:transparent}
+.grid a::after{content:"";position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.85);background:rgba(0,0,0,.25)}
+.grid a.sel::after{content:"✓";background:#d8b46a;border-color:#d8b46a;color:#111;font:800 14px/22px sans-serif;text-align:center}
+.grid a.sel img{opacity:.6}
+.selbar{position:fixed;left:0;right:0;bottom:0;z-index:9;display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(14,14,16,.94);border-top:1px solid #2a2a30;transform:translateY(110%);transition:transform .2s}
+.selbar.on{transform:none}
+.selbar span{font-size:14px;color:#ddd}
+.ghost{background:transparent;color:#d8b46a;border:1px solid #d8b46a}
+.hd .btns{display:flex;gap:8px}
+body{padding-bottom:80px}
 .grid img{width:100%;height:100%;object-fit:cover;display:block}
 .note{color:#9a9aa2;font-size:13px;margin-top:8px}
 .bar{height:4px;background:#2a2a30;border-radius:2px;margin-top:8px;overflow:hidden;display:none}
@@ -35,9 +44,10 @@ footer{color:#77777f;font-size:12px;text-align:center;padding:30px 18px}
 <p class="sub">西門紅樓 · 11/14–11/15 · 攝影 Jim Lin（JimFrame）</p>
 <p class="sub" id="cnt">載入中…</p>
 <div class="all"><button id="allBtn" disabled>全部下載</button><div class="bar" id="allBar"><i></i></div></div>
-<p class="note">按「下載」會把整個場次打包成一個檔案；點單張照片可以單獨開啟或存下。建議用電腦下載，手機也可以但比較久。</p>
+<p class="note">點照片可以多選（右上角打勾），選好按下方「下載所選」一次打包；也可以按「全選」或「下載這個場次」。手機下載後是一個壓縮檔，點開即可看到照片；建議用電腦下載比較快。</p>
 </header>
 <main id="main"></main>
+<div class="selbar" id="selbar"><span id="selcnt">已選 0 張</span><button id="selDl">下載所選</button><button class="ghost" id="selClr">清除</button></div>
 <footer>© Jim Lin Photography · 照片可自由留存與分享，轉貼請標註 @jimframe</footer>
 <script>
 const SCENES=[
@@ -48,7 +58,8 @@ const SCENES=[
 ];
 const src=(d,i)=>`../../photos/${d}/${i}.jpg`;
 const thumb=(d,i)=>`../../photos/${d}/t/${i}.jpg`;
-let groups={};
+let groups={};const SEL=new Set();
+function syncSel(){document.querySelectorAll(".grid a").forEach(a=>a.classList.toggle("sel",SEL.has(a.dataset.k)));document.getElementById("selcnt").textContent=`已選 ${SEL.size} 張`;document.getElementById("selbar").classList.toggle("on",SEL.size>0)}
 async function zipDl(list,fname,btn,bar){
   btn.disabled=true;const t=btn.textContent;bar.style.display="block";
   const z=new JSZip();let done=0;
@@ -78,12 +89,16 @@ async function zipDl(list,fname,btn,bar){
   const main=document.getElementById("main");
   SCENES.forEach(s=>{const g=groups[s.k];if(!g.length)return;
     const sec=document.createElement("section");
-    sec.innerHTML=`<div class="hd"><h2>${s.name}<small>${g.length} 張</small></h2><button>下載這個場次</button></div><div class="bar"><i></i></div><div class="grid"></div>`;
+    sec.innerHTML=`<div class="hd"><h2>${s.name}<small>${g.length} 張</small></h2><div class="btns"><button class="ghost" data-all>全選</button><button data-dl>下載這個場次</button></div></div><div class="bar"><i></i></div><div class="grid"></div>`;
     const grid=sec.querySelector(".grid");
-    grid.innerHTML=g.map(([d,i])=>`<a href="${src(d,i)}" target="_blank" rel="noopener"><img loading="lazy" src="${thumb(d,i)}" alt="${s.name} ${i}"></a>`).join("");
-    const b=sec.querySelector("button"),bar=sec.querySelector(".bar");
+    grid.innerHTML=g.map(([d,i])=>`<a href="${src(d,i)}" data-k="${d}/${i}" target="_blank" rel="noopener"><img loading="lazy" src="${thumb(d,i)}" alt="${s.name} ${i}"></a>`).join("");
+    const b=sec.querySelector("[data-dl]"),bar=sec.querySelector(".bar");
+    sec.querySelector("[data-all]").onclick=e=>{const all=g.every(([d,i])=>SEL.has(d+"/"+i));g.forEach(([d,i])=>all?SEL.delete(d+"/"+i):SEL.add(d+"/"+i));e.target.textContent=all?"全選":"取消全選";syncSel()};
+    grid.onclick=e=>{const a=e.target.closest("a");if(!a)return;e.preventDefault();const k=a.dataset.k;SEL.has(k)?SEL.delete(k):SEL.add(k);syncSel()};
     b.onclick=()=>zipDl(g,`CityCup2026_${s.name.replace(/[\/ ]/g,"")}.zip`,b,bar);
     main.appendChild(sec);});
+  const sb=document.getElementById("selDl");sb.onclick=()=>zipDl([...SEL].map(k=>k.split("/")),`CityCup2026_已選${SEL.size}張.zip`,sb,document.getElementById("allBar"));
+  document.getElementById("selClr").onclick=()=>{SEL.clear();document.querySelectorAll("[data-all]").forEach(b=>b.textContent="全選");syncSel()};
   const ab=document.getElementById("allBtn");ab.textContent=`全部下載（${total} 張）`;ab.disabled=false;
   ab.onclick=()=>zipDl(SCENES.flatMap(s=>groups[s.k]),"CityCup2026_全部.zip",ab,document.getElementById("allBar"));
 })();
