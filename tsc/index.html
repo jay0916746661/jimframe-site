@@ -237,7 +237,7 @@ const CAND={};
 
 
 
-const IV="?v=1121c";
+const IV="?v=1121d";
 const PGALL=[].concat(PG00,PG01,PG02,PG03,PG04,PG05,PG06,PG07,PG08,PG09,PG10,PG11,PG12,PG13,PG14).sort((a,b)=>{const ka=(a[0]>="A0008000"?"0":"1")+a[0],kb=(b[0]>="A0008000"?"0":"1")+b[0];return ka<kb?-1:1}); // 依時間序（A0008919–A0009999 在前，之後檔號歸零）
 PICKS.ALL=[].concat(...["PG00","PG01","PG02","PG03","PG04","PG05","PG06","PG07","PG08","PG09","PG10","PG11","PG12","PG13","PG14"].map(k=>PICKS[k]||[]));
 // 組別不再分開：全部表演放同一面牆
