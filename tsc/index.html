@@ -389,7 +389,7 @@ function show(){gOrig=null;if(ADMIN&&typeof aSet==="function"){aOrig=null;setTim
 function open(i){idx=i;$("#lbcrop").style.display=ADMIN?"flex":"none";$("#lbadj").style.display=ADMIN?"flex":"none";$("#lbok").style.display=ADMIN?"flex":"none";const ab=document.getElementById("admb");if(ab)ab.style.display="none";$("#lbdel").style.display=ADMIN?"flex":"none";$("#lb").classList.add("on");document.body.style.overflow="hidden";show()}
 function close(){zReset();aEnd();$("#adj").style.display="none";$("#lb").classList.remove("adjon");const ab=document.getElementById("admb");if(ab)ab.style.display="";$("#lb").classList.remove("on");document.body.style.overflow=""}
 function step(d){zReset();idx=(idx+d+VL().length)%VL().length;show()}
-function dl(){const p=VL()[idx],u=day.dir+p[0]+".jpg"+IV,nm="CityCup2026_"+p[0]+".jpg";if(ADMIN){const id=pid(day,p),v=AQ[id],c=CQ[id];if(v||c){dlEdited(u,v,c).then(b=>fxDownload(URL.createObjectURL(b),nm)).catch(()=>fxDownload(u,nm).catch(()=>{}));return}}fxDownload(u,nm).catch(()=>{})}
+function dl(){const p=VL()[idx],u=day.dir+p[0]+".jpg"+IV,nm="TSC2026_"+p[0]+".jpg";if(ADMIN){const id=pid(day,p),v=AQ[id],c=CQ[id];if(v||c){dlEdited(u,v,c).then(b=>fxDownload(URL.createObjectURL(b),nm)).catch(()=>fxDownload(u,nm).catch(()=>{}));return}}fxDownload(u,nm).catch(()=>{})}
 // 後台：面板調好的色、裁切，下載時直接套上（跟 Claude 套原檔同一套公式）
 async function dlEdited(u,v,c){const im=new Image();im.crossOrigin="anonymous";im.src=u+"?e="+Date.now();await im.decode();let W=im.naturalWidth,H=im.naturalHeight;const cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");x.drawImage(im,0,0);
  if(v){const id=x.getImageData(0,0,W,H);aPix(id.data,v);x.putImageData(id,0,0)}

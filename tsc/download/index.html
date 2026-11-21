@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TSC 2026 全部表演 照片下載 · Jim Lin Photography</title>
+<meta name="robots" content="noindex">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0e0e10;color:#eee;font-family:-apple-system,"PingFang TC","Noto Sans TC",sans-serif;line-height:1.6;overflow-x:hidden}
+header{padding:28px 18px 10px;max-width:1100px;margin:0 auto}
+h1{font-size:22px;font-weight:600;letter-spacing:.02em}
+.sub{color:#9a9aa2;font-size:14px;margin-top:6px}
+.all{margin-top:16px}
+main{max-width:1100px;margin:0 auto;padding:0 18px 60px}
+section{margin-top:30px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:1px solid #2a2a30;padding-bottom:10px}
+h2{font-size:17px;font-weight:600}
+h2 small{color:#9a9aa2;font-weight:400;margin-left:6px;font-size:13px}
+button{background:#d8b46a;color:#111;border:0;border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;cursor:pointer}
+button:disabled{background:#555;color:#bbb;cursor:default}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin-top:12px}
+.grid a{position:relative;display:block;aspect-ratio:3/2;overflow:hidden;border-radius:4px;background:#1a1a1e;-webkit-tap-highlight-color:transparent}
+.grid a::after{content:"";position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.85);background:rgba(0,0,0,.25)}
+.grid a.sel::after{content:"✓";background:#d8b46a;border-color:#d8b46a;color:#111;font:800 14px/22px sans-serif;text-align:center}
+.grid a.sel img{opacity:.6}
+.selbar{position:fixed;left:0;right:0;bottom:0;z-index:9;display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(14,14,16,.94);border-top:1px solid #2a2a30;transform:translateY(110%);transition:transform .2s}
+.selbar.on{transform:none}
+.selbar span{font-size:14px;color:#ddd}
+.ghost{background:transparent;color:#d8b46a;border:1px solid #d8b46a}
+.hd .btns{display:flex;gap:8px}
+body{padding-bottom:80px}
+.grid img{width:100%;height:100%;object-fit:cover;display:block}
+.note{color:#9a9aa2;font-size:13px;margin-top:8px}
+.bar{height:4px;background:#2a2a30;border-radius:2px;margin-top:8px;overflow:hidden;display:none}
+.bar i{display:block;height:100%;width:0;background:#d8b46a}
+footer{color:#77777f;font-size:12px;text-align:center;padding:30px 18px}
+</style>
+</head>
+<body>
+<header>
+<h1>TSC 2026 · 全部表演 · 照片下載</h1>
+<p class="sub">台北流行音樂中心文化館 · 11/20–11/22 · 依拍攝時間排序 · 攝影 Jim Lin（JimFrame）</p>
+<p class="sub" id="cnt">載入中…</p>
+<div class="all"><button id="allBtn" disabled>全部下載</button><div class="bar" id="allBar"><i></i></div></div>
+<p class="note">點照片可以多選（右上角打勾），選好按下方「下載所選」一次打包；也可以按「全選」或「下載這個場次」。手機下載後是一個壓縮檔，點開即可看到照片；建議用電腦下載比較快。</p>
+</header>
+<main id="main"></main>
+<div class="selbar" id="selbar"><span id="selcnt">已選 0 張</span><button id="selDl">下載所選</button><button class="ghost" id="selClr">清除</button></div>
+<footer>© Jim Lin Photography · 照片可自由留存與分享，轉貼請標註 @jimframe</footer>
+<script>
+const SCENES=[
+ {k:"all",name:"全部表演",day:"1120",f:n=>true}
+];
+const PICKS=["A0000005", "A0000017", "A0000029", "A0000069", "A0000107", "A0000148", "A0000160", "A0000185", "A0000245", "A0000255", "A0000267", "A0000421", "A0000496", "A0000540", "A0000559", "A0000574", "A0000602", "A0000617", "A0000717", "A0000733", "A0000793", "A0000822", "A0000855", "A0000881", "A0001033", "A0001089", "A0001117", "A0001173", "A0001194", "A0001220", "A0001260", "A0001304", "A0001326", "A0001341", "A0001532", "A0001548", "A0001565", "A0001583", "A0001610", "A0001645", "A0001669", "A0001685", "A0001806", "A0001827", "A0001838", "A0001857", "A0001869", "A0001886", "A0002172", "A0002182", "A0002200", "A0002212", "A0002265", "A0002279", "A0002306", "A0002339", "A0002350", "A0002360", "A0002401", "A0002446", "A0002545", "A0002608", "A0002753", "A0002778", "A0002919", "A0002939", "A0003048", "A0003068", "A0003082", "A0003102", "A0003144", "A0003224", "A0003246", "A0003269", "A0003281", "A0003297", "A0003308", "A0003326", "A0003332", "A0003350", "A0003382", "A0003404", "A0003415", "A0003473"];
+const src=(d,i)=>`../../photos/${d}/${i}.jpg`;
+const thumb=(d,i)=>`../../photos/${d}/t/${i}.jpg`;
+let groups={};const SEL=new Set();
+function syncSel(){document.querySelectorAll(".grid a").forEach(a=>a.classList.toggle("sel",SEL.has(a.dataset.k)));document.getElementById("selcnt").textContent=`已選 ${SEL.size} 張`;document.getElementById("selbar").classList.toggle("on",SEL.size>0)}
+async function zipDl(list,fname,btn,bar){
+  btn.disabled=true;const t=btn.textContent;bar.style.display="block";
+  const z=new JSZip();let done=0;
+  const q=list.slice();
+  async function worker(){
+    while(q.length){const [d,i]=q.shift();
+      try{const r=await fetch(src(d,i));if(r.ok)z.file(`${d}_${i}.jpg`,await r.blob());}catch(e){}
+      done++;bar.firstChild.style.width=(done/list.length*100)+"%";btn.textContent=`下載中 ${done}/${list.length}`;}
+  }
+  await Promise.all([1,2,3,4,5,6].map(worker));
+  btn.textContent="打包中…";
+  const blob=await z.generateAsync({type:"blob",compression:"STORE"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),60000);
+  btn.textContent=t;btn.disabled=false;
+}
+(async()=>{
+  const nc={cache:"no-cache"};
+  const [rel,hid]=await Promise.all([fetch("../released.json",nc).then(r=>r.json()).catch(()=>({ids:[]})),fetch("../../hidden.json",nc).then(r=>r.json()).catch(()=>({ids:[]}))]);
+  const h=new Set(hid.ids||[]);
+  const ids=[...new Set([...PICKS.map(i=>"L1120-"+i),...(rel.ids||[])])].filter(x=>!h.has(x)).sort();
+  SCENES.forEach(s=>groups[s.k]=[]);
+  ids.forEach(x=>{const d=x.slice(1,5),i=x.slice(6),n=parseInt(i.slice(1),10);
+    const s=SCENES.find(s=>s.day===d&&s.f(n));if(s)groups[s.k].push([d,i]);});
+  const total=SCENES.reduce((a,s)=>a+groups[s.k].length,0);
+  document.getElementById("cnt").textContent=`共 ${total} 張`;
+  const main=document.getElementById("main");
+  SCENES.forEach(s=>{const g=groups[s.k];if(!g.length)return;
+    const sec=document.createElement("section");
+    sec.innerHTML=`<div class="hd"><h2>${s.name}<small>${g.length} 張</small></h2><div class="btns"><button class="ghost" data-all>全選</button><button data-dl>下載這個場次</button></div></div><div class="bar"><i></i></div><div class="grid"></div>`;
+    const grid=sec.querySelector(".grid");
+    grid.innerHTML=g.map(([d,i])=>`<a href="${src(d,i)}" data-k="${d}/${i}" target="_blank" rel="noopener"><img loading="lazy" src="${thumb(d,i)}" alt="${s.name} ${i}"></a>`).join("");
+    const b=sec.querySelector("[data-dl]"),bar=sec.querySelector(".bar");
+    sec.querySelector("[data-all]").onclick=e=>{const all=g.every(([d,i])=>SEL.has(d+"/"+i));g.forEach(([d,i])=>all?SEL.delete(d+"/"+i):SEL.add(d+"/"+i));e.target.textContent=all?"全選":"取消全選";syncSel()};
+    grid.onclick=e=>{const a=e.target.closest("a");if(!a)return;e.preventDefault();const k=a.dataset.k;SEL.has(k)?SEL.delete(k):SEL.add(k);syncSel()};
+    b.onclick=()=>zipDl(g,`TSC2026_${s.name.replace(/[\/ ]/g,"")}.zip`,b,bar);
+    main.appendChild(sec);});
+  const sb=document.getElementById("selDl");sb.onclick=()=>zipDl([...SEL].map(k=>k.split("/")),`TSC2026_已選${SEL.size}張.zip`,sb,document.getElementById("allBar"));
+  document.getElementById("selClr").onclick=()=>{SEL.clear();document.querySelectorAll("[data-all]").forEach(b=>b.textContent="全選");syncSel()};
+  const ab=document.getElementById("allBtn");ab.textContent=`全部下載（${total} 張）`;ab.disabled=false;
+  ab.onclick=()=>zipDl(SCENES.flatMap(s=>groups[s.k]),"TSC2026_全部.zip",ab,document.getElementById("allBar"));
+})();
+</script>
+</body>
+</html>
