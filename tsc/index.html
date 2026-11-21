@@ -1,72 +1,644 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>TSC 2026 · 全部表演 · Jim Lin Photography</title>
-<meta name="description" content="Taiwan Salsa Carnival 2026 全部舞台表演精選照片，每組精選。攝影 Jim Lin（@jimframe）。">
+<meta name="description" content="Taiwan Salsa Carnival 2026 全部舞台表演照片，依組別瀏覽、可下載。攝影 Jim Lin（@jimframe）。">
 <meta property="og:title" content="TSC 2026 · 全部表演 · JimFrame">
 <meta property="og:image" content="https://jay0916746661.github.io/jimframe-site/photos/1120/A0001173.jpg">
 <meta name="theme-color" content="#0B0812">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Limelight&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
-:root{--bg:#0B0812;--surface:#161022;--line:#2C2440;--pink:#F64BCB;--gold:#FFC857;--text:#F4EEFA;--text2:#B7AACB;
---font:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;color-scheme:dark}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--font);-webkit-text-size-adjust:100%}
-a{color:var(--pink)}
-.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(11,8,18,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.top a{color:var(--text);text-decoration:none;font-weight:700}.top small{color:var(--text2);font-weight:600}
-.hero{position:relative}
-.mosaic{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:3px;height:clamp(220px,58vw,420px)}
-.mosaic img{width:100%;height:100%;min-height:0;object-fit:cover;display:block}.mosaic img:nth-child(n+7){display:none}
-@media(min-width:760px){.mosaic{grid-template-columns:repeat(5,1fr)}.mosaic img:nth-child(n+7){display:block}}
-.hero::after{content:"";position:absolute;left:0;right:0;top:0;height:clamp(220px,58vw,420px);background:linear-gradient(180deg,rgba(11,8,18,0) 65%,#0B0812)}
-.hero .cap{position:relative;z-index:1;padding:10px 20px 20px;max-width:960px;margin:0 auto;width:100%}
-.eyebrow{font-size:12px;letter-spacing:.18em;font-weight:700;color:var(--gold)}
-h1{margin:6px 0 8px;font-size:clamp(34px,7vw,64px);line-height:1.05;letter-spacing:-.01em}
-h1 span{color:var(--pink)}
-.lead{margin:0;color:var(--text2);max-width:560px}
-.wrap{max-width:1200px;margin:0 auto;padding:8px 14px 60px}
-.jump{display:flex;gap:8px;overflow-x:auto;padding:14px 4px;scrollbar-width:none}.jump::-webkit-scrollbar{display:none}
-.jump a{flex:none;padding:7px 13px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--text);text-decoration:none;font-size:14px;font-weight:600}
-section{scroll-margin-top:70px;margin-top:26px}
-section h2{display:flex;align-items:baseline;gap:10px;margin:0 4px 12px;font-size:22px}
-section h2 small{font-size:13px;color:var(--text2);font-weight:600}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
-.grid button{all:unset;cursor:pointer;display:block;border-radius:12px;overflow:hidden;background:var(--surface);aspect-ratio:3/2}
-.grid button.v{aspect-ratio:2/3;grid-row:span 2}
+:root{--brick:#A3302A;--brick-d:#6E1E1A;--bg:#1E0806;--bg2:#2A0B09;--cream:#F3E6D0;--cream-2:#CDB89A;--gold:#D4AF6A;--line:rgba(212,175,106,.35);
+--font-text:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+--font-serif:"Noto Serif TC","Songti TC",serif;--font-deco:"Limelight","Noto Serif TC",serif;--font-latin:"Space Grotesk",var(--font-text);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;color:var(--cream);font:16px/1.6 var(--font-text);-webkit-text-size-adjust:100%;
+ background:var(--bg);
+ background-image:
+  linear-gradient(180deg,rgba(30,8,6,.2),var(--bg) 70%),
+  repeating-linear-gradient(0deg,transparent 0 22px,rgba(0,0,0,.35) 22px 24px),
+  repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.35) 46px 48px),
+  linear-gradient(var(--brick-d),var(--brick-d));
+ background-size:auto,auto,96px 48px,auto;background-attachment:fixed}
+/* 磚牆：每兩層錯位 */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+ background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(0,0,0,.35) 22px 24px,transparent 24px 48px);background-size:48px 48px;
+ -webkit-mask:repeating-linear-gradient(0deg,transparent 0 24px,#000 24px 48px);mask:repeating-linear-gradient(0deg,transparent 0 24px,#000 24px 48px);opacity:.6}
+a{color:var(--gold)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wrap{width:min(100% - 28px,1180px);margin-inline:auto}
+header{height:58px;display:flex;align-items:center;justify-content:space-between}
+.back{min-height:44px;display:flex;align-items:center;gap:6px;color:var(--cream);text-decoration:none;font-weight:700;font-size:14px}
+.stamp{font:12px/1 var(--font-latin);letter-spacing:.2em;color:var(--gold);border:1px solid var(--line);padding:8px 12px;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,10px 100%,0 50%)}
+/* 主視覺：八角窗框 */
+.hero{position:relative;padding:10px;background:linear-gradient(135deg,#C9A45C,#7A5A2A 50%,#E3C584);clip-path:polygon(28px 0,calc(100% - 28px) 0,100% 28px,100% calc(100% - 28px),calc(100% - 28px) 100%,28px 100%,0 calc(100% - 28px),0 28px)}
+.hero-in{position:relative;aspect-ratio:3/2;max-height:600px;width:100%;overflow:hidden;background:#111;clip-path:polygon(22px 0,calc(100% - 22px) 0,100% 22px,100% calc(100% - 22px),calc(100% - 22px) 100%,22px 100%,0 calc(100% - 22px),0 22px)}
+.hero-in img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-in .cap{position:absolute;inset:auto 0 0 0;padding:40px 22px 22px;background:linear-gradient(transparent,rgba(30,6,4,.92))}
+.eyebrow{font:500 11px/1.4 var(--font-latin);letter-spacing:.24em;color:var(--gold)}
+h1{margin:6px 0 0;font:400 clamp(34px,7vw,72px)/1 var(--font-deco);letter-spacing:.02em;color:var(--cream);text-shadow:0 2px 0 var(--brick-d)}
+h1 small{display:block;font:900 clamp(15px,2.4vw,22px)/1.5 var(--font-serif);letter-spacing:.3em;margin-top:8px;color:var(--gold)}
+.lead{margin:8px 0 0;color:var(--cream-2);font-size:13px}
+/* 分隔線：裝飾藝術風 */
+.orn{display:flex;align-items:center;gap:12px;margin:34px 0 14px;color:var(--gold)}
+.orn::before,.orn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.orn h2{margin:0;font:900 20px/1.3 var(--font-serif);letter-spacing:.2em;white-space:nowrap}
+.orn i{font-style:normal;font-size:12px}
+/* 三天行程：票根 */
+.days{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px}
+.ticket{position:relative;display:flex;text-align:left;border:0;padding:0;cursor:pointer;color:var(--bg);background:var(--cream);border-radius:10px;overflow:hidden;min-height:96px;font:inherit}
+.ticket .stub{width:76px;flex:none;background:var(--brick);color:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:2px dashed var(--cream);font-family:var(--font-latin)}
+.ticket .stub b{font:400 28px/1 var(--font-deco)}
+.ticket .stub small{font-size:10px;letter-spacing:.2em;opacity:.85}
+.ticket .tx{padding:12px 14px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.ticket .tx b{font:900 17px/1.3 var(--font-serif)}
+.ticket .tx span{font-size:12px;color:#6b4b3a}
+.ticket .more{display:block;font-style:normal;font-size:11px;color:var(--brick);margin-top:3px;font-weight:700}
+.ticket .badge{position:absolute;top:8px;right:8px;font:700 10px/1 var(--font-latin);letter-spacing:.1em;padding:5px 8px;border-radius:999px;background:var(--brick);color:var(--cream)}
+.ticket .badge.wait{background:#bba98d;color:#3b2a20}
+.ticket.on{outline:3px solid var(--gold);outline-offset:2px}
+/* 精彩瞬間 */
+.rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none}
+.rail button{flex:none;width:min(70vw,300px);aspect-ratio:3/2;border:0;padding:0;cursor:pointer;scroll-snap-align:start;background:#111;overflow:hidden;border-radius:6px;box-shadow:0 0 0 1px var(--line)}
+.rail img{width:100%;height:100%;object-fit:cover;display:block}
+/* 相片牆 */
+.meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:var(--cream-2);font-size:13px;margin:6px 0 10px}
+.full{min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;background:var(--gold);color:#2A0B09;text-decoration:none;font-weight:700;font-size:13px}
+.panel{background:rgba(30,8,6,.82);border:1px solid var(--line);border-radius:14px;padding:12px;backdrop-filter:blur(2px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px}
+@media(max-width:600px){.days{grid-template-columns:1fr 1fr;gap:8px}.ticket{min-height:78px}.ticket .stub{width:50px}.ticket .stub b{font-size:22px}.ticket .tx{padding:8px 10px 24px}.ticket .tx b{font-size:15px}.ticket .tx span{font-size:11px}.ticket .badge{top:auto;bottom:6px;right:6px;font-size:9px}.eyebrow{font-size:9px;letter-spacing:.14em}.grid{grid-template-columns:repeat(3,1fr);gap:3px}.panel{padding:6px}}
+.grid button{padding:0;border:0;background:#2a1512;aspect-ratio:1;overflow:hidden;cursor:pointer;border-radius:4px}
 .grid img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-.grid button:hover img{transform:scale(1.03)}
-.note{margin:40px 4px 0;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--text2);font-size:14px}
-.note b{color:var(--text)}
-#lb{position:fixed;inset:0;z-index:20;background:rgba(5,3,9,.96);display:none;align-items:center;justify-content:center}
-#lb.on{display:flex}#lb img{max-width:96vw;max-height:84vh;object-fit:contain}
-#lb .bar{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:10px;padding:14px calc(14px + env(safe-area-inset-bottom))}
-#lb button,#lb a.btn{all:unset;cursor:pointer;padding:10px 16px;border-radius:999px;background:#2A1F3D;color:var(--text);font-weight:700;font-size:15px}
-#lb a.btn{background:var(--pink);color:#1F0519}
-#lb .x{position:fixed;top:12px;right:14px}#lb .cnt{position:fixed;top:18px;left:18px;color:var(--text2);font-size:14px}
-footer{text-align:center;color:var(--text2);font-size:13px;padding:30px 0 50px}
+.grid button:hover img{transform:scale(1.05)}
+.soon{padding:40px 20px;text-align:center;color:var(--cream-2)}
+.vchips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}.vchip{border:1px solid var(--line);background:transparent;color:var(--cream);border-radius:999px;padding:7px 14px;font:600 13px var(--font-text);cursor:pointer}.vchip.on{background:var(--gold);color:#2A0B09;border-color:var(--gold)}.vchip small{opacity:.7;margin-left:3px}
+.vlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}.vcard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2)}
+.vbox{position:relative;aspect-ratio:16/9;background:#000 radial-gradient(circle at 50% 50%,#3a1612,#000)}.vbox iframe,.vbox video{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}.voff{opacity:.45}.vsel{background:#3a1d17;color:#f3e3c8;border:1px solid #6b3a2c;border-radius:999px;padding:8px 12px;font:inherit}.ved{font-weight:700}
+#ved{position:fixed;inset:0;z-index:999;background:rgba(10,4,3,.96);overflow:auto;-webkit-overflow-scrolling:touch}.vedin{max-width:900px;margin:0 auto;padding:10px 12px 40px;color:#f3e3c8}
+.vedh{display:flex;justify-content:space-between;align-items:center;padding:6px 0}.vedh button{background:none;border:0;color:#f3e3c8;font-size:26px}
+#vedv{width:100%;max-height:52vh;background:#000;border-radius:8px}.vedt{display:flex;justify-content:space-between;font-size:14px;margin:6px 2px;opacity:.9}#vedc{font-size:20px;font-weight:700;color:#e7b766}
+.vedbar{position:relative;height:22px;background:#3a1d17;border-radius:6px;margin:6px 0;touch-action:none}#vedsel{position:absolute;top:0;bottom:0;background:rgba(231,183,102,.55);border-radius:6px}#vedhd{position:absolute;top:-3px;bottom:-3px;width:3px;background:#fff;margin-left:-1px}
+.vedn{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.vedn button,.vedf button{flex:1;min-width:44px;padding:10px 6px;border-radius:10px;border:1px solid #6b3a2c;background:#2a1410;color:#f3e3c8;font:inherit}.vedn .hi{background:#5a2d1c;font-weight:700}
+.vedg{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:4px;margin:10px 0;max-height:40vh;overflow:auto}.vedg button{aspect-ratio:16/9;border:0;border-radius:4px;background-repeat:no-repeat;position:relative;padding:0;transform-origin:0 0}
+.vedg button small{position:absolute;left:2px;bottom:1px;font-size:11px;color:#fff;text-shadow:0 0 3px #000}.vedg button.out{opacity:.25;filter:grayscale(1)}
+.vedin label{display:block;margin:8px 0;font-size:14px}.vedin input{width:100%;padding:9px;border-radius:8px;border:1px solid #6b3a2c;background:#1d0d0a;color:#f3e3c8;font:inherit;margin-top:4px}.vedin input[type=number]{width:90px}
+.vedf{display:flex;gap:8px;margin-top:12px}.vedf .ok{background:#e7b766;color:#2a1410;font-weight:700}.vedf .warn{color:#ff9a8a}.vtrim{display:inline-flex;gap:6px;flex-wrap:wrap}
+.vplay{position:absolute;inset:0;margin:auto;width:64px;height:64px;border-radius:50%;border:2px solid var(--gold);background:rgba(0,0,0,.4);color:var(--gold);font-size:24px;cursor:pointer}
+.vinfo{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px}.vinfo b{font:900 16px/1.3 var(--font-serif)}.vinfo span{font-size:12px;color:var(--cream-2)}.vtag{font-style:normal;color:var(--gold)}
+.vbtn{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;align-items:center}.vbtn .dl{text-decoration:none;display:inline-flex;align-items:center}.vset{width:auto!important;border-radius:999px!important;padding:0 10px!important;font-size:12px!important}.vset.on{background:var(--gold)!important;color:#2A0B09!important}
+.soon b{display:block;color:var(--cream);font:900 22px/1.4 var(--font-serif);margin-bottom:6px}
+/* 場地 */
+.venue{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--bg2)}
+.venue img{display:block;width:100%;aspect-ratio:16/9;max-height:420px;object-fit:cover}
+.venue .vtx{padding:16px 20px 18px;border-top:2px solid var(--gold)}
+.venue h3{margin:6px 0 6px;font:900 26px/1.3 var(--font-serif);letter-spacing:.12em}
+.venue p{margin:0;color:var(--cream);font-size:14px;line-height:1.8;max-width:720px;opacity:.92}
+.facts{display:flex;gap:6px;flex-wrap:wrap}
+.facts span{font:600 11px/1 var(--font-latin);letter-spacing:.08em;padding:6px 10px;border:1px solid var(--gold);color:var(--gold);border-radius:999px;background:rgba(30,8,6,.5)}
+.map{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;color:var(--gold);text-decoration:none;font-size:13px;font-weight:600}
+/* 燈箱 */
+.fbar{display:flex;gap:8px;overflow-x:auto;padding:10px 12px calc(10px + env(safe-area-inset-bottom));scrollbar-width:none;flex:none}
+.fbar button{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;color:var(--cream-2);font:600 11px var(--font-text);cursor:pointer;padding:0}
+.fbar img{width:58px;height:58px;object-fit:cover;border-radius:10px;border:2px solid transparent}
+.fbar button.on{color:var(--gold)}.fbar button.on img{border-color:var(--gold)}
+.elab{flex:none;font:700 11px var(--font-text);color:var(--gold);letter-spacing:.1em}.echip{border-color:rgba(212,175,55,.45)}.echip.mood{border-style:dashed}
+.gchip{flex:none;min-height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--cream);font:600 12px var(--font-text);cursor:pointer}.gchip.on{background:var(--gold);color:#2A0B09}
+.vig{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .2s}
+.zb{bottom:12px!important}
+
+.lb{position:fixed;inset:0;background:#000;z-index:10;display:none;flex-direction:column}
+.lb.on{display:flex}
+.lb-top{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));gap:8px}
+.lb-top span{color:var(--cream-2);font:500 13px var(--font-latin)}
+.ib{min-width:44px;min-height:44px;border-radius:999px;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.dl{min-height:44px;padding:0 18px;border-radius:999px;border:0;background:var(--gold);color:#2A0B09;font:700 14px var(--font-text);cursor:pointer}
+.lb-img{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;position:relative;touch-action:pan-y}
+.lb-img{overflow:hidden;touch-action:none}.lb-img img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:0 0;will-change:transform;user-select:none;-webkit-user-drag:none}.lb-img.zoomed{cursor:grab}
+.zb{position:absolute;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:2}
+.nav{position:absolute;top:50%;transform:translateY(-50%)}.nav.l{left:10px}.nav.r{right:10px}
+@media(max-width:600px){.nav{display:none}}
+.credit{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
+.credit.on{display:flex}
+.credit>div{width:min(100%,460px);background:var(--bg2);border-top:2px solid var(--gold);border-radius:20px 20px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom))}
+.credit h3{margin:0 0 6px;font:900 20px var(--font-serif)}
+.credit p{margin:0 0 14px;color:var(--cream-2);font-size:14px}
+.credit label{display:flex;gap:10px;align-items:center;margin-bottom:16px;font-size:15px}
+.credit input{width:20px;height:20px;accent-color:var(--gold)}
+.credit .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.credit button{min-height:48px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--cream);font:700 15px var(--font-text);cursor:pointer}
+.credit button.go{background:var(--gold);color:#2A0B09;border:0}
+.credit button.go:disabled{opacity:.4}
+.langs{display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(30,8,6,.7);border:1px solid var(--line)}.langs button{min-width:34px;min-height:32px;border:0;border-radius:999px;background:none;color:var(--cream);font:600 12px var(--font-text);cursor:pointer}.langs button.on{background:var(--gold);color:#2A0B09}@media(max-width:600px){.stamp{display:none}}
+.cchips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 10px}.cchips button{min-height:34px;display:inline-flex;align-items:center;gap:5px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--cream);font:600 12px var(--font-text);cursor:pointer}.cchips button.on{background:var(--cream);color:#2A0B09}.cchips i{width:12px;height:12px;border-radius:50%;display:inline-block}.findme{margin-left:auto;cursor:pointer;background:none;min-height:34px;display:inline-flex;align-items:center;padding:0 12px;border-radius:999px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font:700 12px var(--font-text)}
+footer{margin:44px 0 30px;text-align:center;color:var(--cream-2);font-size:13px}
+footer .sig{font:400 22px var(--font-deco);color:var(--gold);display:block;margin-bottom:6px}
+
+/* ===== TSC 外觀（覆蓋 City Cup 紅磚風） ===== */
+:root{--brick:#F64BCB;--brick-d:#2A1640;--bg:#0B0812;--bg2:#161022;--cream:#F4EEFA;--cream-2:#B7AACB;--gold:#FFC857;--line:rgba(246,75,203,.28)}
+body{background:radial-gradient(1200px 600px at 80% -10%,rgba(246,75,203,.18),transparent 60%),radial-gradient(900px 500px at -10% 20%,rgba(124,77,255,.16),transparent 60%),#0B0812 !important;background-size:auto !important}
+.hero{padding:0;background:none;clip-path:none}
+.hero-in{clip-path:none;border-radius:20px}
+.hero-in .cap{background:linear-gradient(transparent,rgba(11,8,18,.92))}
+.hero h1{font-family:var(--font-text);letter-spacing:-.01em}
+.eyebrow{color:var(--gold)}
+.orn{color:var(--cream)}
+.orn::before,.orn::after{background:linear-gradient(90deg,transparent,rgba(246,75,203,.6),transparent)}
+.orn h2{font-family:var(--font-text);letter-spacing:.06em}
+.orn i{color:var(--brick)}
+.panel{background:rgba(22,16,34,.9);border-color:var(--line)}
+.ticket{background:#161022;color:var(--cream);border:1px solid var(--line)}
+.ticket .stub{background:linear-gradient(160deg,#F64BCB,#7C4DFF);color:#fff}
+.ticket .tx span{color:var(--cream-2)}
+.ticket.on{outline:2px solid var(--brick)}
+.grid button{background:#1d1530}
+.stamp{border-color:var(--brick);color:var(--brick)}
+.days{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+@media(max-width:600px){.days{grid-template-columns:repeat(3,1fr);gap:6px}.ticket{min-height:64px}.ticket .stub{width:34px}.ticket .stub b{font-size:18px}.ticket .stub small{font-size:9px}.ticket .tx{padding:6px 6px 20px}.ticket .tx b{font-size:13px}.ticket .tx span{display:none}.ticket .more{display:none}.ticket .badge{font-size:9px}}
+.mosaic{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:3px;width:100%;height:100%}.mosaic img{width:100%;height:100%;min-height:0;object-fit:cover;display:block}.mosaic img:nth-child(n+7){display:none}@media(min-width:760px){.mosaic{grid-template-columns:repeat(5,1fr)}.mosaic img:nth-child(n+7){display:block}}
 </style></head><body>
-<div class="top"><a href="../">← JimFrame</a><small>TSC 2026 · 全部表演</small></div>
-<header class="hero"><div class="mosaic" id="mosaic" aria-hidden="true"></div><div class="cap">
-<div class="eyebrow">TAIWAN SALSA CARNIVAL 2026 · 11.20 – 11.22</div>
-<h1>全部表演 <span>精選</span></h1>
-<p class="lead" id="lead">三個晚上的舞台表演放在同一個資料夾，每組精選。點照片看大圖、可直接下載。Party 照片另外一區，整理中。攝影 Jim Lin（@jimframe）。</p></div></header>
-<main class="wrap"><nav class="jump" id="jump"></nav><div id="groups"></div>
-<div class="note"><b>想要自己那組的完整照片？</b><br>這裡是精選、有浮水印的版本。各組完整、高畫質無浮水印的照片，私訊 Instagram <a href="https://www.instagram.com/jimframe/" target="_blank" rel="noopener">@jimframe</a>，告訴我你是哪一組（或傳一張這頁的照片給我）。</div>
-</main>
-<div id="lb" role="dialog" aria-modal="true"><span class="cnt" id="cnt"></span><button class="x" id="lx" aria-label="關閉">✕</button><img id="li" alt=""><div class="bar"><button id="lp">‹ 上一張</button><a class="btn" id="ld" download>下載</a><button id="ln">下一張 ›</button></div></div>
-<footer>© 2026 Jim Lin Photography · <a href="https://www.instagram.com/jimframe/" target="_blank" rel="noopener">@jimframe</a></footer>
+<div class="wrap">
+<header><a class="back" href="../">‹ Jim Lin Photography</a><span style="display:flex;gap:8px;align-items:center"><span class="langs" id="langs"></span><span class="stamp">TSC 2026</span></span></header>
+
+<div class="hero"><div class="hero-in"><div class="mosaic" aria-hidden="true"><img src="../photos/1120/t/A0000245.jpg" alt=""><img src="../photos/1120/t/A0001173.jpg" alt=""><img src="../photos/1120/t/A0000602.jpg" alt=""><img src="../photos/1120/t/A0002265.jpg" alt=""><img src="../photos/1120/t/A0003297.jpg" alt=""><img src="../photos/1120/t/A0003224.jpg" alt=""><img src="../photos/1120/t/A0000107.jpg" alt=""><img src="../photos/1120/t/A0003404.jpg" alt=""><img src="../photos/1120/t/A0002778.jpg" alt=""><img src="../photos/1120/t/A0001583.jpg" alt=""></div><div class="cap"><div class="eyebrow">TAIWAN SALSA CARNIVAL 2026 · 11.20 – 11.22</div><h1>全部表演<small data-t="venue">All Shows</small></h1><p class="lead" data-t="lead">三個晚上的舞台表演，依組別看，點縮圖看大圖、可下載。Party 照片另外一區。攝影 Jim Lin @jimframe</p></div></div></div>
+
+<div class="orn"><i>◆</i><h2 data-t="prog">組別</h2><i>◆</i></div>
+<div class="days" id="days"></div>
+
+<div class="orn" style="display:none"><i>◆</i><h2 data-t="fmh">找自己</h2><i>◆</i></div>
+<div class="panel" id="fm" style="display:none">
+<p style="margin:4px 0 12px;color:var(--cream-2);font-size:14px" data-t="fmd">上傳一張清楚的自拍或正面照，從三天的照片裡找出有你的照片。照片只在你的手機裡比對，不會上傳。</p>
+<label class="full" style="cursor:pointer"><input id="fmfile" type="file" accept="image/*" style="display:none"><span data-t="fmb">📷 上傳照片找自己</span></label>
+<p id="fmst" style="margin:10px 0 0;color:var(--cream-2);font-size:13px"></p>
+<div id="fmres" class="grid" style="margin-top:12px"></div></div>
+<div class="orn"><i>◆</i><h2 data-t="hl">精彩瞬間</h2><i>◆</i></div>
+<div class="rail" id="rail"></div>
+
+<div class="orn"><i>◆</i><h2 id="wall-title">照片</h2><i>◆</i></div>
+<div class="panel" id="view"></div>
+
+<div class="orn" style="display:none"><i>◆</i><h2 data-t="about">關於場地</h2><i>◆</i></div>
+<div class="venue" style="display:none">
+<img src="../photos/1114/A0000451.jpg" alt="西門紅樓八角廳內部" loading="lazy">
+<div class="vtx">
+<div class="facts"><span>EST. 1908</span><span data-t="f2">紅磚八角樓</span><span data-t="f3">市定古蹟</span></div>
+<h3 data-t="venue">All Shows</h3><p data-t="vdesc">1908 年落成的紅磚八角樓，原本是西門町第一座公營市場，一百多年來當過市場、戲院、書場，現在是文創與表演場地。City Cup 週六、週日的比賽與晚會就在這棟紅磚建築裡；週五的開幕夜則在 BA 教室。</p>
+<a class="map" href="https://www.google.com/maps/search/?api=1&query=%E8%A5%BF%E9%96%80%E7%B4%85%E6%A8%93" target="_blank" rel="noopener"><span data-t="addr">台北市萬華區成都路 10 號（捷運西門站 1 號出口）</span> ›</a>
+</div></div>
+
+<footer><span class="sig">JimFrame</span><span data-t="foot1">使用照片請標記</span> <a href="https://instagram.com/jimframe" target="_blank" rel="noopener">@jimframe</a> · <span data-t="thanks">謝謝</span> 🙏</footer>
+</div>
+
+<div class="lb" id="lb"><div class="lb-top"><button class="ib" data-x aria-label="關閉">✕</button><span id="cnt"></span><span style="display:flex;gap:8px"><button class="ib" id="lbcrop" data-lbcrop style="display:none" aria-label="裁切">✂️</button><button class="ib" id="lbadj" data-lbadj style="display:none" aria-label="調色">🎛</button><button class="ib" id="lbok" data-lbok style="display:none" aria-label="可以公開">✅</button><button class="ib" id="lbdel" data-lbdel style="display:none;background:#c62828" aria-label="刪除這張">🗑</button><button class="dl" data-dl data-t="dlthis">下載這張</button></span></div>
+<div class="lb-img" id="stage"><button class="ib nav l" data-p aria-label="上一張">‹</button><img id="big" alt=""><button class="ib nav r" data-n aria-label="下一張">›</button><button class="ib zb" data-zoom aria-label="放大">🔍</button><div class="vig" id="vig"></div><div id="lbmark" style="display:none;position:absolute;left:50%;top:12px;translate:-50% 0;padding:6px 14px;border-radius:999px;background:#c62828;color:#fff;font:700 13px var(--font-text);z-index:3">已標記待刪</div></div><div class="fbar" id="fbar"></div><div id="gbar" style="display:flex;gap:8px;padding:0 12px 6px;overflow-x:auto"></div><div id="ebar" style="display:flex;gap:8px;padding:0 12px 6px;overflow-x:auto;align-items:center;scrollbar-width:none"></div><div id="gctl" style="display:none;align-items:center;gap:10px;padding:0 16px calc(10px + env(safe-area-inset-bottom));color:var(--cream-2);font-size:12px"><span id="glab"></span><input id="gamt" type="range" min="0" max="100" value="60" style="flex:1;accent-color:var(--gold)"><span id="gval">60</span></div></div>
+<div id="crop" style="display:none;position:fixed;inset:0;z-index:25;background:#000;flex-direction:column">
+<div style="display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top))">
+<button class="ib" data-cropx aria-label="取消">✕</button>
+<span style="display:flex;gap:6px"><button class="ib" data-cr="0" style="font-size:13px;min-width:52px">自由</button><button class="ib" data-cr="1.5" style="font-size:13px">3:2</button><button class="ib" data-cr="0.8" style="font-size:13px">4:5</button><button class="ib" data-cr="1" style="font-size:13px">1:1</button><button class="ib" data-cr="0.5625" style="font-size:13px">9:16</button></span>
+<button class="dl" data-cropok>完成</button></div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0;touch-action:none"><div style="position:relative"><img id="cimg" style="display:block;max-width:100vw;max-height:calc(100vh - 90px)"><div id="cbox" style="position:absolute;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,.55);cursor:move;touch-action:none"><i data-h="se" style="position:absolute;right:-14px;bottom:-14px;width:28px;height:28px;border-radius:50%;background:#fff"></i><i data-h="nw" style="position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:#fff"></i></div></div></div>
+<p style="text-align:center;color:#aaa;font-size:12px;margin:6px 0 calc(8px + env(safe-area-inset-bottom))">拖曳框移動、拉白點調大小。完成後加進清單，複製給 Claude 用原檔裁切。</p></div>
+<div id="hov" style="display:none;position:fixed;z-index:20;background:#111;border:1px solid var(--gold);border-radius:12px;padding:8px;box-shadow:0 12px 40px rgba(0,0,0,.6);gap:8px"><img id="hovimg" style="display:block;max-width:30vw;max-height:42vh;border-radius:6px"><div style="display:flex;flex-direction:column;gap:8px"><button class="ib" data-hok title="可以公開">✅</button><button class="ib" data-hdel style="background:#c62828" title="標記／取消待刪">🗑</button><button class="ib" data-hcrop title="裁切">✂️</button><button class="ib" data-hadj title="調色">🎛</button><button class="ib" data-hopen title="開大圖">🔍</button></div></div>
+<svg width="0" height="0" style="position:absolute"><filter id="adjf" color-interpolation-filters="sRGB"><feColorMatrix id="adjm" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter></svg>
+<div id="adj" style="display:none;max-height:46vh;overflow:auto;position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));translate:-50% 0;z-index:30;width:min(92vw,420px);background:rgba(17,17,17,.45);border:1px solid var(--gold);border-radius:14px;padding:8px 12px;text-shadow:0 1px 2px #000;color:#fff;font:600 13px var(--font-text)">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><b>🎛 調色（記下來，交給 Claude 用原檔改）</b><span style="display:flex;gap:6px"><button class="ib" data-adjmin style="width:30px;height:30px;min-height:30px" title="收起看照片">▾</button><button class="ib" data-adjx style="width:30px;height:30px;min-height:30px">✕</button></span></div>
+<div style="font-size:11px;color:var(--gold);margin-top:4px">整張</div><label style="display:grid;grid-template-columns:64px 1fr 52px;gap:8px;align-items:center;margin:4px 0">色溫 K<input type="range" min="2500" max="10000" step="50" value="5500" data-ak="k"><span data-av="k">5500</span></label><label style="display:grid;grid-template-columns:64px 1fr 52px;gap:8px;align-items:center;margin:4px 0">冷暖微調<input type="range" min="-30" max="30" value="0" data-ak="t"><span data-av="t">0</span></label><label style="display:grid;grid-template-columns:64px 1fr 36px;gap:8px;align-items:center;margin:4px 0">色調<input type="range" min="-30" max="30" value="0" data-ak="g"><span data-av="g">0</span></label><label style="display:grid;grid-template-columns:64px 1fr 36px;gap:8px;align-items:center;margin:4px 0">飽和度<input type="range" min="-40" max="40" value="0" data-ak="s"><span data-av="s">0</span></label><label style="display:grid;grid-template-columns:64px 1fr 36px;gap:8px;align-items:center;margin:4px 0">亮暗<input type="range" min="-30" max="30" value="0" data-ak="b"><span data-av="b">0</span></label><label style="display:grid;grid-template-columns:64px 1fr 36px;gap:8px;align-items:center;margin:4px 0">陰影<input type="range" min="-40" max="40" value="0" data-ak="sh"><span data-av="sh">0</span></label><label style="display:grid;grid-template-columns:64px 1fr 36px;gap:8px;align-items:center;margin:4px 0">亮部<input type="range" min="-40" max="40" value="0" data-ak="hl"><span data-av="hl">0</span></label><div style="font-size:11px;color:var(--gold);margin-top:6px">只動皮膚</div><label style="display:grid;grid-template-columns:64px 1fr 36px;gap:8px;align-items:center;margin:4px 0">膚色色相<input type="range" min="-30" max="30" value="0" data-ak="kh"><span data-av="kh">0</span></label><label style="display:grid;grid-template-columns:64px 1fr 36px;gap:8px;align-items:center;margin:4px 0">膚色飽和<input type="range" min="-40" max="40" value="0" data-ak="ks"><span data-av="ks">0</span></label><label style="display:grid;grid-template-columns:64px 1fr 36px;gap:8px;align-items:center;margin:4px 0">膚色亮度<input type="range" min="-30" max="30" value="0" data-ak="kl"><span data-av="kl">0</span></label>
+<div style="display:flex;gap:8px;margin-top:8px"><button class="ib" data-adjreset style="flex:1;width:auto;border-radius:999px">重設</button><button class="ib" data-adjpre style="flex:1.4;width:auto;border-radius:999px;font-size:12px">膚色偏黃預設</button><button class="ib" data-adjok style="flex:2;width:auto;border-radius:999px;background:var(--gold);color:#2A0B09">加進清單</button></div>
+<div style="font-size:11px;color:#bbb;margin-top:6px">色溫 K：5500 不變，數字越大越暖（像 C1）｜色調：左綠右洋紅｜膚色色相：左偏黃右紅潤。原檔會用同一套算法改。</div></div>
+<div class="credit" id="credit"><div><h3 data-t="c1">下載前的小提醒</h3><p data-t="c2">分享到 IG／臉書時，請標記攝影師，讓更多人看到這些畫面。</p><label><input type="checkbox" id="ok"><span data-t="c3">我會標記 @jimframe</span></label><div class="row"><button data-cc data-t="cancel">取消</button><button class="go" data-go disabled data-t="dl">下載</button></div></div></div>
 <script>
-const G=[{"n":"01","t":"21:53\u201321:54","p":[["A0000005",320,480],["A0000017",320,480],["A0000029",320,480],["A0000069",480,320],["A0000107",320,480],["A0000148",480,320]]},{"n":"02","t":"21:55\u201321:58","p":[["A0000160",480,320],["A0000185",480,320],["A0000245",480,320],["A0000255",480,320],["A0000267",480,320],["A0000421",480,320]]},{"n":"03","t":"21:59\u201322:01","p":[["A0000496",320,480],["A0000540",320,480],["A0000559",320,480],["A0000574",320,480],["A0000602",320,480],["A0000617",320,480]]},{"n":"04","t":"22:02\u201322:05","p":[["A0000717",480,320],["A0000733",480,320],["A0000793",480,320],["A0000822",480,320],["A0000855",480,320],["A0000881",480,320]]},{"n":"05","t":"22:06\u201322:09","p":[["A0001033",480,320],["A0001089",480,320],["A0001117",480,320],["A0001173",480,320],["A0001194",480,320],["A0001220",480,320]]},{"n":"06","t":"22:10\u201322:14","p":[["A0001260",480,320],["A0001304",480,320],["A0001326",480,320],["A0001341",480,320],["A0001532",480,320],["A0001548",480,320]]},{"n":"07","t":"22:15\u201322:18","p":[["A0001565",480,320],["A0001583",480,320],["A0001610",480,320],["A0001645",480,320],["A0001669",480,320],["A0001685",480,320]]},{"n":"08","t":"22:19\u201322:21","p":[["A0001806",480,320],["A0001827",480,320],["A0001838",480,320],["A0001857",480,320],["A0001869",480,320],["A0001886",480,320]]},{"n":"09","t":"22:22\u201322:25","p":[["A0002172",480,320],["A0002182",480,320],["A0002200",480,320],["A0002212",480,320],["A0002265",480,320],["A0002279",480,320]]},{"n":"10","t":"22:26\u201322:28","p":[["A0002306",480,320],["A0002339",480,320],["A0002350",480,320],["A0002360",480,320],["A0002401",480,320],["A0002446",480,320]]},{"n":"11","t":"22:29\u201322:36","p":[["A0002545",320,480],["A0002608",320,480],["A0002753",480,320],["A0002778",480,320],["A0002919",480,320],["A0002939",480,320]]},{"n":"12","t":"22:37\u201322:40","p":[["A0003048",480,320],["A0003068",480,320],["A0003082",480,320],["A0003102",480,320],["A0003144",480,320],["A0003224",480,320]]},{"n":"13","t":"22:41\u201322:42","p":[["A0003246",320,480],["A0003269",480,320],["A0003281",480,320],["A0003297",480,320],["A0003308",480,320],["A0003326",480,320]]},{"n":"14","t":"22:44\u201322:46","p":[["A0003332",480,320],["A0003350",320,480],["A0003382",320,480],["A0003404",320,480],["A0003415",320,480],["A0003473",320,480]]}];const ALL=[];
-const gs=document.getElementById("groups"),jp=document.getElementById("jump");
-G.forEach(g=>{const s=document.createElement("section");s.id="g"+g.n;
- const day=g.d||"11.20";s.innerHTML=`<h2>${day} · 第 ${+g.n} 組<small>${g.t} · ${g.p.length} 張</small></h2><div class="grid">${g.p.map(p=>{const i=ALL.push(p[0])-1;return`<button class="${p[2]>p[1]?"v":""}" data-i="${i}" aria-label="照片 ${p[0]}"><img src="../photos/1120/t/${p[0]}.jpg" width="${p[1]}" height="${p[2]}" loading="lazy" alt=""></button>`}).join("")}</div>`;
- gs.append(s);jp.insertAdjacentHTML("beforeend",`<a href="#g${g.n}">${(g.d||"11.20").slice(3)}日 第 ${+g.n} 組</a>`)});
-document.getElementById("mosaic").innerHTML=["A0000245","A0001173","A0000602","A0002265","A0003297","A0003224","A0000107","A0003404","A0002778","A0001583"].map(k=>`<img src="../photos/1120/t/${k}.jpg" alt="">`).join("");
-document.getElementById("lead").insertAdjacentText("beforeend"," 目前 "+G.length+" 組、"+ALL.length+" 張。");
-let cur=0;const lb=document.getElementById("lb"),li=document.getElementById("li"),ld=document.getElementById("ld"),cnt=document.getElementById("cnt");
-function show(i){cur=(i+ALL.length)%ALL.length;const k=ALL[cur];li.src="../photos/1120/"+k+".jpg";ld.href=li.src;ld.setAttribute("download","TSC2026_1120_"+k+".jpg");cnt.textContent=(cur+1)+" / "+ALL.length;lb.classList.add("on");document.body.style.overflow="hidden"}
-function hide(){lb.classList.remove("on");document.body.style.overflow=""}
-gs.addEventListener("click",e=>{const b=e.target.closest("button[data-i]");if(b)show(+b.dataset.i)});
-document.getElementById("lx").onclick=hide;document.getElementById("lp").onclick=()=>show(cur-1);document.getElementById("ln").onclick=()=>show(cur+1);
-lb.addEventListener("click",e=>{if(e.target===lb)hide()});
-addEventListener("keydown",e=>{if(!lb.classList.contains("on"))return;if(e.key==="Escape")hide();if(e.key==="ArrowLeft")show(cur-1);if(e.key==="ArrowRight")show(cur+1)});
-let x0=null;lb.addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});lb.addEventListener("touchend",e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>50)show(cur+(d<0?1:-1));x0=null});
+var VQ=(()=>{try{return JSON.parse(localStorage.getItem("jf_tsc_vcat")||"{}")}catch(e){return{}}})();
+var CQ=(()=>{try{return JSON.parse(localStorage.getItem("jf_tsc_crop")||"{}")}catch(e){return{}}})();
+var AQ=(()=>{try{return JSON.parse(localStorage.getItem("jf_tsc_adj")||"{}")}catch(e){return{}}})();
+try{if(!localStorage.getItem("jf_adj_mig1")){Object.keys(AQ).forEach(k=>{if(k.startsWith("L1115-A0008"))delete AQ[k]});localStorage.setItem("jf_tsc_adj",JSON.stringify(AQ));localStorage.setItem("jf_adj_mig1","1")}}catch(e){}
+
+const PG01=[["A0000001",480,320],["A0000005",320,480],["A0000011",320,480],["A0000017",320,480],["A0000020",320,480],["A0000025",320,480],["A0000029",320,480],["A0000032",320,480],["A0000038",320,480],["A0000042",320,480],["A0000045",320,480],["A0000049",320,480],["A0000057",320,480],["A0000060",480,320],["A0000063",480,320],["A0000069",480,320],["A0000076",320,480],["A0000079",320,480],["A0000098",320,480],["A0000104",320,480],["A0000107",320,480],["A0000110",320,480],["A0000115",480,320],["A0000118",480,320],["A0000121",480,320],["A0000127",480,320],["A0000131",480,320],["A0000138",480,320],["A0000142",480,320],["A0000148",480,320],["A0000153",480,320]];
+const PG02=[["A0000157",480,320],["A0000160",480,320],["A0000164",480,320],["A0000167",480,320],["A0000173",480,320],["A0000178",480,320],["A0000185",480,320],["A0000193",480,320],["A0000199",480,320],["A0000203",480,320],["A0000206",480,320],["A0000210",480,320],["A0000213",480,320],["A0000219",480,320],["A0000229",480,320],["A0000233",480,320],["A0000238",480,320],["A0000245",480,320],["A0000249",480,320],["A0000255",480,320],["A0000262",480,320],["A0000267",480,320],["A0000271",480,320],["A0000291",480,320],["A0000303",480,320],["A0000344",480,320],["A0000347",480,320],["A0000366",480,320],["A0000393",480,320],["A0000421",480,320],["A0000426",480,320]];
+const PG03=[["A0000428",480,320],["A0000439",320,480],["A0000487",320,480],["A0000492",320,480],["A0000496",320,480],["A0000515",320,480],["A0000523",320,480],["A0000527",320,480],["A0000537",320,480],["A0000540",320,480],["A0000545",320,480],["A0000551",320,480],["A0000556",320,480],["A0000559",320,480],["A0000568",320,480],["A0000571",320,480],["A0000574",320,480],["A0000577",320,480],["A0000581",320,480],["A0000592",320,480],["A0000598",320,480],["A0000602",320,480],["A0000605",320,480],["A0000608",320,480],["A0000612",320,480],["A0000617",320,480],["A0000622",320,480],["A0000637",320,480],["A0000660",320,480],["A0000666",320,480],["A0000673",320,480]];
+const PG04=[["A0000696",320,480],["A0000712",320,480],["A0000717",480,320],["A0000720",480,320],["A0000725",480,320],["A0000729",480,320],["A0000733",480,320],["A0000737",480,320],["A0000764",480,320],["A0000768",480,320],["A0000778",480,320],["A0000781",480,320],["A0000785",480,320],["A0000788",480,320],["A0000793",480,320],["A0000796",480,320],["A0000805",480,320],["A0000812",480,320],["A0000815",480,320],["A0000822",480,320],["A0000826",480,320],["A0000831",480,320],["A0000837",480,320],["A0000843",480,320],["A0000848",480,320],["A0000855",480,320],["A0000859",480,320],["A0000864",480,320],["A0000867",480,320],["A0000876",480,320],["A0000881",480,320]];
+const PG05=[["A0000890",480,320],["A0000920",480,320],["A0000930",480,320],["A0000939",480,320],["A0000953",480,320],["A0000956",480,320],["A0000969",480,320],["A0000976",480,320],["A0000980",480,320],["A0000991",480,320],["A0000995",480,320],["A0001003",480,320],["A0001006",480,320],["A0001022",480,320],["A0001026",480,320],["A0001030",480,320],["A0001033",480,320],["A0001077",480,320],["A0001086",480,320],["A0001089",480,320],["A0001117",480,320],["A0001146",480,320],["A0001173",480,320],["A0001176",480,320],["A0001179",480,320],["A0001190",480,320],["A0001194",480,320],["A0001202",480,320],["A0001206",480,320],["A0001220",480,320],["A0001227",480,320]];
+const PG06=[["A0001257",480,320],["A0001260",480,320],["A0001264",480,320],["A0001267",480,320],["A0001274",480,320],["A0001277",480,320],["A0001281",480,320],["A0001286",480,320],["A0001290",480,320],["A0001295",480,320],["A0001304",480,320],["A0001308",480,320],["A0001315",480,320],["A0001319",480,320],["A0001322",480,320],["A0001326",480,320],["A0001330",480,320],["A0001341",480,320],["A0001379",480,320],["A0001383",480,320],["A0001390",480,320],["A0001404",480,320],["A0001408",480,320],["A0001426",480,320],["A0001429",480,320],["A0001476",480,320],["A0001524",480,320],["A0001527",480,320],["A0001532",480,320],["A0001538",480,320],["A0001548",480,320]];
+const PG07=[["A0001562",480,320],["A0001565",480,320],["A0001573",480,320],["A0001580",480,320],["A0001583",480,320],["A0001589",480,320],["A0001592",480,320],["A0001597",480,320],["A0001603",480,320],["A0001607",480,320],["A0001610",480,320],["A0001617",480,320],["A0001632",480,320],["A0001637",480,320],["A0001642",480,320],["A0001645",480,320],["A0001663",480,320],["A0001669",480,320],["A0001674",480,320],["A0001680",480,320],["A0001685",480,320],["A0001692",480,320],["A0001697",480,320],["A0001714",480,320],["A0001722",480,320],["A0001737",480,320],["A0001743",480,320],["A0001747",480,320],["A0001769",480,320],["A0001790",480,320],["A0001795",480,320]];
+const PG08=[["A0001806",480,320],["A0001810",480,320],["A0001814",480,320],["A0001820",480,320],["A0001827",480,320],["A0001834",480,320],["A0001838",480,320],["A0001844",480,320],["A0001849",480,320],["A0001852",480,320],["A0001857",480,320],["A0001861",480,320],["A0001869",480,320],["A0001873",480,320],["A0001876",480,320],["A0001879",480,320],["A0001886",480,320],["A0001889",480,320],["A0001903",480,320],["A0001907",480,320],["A0001917",480,320],["A0001922",480,320],["A0001941",480,320],["A0001944",480,320],["A0001954",480,320],["A0001966",480,320],["A0001982",480,320],["A0001987",480,320],["A0001991",480,320],["A0001995",480,320],["A0001999",480,320]];
+const PG09=[["A0002043",480,320],["A0002061",480,320],["A0002074",480,320],["A0002084",480,320],["A0002091",480,320],["A0002101",480,320],["A0002109",480,320],["A0002128",480,320],["A0002132",480,320],["A0002147",480,320],["A0002157",480,320],["A0002165",480,320],["A0002172",480,320],["A0002182",480,320],["A0002195",480,320],["A0002200",480,320],["A0002203",480,320],["A0002207",480,320],["A0002212",480,320],["A0002225",480,320],["A0002240",480,320],["A0002250",480,320],["A0002256",480,320],["A0002261",480,320],["A0002265",480,320],["A0002274",480,320],["A0002279",480,320],["A0002282",480,320],["A0002287",480,320],["A0002290",480,320],["A0002294",480,320]];
+const PG10=[["A0002299",480,320],["A0002302",480,320],["A0002306",480,320],["A0002313",480,320],["A0002323",320,480],["A0002328",480,320],["A0002339",480,320],["A0002342",480,320],["A0002346",480,320],["A0002350",480,320],["A0002354",480,320],["A0002360",480,320],["A0002370",480,320],["A0002378",480,320],["A0002388",480,320],["A0002391",480,320],["A0002396",480,320],["A0002401",480,320],["A0002404",480,320],["A0002407",480,320],["A0002412",480,320],["A0002420",480,320],["A0002431",480,320],["A0002435",480,320],["A0002438",480,320],["A0002446",480,320],["A0002451",480,320],["A0002455",480,320],["A0002460",480,320],["A0002464",480,320],["A0002467",480,320]];
+const PG11=[["A0002505",320,480],["A0002514",480,320],["A0002519",320,480],["A0002528",320,480],["A0002531",320,480],["A0002535",320,480],["A0002545",320,480],["A0002571",320,480],["A0002586",320,480],["A0002608",320,480],["A0002626",480,320],["A0002631",480,320],["A0002642",480,320],["A0002688",480,320],["A0002753",480,320],["A0002760",480,320],["A0002778",480,320],["A0002798",480,320],["A0002819",480,320],["A0002842",480,320],["A0002919",480,320],["A0002925",480,320],["A0002939",480,320],["A0002950",480,320],["A0002960",480,320],["A0002982",480,320],["A0002988",480,320],["A0002991",480,320],["A0003005",480,320],["A0003008",480,320],["A0003012",480,320]];
+const PG12=[["A0003015",480,320],["A0003018",480,320],["A0003026",480,320],["A0003029",480,320],["A0003035",480,320],["A0003039",480,320],["A0003042",480,320],["A0003048",480,320],["A0003051",480,320],["A0003055",480,320],["A0003061",480,320],["A0003068",480,320],["A0003072",480,320],["A0003075",480,320],["A0003082",480,320],["A0003086",480,320],["A0003090",480,320],["A0003095",480,320],["A0003102",480,320],["A0003106",480,320],["A0003118",480,320],["A0003136",480,320],["A0003140",480,320],["A0003144",480,320],["A0003157",480,320],["A0003162",480,320],["A0003189",480,320],["A0003194",480,320],["A0003197",480,320],["A0003216",480,320],["A0003224",480,320]];
+const PG13=[["A0003239",480,320],["A0003246",320,480],["A0003249",320,480],["A0003253",320,480],["A0003259",480,320],["A0003264",480,320],["A0003269",480,320],["A0003272",480,320],["A0003276",480,320],["A0003281",480,320],["A0003286",480,320],["A0003290",480,320],["A0003294",480,320],["A0003297",480,320],["A0003300",480,320],["A0003303",480,320],["A0003308",480,320],["A0003313",480,320],["A0003316",480,320],["A0003322",480,320],["A0003326",480,320],["A0003330",480,320]];
+const PG14=[["A0003332",480,320],["A0003336",320,480],["A0003342",320,480],["A0003350",320,480],["A0003353",320,480],["A0003358",320,480],["A0003365",320,480],["A0003369",320,480],["A0003373",480,320],["A0003382",320,480],["A0003385",320,480],["A0003390",320,480],["A0003398",320,480],["A0003401",320,480],["A0003404",320,480],["A0003412",320,480],["A0003415",320,480],["A0003421",320,480],["A0003424",320,480],["A0003429",320,480],["A0003438",320,480],["A0003441",320,480],["A0003444",320,480],["A0003449",320,480],["A0003458",320,480],["A0003468",320,480],["A0003473",320,480],["A0003483",320,480],["A0003490",320,480],["A0003495",320,480],["A0003499",320,480]];
+const PICKS={"PG01":["A0000005","A0000017","A0000029","A0000069","A0000107","A0000148"],"PG02":["A0000160","A0000185","A0000245","A0000255","A0000267","A0000421"],"PG03":["A0000496","A0000540","A0000559","A0000574","A0000602","A0000617"],"PG04":["A0000717","A0000733","A0000793","A0000822","A0000855","A0000881"],"PG05":["A0001033","A0001089","A0001117","A0001173","A0001194","A0001220"],"PG06":["A0001260","A0001304","A0001326","A0001341","A0001532","A0001548"],"PG07":["A0001565","A0001583","A0001610","A0001645","A0001669","A0001685"],"PG08":["A0001806","A0001827","A0001838","A0001857","A0001869","A0001886"],"PG09":["A0002172","A0002182","A0002200","A0002212","A0002265","A0002279"],"PG10":["A0002306","A0002339","A0002350","A0002360","A0002401","A0002446"],"PG11":["A0002545","A0002608","A0002753","A0002778","A0002919","A0002939"],"PG12":["A0003048","A0003068","A0003082","A0003102","A0003144","A0003224"],"PG13":["A0003246","A0003269","A0003281","A0003297","A0003308","A0003326"],"PG14":["A0003332","A0003350","A0003382","A0003404","A0003415","A0003473"]};
+const CAND={};
+
+// 候選精選：Jim 確認後才換成正式精選（後台會標「候選」）
+
+
+
+
+
+
+const IV="?v=1118c";
+const DAYS=[
+ {id:"g01",d:"1",wk:"組",name:"11.20 第 1 組",sub:"21:53–21:54",dir:"../photos/1120/",photos:PG01,pk:"PG01",ck:"g01"},
+ {id:"g02",d:"2",wk:"組",name:"11.20 第 2 組",sub:"21:55–21:58",dir:"../photos/1120/",photos:PG02,pk:"PG02",ck:"g02"},
+ {id:"g03",d:"3",wk:"組",name:"11.20 第 3 組",sub:"21:59–22:01",dir:"../photos/1120/",photos:PG03,pk:"PG03",ck:"g03"},
+ {id:"g04",d:"4",wk:"組",name:"11.20 第 4 組",sub:"22:02–22:05",dir:"../photos/1120/",photos:PG04,pk:"PG04",ck:"g04"},
+ {id:"g05",d:"5",wk:"組",name:"11.20 第 5 組",sub:"22:06–22:09",dir:"../photos/1120/",photos:PG05,pk:"PG05",ck:"g05"},
+ {id:"g06",d:"6",wk:"組",name:"11.20 第 6 組",sub:"22:10–22:14",dir:"../photos/1120/",photos:PG06,pk:"PG06",ck:"g06"},
+ {id:"g07",d:"7",wk:"組",name:"11.20 第 7 組",sub:"22:15–22:18",dir:"../photos/1120/",photos:PG07,pk:"PG07",ck:"g07"},
+ {id:"g08",d:"8",wk:"組",name:"11.20 第 8 組",sub:"22:19–22:21",dir:"../photos/1120/",photos:PG08,pk:"PG08",ck:"g08"},
+ {id:"g09",d:"9",wk:"組",name:"11.20 第 9 組",sub:"22:22–22:25",dir:"../photos/1120/",photos:PG09,pk:"PG09",ck:"g09"},
+ {id:"g10",d:"10",wk:"組",name:"11.20 第 10 組",sub:"22:26–22:28",dir:"../photos/1120/",photos:PG10,pk:"PG10",ck:"g10"},
+ {id:"g11",d:"11",wk:"組",name:"11.20 第 11 組",sub:"22:29–22:36",dir:"../photos/1120/",photos:PG11,pk:"PG11",ck:"g11"},
+ {id:"g12",d:"12",wk:"組",name:"11.20 第 12 組",sub:"22:37–22:40",dir:"../photos/1120/",photos:PG12,pk:"PG12",ck:"g12"},
+ {id:"g13",d:"13",wk:"組",name:"11.20 第 13 組",sub:"22:41–22:42",dir:"../photos/1120/",photos:PG13,pk:"PG13",ck:"g13"},
+ {id:"g14",d:"14",wk:"組",name:"11.20 第 14 組",sub:"22:44–22:46",dir:"../photos/1120/",photos:PG14,pk:"PG14",ck:"g14"}
+];
+const HL=[["1120", "A0000005"], ["1120", "A0000160"], ["1120", "A0000496"], ["1120", "A0000717"], ["1120", "A0001033"], ["1120", "A0001260"], ["1120", "A0001565"], ["1120", "A0001806"], ["1120", "A0002172"], ["1120", "A0002306"], ["1120", "A0002545"], ["1120", "A0003048"], ["1120", "A0003246"], ["1120", "A0003332"], ["1120", "A0000069"], ["1120", "A0000255"], ["1120", "A0000574"], ["1120", "A0000822"], ["1120", "A0001173"], ["1120", "A0001341"]];
+
+// ===== 隱藏照片（與主站共用 hidden.json）＋管理員刪除：網址加 ?admin =====
+const ADMIN=(()=>{try{if(/[?&]admin\b/.test(location.search))localStorage.setItem("jf_admin","1");if(/[?&]noadmin\b/.test(location.search))localStorage.removeItem("jf_admin");return localStorage.getItem("jf_admin")==="1"}catch(e){return /[?&]admin\b/.test(location.search)}})();
+const HID=new Set((()=>{try{return JSON.parse(localStorage.getItem("jf_hidden_cache")||"[]")}catch(e){return[]}})());
+DAYS.forEach(d=>{if(d.photos&&d.pk){d.full0=d.photos.slice();if(!ADMIN){const s=new Set(PICKS[d.pk]);d.photos=d.photos.filter(p=>s.has(p[0]))}}});
+const REL=new Set();
+// Claude 已經套進檔案的調色／裁切：清掉本機清單，避免下載時重複套用
+if(ADMIN)fetch("applied.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(!j)return;const same=(a,b)=>JSON.stringify(Object.keys(a).filter(k=>a[k]!==0&&!(k==="k"&&a[k]===5500)).sort().map(k=>[k,+a[k]]))===JSON.stringify(Object.keys(b).filter(k=>b[k]!==0&&!(k==="k"&&b[k]===5500)).sort().map(k=>[k,+b[k]]));let ch=0;
+ Object.entries(j.adj||{}).forEach(([k,v])=>{if(AQ[k]&&same(AQ[k],v)){delete AQ[k];ch=1}});Object.entries(j.crop||{}).forEach(([k,v])=>{const c=CQ[k];if(c&&Math.abs(c.x-v[0])<1e-3&&Math.abs(c.y-v[1])<1e-3&&Math.abs(c.w-v[2])<1e-3&&Math.abs(c.h-v[3])<1e-3){delete CQ[k];ch=1}});
+ if(ch){try{localStorage.setItem("jf_tsc_adj",JSON.stringify(AQ));localStorage.setItem("jf_tsc_crop",JSON.stringify(CQ))}catch(e){}try{mk();qBadge()}catch(e){}}}).catch(()=>{});
+DAYS.forEach(d=>{if(d.photos){d.all=d.photos.slice();d.key=d.dir.split("/").slice(-2,-1)[0];d.ckey=d.ck||d.key}});
+const pid=(d,p)=>`L${d.key}-${p[0]}`;
+function filt(){DAYS.forEach(d=>{if(d.all){d.photos=d.all.filter(p=>!HID.has(pid(d,p)))}})}
+filt();
+// 後台勾 ✅ 釋出的照片（released.json）也一起對外公開
+function relApply(){if(ADMIN)return;DAYS.forEach(d=>{if(d.full0){const s=new Set(PICKS[d.pk]);d.all=d.full0.filter(p=>s.has(p[0])||REL.has(pid(d,p)))}});filt()}
+fetch("released.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(!j||!Array.isArray(j.ids))return;j.ids.forEach(i=>REL.add(i));try{let ch=0;j.ids.forEach(i=>{if(OQ.has(i)){OQ.delete(i);ch=1}});if(ch){saveO();mk();qBadge()}}catch(e){}relApply();try{view()}catch(e){}}).catch(()=>{});
+const ghTok=()=>{try{return localStorage.getItem("jf_gh_token")||""}catch(e){return""}};
+const GHU="https://api.github.com/repos/jay0916746661/jimframe-site/contents/hidden.json";
+const ghH=()=>({Authorization:`Bearer ${ghTok()}`,Accept:"application/vnd.github+json"});
+async function ghGet(){const r=await fetch(GHU+"?ref=main&t="+Date.now(),{cache:"no-store",headers:ghH()});if(r.status===404)return{ids:[],sha:null};if(!r.ok)throw new Error(r.status);const j=await r.json();return{ids:JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g,""))))).ids||[],sha:j.sha}}
+(ADMIN&&ghTok()?ghGet().then(x=>x.ids):fetch("../hidden.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>j&&j.ids)).then(ids=>{if(!Array.isArray(ids))return;HID.clear();ids.forEach(i=>HID.add(i));try{LQ.forEach(i=>{if(ids.includes(i))LQ.delete(i)});saveQ();if(ADMIN)qBadge()}catch(e){}try{localStorage.setItem("jf_hidden_cache",JSON.stringify(ids))}catch(e){}filt();rail();view()}).catch(()=>{});
+let pend=new Set(),tm=null;
+function needTok(){if(ghTok())return true;const t=prompt("第一次使用：貼上 GitHub token（只存在這台裝置，跟主站共用）\n\nGitHub → Settings → Developer settings → Fine-grained tokens → 只選 jimframe-site → Contents: Read and write");if(!t||!t.trim())return false;try{localStorage.setItem("jf_gh_token",t.trim())}catch(e){}return true}
+function badge(msg){let b=document.getElementById("admb");if(!b){b=document.createElement("div");b.id="admb";b.style.cssText="position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;max-width:calc(100vw - 24px);cursor:pointer;padding:8px 14px;border-radius:999px;background:#c62828;color:#fff;font:600 13px var(--font-text)";document.body.appendChild(b);b.addEventListener("click",()=>{if(OQ.size&&ghTok()){relNow();return}if(OQ.size||LQ.size||Object.keys(CQ).length||Object.keys(AQ).length||Object.keys(VQ).length)copyQ()})}b.textContent=msg}
+async function flush(n=0){const add=[...pend];if(!add.length)return;badge("儲存中…");try{const cur=await ghGet();const s=new Set(cur.ids);add.forEach(i=>s.add(i));const ids=[...s].sort();
+ const r=await fetch(GHU,{method:"PUT",headers:ghH(),body:JSON.stringify({message:`Hide ${add.length} photo(s) (TSC admin)`,content:btoa(unescape(encodeURIComponent(JSON.stringify({ids},null,1)+"\n"))),branch:"main",...(cur.sha?{sha:cur.sha}:{})})});
+ if(r.status===409&&n<2)return flush(n+1);if(r.status===401||r.status===403){try{localStorage.removeItem("jf_gh_token")}catch(e){}throw new Error("token")}if(!r.ok)throw new Error(r.status);
+ add.forEach(i=>pend.delete(i));try{localStorage.setItem("jf_hidden_cache",JSON.stringify(ids))}catch(e){}badge(`管理模式 · 已刪 ${ids.filter(i=>i.startsWith("L1120")).length} 張（TSC）`)}catch(e){badge(e.message==="token"?"token 無效，請重貼":"儲存失敗，稍後重試");setTimeout(()=>flush(),8000)}}
+// 沒有 token 也能刪：先在這支手機隱藏並記進「待刪清單」，按左下按鈕複製清單傳給 Claude，由 Claude 正式刪除
+const OQ=new Set((()=>{try{return JSON.parse(localStorage.getItem("jf_tsc_ok")||"[]")}catch(e){return[]}})());
+const saveO=()=>{try{localStorage.setItem("jf_tsc_ok",JSON.stringify([...OQ]))}catch(e){}};
+function okT(id){OQ.has(id)?OQ.delete(id):OQ.add(id);saveO();mk();qBadge()}
+const LQ=new Set((()=>{try{return JSON.parse(localStorage.getItem("jf_tsc_queue")||"[]")}catch(e){return[]}})());
+
+function saveQ(){try{localStorage.setItem("jf_tsc_queue",JSON.stringify([...LQ]))}catch(e){}}
+function qBadge(){const nc=CQ?Object.keys(CQ).length:0,na=Object.keys(AQ).length,no=OQ.size;const nv=Object.keys(VQ||{}).length;const parts=[nv?`影片分類 ${nv} 支`:"",no?`✅ 可以 ${no} 張`:"",LQ.size?`待刪 ${LQ.size} 張`:"",nc?`裁切 ${nc} 張`:"",na?`調色 ${na} 張`:""].filter(Boolean);if(!parts.length){badge("管理模式：✅ 可以公開、🗑 刪、✂️ 裁、🎛 調色");return}badge(parts.join("、")+(no&&ghTok()?" · 點這裡釋出":" · 點這裡複製清單"))}
+function hide(id){if(LQ.has(id))LQ.delete(id);else LQ.add(id);saveQ();qBadge();mk()}
+function mk(){document.querySelectorAll(".grid [data-del]").forEach(x=>{const b=x.closest("button");b.classList.toggle("marked",LQ.has(x.dataset.del));b.classList.toggle("adjd",!!AQ[x.dataset.del]);b.classList.toggle("okd",OQ.has(x.dataset.del));b.classList.toggle("pub",REL.has(x.dataset.del)||!!(day&&day.pk&&(PICKS[day.pk]||[]).includes(x.dataset.del.split("-")[1])));const cl=(typeof CAND!=="undefined"&&day&&day.pk&&CAND[day.pk])||[];b.classList.toggle("cand",cl.includes(x.dataset.del.split("-")[1]))});if($("#lb").classList.contains("on")&&VL()[idx]){$("#lbok").style.background=OQ.has(pid(day,VL()[idx]))?"#2e7d32":"";const on=LQ.has(pid(day,VL()[idx]));$("#lbdel").classList.toggle("on",on);$("#lbdel").textContent=on?"↩":"🗑";$("#lbmark").style.display=on?"block":"none"}}
+const GHR="https://api.github.com/repos/jay0916746661/jimframe-site/contents/tsc/released.json";
+async function relNow(){const add=[...OQ];badge("釋出中…");try{let ids=[],sha=null;const r0=await fetch(GHR+"?ref=main&t="+Date.now(),{cache:"no-store",headers:ghH()});if(r0.ok){const j=await r0.json();sha=j.sha;ids=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g,""))))).ids||[]}else if(r0.status!==404)throw new Error(r0.status);const s=new Set(ids);add.forEach(i=>s.add(i));const out=[...s].sort();const r=await fetch(GHR,{method:"PUT",headers:ghH(),body:JSON.stringify({message:`TSC 釋出 ${add.length} 張`,content:btoa(unescape(encodeURIComponent(JSON.stringify({ids:out},null,0)))),branch:"main",...(sha?{sha}:{})})});if(!r.ok)throw new Error(r.status);out.forEach(i=>REL.add(i));OQ.clear();saveO();mk();badge(`已釋出 ${add.length} 張，約 1 分鐘後訪客看得到`);setTimeout(qBadge,6000)}catch(e){badge("釋出失敗，改複製清單給 Claude");setTimeout(copyQ,800)}}
+async function copyQ(){const ids=[...LQ].sort();const cr=Object.entries(CQ);const ok=[...OQ].sort();const txt=(ok.length?"TSC 公開 "+ok.length+" 張：\n"+ok.join("\n")+"\n":"")+(ids.length?"TSC 刪除 "+ids.length+" 張：\n"+ids.join("\n")+"\n":"")+(cr.length?"TSC 裁切 "+cr.length+" 張：\n"+cr.map(([k,b])=>`${k} ${b.x},${b.y},${b.w},${b.h}`).join("\n")+"\n":"")+(Object.keys(AQ).length?"TSC 調色 "+Object.keys(AQ).length+" 張：\n"+Object.entries(AQ).map(([k,v])=>k+" "+AK.filter(q=>v[q]).map(q=>q==="k"?"k="+v[q]:q+"="+(v[q]>0?"+":"")+v[q]).join(" ")).join("\n"):"")+(Object.keys(VQ).length?"\nTSC 影片分類 "+Object.keys(VQ).length+" 支：\n"+Object.entries(VQ).map(([k,c])=>k+" "+(c||"none")).join("\n"):"");
+ try{await navigator.clipboard.writeText(txt);badge(`已複製 ${ids.length} 張，貼給 Claude 就好`)}catch(e){prompt("長按全選複製，貼給 Claude：",txt)}}
+
+if(ADMIN){qBadge();
+ const st=document.createElement("style");st.textContent=".grid button{position:relative}.grid button.marked img{opacity:.35;filter:grayscale(1)}#adj.min label,#adj.min>div:not(:first-child){display:none}#adj label{margin:2px 0!important}#lb.adjon #stage{transform:translateY(-20vh);transition:transform .2s}.grid button.okd{box-shadow:inset 0 0 0 4px #2e7d32}.grid button.okd .t::after,.grid button.okd::selection{}.grid button.cand{outline:3px solid var(--gold);outline-offset:-3px}.grid em.fixl{position:absolute;left:4px;bottom:4px;z-index:2;padding:2px 6px;border-radius:6px;background:rgba(255,90,40,.92);color:#fff;font:700 11px var(--font-text);font-style:normal;pointer-events:none}.cchips .fixc{background:rgba(255,90,40,.18);border-color:#ff8a3d;color:#ffd2bd;font-weight:700}.cchips .fixc.on{background:#ff8a3d;color:#2A0B09}.grid button.adjd::before{content:'🎛 已調';position:absolute;left:4px;top:4px;z-index:2;padding:2px 6px;border-radius:6px;background:var(--gold);color:#2A0B09;font:700 11px var(--font-text)}.grid button.marked::after{content:'待刪';position:absolute;left:4px;bottom:4px;padding:2px 6px;border-radius:6px;background:#c62828;color:#fff;font:700 11px var(--font-text)}.grid button.marked .adm-x{background:#fff;color:#c62828}#lbdel.on{background:#fff!important;color:#c62828}.adm-ok{position:absolute;top:4px;left:4px;width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,.85);border:2px solid #2e7d32;color:transparent;font:900 19px/26px var(--font-text);text-align:center;font-style:normal;z-index:3;cursor:pointer}.grid button.okd .adm-ok{background:#2e7d32;color:#fff}.grid button.pub .adm-ok{background:#2e7d32;color:#fff;opacity:.55;border-color:#fff}.grid button.pub::after{content:'已公開';position:absolute;right:4px;bottom:4px;padding:2px 6px;border-radius:6px;background:#2e7d32;color:#fff;font:700 11px var(--font-text)}.grid button.adjd::before{left:40px!important}.adm-x{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;background:rgba(198,40,40,.92);color:#fff;font:700 17px/28px var(--font-text);text-align:center;font-style:normal;z-index:2}";document.head.appendChild(st)}
+
+
+// ===== 衣服顏色分類（與主站相同的 8 色組；鮮明度 <15 視為不明顯）=====
+const COL={};
+const CG=[["紅","#ff3b5c"],["橘","#ff8a3d"],["黃","#facc15"],["綠","#34d399"],["青","#22d3ee"],["藍","#3d7bff"],["紫","#a259ff"],["粉","#ff4fa3"]];
+let cf=null;
+let FIX={};if(ADMIN)fetch("fix.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():{}).then(j=>{FIX=j||{};try{view()}catch(e){}}).catch(()=>{});
+const fixN=()=>day.photos?day.photos.filter(p=>FIX[pid(day,p)]).length:0;
+function VL(){if(!day.photos)return[];if(cf==="fix")return day.photos.filter(p=>FIX[pid(day,p)]);const m=COL[day.ckey];if(cf==null||!m)return day.photos;return day.photos.filter(p=>{const c=m[p[0]];return c&&c[0]===cf&&c[2]>=15}).sort((a,b)=>m[b[0]][2]-m[a[0]][2])}
+function chips(){const fb=ADMIN&&fixN()?`<button data-cf="fix" class="fixc${cf==="fix"?" on":""}">⚠ 待檢查 ${fixN()}</button>`:"";const m=COL[day.ckey];if(!m)return fb?`<div class="cchips">${fb}</div>`:"";const n=g=>day.photos.filter(p=>{const c=m[p[0]];return c&&c[0]===g&&c[2]>=15}).length;
+ return `<div class="cchips">${fb}<button data-cf="all" class="${cf==null?"on":""}">${t("allc")}</button>${CG.map((g,i)=>{const k=n(i);return k?`<button data-cf="${i}" class="${cf===i?"on":""}" aria-label="${g[0]}"><i style="background:${g[1]}"></i>${k}</button>`:""}).join("")}<button class="findme" data-findme>${t("findme")}</button></div>`}
+
+let day=DAYS.find(d=>d.id===location.hash.slice(1))||DAYS[0],idx=0,acked=false;
+try{acked=localStorage.getItem("jf_tsc_ack")==="1"}catch(e){}
+const $=s=>document.querySelector(s);
+const I18N={
+en:{ng01:"11/20 Group 1",sg01:"Nov 20 · 21:53–21:54",ng02:"11/20 Group 2",sg02:"Nov 20 · 21:55–21:58",ng03:"11/20 Group 3",sg03:"Nov 20 · 21:59–22:01",ng04:"11/20 Group 4",sg04:"Nov 20 · 22:02–22:05",ng05:"11/20 Group 5",sg05:"Nov 20 · 22:06–22:09",ng06:"11/20 Group 6",sg06:"Nov 20 · 22:10–22:14",ng07:"11/20 Group 7",sg07:"Nov 20 · 22:15–22:18",ng08:"11/20 Group 8",sg08:"Nov 20 · 22:19–22:21",ng09:"11/20 Group 9",sg09:"Nov 20 · 22:22–22:25",ng10:"11/20 Group 10",sg10:"Nov 20 · 22:26–22:28",ng11:"11/20 Group 11",sg11:"Nov 20 · 22:29–22:36",ng12:"11/20 Group 12",sg12:"Nov 20 · 22:37–22:40",ng13:"11/20 Group 13",sg13:"Nov 20 · 22:41–22:42",ng14:"11/20 Group 14",sg14:"Nov 20 · 22:44–22:46",more:"More photos coming soon",fmh:"Find Yourself",fmd:"Upload a clear selfie to find photos of you from all three days. Matching runs on your device; nothing is uploaded.",fmb:"📷 Upload a photo",sel:"Highlights",allc:"All",findme:"🙋 Find me",f2:"Red-brick octagon",f3:"Municipal heritage site",early:"Highlights · more coming",lead:"Taiwan Salsa Carnival · all three nights of shows, by team · Photography by Jim Lin @jimframe",venue:"All Shows",prog:"Groups",hl:"Highlights",about:"The Venue",
+vdesc:"Built in 1908, this red-brick octagonal hall was Ximending's first public market, and over a century has served as a market, theatre and storytelling house. Today it hosts arts and performances. City Cup's Saturday and Sunday competitions and parties took place inside these red bricks; Friday's opening night was at the BA studio.",
+addr:"No. 10, Chengdu Rd, Wanhua, Taipei (MRT Ximen Exit 1)",foot1:"Using a photo? Please tag",thanks:"Thank you",dlthis:"Download",c1:"Before you download",c2:"When you share on IG or Facebook, please tag the photographer so more people can see these moments.",c3:"I'll tag @jimframe",cancel:"Cancel",dl:"Download",
+n1113:"BA Opening Party",s1113:"BA studio · Opening social",n1114a:"Competition",s1114a:"Ximen Red House · Contests · Awards",n1114b:"Evening Party",s1114b:"Ximen Red House · Shows · Social",n1115:"Final Day",s1115:"Ximen Red House · Contests",n1115b:"Closing Party",s1115b:"Ximen Red House · Awards · Social",nvideo:"Videos",svideo:"Competitions · shows · social",
+photos:"photos",wait:"Coming soon",soonA:"Highlights coming soon, more to follow",soonB:"In progress",soonV:"30-sec highlight film in production",tap:"Tap a photo to view & download",full:"Full album: edit · multi-download · Stories ›"},
+ko:{ng01:"11/20 1조",sg01:"11/20 · 21:53–21:54",ng02:"11/20 2조",sg02:"11/20 · 21:55–21:58",ng03:"11/20 3조",sg03:"11/20 · 21:59–22:01",ng04:"11/20 4조",sg04:"11/20 · 22:02–22:05",ng05:"11/20 5조",sg05:"11/20 · 22:06–22:09",ng06:"11/20 6조",sg06:"11/20 · 22:10–22:14",ng07:"11/20 7조",sg07:"11/20 · 22:15–22:18",ng08:"11/20 8조",sg08:"11/20 · 22:19–22:21",ng09:"11/20 9조",sg09:"11/20 · 22:22–22:25",ng10:"11/20 10조",sg10:"11/20 · 22:26–22:28",ng11:"11/20 11조",sg11:"11/20 · 22:29–22:36",ng12:"11/20 12조",sg12:"11/20 · 22:37–22:40",ng13:"11/20 13조",sg13:"11/20 · 22:41–22:42",ng14:"11/20 14조",sg14:"11/20 · 22:44–22:46",more:"나머지 사진은 정리 중이에요",fmh:"나 찾기",fmd:"선명한 셀카를 올리면 3일간의 사진에서 당신을 찾아요. 비교는 기기에서만 이뤄지고 업로드되지 않아요.",fmb:"📷 사진 올려서 찾기",sel:"베스트 컷",allc:"전체",findme:"🙋 나 찾기",f2:"붉은 벽돌 팔각루",f3:"시 지정 문화재",early:"베스트 컷 · 계속 추가 예정",lead:"Taiwan Salsa Carnival · 11/20 공연의 밤 · 사진 Jim Lin @jimframe",venue:"전체 공연",prog:"그룹",hl:"하이라이트",about:"장소 소개",
+vdesc:"1908년에 지어진 붉은 벽돌 팔각 건물로, 시먼딩 최초의 공영 시장이었습니다. 100여 년 동안 시장, 극장, 공연장으로 쓰였고 지금은 문화·공연 공간입니다. City Cup 토·일요일 대회와 파티가 이곳에서 열렸고, 금요일 오프닝은 BA 스튜디오에서 열렸습니다.",
+addr:"타이베이시 완화구 청두로 10호 (MRT 시먼역 1번 출구)",foot1:"사진 사용 시 태그해 주세요",thanks:"감사합니다",dlthis:"다운로드",c1:"다운로드 전에",c2:"IG/페이스북에 공유할 때 사진작가를 태그해 주세요.",c3:"@jimframe 태그할게요",cancel:"취소",dl:"다운로드",
+n1113:"BA 오프닝 파티",s1113:"BA 스튜디오 · 오프닝 소셜",n1114a:"대회",s1114a:"시먼 홍루 · 대회 · 시상",n1114b:"저녁 파티",s1114b:"시먼 홍루 · 공연 · 소셜",n1115:"마지막 날",s1115:"시먼 홍루 · 대회",n1115b:"클로징 파티",s1115b:"시먼 홍루 · 시상 · 소셜",nvideo:"영상",svideo:"대회 · 공연 · 소셜",
+photos:"장",wait:"준비 중",soonA:"베스트 컷 준비 중, 계속 추가 예정",soonB:"정리 중",soonV:"30초 하이라이트 제작 중",tap:"사진을 눌러 크게 보기·다운로드",full:"전체 앨범: 보정 · 여러 장 다운로드 · 스토리 ›"},
+ja:{ng01:"11/20 グループ 1",sg01:"11/20 · 21:53–21:54",ng02:"11/20 グループ 2",sg02:"11/20 · 21:55–21:58",ng03:"11/20 グループ 3",sg03:"11/20 · 21:59–22:01",ng04:"11/20 グループ 4",sg04:"11/20 · 22:02–22:05",ng05:"11/20 グループ 5",sg05:"11/20 · 22:06–22:09",ng06:"11/20 グループ 6",sg06:"11/20 · 22:10–22:14",ng07:"11/20 グループ 7",sg07:"11/20 · 22:15–22:18",ng08:"11/20 グループ 8",sg08:"11/20 · 22:19–22:21",ng09:"11/20 グループ 9",sg09:"11/20 · 22:22–22:25",ng10:"11/20 グループ 10",sg10:"11/20 · 22:26–22:28",ng11:"11/20 グループ 11",sg11:"11/20 · 22:29–22:36",ng12:"11/20 グループ 12",sg12:"11/20 · 22:37–22:40",ng13:"11/20 グループ 13",sg13:"11/20 · 22:41–22:42",ng14:"11/20 グループ 14",sg14:"11/20 · 22:44–22:46",more:"ほかの写真は整理中です",fmh:"自分を探す",fmd:"はっきりした自撮りをアップすると、3日間の写真からあなたを探します。照合は端末内のみで、アップロードされません。",fmb:"📷 写真で探す",sel:"セレクト",allc:"すべて",findme:"🙋 自分を探す",f2:"赤レンガの八角楼",f3:"市定古跡",early:"セレクト・順次追加",lead:"Taiwan Salsa Carnival · 11/20 ショーナイト · 撮影 Jim Lin @jimframe",venue:"全ショー",prog:"グループ",hl:"ハイライト",about:"会場について",
+vdesc:"1908年に建てられた赤レンガの八角形の建物で、西門町初の公設市場でした。100年以上、市場・劇場・演芸場として使われ、今は文化・公演スペースです。City Cup の土日の大会とパーティーはここで、金曜のオープニングは BA スタジオで行われました。",
+addr:"台北市萬華区成都路10号（MRT西門駅1番出口）",foot1:"写真を使うときはタグ付けを",thanks:"ありがとう",dlthis:"ダウンロード",c1:"ダウンロードの前に",c2:"IG・Facebookでシェアするときは、撮影者をタグ付けしてください。",c3:"@jimframe をタグ付けします",cancel:"キャンセル",dl:"ダウンロード",
+n1113:"BA オープニング",s1113:"BA スタジオ · オープニング",n1114a:"コンテスト",s1114a:"西門紅楼 · 大会 · 表彰",n1114b:"イブニング",s1114b:"西門紅楼 · ショー · ソーシャル",n1115:"最終日",s1115:"西門紅楼 · 大会",n1115b:"クロージングパーティー",s1115b:"西門紅楼 · 表彰 · ソーシャル",nvideo:"動画",svideo:"大会・ショー・ソーシャル",
+photos:"枚",wait:"準備中",soonA:"セレクト準備中・順次追加",soonB:"準備中",soonV:"30秒ハイライト制作中",tap:"写真をタップして拡大・ダウンロード",full:"アルバム全体：補正・まとめてDL・ストーリー ›"}};
+const ZH={more:"其他照片整理中，陸續補上",fmh:"找自己",fmd:"上傳一張清楚的自拍或正面照，從三天的照片裡找出有你的照片。照片只在你的手機裡比對，不會上傳。",fmb:"📷 上傳照片找自己",sel:"精選",allc:"全部",findme:"🙋 找自己",f2:"紅磚八角樓",f3:"市定古蹟",early:"精選・完整版陸續補上",photos:"張",wait:"整理中",soonA:"精選準備中，之後陸續補上",soonB:"整理中",soonV:"30 秒精華影片製作中",tap:"點照片看大圖、下載",full:"完整相簿：調色・多選下載・做限動 ›"};
+let LANG=(()=>{try{const v=localStorage.getItem("jf_lang");if(v)return v}catch(e){}const n=(navigator.language||"").toLowerCase();return n.startsWith("zh")?"zh":n.startsWith("ko")?"ko":n.startsWith("ja")?"ja":n?"en":"zh"})();
+const ZHS={};document.querySelectorAll("[data-t]").forEach(el=>ZHS[el.dataset.t]=el.textContent);
+const t=k=>LANG==="zh"?(ZH[k]??ZHS[k]??k):((I18N[LANG]||I18N.en)[k]??ZH[k]??k);
+const dn=d=>LANG==="zh"?d.name:t("n"+d.id),ds=d=>LANG==="zh"?d.sub:t("s"+d.id);
+function applyLang(){document.documentElement.lang=LANG==="zh"?"zh-Hant":LANG;document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t(el.dataset.t));
+ $("#langs").innerHTML=[["zh","中"],["en","EN"],["ko","한"],["ja","日"]].map(([k,l])=>`<button data-lang="${k}" class="${k===LANG?"on":""}">${l}</button>`).join("");view()}
+
+// ===== 影片：Drive 播放＋網站直接下載（videos.json）；管理模式可分類 比賽／表演／其他 =====
+let VID=[],vcat="all";const VIS=()=>ADMIN?VID:VID.filter(x=>!x.off);
+const fmt=t=>{t=Math.max(0,t||0);const m=Math.floor(t/60),q=t-m*60;return m+":"+(q<10?"0":"")+q.toFixed(1)};
+const vb=x=>x.k.slice(1,5)+"_"+x.k.slice(6,8);
+document.addEventListener("change",e=>{const t=e.target;if(t.dataset&&t.dataset.vcs){vsave(t.dataset.vcs,{cat:t.value||null},"分類 "+(t.value?VC[t.value][0]:"未分類"))}});
+function vedit(k){const x=VID.find(y=>y.k===k);if(!x)return;let S=x.s||0,E=x.e||0;const D=x.d||0,N=Math.ceil(D/2);
+ const m=document.createElement("div");m.id="ved";m.innerHTML=`<div class="vedin"><div class="vedh"><b>✂️ ${x.t||vb(x)}</b><button data-vx>✕</button></div>
+ ${x.px?`<video id="vedv" controls playsinline preload="auto" src="vp/${vb(x)}.mp4"></video>`:`<iframe src="https://drive.google.com/file/d/${x.id}/preview" allowfullscreen style="width:100%;aspect-ratio:16/9;border:0"></iframe>`}
+ <div class="vedt"><span id="vedc">0:00.0</span><span id="vedr"></span></div>
+ <div class="vedbar" id="vedbar"><i id="vedsel"></i><i id="vedhd"></i></div>
+ <div class="vedn">${[-5,-1,-.1,.1,1,5].map(n=>`<button data-vn="${n}">${n>0?"+":""}${n}s</button>`).join("")}</div>
+ <div class="vedn"><button data-vin2 class="hi">⏮ 這裡當開頭</button><button data-vout2 class="hi">⏭ 這裡當結尾</button><button data-vpv>▶ 預覽剪好的</button></div>
+ <div class="vedg">${Array.from({length:N},(_,i)=>`<button data-vg="${i*2}" style="background-image:url(vs/${vb(x)}.jpg);background-size:1000% ${Math.ceil(N/10)*100}%;background-position:${(i%10)/9*100}% ${Math.ceil(N/10)>1?Math.floor(i/10)/(Math.ceil(N/10)-1)*100:0}%"><small>${fmt(i*2).replace(/\.0$/,"")}</small></button>`).join("")}</div>
+ <label>比賽名稱 <input id="vedname" value="${(x.t||"").replace(/"/g,"&quot;")}" placeholder="例：Open Mix & Match 決賽"></label>
+ <label>結尾接下一段 <input id="vednx" type="number" min="0" step="1" value="${x.nx||0}"> 秒（0＝不接）</label>
+ <div class="vedf"><button data-vdel class="warn">${x.off?"↩ 恢復這支":"🗑 刪除這支"}</button><button data-vrs>↺ 回原長</button><button data-vsv class="ok">💾 儲存</button></div></div>`;
+ document.body.appendChild(m);document.body.style.overflow="hidden";const v=m.querySelector("#vedv");const g=m.querySelector(".vedg");
+ const dur=()=>D||(v&&v.duration)||1;
+ const draw=()=>{const ee=E||dur();m.querySelector("#vedr").textContent=`開頭 ${fmt(S)} · 結尾 ${E?fmt(E):"原結尾"} · 長 ${fmt(ee-S)}`;const sel=m.querySelector("#vedsel");sel.style.left=(S/dur()*100)+"%";sel.style.width=((ee-S)/dur()*100)+"%";
+  g.querySelectorAll("[data-vg]").forEach(b=>{const tt=+b.dataset.vg;b.classList.toggle("out",tt+2<=S||tt>=ee)})};
+ const cur=()=>v?v.currentTime:0;const seek=tt=>{if(v){v.currentTime=Math.max(0,Math.min(dur(),tt))}};
+ if(v){v.addEventListener("timeupdate",()=>{m.querySelector("#vedc").textContent=fmt(v.currentTime);m.querySelector("#vedhd").style.left=(v.currentTime/dur()*100)+"%";if(m._pv&&E&&v.currentTime>=E){v.pause();m._pv=0}});v.addEventListener("loadedmetadata",()=>{seek(S);draw()})}
+ m.querySelector("#vedbar").addEventListener("click",ev=>{const r=ev.currentTarget.getBoundingClientRect();seek((ev.clientX-r.left)/r.width*dur())});
+ m.addEventListener("click",ev=>{const b=ev.target.closest("button");if(!b)return;const d=b.dataset;
+  if("vx" in d){m.remove();document.body.style.overflow="";return}
+  if(d.vn){seek(cur()+ +d.vn);return}
+  if(d.vg){seek(+d.vg);if(v)v.play().catch(()=>{});return}
+  if("vin2" in d){const tt=Math.round(cur()*10)/10;if(E&&tt>=E){badge("開頭要在結尾之前");return}S=tt;draw();return}
+  if("vout2" in d){const tt=Math.round(cur()*10)/10;if(tt<=S){badge("結尾要在開頭之後");return}E=tt;draw();return}
+  if("vpv" in d){seek(S);m._pv=1;v&&v.play().catch(()=>{});return}
+  if("vrs" in d){S=0;E=0;draw();return}
+  if("vdel" in d){m.remove();document.body.style.overflow="";vsave(k,{off:x.off?null:1},x.off?"恢復":"刪除");return}
+  if("vsv" in d){const nm=m.querySelector("#vedname").value.trim(),nx=Math.max(0,parseFloat(m.querySelector("#vednx").value)||0);m.remove();document.body.style.overflow="";
+   vsave(k,{s:S||null,e:E||null,t:nm||null,nx:nx||null},`剪輯 ${fmt(S)}–${E?fmt(E):"結尾"}`);return}});
+ draw()}
+const GHV="https://api.github.com/repos/jay0916746661/jimframe-site/contents/tsc/videos.json";
+async function vsave(k,patch,msg){badge("影片儲存中…");if(!ghTok()){badge("沒有權杖，改複製給 Claude");const x=VID.find(y=>y.k===k);Object.assign(x,patch);view();try{await navigator.clipboard.writeText("TSC 影片 "+k+" "+JSON.stringify(patch))}catch(e){}return}
+ try{const r0=await fetch(GHV+"?ref=main&t="+Date.now(),{cache:"no-store",headers:ghH()});const j=await r0.json();const J=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g,"")))));const x=J.videos.find(y=>y.k===k);for(const q in patch){if(patch[q]===null)delete x[q];else x[q]=patch[q]}
+ const r=await fetch(GHV,{method:"PUT",headers:ghH(),body:JSON.stringify({message:"TSC 影片 "+k+" "+msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(J,null,0)))),branch:"main",sha:j.sha})});if(!r.ok)throw new Error(r.status);VID=J.videos;view();badge("已存："+k+" "+msg+"（約 1 分鐘後訪客看到）");setTimeout(qBadge,5000)}catch(e){badge("影片儲存失敗："+e.message)}}
+const VC={comp:["比賽","Competition"],show:["表演","Performance"],other:["社交・其他","Social & more"]};
+const vc=x=>(VQ[x.k]??x.cat)||"";const vlab=c=>VC[c]?VC[c][LANG==="zh"?0:1]:(LANG==="zh"?"未分類":"Unsorted");
+fetch("videos.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(!j)return;VID=j.videos||[];try{VID.forEach(x=>{if(VQ[x.k]!==undefined&&VQ[x.k]===x.cat)delete VQ[x.k]});localStorage.setItem("jf_tsc_vcat",JSON.stringify(VQ))}catch(e){}try{view()}catch(e){}}).catch(()=>{});
+function vview(v){const dn2=d=>d==="1113"?"11/13 BA":d==="1114"?"11/14 西門紅樓":"11/15 西門紅樓";
+ const cats=["all","comp","show","other",""].filter(c=>c==="all"||VIS().some(x=>vc(x)===c));
+ const V=VIS();const L=V.filter(x=>vcat==="all"||vc(x)===vcat);
+ v.innerHTML=`<div class="meta"><span>${V.length} ${LANG==="zh"?"支影片 · 點 ▶ 直接看，⬇ 下載原檔":"clips · tap ▶ to watch, ⬇ to download"}</span></div>
+ <div class="vchips">${cats.map(c=>`<button class="vchip${vcat===c?" on":""}" data-vcat="${c}">${c==="all"?(LANG==="zh"?"全部":"All"):vlab(c)} <small>${c==="all"?V.length:V.filter(x=>vc(x)===c).length}</small></button>`).join("")}</div>
+ <div class="vlist">${L.map(x=>`<div class="vcard${x.off?" voff":""}" data-vk="${x.k}"><div class="vbox"><button class="vplay" data-vplay="${x.id}" data-vs="${x.s||0}" data-ve="${x.e||""}" data-vnx="${x.nx?((VID[VID.indexOf(x)+1]||{}).id||"")+":"+x.nx:""}" aria-label="播放">▶</button></div>
+ <div class="vinfo"><b>${x.t?x.t+` <small style="opacity:.6;font-weight:400">${dn2(x.day)}</small>`:`${dn2(x.day)} · ${LANG==="zh"?"第":"Part "}${x.n}${LANG==="zh"?" 段":""}`}</b><span>${LANG==="zh"?"錄影 "+x.at+" 起":"from "+x.at.replace("分",":").replace("秒","")} · ${x.mb>=1000?(x.mb/1000).toFixed(1)+" GB":x.mb+" MB"} · <i class="vtag">${vlab(vc(x))}</i>${x.nx?` · ⏩ 接下段 ${x.nx}s`:""}${x.s||x.e?` · ✂️ ${fmt(x.s||0)}–${x.e?fmt(x.e):(LANG==="zh"?"結尾":"end")}${x.e?` (${LANG==="zh"?"約":"~"}${Math.round((x.e-(x.s||0))/60*10)/10} ${LANG==="zh"?"分鐘":"min"})`:""}`:""}${x.off?" · 🗑 已隱藏":""}</span>
+ <div class="vbtn"><a class="dl" href="https://drive.usercontent.google.com/download?id=${x.id}&export=download&confirm=t" data-vdl>⬇ ${LANG==="zh"?"下載":"Download"}</a>${ADMIN?`<select class="vsel" data-vcs="${x.k}">${["",...Object.keys(VC)].map(c=>`<option value="${c}"${vc(x)===c?" selected":""}>${c?VC[c][0]:"未分類"}</option>`).join("")}</select><button class="ib vset ved" data-ved="${x.k}">✂️ 編輯</button>`:""}</div></div></div>`).join("")}</div>`}
+function days(){$("#days").innerHTML=DAYS.map(d=>`<button class="ticket${d===day?" on":""}" data-d="${d.id}"><span class="stub"><b>${d.d}</b><small>${d.wk}</small></span><span class="tx"><b>${dn(d)}</b><span>${ds(d)}</span>${d.pk&&!ADMIN?`<i class="more">${t("more")}</i>`:""}</span><span class="badge${d.photos||(d.vid&&VID.length)?"":" wait"}">${d.photos?d.photos.length+" "+t("photos"):d.vid&&VID.length?VIS().length+(LANG==="zh"?" 支":" clips"):t("wait")}</span></button>`).join("")}
+function rail(){$("#rail").innerHTML=HL.filter(([k,n])=>!HID.has(`L${k}-${n}`)).map(([k,n])=>`<button data-h="${k}:${n}" aria-label="精彩瞬間"><img src="../photos/${k}/${n}.jpg" loading="lazy" alt=""></button>`).join("")}
+function view(){setTimeout(()=>{if(ADMIN)mk()});days();$("#wall-title").textContent=dn(day);const v=$("#view");
+ if(day.vid&&VID.length){vview(v);return}
+ if(!day.photos){v.innerHTML=`<div class="soon"><b>${dn(day)}</b>${t(day.id==="video"?"soonV":day.id==="1115"?"soonB":"soonA")}</div>`;return}
+ v.innerHTML=`<div class="meta"><span>${day.pk&&!ADMIN?`<b style="color:var(--gold)">${t("sel")}</b> · ${t("more")} · `:""}${VL().length} ${t("photos")} · ${t("tap")}</span>${ADMIN?"":`<a href="./download/" style="margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:var(--gold);color:#111;font:700 13px var(--font-text);text-decoration:none">⬇ ${LANG==="zh"?"多選・整包下載":LANG==="ja"?"まとめてダウンロード":LANG==="ko"?"여러 장 다운로드":"Bulk download"}</a>`}${ADMIN&&day.pk&&CAND[day.pk]?`<button class="ib" data-okall style="width:auto;border-radius:999px;padding:0 12px;font-size:12px;border:1px solid var(--gold)">金框 ${CAND[day.pk].length} 張候選全部 ✅</button>`:""}${ADMIN&&cf==="fix"?`<button class="ib" data-fixpre style="width:auto;border-radius:999px;padding:0 12px;font-size:12px;border:1px solid #ff8a3d">膚色那幾張全部套膚色預設</button>`:""}</div>${chips()}<div class="grid">${VL().map((p,i)=>`<button data-i="${i}" aria-label="照片 ${p[0]}"><img src="${day.dir}t/${p[0]}.jpg" loading="lazy" width="${p[1]}" height="${p[2]}" alt="">${ADMIN?`<i class="adm-ok" data-ok="${pid(day,p)}">✓</i><i class="adm-x" data-del="${pid(day,p)}">×</i>${FIX[pid(day,p)]?`<em class="fixl">${FIX[pid(day,p)]}</em>`:""}`:""}</button>`).join("")}</div>`}
+function show(){gOrig=null;if(ADMIN&&typeof aSet==="function"){aOrig=null;setTimeout(()=>{const v=AQ[aId()];if($("#adj").style.display!=="none")aSet(v||{});else if(v){aSet(v)}},60)}if(gfx)setTimeout(()=>{big.decode().then(glowPreview).catch(()=>{})},50);setTimeout(()=>{if(ADMIN)mk()});const p=VL()[idx];$("#big").src=day.dir+p[0]+".jpg"+IV;fxBar(day.dir+"t/"+p[0]+".jpg"+IV);$("#cnt").textContent=`${idx+1} / ${VL().length}`;
+ [idx+1,idx-1].forEach(j=>{const q=VL()[(j+VL().length)%VL().length];new Image().src=day.dir+q[0]+".jpg"+IV})}
+function open(i){idx=i;$("#lbcrop").style.display=ADMIN?"flex":"none";$("#lbadj").style.display=ADMIN?"flex":"none";$("#lbok").style.display=ADMIN?"flex":"none";const ab=document.getElementById("admb");if(ab)ab.style.display="none";$("#lbdel").style.display=ADMIN?"flex":"none";$("#lb").classList.add("on");document.body.style.overflow="hidden";show()}
+function close(){zReset();aEnd();$("#adj").style.display="none";$("#lb").classList.remove("adjon");const ab=document.getElementById("admb");if(ab)ab.style.display="";$("#lb").classList.remove("on");document.body.style.overflow=""}
+function step(d){zReset();idx=(idx+d+VL().length)%VL().length;show()}
+function dl(){const p=VL()[idx],u=day.dir+p[0]+".jpg"+IV,nm="CityCup2026_"+p[0]+".jpg";if(ADMIN){const id=pid(day,p),v=AQ[id],c=CQ[id];if(v||c){dlEdited(u,v,c).then(b=>fxDownload(URL.createObjectURL(b),nm)).catch(()=>fxDownload(u,nm).catch(()=>{}));return}}fxDownload(u,nm).catch(()=>{})}
+// 後台：面板調好的色、裁切，下載時直接套上（跟 Claude 套原檔同一套公式）
+async function dlEdited(u,v,c){const im=new Image();im.crossOrigin="anonymous";im.src=u+"?e="+Date.now();await im.decode();let W=im.naturalWidth,H=im.naturalHeight;const cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");x.drawImage(im,0,0);
+ if(v){const id=x.getImageData(0,0,W,H);aPix(id.data,v);x.putImageData(id,0,0)}
+ if(c){const sx=Math.round(c.x*W),sy=Math.round(c.y*H),sw=Math.round(Math.min(1,c.x+c.w)*W)-sx,sh=Math.round(Math.min(1,c.y+c.h)*H)-sy;const cv2=document.createElement("canvas");cv2.width=sw;cv2.height=sh;cv2.getContext("2d").drawImage(cv,sx,sy,sw,sh,0,0,sw,sh);return await new Promise(r=>cv2.toBlob(r,"image/jpeg",.92))}
+ return await new Promise(r=>cv.toBlob(r,"image/jpeg",.92))}
+document.addEventListener("click",e=>{const ok=e.target.closest("[data-ok]");if(ok){e.stopPropagation();e.preventDefault();okT(ok.dataset.ok);return}const x=e.target.closest("[data-del]");if(x){e.stopPropagation();e.preventDefault();hide(x.dataset.del);return}const vd=e.target.closest("[data-vdl]");if(vd&&!acked){e.preventDefault();$("#ok").checked=false;$("[data-go]").disabled=true;$("#credit").classList.add("on");window._vdl=vd.href;return}
+ const t=e.target.closest("button");if(!t)return;
+ if(t.dataset.vcat!==undefined){vcat=t.dataset.vcat;view();return}
+ if(t.dataset.vplay){const b=t.closest(".vbox"),x=VID.find(y=>y.k===t.closest(".vcard").dataset.vk);if(!x.px){b.innerHTML=`<iframe src="https://drive.google.com/file/d/${x.id}/preview" allow="autoplay; fullscreen" allowfullscreen></iframe>`;return}
+ const S=x.s||0,E=x.e||0,nxt=x.nx?VID[VID.indexOf(x)+1]:null;b.innerHTML=`<video controls autoplay playsinline preload="auto" src="vp/${vb(x)}.mp4#t=${S}${E?","+E:""}"></video>`;const vd=b.querySelector("video");let ph=0;
+ vd.addEventListener("loadedmetadata",()=>{if(!ph&&vd.currentTime<S-.3)vd.currentTime=S});
+ const goNx=()=>{if(ph||!nxt||!nxt.px)return;ph=1;vd.src=`vp/${vb(nxt)}.mp4#t=0,${x.nx}`;vd.play().catch(()=>{})};
+ vd.addEventListener("ended",goNx);vd.addEventListener("timeupdate",()=>{if(ph===1&&vd.currentTime>=x.nx){vd.pause();ph=2;return}if(ph)return;if(E&&vd.currentTime>=E){if(nxt)goNx();else{vd.pause();vd.currentTime=E}}if(vd.currentTime<S-.5)vd.currentTime=S});return}
+ if(t.dataset.ved){vedit(t.dataset.ved);return}
+ if(t.dataset.vset){const [k,c]=t.dataset.vset.split(":");VQ[k]=VQ[k]===c?"":c;try{localStorage.setItem("jf_tsc_vcat",JSON.stringify(VQ))}catch(e){}view();qBadge();return}
+ if(t.dataset.lang){LANG=t.dataset.lang;try{localStorage.setItem("jf_lang",LANG)}catch(e){}applyLang();return}
+ if(t.dataset.d){day=DAYS.find(d=>d.id===t.dataset.d);cf=null;history.replaceState(null,"","#"+day.id);view();$("#wall-title").scrollIntoView({behavior:"smooth",block:"start"})}
+ else if(t.dataset.h){const [k,n]=t.dataset.h.split(":");const d=DAYS.find(x=>x.photos&&x.dir.includes("/"+k+"/"));if(d){day=d;cf=null;view();open(d.photos.findIndex(p=>p[0]===n))}}
+ else if(t.dataset.i!==undefined)open(+t.dataset.i);
+ else if(t.dataset.cf){cf=t.dataset.cf==="all"?null:t.dataset.cf==="fix"?"fix":+t.dataset.cf;view()}
+ else if("fixpre" in t.dataset){let n=0;VL().forEach(p=>{const id=pid(day,p);if(/膚/.test(FIX[id]||"")&&!AQ[id]){AQ[id]={t:-18,g:12,kh:30};n++}});saveA();try{mk();qBadge()}catch(e){}alert(`已把 ${n} 張膚色有問題的照片加入調色清單（膚色預設）。一張張點開可再微調，最後按複製清單貼給 Claude。`)}
+ else if("findme" in t.dataset){$("#fm").scrollIntoView({behavior:"smooth",block:"start"})}
+ else if(t.dataset.fm!==undefined){const h=window._fmh[+t.dataset.fm];day=h.loc[0];cf=null;view();open(h.loc[1])}
+ else if(t.dataset.glow){gfx=gfx===t.dataset.glow?null:t.dataset.glow;document.querySelectorAll(".gchip").forEach(b=>b.classList.toggle("on",b.dataset.glow===gfx));$("#glab").textContent=gfx?(GLOW.find(g=>g.id===gfx)[LANG==="zh"?"zh":"en"]):"";glowPreview()}
+ else if(t.dataset.fx){fx=FX.find(x=>x.id===t.dataset.fx);fxApply()}
+ else if("zoom" in t.dataset){const r=stg.getBoundingClientRect();zAt(Z.s>1.01?1:2.5,r.left+r.width/2,r.top+r.height/2)}
+ else if("x" in t.dataset)close();else if("p" in t.dataset)step(-1);else if("n" in t.dataset)step(1);
+ else if("lbcrop" in t.dataset){const p=VL()[idx];cOpen(pid(day,p),day.dir+p[0]+".jpg"+IV)}
+ else if("hdel" in t.dataset){hide(pid(day,VL()[hvI]));hmk()}
+ else if("hok" in t.dataset){okT(pid(day,VL()[hvI]))}
+ else if("lbok" in t.dataset){okT(pid(day,VL()[idx]))}
+ else if("okall" in t.dataset){const cl=(CAND[day.pk]||[]);if(confirm(`把這本 ${cl.length} 張候選全部標成 ✅ 可以？`)){cl.forEach(i=>OQ.add(`L${day.dir.split("/").slice(-2,-1)[0]}-${i}`));saveO();mk();qBadge()}}
+ else if("hcrop" in t.dataset){const p=VL()[hvI];hov.style.display="none";cOpen(pid(day,p),day.dir+p[0]+".jpg"+IV)}
+ else if("hopen" in t.dataset){hov.style.display="none";open(hvI)}
+ else if("cropx" in t.dataset){$("#crop").style.display="none"}
+ else if(t.dataset.cr!==undefined){CR=+t.dataset.cr;cFix();cDraw()}
+ else if("cropok" in t.dataset){CQ[cid]={x:+CB.x.toFixed(4),y:+CB.y.toFixed(4),w:+CB.w.toFixed(4),h:+CB.h.toFixed(4)};saveC();$("#crop").style.display="none";qBadge()}
+ else if("lbdel" in t.dataset){hide(pid(day,VL()[idx]))}
+ else if("lbadj" in t.dataset){aOpen()}
+ else if("hadj" in t.dataset){hov.style.display="none";open(hvI);aOpen()}
+ else if("adjx" in t.dataset){aEnd();$("#adj").style.display="none";$("#lb").classList.remove("adjon")}
+ else if("adjreset" in t.dataset){aSet({})}
+ else if("adjpre" in t.dataset){aSet({t:-18,g:12,kh:30})}
+ else if("adjmin" in t.dataset){const a=$("#adj");a.classList.toggle("min");t.textContent=a.classList.contains("min")?"▴":"▾"}
+ else if("adjok" in t.dataset){const id=aId(),v=aGet();{const o={};AK.forEach(k=>{if(k==="k"?v.k!==K0:v[k])o[k]=v[k]});if(Object.keys(o).length)AQ[id]=o;else delete AQ[id]};saveA();aOrig=null;$("#adj").style.display="none";$("#lb").classList.remove("adjon");mk();qBadge();badge2(id)}
+ else if("dl" in t.dataset){if(acked)dl();else{$("#ok").checked=false;$("[data-go]").disabled=true;$("#credit").classList.add("on")}}
+ else if("cc" in t.dataset)$("#credit").classList.remove("on");
+ else if("go" in t.dataset){acked=true;try{localStorage.setItem("jf_tsc_ack","1")}catch(e){}$("#credit").classList.remove("on");if(window._vdl){location.href=window._vdl;window._vdl=null}else dl()}});
+$("#ok").addEventListener("change",e=>{$("[data-go]").disabled=!e.target.checked});
+document.addEventListener("keydown",e=>{if(!$("#lb").classList.contains("on"))return;if(e.key==="Escape"){if(Z.s>1.01)zReset();else close()}if(e.key==="+"||e.key==="="){const r=stg.getBoundingClientRect();zAt(Z.s*1.4,r.left+r.width/2,r.top+r.height/2)}if(e.key==="-"){const r=stg.getBoundingClientRect();zAt(Z.s/1.4,r.left+r.width/2,r.top+r.height/2)}if(e.key==="ArrowLeft")step(-1);if(e.key==="ArrowRight")step(1)});
+// ===== 放大檢視：雙擊／雙指縮放／滾輪／🔍，放大後可拖曳 =====
+const Z={s:1,x:0,y:0};const big=$("#big"),stg=$("#stage");
+function zApply(){big.style.transform=`translate(${Z.x}px,${Z.y}px) scale(${Z.s})`;stg.classList.toggle("zoomed",Z.s>1.01)}
+function zReset(){Z.s=1;Z.x=0;Z.y=0;zApply()}
+function zClamp(){const r=stg.getBoundingClientRect(),w=big.offsetWidth*Z.s,h=big.offsetHeight*Z.s,bx=big.offsetLeft,by=big.offsetTop;
+ const minX=Math.min(0,r.width-w-bx),maxX=Math.max(0,-bx),minY=Math.min(0,r.height-h-by),maxY=Math.max(0,-by);
+ if(w<=r.width)Z.x=(r.width-w)/2-bx;else Z.x=Math.min(maxX,Math.max(minX,Z.x));if(h<=r.height)Z.y=(r.height-h)/2-by;else Z.y=Math.min(maxY,Math.max(minY,Z.y))}
+function zAt(ns,cx,cy){const r=stg.getBoundingClientRect();ns=Math.min(5,Math.max(1,ns));const px=cx-r.left-big.offsetLeft,py=cy-r.top-big.offsetTop;
+ Z.x=px-(px-Z.x)*ns/Z.s;Z.y=py-(py-Z.y)*ns/Z.s;Z.s=ns;if(ns<=1.01){Z.s=1;Z.x=0;Z.y=0}else zClamp();zApply()}
+big.addEventListener("load",zReset);
+stg.addEventListener("wheel",e=>{e.preventDefault();zAt(Z.s*(e.deltaY<0?1.15:1/1.15),e.clientX,e.clientY)},{passive:false});
+stg.addEventListener("dblclick",e=>{if(e.target.closest("button"))return;zAt(Z.s>1.01?1:2.5,e.clientX,e.clientY)});
+const pts=new Map();let g=null,lastTap=0,sx=null,sy=null;
+stg.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;stg.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pts.size===2){const[a,b]=[...pts.values()];g={d:Math.hypot(a.x-b.x,a.y-b.y),s:Z.s,cx:(a.x+b.x)/2,cy:(a.y+b.y)/2}}
+ else{g={px:e.clientX,py:e.clientY,x:Z.x,y:Z.y};sx=e.clientX;sy=e.clientY;
+  if(e.pointerType!=="mouse"){const n=Date.now();if(n-lastTap<300){zAt(Z.s>1.01?1:2.5,e.clientX,e.clientY);lastTap=0;sx=null}else lastTap=n}}});
+stg.addEventListener("pointermove",e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(pts.size===2&&g&&g.d){const[a,b]=[...pts.values()];zAt(g.s*Math.hypot(a.x-b.x,a.y-b.y)/g.d,(a.x+b.x)/2,(a.y+b.y)/2)}
+ else if(pts.size===1&&g&&Z.s>1.01&&g.px!==undefined){Z.x=g.x+e.clientX-g.px;Z.y=g.y+e.clientY-g.py;zClamp();zApply()}});
+const pend2=e=>{if(!pts.has(e.pointerId))return;pts.delete(e.pointerId);
+ if(pts.size===0){if(Z.s<=1.01&&sx!==null&&g&&g.px!==undefined){const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy))step(dx<0?1:-1)}g=null;sx=null}
+ else{const[a]=[...pts.values()];g={px:a.x,py:a.y,x:Z.x,y:Z.y}}};
+stg.addEventListener("pointerup",pend2);stg.addEventListener("pointercancel",pend2);
+
+// ===== 復古濾鏡：預覽用 CSS filter，下載時在畫布上套同樣效果（含暗角、顆粒）=====
+const FX=[
+ {id:"none",zh:"原圖",en:"Original",ko:"원본",ja:"オリジナル",f:[]},
+ {id:"warm",zh:"暖調復古",en:"Warm Retro",ko:"웜 레트로",ja:"ウォームレトロ",f:[["sepia",.35],["saturate",1.2],["contrast",1.05],["brightness",1.03]],v:.25},
+ {id:"fade",zh:"褪色底片",en:"Faded Film",ko:"바랜 필름",ja:"色あせフィルム",f:[["contrast",.82],["saturate",.78],["sepia",.18],["brightness",1.08]],lift:22,grain:10},
+ {id:"redhouse",zh:"紅樓膠片",en:"Red House Film",ko:"홍루 필름",ja:"紅楼フィルム",f:[["sepia",.25],["saturate",1.35],["hue",-8],["contrast",1.1]],v:.45,grain:8},
+ {id:"70s",zh:"70 年代",en:"’70s",ko:"70년대",ja:"70年代",f:[["sepia",.3],["saturate",1.5],["hue",-12],["contrast",1.08],["brightness",1.04]],lift:12,v:.3,grain:12},
+ {id:"sepia",zh:"老照片",en:"Old Photo",ko:"옛날 사진",ja:"古写真",f:[["sepia",.85],["contrast",1.12],["brightness",.96]],v:.6,grain:14},
+ {id:"bw",zh:"經典黑白",en:"Classic B&W",ko:"클래식 흑백",ja:"クラシック白黒",f:[["grayscale",1],["contrast",1.2]],v:.35,grain:10},
+ {id:"noir",zh:"黑色電影",en:"Film Noir",ko:"필름 누아르",ja:"フィルムノワール",f:[["grayscale",1],["contrast",1.55],["brightness",.9]],v:.7,grain:16}];
+let fx=FX[0];
+const cssF=x=>x.f.map(([k,v])=>k==="hue"?`hue-rotate(${v}deg)`:`${k}(${v})`).join(" ")||"none";
+function fxApply(){big.style.filter=cssF(fx)+(fx.lift?` brightness(1)`:"");const g=$("#vig");g.style.opacity=fx.v?1:0;g.style.background=`radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,${fx.v||0}) 100%)`;
+ [...$("#fbar").children].forEach(b=>b.classList.toggle("on",b.dataset.fx===fx.id))}
+function fxBar(src){$("#gbar").innerHTML=GLOW.filter(g=>!g.era).map(g=>`<button data-glow="${g.id}" class="gchip${gfx===g.id?" on":""}">✨ ${LANG==="zh"?g.zh:(g[LANG]||g.en)}</button>`).join("");$("#ebar").innerHTML=`<span class="elab">${LANG==="zh"?"年代肖像":LANG==="ja"?"年代":LANG==="ko"?"연대":"Eras"}</span>`+GLOW.filter(g=>g.era).map(g=>`<button data-glow="${g.id}" class="gchip echip${g.era===2?" mood":""}${gfx===g.id?" on":""}">${g.era===1?"🎞":g.era===3?"🎮":"🌫"} ${LANG==="zh"?g.zh:(g[LANG]||g.en)}</button>`).join("");$("#fbar").innerHTML=FX.map(x=>`<button data-fx="${x.id}"><img src="${src}" style="filter:${cssF(x)}" alt=""><span>${LANG==="zh"?x.zh:(x[LANG]||x.en)}</span></button>`).join("");fxApply()}
+// 色彩矩陣（依 CSS Filter Effects 規格）
+function mat(k,a){const I=[1,0,0,0,1,0,0,0,1];
+ if(k==="grayscale"){const s=1-a;return[.2126+.7874*s,.7152-.7152*s,.0722-.0722*s,.2126-.2126*s,.7152+.2848*s,.0722-.0722*s,.2126-.2126*s,.7152-.7152*s,.0722+.9278*s]}
+ if(k==="sepia"){const s=1-a;return[.393+.607*s,.769-.769*s,.189-.189*s,.349-.349*s,.686+.314*s,.168-.168*s,.272-.272*s,.534-.534*s,.131+.869*s]}
+ if(k==="saturate"){const s=a;return[.213+.787*s,.715-.715*s,.072-.072*s,.213-.213*s,.715+.285*s,.072-.072*s,.213-.213*s,.715-.715*s,.072+.928*s]}
+ if(k==="hue"){const r=a*Math.PI/180,C=Math.cos(r),S=Math.sin(r);return[.213+C*.787-S*.213,.715-C*.715-S*.715,.072-C*.072+S*.928,.213-C*.213+S*.143,.715+C*.285+S*.140,.072-C*.072-S*.283,.213-C*.213-S*.787,.715-C*.715+S*.715,.072+C*.928+S*.072]}
+ return I}
+async function fxDownload(url,name){if(gfx){const im0=new Image();im0.crossOrigin="anonymous";im0.src=url;await im0.decode();const g=glowRender(im0,gfx,gAmt);url=g.toDataURL("image/jpeg",.95);name=name.replace(".jpg",`_${gfx}.jpg`)}if(fx.id==="none"){const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();return}
+ const im=new Image();im.crossOrigin="anonymous";im.src=url;await im.decode();const cv=document.createElement("canvas");cv.width=im.naturalWidth;cv.height=im.naturalHeight;const ctx=cv.getContext("2d");ctx.drawImage(im,0,0);
+ const d=ctx.getImageData(0,0,cv.width,cv.height),p=d.data,W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=Math.hypot(cx,cy);
+ const ops=fx.f.map(([k,v])=>[k,v,mat(k,v)]);const lift=(fx.lift||0)/255,gr=fx.grain||0,vg=fx.v||0;
+ for(let i=0,n=0;i<p.length;i+=4,n++){let r=p[i]/255,g=p[i+1]/255,b=p[i+2]/255;
+  for(const[k,v,m]of ops){if(k==="brightness"){r*=v;g*=v;b*=v}else if(k==="contrast"){r=(r-.5)*v+.5;g=(g-.5)*v+.5;b=(b-.5)*v+.5}else{const R2=m[0]*r+m[1]*g+m[2]*b,G2=m[3]*r+m[4]*g+m[5]*b,B2=m[6]*r+m[7]*g+m[8]*b;r=R2;g=G2;b=B2}
+   r=Math.min(1,Math.max(0,r));g=Math.min(1,Math.max(0,g));b=Math.min(1,Math.max(0,b))}
+  if(lift){r=lift+r*(1-lift);g=lift+g*(1-lift);b=lift+b*(1-lift)}
+  if(vg){const x=n%W,y=(n/W)|0,t=Math.hypot(x-cx,y-cy)/R,k=t<.45?1:1-vg*Math.min(1,(t-.45)/.55)**1.6;r*=k;g*=k;b*=k}
+  if(gr){const z=(Math.random()-.5)*gr/255;r+=z;g+=z;b+=z}
+  p[i]=r*255;p[i+1]=g*255;p[i+2]=b*255}
+ ctx.putImageData(d,0,0);const blob=await new Promise(res=>cv.toBlob(res,"image/jpeg",.92));const u=URL.createObjectURL(blob);const a=document.createElement("a");a.href=u;a.download=name.replace(".jpg",`_${fx.id}.jpg`);document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+// ===== 管理員調色（色溫／飽和／亮暗，記數值交給 Claude 用原檔改）=====
+const saveA=()=>{try{localStorage.setItem("jf_tsc_adj",JSON.stringify(AQ))}catch(e){}};
+function aId(){return pid(day,VL()[idx])}
+function aGet(){const v={};document.querySelectorAll("[data-ak]").forEach(r=>v[r.dataset.ak]=+r.value);return v}
+function aSet(v){document.querySelectorAll("[data-ak]").forEach(r=>{r.value=v[r.dataset.ak]||(r.dataset.ak==="k"?K0:0);document.querySelector(`[data-av="${r.dataset.ak}"]`).textContent=r.value});aPrev()}
+const AK=["k","t","g","s","b","sh","hl","kh","ks","kl"];const K0=5500;
+function kRGB(K){const T=K/100;let r,g,b;if(T<=66){r=255;g=99.4708025861*Math.log(T)-161.1195681661;b=T<=19?0:138.5177312231*Math.log(T-10)-305.0447927307}else{r=329.698727446*Math.pow(T-60,-.1332047592);g=288.1221695283*Math.pow(T-60,-.0755148492);b=255}return[r/g,1,b/g]}
+// 與原檔用同一套公式（sRGB 0-1）
+function aPix(d,v){const kk=v.k||K0,k0=kRGB(K0),k1=kRGB(kk),fr=k0[0]/k1[0],fb=k0[2]/k1[2];const t=(v.t||0)/100,g=(v.g||0)/100,s=(v.s||0)/100,b=(v.b||0)/100,sh=(v.sh||0)/100,hl=(v.hl||0)/100,kh=(v.kh||0)/100,ks=(v.ks||0)/100,kl=(v.kl||0)/100;
+ for(let i=0;i<d.length;i+=4){let r=d[i]/255,G=d[i+1]/255,B=d[i+2]/255;
+  const mx=Math.max(r,G,B),mn=Math.min(r,G,B),c=mx-mn;let h=0;if(c>1e-6){h=mx===r?((G-B)/c)%6:mx===G?(B-r)/c+2:(r-G)/c+4;h*=60;if(h<0)h+=360}
+  const sat=mx>0?c/mx:0;let w=0;if(h<55&&sat>.12&&sat<.7&&mx>.22){w=Math.min(1,(55-h)/15)*Math.min(1,(sat-.12)/.1)*Math.min(1,(.7-sat)/.15)*Math.min(1,(mx-.22)/.15)}
+  r*=fr*(1+t*.6);B*=fb*(1-t*.6);G*=1-g*.5;
+  let y=.299*r+.587*G+.114*B;r=y+(r-y)*(1+s);G=y+(G-y)*(1+s);B=y+(B-y)*(1+s);
+  const f=(1+b)*(1+sh*.9*Math.pow(1-Math.min(y,1),3))*(1+hl*.6*Math.pow(Math.min(y,1),2));r*=f;G*=f;B*=f;
+  if(w>0){r*=1+kh*.25*w;G*=1-kh*.12*w;B*=1-kh*.05*w;y=.299*r+.587*G+.114*B;const k=1+ks*w;r=y+(r-y)*k;G=y+(G-y)*k;B=y+(B-y)*k;const L=1+kl*.6*w;r*=L;G*=L;B*=L}
+  d[i]=r*255;d[i+1]=G*255;d[i+2]=B*255}}
+let aOrig=null,aT=0;
+function aPrev(){clearTimeout(aT);aT=setTimeout(aRun,120)}
+async function aRun(){const big=$("#big"),v=aGet();if(!aOrig)aOrig=big.src;if(AK.every(k=>k==="k"?v.k===K0:!v[k])){big.src=aOrig;return}
+ const im=new Image();im.src=aOrig;await im.decode();const W=Math.min(1400,im.naturalWidth),H=Math.round(im.naturalHeight*W/im.naturalWidth);
+ const cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");x.drawImage(im,0,0,W,H);const id=x.getImageData(0,0,W,H);aPix(id.data,v);x.putImageData(id,0,0);
+ cv.toBlob(b=>{big.src=URL.createObjectURL(b)},"image/jpeg",.92)}
+function aEnd(){if(aOrig){$("#big").src=aOrig;aOrig=null}}
+function aOpen(){if(!ADMIN)return;$("#lb").classList.add("adjon");$("#adj").style.display="block";aSet(AQ[aId()]||{})}
+function badge2(id){}
+document.addEventListener("input",e=>{const k=e.target.dataset&&e.target.dataset.ak;if(!k)return;document.querySelector(`[data-av="${k}"]`).textContent=e.target.value;aPrev()});
+
+
+// ===== 管理員裁切（記相對座標，交給 Claude 用原檔裁）=====
+const saveC=()=>{try{localStorage.setItem("jf_tsc_crop",JSON.stringify(CQ))}catch(e){}};
+let CB={x:.1,y:.1,w:.8,h:.8},CR=0,cid=null,csrc=null;
+function cDraw(){const im=$("#cimg"),b=$("#cbox"),W=im.clientWidth,H=im.clientHeight;b.style.left=CB.x*W+"px";b.style.top=CB.y*H+"px";b.style.width=CB.w*W+"px";b.style.height=CB.h*H+"px"}
+function cFix(){const im=$("#cimg"),ar=im.clientWidth/im.clientHeight;if(CR){CB.h=Math.min(1,CB.w*ar/CR);CB.w=CB.h*CR/ar}CB.w=Math.min(Math.max(CB.w,.08),1);CB.h=Math.min(Math.max(CB.h,.08),1);CB.x=Math.min(Math.max(CB.x,0),1-CB.w);CB.y=Math.min(Math.max(CB.y,0),1-CB.h)}
+function cOpen(id,src){cid=id;const im=$("#cimg");im.onload=()=>{CB=CQ[cid]?{...CQ[cid]}:{x:.05,y:.05,w:.9,h:.9};cFix();cDraw()};im.src=src;$("#crop").style.display="flex"}
+let cd=null;
+$("#cbox").addEventListener("pointerdown",e=>{e.preventDefault();$("#cbox").setPointerCapture(e.pointerId);cd={h:e.target.dataset.h||"m",sx:e.clientX,sy:e.clientY,b:{...CB},W:$("#cimg").clientWidth,H:$("#cimg").clientHeight}});
+$("#cbox").addEventListener("pointermove",e=>{if(!cd)return;const dx=(e.clientX-cd.sx)/cd.W,dy=(e.clientY-cd.sy)/cd.H,b=cd.b;
+ if(cd.h==="m"){CB.x=b.x+dx;CB.y=b.y+dy}else if(cd.h==="se"){CB.x=b.x;CB.y=b.y;CB.w=b.w+dx;CB.h=b.h+dy}else{CB.x=b.x+dx;CB.y=b.y+dy;CB.w=b.w-dx;CB.h=b.h-dy}
+ if(CR&&cd.h!=="m")CB.h=CB.w*(cd.W/cd.H)/CR;cFix();cDraw()});
+$("#cbox").addEventListener("pointerup",()=>{cd=null});
+// ===== 電腦版：滑鼠停在縮圖半秒，跳出大圖預覽＋刪除／裁切 =====
+let hvT=null,hvI=null;const hov=$("#hov");
+if(ADMIN&&matchMedia("(hover:hover)").matches){
+ document.addEventListener("mouseover",e=>{const b=e.target.closest(".grid button[data-i]");if(!b)return;clearTimeout(hvT);hvT=setTimeout(()=>{hvI=+b.dataset.i;const p=VL()[hvI];$("#hovimg").src=day.dir+p[0]+".jpg"+IV;
+  const r=b.getBoundingClientRect();hov.style.display="flex";const w=Math.min(innerWidth*.34,520);let x=r.right+10;if(x+w>innerWidth)x=Math.max(8,r.left-w-10);hov.style.left=x+"px";hov.style.top=Math.max(8,Math.min(r.top-40,innerHeight*.28))+"px";hmk()},500)});
+ document.addEventListener("mouseout",e=>{const b=e.target.closest(".grid button[data-i]");if(b&&!(e.relatedTarget&&(b.contains(e.relatedTarget)||hov.contains(e.relatedTarget))))clearTimeout(hvT)});
+ hov.addEventListener("mouseleave",e=>{if(!(e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest(".grid button[data-i]")))hov.style.display="none"});
+ document.addEventListener("mousemove",e=>{if(hov.style.display==="flex"&&!hov.contains(e.target)&&!e.target.closest(".grid button[data-i]"))hov.style.display="none"});
+}
+function hmk(){if(hvI==null)return;const id=pid(day,VL()[hvI]);const b=hov.querySelector("[data-hdel]");b.textContent=LQ.has(id)?"↩":"🗑";b.style.background=LQ.has(id)?"#fff":"#c62828";b.style.color=LQ.has(id)?"#c62828":"#fff"}
+
+
+// ===== 光暈效果：泛光 Bloom、光暈 Halation、柔焦 Diffusion（畫布運算，預覽與下載一致）=====
+const GLOW=[{id:"bloom",zh:"泛光",en:"Bloom",ko:"블룸",ja:"ブルーム"},{id:"halation",zh:"光暈",en:"Halation",ko:"할레이션",ja:"ハレーション"},{id:"diffuse",zh:"柔焦",en:"Diffusion",ko:"소프트 포커스",ja:"ソフトフォーカス"},
+ {id:"e1920",era:1,zh:"1920 濕版",en:"1920s Tintype",ko:"1920 습판",ja:"1920 湿板"},{id:"e1960",era:1,zh:"1960 新浪潮",en:"1960s Nouvelle Vague",ko:"1960 누벨바그",ja:"1960 ヌーヴェルヴァーグ"},
+ {id:"e1970",era:1,zh:"1970 柯達暖陽",en:"1970s Kodachrome",ko:"1970 코다크롬",ja:"1970 コダクローム"},{id:"e1980",era:1,zh:"1980 錄影帶",en:"1980s VHS",ko:"1980 VHS",ja:"1980 VHS"},
+ {id:"e1990",era:1,zh:"1990 港片",en:"1990s HK Cinema",ko:"1990 홍콩영화",ja:"1990 香港映画"},{id:"e2000",era:1,zh:"2000 Y2K",en:"2000s Y2K CCD",ko:"2000 Y2K",ja:"2000 Y2K"},
+ {id:"mwind",era:2,zh:"風的形狀",en:"Shape of Wind",ko:"바람의 모양",ja:"風のかたち"},{id:"mblue",era:2,zh:"藍色時刻",en:"Blue Hour",ko:"블루 아워",ja:"ブルーアワー"},
+ {id:"mdream",era:2,zh:"午後的夢",en:"Afternoon Dream",ko:"오후의 꿈",ja:"午後の夢"},{id:"mneon",era:2,zh:"霓虹殘夢",en:"Neon Afterglow",ko:"네온 잔상",ja:"ネオンの残像"},{id:"gta",era:3,zh:"GTA 封面",en:"GTA Cover Art",ko:"GTA 커버",ja:"GTA カバー"}];
+// ===== 年代肖像／意境：純畫布運算（不送出照片），強度用同一條滑桿 =====
+function eraRender(img,kind,amt,maxW){const W0=img.naturalWidth,H0=img.naturalHeight,s=Math.min(1,(maxW||W0)/W0),W=Math.round(W0*s),H=Math.round(H0*s),k=amt/100,L=Math.max(W,H);
+ const cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");x.drawImage(img,0,0,W,H);
+ const ghost=(dx,dy,a,n)=>{const t=document.createElement("canvas");t.width=W;t.height=H;t.getContext("2d").drawImage(cv,0,0);for(let i=1;i<=n;i++){x.globalAlpha=a*k/i;x.drawImage(t,dx*i,dy*i);x.drawImage(t,-dx*i*.6,-dy*i*.6)}x.globalAlpha=1};
+ const glow=(r,a)=>{const t=document.createElement("canvas");t.width=W;t.height=H;const y=t.getContext("2d");y.filter=`blur(${Math.round(L*r)}px)`;y.drawImage(cv,0,0);x.globalCompositeOperation="screen";x.globalAlpha=a*k;x.drawImage(t,0,0);x.globalAlpha=1;x.globalCompositeOperation="source-over"};
+ if(kind==="mwind")ghost(L*.01,0,.16,2);if(kind==="e1990")ghost(L*.01,0,.22,2);if(kind==="mblue")ghost(L*.006,L*.002,.18,2);if(kind==="mneon")ghost(L*.008,0,.22,2);if(kind==="e2000")ghost(0,L*.006,.14,2);
+ const id=x.getImageData(0,0,W,H),d=id.data;const C=(v)=>v<0?0:v>1?1:v;const sc=(v,c)=>C(.5+(v-.5)*c);
+ for(let i=0;i<d.length;i+=4){let r=d[i]/255,g=d[i+1]/255,b=d[i+2]/255;const r0=r,g0=g,b0=b;let y=.299*r+.587*g+.114*b;
+  if(kind==="e1920"){y=sc(y,1.25);r=y*1.08+.04;g=y*.9+.02;b=y*.66}
+  else if(kind==="e1960"||kind==="mwind"){y=kind==="e1960"?sc(y,1.4):.1+y*.82;r=g=b=y}
+  else if(kind==="e1970"){r=r*1.1+.04;g=g*1.02+.02;b=b*.8+.02;const m=(r+g+b)/3;r=m+(r-m)*1.2;g=m+(g-m)*1.2;b=m+(b-m)*1.2}
+  else if(kind==="e1980"){const m=y;r=m+(r-m)*1.3+.06*(1-y);g=m+(g-m)*1.3-.02;b=m+(b-m)*1.3+.08*(1-y)}
+  else if(kind==="e1990"){const sh=1-y;g=g+.07*sh;b=b-.02;r=r+.06*y;g=g+.04*y;b=b-.06*y;const m=(r+g+b)/3;r=sc(m+(r-m)*1.3,1.12);g=sc(m+(g-m)*1.3,1.12);b=sc(m+(b-m)*1.3,1.12)}
+  else if(kind==="e2000"){r=r*.88;g=g*1.0+.01;b=b*1.14+.03;const m=(r+g+b)/3;r=m+(r-m)*.85;g=m+(g-m)*.85;b=m+(b-m)*.85;r=sc(r,1.08);g=sc(g,1.08);b=sc(b,1.08)}
+  else if(kind==="mblue"){r=.04+r*.68;g=.08+g*.86;b=.16+b*1.08;const m=(r+g+b)/3;r=m+(r-m)*.85;g=m+(g-m)*.85;b=m+(b-m)*.85}
+  else if(kind==="mdream"){const m=y;r=.12+(m+(r-m)*.75)*.92+.05;g=.1+(m+(g-m)*.75)*.88+.03;b=.1+(m+(b-m)*.75)*.82}
+  else if(kind==="gta"){const m=y;r=m+(r-m)*1.7;g=m+(g-m)*1.55;b=m+(b-m)*1.7;r=sc(r,1.3);g=sc(g,1.3);b=sc(b,1.3);const sh=(1-y)*(1-y),hi=y*y;r+=.12*hi-.05*sh;g+=.04*hi+.03*sh;b+=-.08*hi+.10*sh;const P=6;r=Math.round(C(r)*P)/P*.55+C(r)*.45;g=Math.round(C(g)*P)/P*.55+C(g)*.45;b=Math.round(C(b)*P)/P*.55+C(b)*.45}
+  else if(kind==="mneon"){const m=y,sh=(1-y)*(1-y);r=m+(r-m)*1.5+.16*sh;g=m+(g-m)*1.35+.08*y-.03*sh;b=m+(b-m)*1.5+.18*sh-.04*y}
+  const kk=(kind==="e1920"||kind==="e1960"||kind==="mwind")?Math.max(k,.85+.15*k):k;d[i]=C(r0+(r-r0)*kk)*255;d[i+1]=C(g0+(g-g0)*kk)*255;d[i+2]=C(b0+(b-b0)*kk)*255}
+ x.putImageData(id,0,0);
+ if(kind==="e1980"){const t=document.createElement("canvas");t.width=W;t.height=H;const y=t.getContext("2d");y.drawImage(cv,0,0);const o=Math.max(1,Math.round(L*.0035*k));x.globalCompositeOperation="lighter";x.globalAlpha=.5;
+  const ch=(col,dx)=>{const u=document.createElement("canvas");u.width=W;u.height=H;const z=u.getContext("2d");z.drawImage(t,0,0);z.globalCompositeOperation="multiply";z.fillStyle=col;z.fillRect(0,0,W,H);x.drawImage(u,dx,0)};
+  x.globalCompositeOperation="source-over";x.globalAlpha=.35*k;ch("#ff0040",-o);ch("#0080ff",o);x.globalAlpha=1;
+  x.fillStyle="rgba(0,0,0,.12)";for(let yy=0;yy<H;yy+=3)x.fillRect(0,yy,W,1);
+  x.font=`700 ${Math.round(L*.028)}px monospace`;x.fillStyle="rgba(255,170,40,.9)";x.textAlign="right";x.fillText("NOV 14 2026",W*.95,H*.94)}
+ if(kind==="e1970"||kind==="mdream"){const gr=x.createRadialGradient(W*.95,H*.08,0,W*.95,H*.08,L*.6);gr.addColorStop(0,kind==="e1970"?"rgba(255,120,30,.75)":"rgba(255,220,170,.6)");gr.addColorStop(1,"rgba(255,120,30,0)");x.globalCompositeOperation="screen";x.globalAlpha=k;x.fillStyle=gr;x.fillRect(0,0,W,H);x.globalAlpha=1;x.globalCompositeOperation="source-over"}
+ if(kind==="gta"){const t=document.createElement("canvas");t.width=W;t.height=H;const z=t.getContext("2d");z.filter=`blur(${Math.max(1,Math.round(L*.0012))}px)`;z.drawImage(cv,0,0);const s=z.getImageData(0,0,W,H).data,o=x.getImageData(0,0,W,H),q=o.data;const lum=i=>.3*s[i]+.59*s[i+1]+.11*s[i+2];const th=38;
+  for(let yy=1;yy<H-1;yy++)for(let xx=1;xx<W-1;xx++){const i=(yy*W+xx)*4,w4=W*4;const gx=lum(i+4)-lum(i-4),gy=lum(i+w4)-lum(i-w4);const e=Math.sqrt(gx*gx+gy*gy);if(e>th){const f=1-Math.min(.85,(e-th)/90)*k;q[i]*=f;q[i+1]*=f;q[i+2]*=f}}
+  x.putImageData(o,0,0);const gr=x.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(255,60,140,.55)");gr.addColorStop(.35,"rgba(255,150,60,.25)");gr.addColorStop(.6,"rgba(255,150,60,0)");gr.addColorStop(1,"rgba(40,0,90,.25)");x.globalCompositeOperation="soft-light";x.globalAlpha=k;x.fillStyle=gr;x.fillRect(0,0,W,H);x.globalAlpha=1;x.globalCompositeOperation="source-over";glow(.01,.18)}
+ if(kind==="mdream")glow(.012,.45);if(kind==="mneon")glow(.015,.4);if(kind==="mblue")glow(.01,.25);if(kind==="e1990")glow(.01,.2);
+ // 暗角
+ const vv={e1920:.75,e1960:.45,e1970:.3,e1980:.3,e1990:.45,e2000:.15,mwind:.2,mblue:.35,mdream:.1,mneon:.5,gta:.35}[kind]||0;if(vv){const gr=x.createRadialGradient(W/2,H/2,L*.25,W/2,H/2,L*.75);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,`rgba(0,0,0,${vv*k})`);x.fillStyle=gr;x.fillRect(0,0,W,H)}
+ // 顆粒
+ const gn={e1920:22,e1960:30,e1970:12,e1980:14,e1990:18,e2000:8,mwind:20,mblue:10,mdream:8,mneon:14}[kind]||0;if(gn){const id2=x.getImageData(0,0,W,H),q=id2.data;const a=gn*k;for(let i=0;i<q.length;i+=4){const n=(Math.random()-.5)*a;q[i]+=n;q[i+1]+=n;q[i+2]+=n}x.putImageData(id2,0,0)}
+ if(kind==="e1920"){x.strokeStyle=`rgba(255,245,225,${.3*k})`;x.lineWidth=Math.max(.6,L*.0005);for(let i=0;i<6;i++){const xx=Math.random()*W,y0=Math.random()*H*.6;x.globalAlpha=.3+Math.random()*.5;x.beginPath();x.moveTo(xx,y0);x.quadraticCurveTo(xx+(Math.random()-.5)*L*.03,y0+H*.2,xx+(Math.random()-.5)*L*.04,y0+H*(.15+Math.random()*.35));x.stroke()}x.globalAlpha=1;x.fillStyle=`rgba(30,20,10,${.5*k})`;for(let i=0;i<80;i++){x.beginPath();x.arc(Math.random()*W,Math.random()*H,Math.random()*L*.0018+.5,0,7);x.fill()}}
+ return cv}
+let gfx=null,gAmt=60,gOrig=null,gTok=0;
+function glowRender(img,kind,amt,maxW){if(GLOW.find(g=>g.id===kind&&g.era))return eraRender(img,kind,amt,maxW);const W0=img.naturalWidth,H0=img.naturalHeight,s=Math.min(1,(maxW||W0)/W0),W=Math.round(W0*s),H=Math.round(H0*s);
+ const cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d");x.drawImage(img,0,0,W,H);
+ const t=document.createElement("canvas");t.width=W;t.height=H;const y=t.getContext("2d");const r=Math.max(4,Math.round(Math.max(W,H)*(kind==="diffuse"?.012:.025)));const k=amt/100;
+ if(kind==="diffuse"){y.filter=`blur(${r}px)`;y.drawImage(cv,0,0);x.globalAlpha=.55*k;x.globalCompositeOperation="screen";x.drawImage(t,0,0);x.globalAlpha=.25*k;x.globalCompositeOperation="source-over";x.drawImage(t,0,0)}
+ else{y.filter=kind==="halation"?"brightness(.7) contrast(2.6)":"brightness(.6) contrast(3)";y.drawImage(cv,0,0);y.filter="none";
+  if(kind==="halation"){y.globalCompositeOperation="multiply";y.fillStyle="#ff3a1a";y.fillRect(0,0,W,H);y.globalCompositeOperation="source-over"}
+  const u=document.createElement("canvas");u.width=W;u.height=H;const z=u.getContext("2d");z.filter=`blur(${r}px)`;z.drawImage(t,0,0);z.filter=`blur(${r*3}px)`;z.globalAlpha=.7;z.drawImage(t,0,0);
+  x.globalCompositeOperation="screen";x.globalAlpha=Math.min(1,1.2*k);x.drawImage(u,0,0);if(k>.4){x.globalAlpha=Math.min(1,(k-.4)*(kind==="halation"?1.6:1));x.drawImage(u,0,0)}}
+ x.globalAlpha=1;x.globalCompositeOperation="source-over";return cv}
+async function glowPreview(){const tok=++gTok;if(!gfx){if(gOrig){big.src=gOrig;gOrig=null}$("#gctl").style.display="none";return}
+ $("#gctl").style.display="flex";const src=gOrig||big.src;gOrig=src;const im=new Image();im.src=src;await im.decode();if(tok!==gTok)return;
+ const cv=glowRender(im,gfx,gAmt,1600);cv.toBlob(b=>{if(tok!==gTok)return;big.src=URL.createObjectURL(b)},"image/jpeg",.9)}
+
+let gT=null;$("#gamt").addEventListener("input",e=>{gAmt=+e.target.value;$("#gval").textContent=gAmt;clearTimeout(gT);gT=setTimeout(glowPreview,120)});
+
+// ===== 找自己（頁內版，使用主站的 SFace 引擎與索引）=====
+let FIDX=null;
+const dvec=(b64,div)=>{const s=atob(b64);const v=new Float32Array(128);let n=0;for(let i=0;i<128;i++){let x=s.charCodeAt(i);if(x>127)x-=256;v[i]=x/div;n+=v[i]*v[i]}n=Math.sqrt(n)||1;for(let i=0;i<128;i++)v[i]/=n;return v};
+async function fmIndex(){if(FIDX)return FIDX;const out=[];for(const [u,d] of []){try{const j=await (await fetch(`../face/index-${u}.json`)).json();const div=j.div||508;for(const [id,l] of Object.entries(j.faces))out.push({key:d,id,v:l.map(b=>dvec(b,div))})}catch(e){}}return FIDX=out}
+function fmLoc(key,id){for(const d of DAYS){if(!d.photos||d.key!==key)continue;const i=d.photos.findIndex(p=>p[0]===id);if(i>=0)return[d,i]}return null}
+$("#fmfile").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;const st=$("#fmst"),res=$("#fmres");res.innerHTML="";
+ st.textContent=LANG==="zh"?"第一次會載入辨識模型（約 12MB），請稍候…":"Loading face model (~12MB)…";
+ try{await new Promise((ok,no)=>{if(window.JimFace)return ok();const s=document.createElement("script");s.src="../face/engine.js";s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+  const [eng,idx]=await Promise.all([JimFace.loadFaceEngine("../face/"),fmIndex()]);
+  const img=new Image();img.src=URL.createObjectURL(f);await img.decode();
+  let faces=await eng.embedFacesRotated(img,eng.options(608,.3),{minScore:.45,minSize:40},[0,20,-20]);
+  if(!faces.length){st.textContent=LANG==="zh"?"照片裡找不到臉，換一張正面清楚的試試。":"No face found — try a clearer photo.";return}
+  faces.sort((a,b)=>b.box[2]*b.box[3]-a.box[2]*a.box[3]);const q=faces[0].embedding;
+  const hits=[];for(const p of idx){let m=-1;for(const v of p.v){let d=0;for(let i=0;i<128;i++)d+=q[i]*v[i];if(d>m)m=d}if(m>=.38){const loc=fmLoc(p.key,p.id);if(loc)hits.push({m,loc,p})}}
+  hits.sort((a,b)=>b.m-a.m);
+  st.textContent=hits.length?(LANG==="zh"?`找到 ${hits.length} 張可能是你的照片（越前面越像），點照片看大圖`:`${hits.length} possible matches — tap to view`):(LANG==="zh"?"沒找到，換一張更清楚的照片試試。":"No matches — try another photo.");
+  res.innerHTML=hits.slice(0,120).map((h,i)=>`<button data-fm="${i}"><img src="${h.loc[0].dir}t/${h.p.id}.jpg" loading="lazy" alt=""></button>`).join("");window._fmh=hits;
+ }catch(err){st.textContent=(LANG==="zh"?"辨識失敗：":"Failed: ")+err.message}});
+
+rail();applyLang();if(ADMIN)mk();
 </script></body></html>
