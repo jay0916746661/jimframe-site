@@ -1885,7 +1885,7 @@ const HERO_PHOTO="./photos/1031/A0009034.jpg"; // 首屏照片：換這一行即
 // TSC 限定版：到 2026-11-30 為止自動啟用；?season=off 關閉、?season=tsc 強制開啟
 const TSC_ON=(()=>{let q="";try{q=new URLSearchParams(location.search).get("season")||"";}catch{}if(q==="tsc")return true;if(q)return false;return Date.now()<Date.UTC(2026,11,1)-8*36e5;})();
 const TSC_HERO_PHOTO="./photos/1120/A0001173.jpg"; // TSC 11/20 現場照
-const TSC_MOSAIC=["A0000245","A0001173","A0000602","A0002265","A0003297","A0003224","A0000107","A0003404","A0002778","A0001583"]; // TSC 首屏拼貼（多張綜合）
+const TSC_MOSAIC=["A0000245","A0001173","A0000602","A0002265","A0003297","A0003224","A0000005","A0003404","A0002778","A0001583"]; // TSC 首屏拼貼（多張綜合）
 document.documentElement.classList.toggle("tsc",TSC_ON);
 const promo=document.createElement("section");promo.className="hero-b";promo.id="crush";
 document.querySelector(".hero").before(promo);
