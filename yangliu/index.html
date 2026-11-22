@@ -384,10 +384,10 @@ const GHV="https://api.github.com/repos/jay0916746661/jimframe-site/contents/yan
 async function vsave(k,patch,msg){badge("影片儲存中…");if(!ghTok()){badge("沒有權杖，改複製給 Claude");const x=VID.find(y=>y.k===k);Object.assign(x,patch);view();try{await navigator.clipboard.writeText("洋流 影片 "+k+" "+JSON.stringify(patch))}catch(e){}return}
  try{const r0=await fetch(GHV+"?ref=main&t="+Date.now(),{cache:"no-store",headers:ghH()});const j=await r0.json();const J=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g,"")))));const x=J.videos.find(y=>y.k===k);for(const q in patch){if(patch[q]===null)delete x[q];else x[q]=patch[q]}
  const r=await fetch(GHV,{method:"PUT",headers:ghH(),body:JSON.stringify({message:"洋流 影片 "+k+" "+msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(J,null,0)))),branch:"main",sha:j.sha})});if(!r.ok)throw new Error(r.status);VID=J.videos;view();badge("已存："+k+" "+msg+"（約 1 分鐘後訪客看到）");setTimeout(qBadge,5000)}catch(e){badge("影片儲存失敗："+e.message)}}
-const VC={comp:["比賽","Competition"],show:["表演","Performance"],other:["社交・其他","Social & more"]};
+const VC={comp:["比賽","Competition"],show:["表演","Performance"],other:["花絮","Behind the scenes"]};
 const vc=x=>(VQ[x.k]??x.cat)||"";const vlab=c=>VC[c]?VC[c][LANG==="zh"?0:1]:(LANG==="zh"?"未分類":"Unsorted");
 fetch("videos.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(!j)return;VID=j.videos||[];try{VID.forEach(x=>{if(VQ[x.k]!==undefined&&VQ[x.k]===x.cat)delete VQ[x.k]});localStorage.setItem("jf_yl_vcat",JSON.stringify(VQ))}catch(e){}try{view()}catch(e){}}).catch(()=>{});
-function vview(v){const dn2=d=>d==="1113"?"11/13 BA":d==="1114"?"11/14 西門紅樓":"11/15 西門紅樓";
+function vview(v){const dn2=d=>({s1:"元富證券前",s2:"大同生活館 · 自由",s3:"北科校門口",s5:"忠孝新生 · 美好",x:"其他"})[d]||d;
  const cats=["all","comp","show","other",""].filter(c=>c==="all"||VIS().some(x=>vc(x)===c));
  const V=VIS();const L=V.filter(x=>vcat==="all"||vc(x)===vcat);
  v.innerHTML=`<div class="meta"><span>${V.length} ${LANG==="zh"?"支影片 · 點 ▶ 直接看，⬇ 下載原檔":"clips · tap ▶ to watch, ⬇ to download"}</span></div>
