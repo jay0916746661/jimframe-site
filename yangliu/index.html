@@ -3,7 +3,7 @@
 <title>洋流嘉年華 · 搖擺快閃 2026.11.22 · Jim Lin Photography</title>
 <meta name="description" content="洋流嘉年華 11/22 搖擺快閃表演照片與影片，依舞台整理、可線上看與下載。攝影 Jim Lin（@jimframe）。">
 <meta property="og:title" content="洋流嘉年華 · 搖擺快閃 · JimFrame">
-<meta property="og:image" content="https://jay0916746661.github.io/jimframe-site/yangliu/og.png">
+<meta property="og:image" content="https://jay0916746661.github.io/jimframe-site/photos/1122/A0008827.jpg">
 <meta name="theme-color" content="#FF6A13">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Limelight&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
@@ -235,8 +235,10 @@ try{if(!localStorage.getItem("jf_adj_mig1")){Object.keys(AQ).forEach(k=>{if(k.st
 // 洋流嘉年華 11/22 快閃：照片還在相機裡，匯入後每個舞台填一個陣列（[檔號,縮圖寬,縮圖高]），再加 photos/pk
 const PICKS={};
 const CAND={};
-const IV="?v=1122a";
+const IV="?v=1122b";
+const PGRP=[["A0008824",480,321],["A0008825",480,321],["A0008826",480,321],["A0008827",480,321],["A0008828",480,321],["A0008829",480,321],["A0008830",480,321],["A0008831",480,321],["A0008832",480,321]];
 const DAYS=[
+ {id:"group",sh:"最後大合照",d:"★",wk:"合照",name:"最後大合照",sub:"17:07 · 美好舞台前",dir:"../photos/1122/",photos:PGRP},
  {id:"s1",sh:"元富證券前",d:"1",wk:"快樂",name:"舞台 1 · 快樂",sub:"14:20 · 元富證券前",dir:"../photos/1122/"},
  {id:"s2",sh:"大同生活館",d:"2",wk:"自由",name:"舞台 2 · 自由",sub:"15:00 · 大同生活館",dir:"../photos/1122/"},
  {id:"s3",sh:"北科校門口",d:"3·4",wk:"真實勇氣",name:"舞台 3·4 · 真實／勇氣",sub:"15:50 · 北科校門口",dir:"../photos/1122/"},
@@ -322,7 +324,7 @@ addr:"台北市萬華区成都路10号（MRT西門駅1番出口）",foot1:"写�
 n1113:"BA オープニング",s1113:"BA スタジオ · オープニング",n1114a:"コンテスト",s1114a:"西門紅楼 · 大会 · 表彰",n1114b:"イブニング",s1114b:"西門紅楼 · ショー · ソーシャル",n1115:"最終日",s1115:"西門紅楼 · 大会",n1115b:"クロージングパーティー",s1115b:"西門紅楼 · 表彰 · ソーシャル",nvideo:"動画",svideo:"大会・ショー・ソーシャル",
 photos:"枚",wait:"準備中",soonA:"セレクト準備中・順次追加",soonB:"準備中",soonV:"30秒ハイライト制作中",tap:"写真をタップして拡大・ダウンロード",full:"アルバム全体：補正・まとめてDL・ストーリー ›"}};
 const ZH={more:"其他照片整理中，陸續補上",fmh:"找自己",fmd:"上傳一張清楚的自拍或正面照，從三天的照片裡找出有你的照片。照片只在你的手機裡比對，不會上傳。",fmb:"📷 上傳照片找自己",sel:"精選",allc:"全部",findme:"🙋 找自己",f2:"紅磚八角樓",f3:"市定古蹟",early:"精選・完整版陸續補上",photos:"張",wait:"整理中",soonA:"精選準備中，之後陸續補上",soonB:"整理中",soonV:"30 秒精華影片製作中",tap:"點照片看大圖、下載",full:"完整相簿：調色・多選下載・做限動 ›"};
-const _YL={ns1:"Stage 1 · Joy",ss1:"14:20 · Masterlink Securities",ns2:"Stage 2 · Freedom",ss2:"15:00 · Tatung Lifestyle Hall",ns3:"Stage 3·4 · Truth / Courage",ss3:"15:50 · Taipei Tech gate",ns5:"Stage 5 · Beauty",ss5:"16:15 · Zhongxiao Xinsheng Exit 4",ns6:"Stage 6 · Warmth",ss6:"16:50 · Huashan entrance",nend:"Group photo",send:"Vinyl Decision café",prog:"Photos & videos",nvideo:"Videos",svideo:"Every stage · watch & download",soonV:"Videos coming soon",about:"Flash mob route",venue:"Performance photos & videos",lead:"One afternoon of swing dancing across Taipei streets — six pop-up stages from Masterlink to Huashan. Photos by stage, tap to view and download. Photography by Jim Lin @jimframe",soonA:"Photos coming soon"};["en","ko","ja"].forEach(l=>Object.assign(I18N[l],_YL));
+const _YL={ns1:"Stage 1 · Joy",ss1:"14:20 · Masterlink Securities",ns2:"Stage 2 · Freedom",ss2:"15:00 · Tatung Lifestyle Hall",ns3:"Stage 3·4 · Truth / Courage",ss3:"15:50 · Taipei Tech gate",ns5:"Stage 5 · Beauty",ss5:"16:15 · Zhongxiao Xinsheng Exit 4",ns6:"Stage 6 · Warmth",ss6:"16:50 · Huashan entrance",ngroup:"Group photo",sgroup:"17:07 · Beauty stage",prog:"Photos & videos",nvideo:"Videos",svideo:"Every stage · watch & download",soonV:"Videos coming soon",about:"Flash mob route",venue:"Performance photos & videos",lead:"One afternoon of swing dancing across Taipei streets — six pop-up stages from Masterlink to Huashan. Photos by stage, tap to view and download. Photography by Jim Lin @jimframe",soonA:"Photos coming soon"};["en","ko","ja"].forEach(l=>Object.assign(I18N[l],_YL));
 Object.assign(ZH,{soonV:"影片整理中，很快上線",soonA:"照片整理中，很快上線",more:"其他照片整理中，陸續補上"});
 let LANG=(()=>{try{const v=localStorage.getItem("jf_lang");if(v)return v}catch(e){}const n=(navigator.language||"").toLowerCase();return n.startsWith("zh")?"zh":n.startsWith("ko")?"ko":n.startsWith("ja")?"ja":n?"en":"zh"})();
 const ZHS={};document.querySelectorAll("[data-t]").forEach(el=>ZHS[el.dataset.t]=el.textContent);
