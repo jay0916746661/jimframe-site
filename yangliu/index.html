@@ -159,14 +159,14 @@ body{background:radial-gradient(1200px 600px at 80% -10%,rgba(246,75,203,.18),tr
 /* ===== 洋流外觀（深海藍＋珊瑚） ===== */
 :root{--brick:#2EC4B6;--brick-d:#0B3A4A;--bg:#04141F;--bg2:#08202E;--cream:#EAF7F5;--cream-2:#9DBFC2;--gold:#FF9F6E;--line:rgba(46,196,182,.3)}
 body{background:radial-gradient(1200px 600px at 80% -10%,rgba(46,196,182,.18),transparent 60%),radial-gradient(900px 500px at -10% 30%,rgba(255,159,110,.10),transparent 60%),#04141F !important}
-.hero-in.yl-hero{position:relative;min-height:340px;background:linear-gradient(160deg,#0B3A4A 0%,#062433 55%,#04141F 100%);overflow:hidden}
-.yl-waves{position:absolute;inset:0;width:100%;height:100%}
+.hero-in.yl-hero{position:relative;min-height:220px;background:linear-gradient(160deg,#0B3A4A 0%,#062433 55%,#04141F 100%);overflow:hidden}
+.hero-in.yl-hero::before,.hero-in.yl-hero::after,.hero.yl::after{display:none!important}.yl-waves{position:absolute;inset:0;width:100%;height:100%}
 .ticket{background:#08202E}.ticket .stub{background:linear-gradient(160deg,#2EC4B6,#0B6E8A)}.grid button{background:#0B2A3A}
 .panel{background:rgba(8,32,46,.9)}
 .orn::before,.orn::after{background:linear-gradient(90deg,transparent,rgba(46,196,182,.6),transparent)}
 .ticket .stub b{font-size:18px;white-space:nowrap}.ticket[data-d="s3"] .stub b{font-size:13px}.yl-waves{height:100%}
-.hero-in.yl-hero{aspect-ratio:auto!important;height:auto!important;min-height:340px;max-height:440px;display:flex;align-items:flex-end}.hero-in.yl-hero .cap{position:relative}
-@media(min-width:601px){.days{grid-template-columns:repeat(6,1fr)}.ticket .tx{padding-top:30px}}
+.hero-in.yl-hero{aspect-ratio:auto!important;height:auto!important;min-height:220px;max-height:300px;display:flex;align-items:flex-end}.hero-in.yl-hero .cap{position:relative;width:100%;box-sizing:border-box}
+@media(min-width:601px){.days{grid-template-columns:repeat(7,1fr)}.ticket .tx{padding-top:30px}}
 .yl-route{list-style:none;margin:0;padding:6px 16px;counter-reset:s}
 .yl-route li{display:grid;grid-template-columns:56px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);position:relative}
 .yl-route li:last-child{border-bottom:0}
@@ -179,9 +179,9 @@ body{background:radial-gradient(1200px 600px at 80% -10%,rgba(46,196,182,.18),tr
 <div class="wrap">
 <header><a class="back" href="../">‹ Jim Lin Photography</a><span style="display:flex;gap:8px;align-items:center"><span class="langs" id="langs"></span><span class="stamp">洋流 11.22</span></span></header>
 
-<div class="hero"><div class="hero-in yl-hero"><svg class="yl-waves" viewBox="0 0 800 400" preserveAspectRatio="none" aria-hidden="true"><path d="M0 250 C120 200 240 300 400 250 S680 200 800 250 V400 H0Z" fill="rgba(46,196,182,.18)"/><path d="M0 290 C160 250 260 340 420 290 S700 250 800 300 V400 H0Z" fill="rgba(46,196,182,.28)"/><path d="M0 330 C140 300 300 370 460 330 S720 300 800 340 V400 H0Z" fill="rgba(155,231,224,.22)"/><g fill="none" stroke="rgba(255,159,110,.75)" stroke-width="2" stroke-dasharray="4 7"><path d="M70 70 C160 30 230 100 320 60 S470 20 540 70 S680 100 740 45"/></g><g fill="#FF9F6E"><circle cx="70" cy="70" r="7"/><circle cx="200" cy="62" r="7"/><circle cx="320" cy="60" r="7"/><circle cx="450" cy="40" r="7"/><circle cx="600" cy="82" r="7"/><circle cx="740" cy="45" r="7"/></g></svg><div class="cap"><div class="eyebrow">洋流嘉年華 · SWING FLASH MOB · 2026.11.22</div><h1>洋流嘉年華<small data-t="venue">六個舞台的搖擺快閃</small></h1><p class="lead" data-t="lead">一個下午，從元富證券一路跳到華山：Big Apple、Tranky Doo、California Routine、Shim Sham，在台北街頭冒出六個舞台。照片依舞台整理，點縮圖看大圖、可下載。攝影 Jim Lin @jimframe</p></div></div></div>
+<div class="hero"><div class="hero-in yl-hero"><svg class="yl-waves" viewBox="0 0 800 400" preserveAspectRatio="none" aria-hidden="true"><path d="M0 250 C120 200 240 300 400 250 S680 200 800 250 V400 H0Z" fill="rgba(46,196,182,.18)"/><path d="M0 290 C160 250 260 340 420 290 S700 250 800 300 V400 H0Z" fill="rgba(46,196,182,.28)"/><path d="M0 330 C140 300 300 370 460 330 S720 300 800 340 V400 H0Z" fill="rgba(155,231,224,.22)"/><g fill="none" stroke="rgba(255,159,110,.75)" stroke-width="2" stroke-dasharray="4 7"><path d="M70 70 C160 30 230 100 320 60 S470 20 540 70 S680 100 740 45"/></g><g fill="#FF9F6E"><circle cx="70" cy="70" r="7"/><circle cx="200" cy="62" r="7"/><circle cx="320" cy="60" r="7"/><circle cx="450" cy="40" r="7"/><circle cx="600" cy="82" r="7"/><circle cx="740" cy="45" r="7"/></g></svg><div class="cap"><div class="eyebrow">洋流嘉年華 · SWING FLASH MOB · 2026.11.22</div><h1>洋流嘉年華<small data-t="venue">表演照片・影片</small></h1></div></div></div>
 
-<div class="orn"><i>◆</i><h2 data-t="prog">六個舞台</h2><i>◆</i></div>
+<div class="orn"><i>◆</i><h2 data-t="prog">照片・影片</h2><i>◆</i></div>
 <div class="days" id="days"></div>
 
 <div class="orn" style="display:none"><i>◆</i><h2 data-t="fmh">找自己</h2><i>◆</i></div>
@@ -195,9 +195,6 @@ body{background:radial-gradient(1200px 600px at 80% -10%,rgba(46,196,182,.18),tr
 
 <div class="orn"><i>◆</i><h2 id="wall-title">照片</h2><i>◆</i></div>
 <div class="panel" id="view"></div>
-
-<div class="orn"><i>◆</i><h2 data-t="about">快閃路線</h2><i>◆</i></div>
-<ol class="yl-route panel"><li><time>14:20</time><div><b>舞台 1 · 快樂</b><span>元富證券前</span><em>Big Apple · California Routine · Mama Stew</em><a href="https://maps.app.goo.gl/PS8u5vHgVkzV5YHh9" target="_blank" rel="noopener">地圖 ›</a></div></li><li><time>15:00</time><div><b>舞台 2 · 自由</b><span>大同生活館</span><em>與 Shoot!dida 搖擺舞團同台 · Shim Sham & Social</em><a href="https://maps.app.goo.gl/xe2qqpofnhdR42G76" target="_blank" rel="noopener">地圖 ›</a></div></li><li><time>15:50</time><div><b>舞台 3·4 · 真實／勇氣</b><span>北科校門口（建國南路 × 忠孝東路）</span><em>First Stop · Tranky Doo · California Routine</em><a href="https://maps.app.goo.gl/pLc617e3PsL8HTc79" target="_blank" rel="noopener">地圖 ›</a></div></li><li><time>16:15</time><div><b>舞台 5 · 美好</b><span>忠孝新生 4 號出口</span><em>First Stop · Tranky Doo · California Routine</em><a href="https://maps.app.goo.gl/RiiMG2tgAA9TG6sU6" target="_blank" rel="noopener">地圖 ›</a></div></li><li><time>16:50</time><div><b>舞台 6 · 溫暖</b><span>華山正門口標誌旁</span><em>Big Apple · California Routine · Mama Stew</em><a href="https://maps.app.goo.gl/RsjdHuRts1koXyp16" target="_blank" rel="noopener">地圖 ›</a></div></li><li><time>17:10</time><div><b>最後合照</b><span>Vinyl Decision 黑膠咖啡</span><em>大家一起拍照收尾</em><a href="https://maps.app.goo.gl/4EJeWr76oxZiC2Cj9" target="_blank" rel="noopener">地圖 ›</a></div></li></ol>
 
 <footer><span class="sig">JimFrame</span><span data-t="foot1">使用照片請標記</span> <a href="https://instagram.com/jimframe" target="_blank" rel="noopener">@jimframe</a> · <span data-t="thanks">謝謝</span> 🙏</footer>
 </div>
@@ -235,7 +232,8 @@ const DAYS=[
  {id:"s3",sh:"北科校門口",d:"3·4",wk:"真實勇氣",name:"舞台 3·4 · 真實／勇氣",sub:"15:50 · 北科校門口",dir:"../photos/1122/"},
  {id:"s5",sh:"忠孝新生",d:"5",wk:"美好",name:"舞台 5 · 美好",sub:"16:15 · 忠孝新生 4 號出口",dir:"../photos/1122/"},
  {id:"s6",sh:"華山正門",d:"6",wk:"溫暖",name:"舞台 6 · 溫暖",sub:"16:50 · 華山正門",dir:"../photos/1122/"},
- {id:"end",sh:"黑膠咖啡",d:"♪",wk:"合照",name:"最後合照",sub:"Vinyl Decision 黑膠咖啡",dir:"../photos/1122/"}
+ {id:"end",sh:"黑膠咖啡",d:"♪",wk:"合照",name:"最後合照",sub:"Vinyl Decision 黑膠咖啡",dir:"../photos/1122/"},
+ {id:"video",sh:"影片",d:"▶",wk:"FILM",name:"影片",sub:"各舞台表演 · 線上看、可下載",vid:1}
 ];
 const HL=[];
 
@@ -316,8 +314,8 @@ addr:"台北市萬華区成都路10号（MRT西門駅1番出口）",foot1:"写�
 n1113:"BA オープニング",s1113:"BA スタジオ · オープニング",n1114a:"コンテスト",s1114a:"西門紅楼 · 大会 · 表彰",n1114b:"イブニング",s1114b:"西門紅楼 · ショー · ソーシャル",n1115:"最終日",s1115:"西門紅楼 · 大会",n1115b:"クロージングパーティー",s1115b:"西門紅楼 · 表彰 · ソーシャル",nvideo:"動画",svideo:"大会・ショー・ソーシャル",
 photos:"枚",wait:"準備中",soonA:"セレクト準備中・順次追加",soonB:"準備中",soonV:"30秒ハイライト制作中",tap:"写真をタップして拡大・ダウンロード",full:"アルバム全体：補正・まとめてDL・ストーリー ›"}};
 const ZH={more:"其他照片整理中，陸續補上",fmh:"找自己",fmd:"上傳一張清楚的自拍或正面照，從三天的照片裡找出有你的照片。照片只在你的手機裡比對，不會上傳。",fmb:"📷 上傳照片找自己",sel:"精選",allc:"全部",findme:"🙋 找自己",f2:"紅磚八角樓",f3:"市定古蹟",early:"精選・完整版陸續補上",photos:"張",wait:"整理中",soonA:"精選準備中，之後陸續補上",soonB:"整理中",soonV:"30 秒精華影片製作中",tap:"點照片看大圖、下載",full:"完整相簿：調色・多選下載・做限動 ›"};
-const _YL={ns1:"Stage 1 · Joy",ss1:"14:20 · Masterlink Securities",ns2:"Stage 2 · Freedom",ss2:"15:00 · Tatung Lifestyle Hall",ns3:"Stage 3·4 · Truth / Courage",ss3:"15:50 · Taipei Tech gate",ns5:"Stage 5 · Beauty",ss5:"16:15 · Zhongxiao Xinsheng Exit 4",ns6:"Stage 6 · Warmth",ss6:"16:50 · Huashan entrance",nend:"Group photo",send:"Vinyl Decision café",prog:"Six stages",about:"Flash mob route",venue:"A swing flash mob on six stages",lead:"One afternoon of swing dancing across Taipei streets — six pop-up stages from Masterlink to Huashan. Photos by stage, tap to view and download. Photography by Jim Lin @jimframe",soonA:"Photos coming soon"};["en","ko","ja"].forEach(l=>Object.assign(I18N[l],_YL));
-Object.assign(ZH,{soonA:"照片整理中，很快上線",more:"其他照片整理中，陸續補上"});
+const _YL={ns1:"Stage 1 · Joy",ss1:"14:20 · Masterlink Securities",ns2:"Stage 2 · Freedom",ss2:"15:00 · Tatung Lifestyle Hall",ns3:"Stage 3·4 · Truth / Courage",ss3:"15:50 · Taipei Tech gate",ns5:"Stage 5 · Beauty",ss5:"16:15 · Zhongxiao Xinsheng Exit 4",ns6:"Stage 6 · Warmth",ss6:"16:50 · Huashan entrance",nend:"Group photo",send:"Vinyl Decision café",prog:"Photos & videos",nvideo:"Videos",svideo:"Every stage · watch & download",soonV:"Videos coming soon",about:"Flash mob route",venue:"Performance photos & videos",lead:"One afternoon of swing dancing across Taipei streets — six pop-up stages from Masterlink to Huashan. Photos by stage, tap to view and download. Photography by Jim Lin @jimframe",soonA:"Photos coming soon"};["en","ko","ja"].forEach(l=>Object.assign(I18N[l],_YL));
+Object.assign(ZH,{soonV:"影片整理中，很快上線",soonA:"照片整理中，很快上線",more:"其他照片整理中，陸續補上"});
 let LANG=(()=>{try{const v=localStorage.getItem("jf_lang");if(v)return v}catch(e){}const n=(navigator.language||"").toLowerCase();return n.startsWith("zh")?"zh":n.startsWith("ko")?"ko":n.startsWith("ja")?"ja":n?"en":"zh"})();
 const ZHS={};document.querySelectorAll("[data-t]").forEach(el=>ZHS[el.dataset.t]=el.textContent);
 const t=k=>LANG==="zh"?(ZH[k]??ZHS[k]??k):((I18N[LANG]||I18N.en)[k]??ZH[k]??k);
