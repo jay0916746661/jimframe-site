@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>JimFrame 調色口味測驗</title>
+<style>
+:root{--bg:#120c0a;--bg2:#1d1512;--line:#3a2a22;--gold:#e9b45a;--cream:#f3e8dc;--mute:#a8988a;--ok:#4caf7a;--bad:#d9534f}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--cream);font:15px/1.5 -apple-system,"PingFang TC","Noto Sans TC",sans-serif}
+header{padding:14px 16px 6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+header h1{font-size:17px;margin:0;color:var(--gold);letter-spacing:.04em}
+header .sp{flex:1}
+.pill{font-size:12px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;color:var(--mute);background:var(--bg2)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 12px 120px}
+.intro{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:8px 0 14px;font-size:14px;color:var(--mute)}
+.intro b{color:var(--cream)}
+.q{font-size:14px;color:var(--mute);margin:4px 2px 8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.q .dim{color:var(--gold);font-weight:700}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:760px){.pair{grid-template-columns:1fr}}
+.card{position:relative;border:2px solid transparent;border-radius:12px;overflow:hidden;background:#000;cursor:pointer}
+.card canvas{display:block;width:100%;height:auto}
+.card .tag{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.65);color:#fff;font-weight:800;font-size:15px;padding:2px 10px;border-radius:8px}
+.card .zoom{position:absolute;right:8px;top:8px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:3px 8px;border-radius:8px}
+.card.on{border-color:var(--gold)}
+.btns{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:18px 12px calc(12px + env(safe-area-inset-bottom))}
+.btns .row{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+.btns button{min-height:50px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);color:var(--cream);font:700 15px inherit;cursor:pointer}
+.btns button.a,.btns button.b{background:var(--gold);color:#1a0f08;border:0;font-size:17px}
+.btns button:active{transform:scale(.97)}
+.bar{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin:6px 2px 10px}.bar i{display:block;height:100%;background:var(--gold);width:0}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.tools button{padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--cream);font:600 14px inherit;cursor:pointer}
+.tools button.pri{background:var(--gold);color:#1a0f08;border:0}
+#sum{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin:14px 0;font-size:14px}
+#sum h3{margin:4px 0 8px;font-size:15px;color:var(--gold)}
+#sum table{width:100%;border-collapse:collapse;font-size:13px}#sum td,#sum th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left}#sum th{color:var(--mute);font-weight:600}
+.lb{position:fixed;inset:0;background:#000;z-index:9;display:none;flex-direction:column}
+.lb.on{display:flex}
+.lb canvas{flex:1;width:100%;height:100%;object-fit:contain;min-height:0}
+.lb .lbbar{display:flex;gap:8px;padding:10px;justify-content:center;background:#000}
+.lb .lbbar button{min-width:90px;min-height:46px;border-radius:10px;border:1px solid #444;background:#1a1a1a;color:#fff;font:700 16px inherit}
+.lb .lbbar button.on{background:var(--gold);color:#111;border:0}
+.toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--gold);color:#111;font-weight:700;padding:8px 16px;border-radius:999px;z-index:20;display:none}
+.load{color:var(--mute);text-align:center;padding:60px 0}
+</style>
+</head>
+<body>
+<header><h1>🎨 調色口味測驗</h1><span class="pill" id="scene">—</span><span class="sp"></span><span class="pill" id="cnt">0 題</span></header>
+<div class="wrap">
+ <div class="intro" id="intro"><b>同一張照片給你看 A／B 兩個版本，選你比較喜歡的那張。</b>每題只改一個地方（色溫、飽和、陰影、膚色…），差異會越來越細，系統會依舞台光線（冷藍、暖黃、粉紫、自然光）分開記你的口味。<br>看不出差別就按「差不多」，兩張都不行就按「都不好」。點照片可以全螢幕、按鈕切換 A／B 比較。每 20 題會顯示目前學到的口味，做多少都可以，隨時按「送出給 Claude」。</div>
+ <div class="bar"><i id="prog"></i></div>
+ <div class="q" id="q"></div>
+ <div class="pair" id="pair"><div class="load">照片載入中…</div></div>
+ <div class="tools">
+  <button class="pri" id="send">📤 送出給 Claude</button>
+  <button id="showsum">📊 目前學到的口味</button>
+  <button id="undo">↩ 上一題重選</button>
+  <button id="reset">🗑 清除重來</button>
+ </div>
+ <div id="sum" style="display:none"></div>
+</div>
+<div class="btns"><div class="row">
+ <button class="a" data-p="A">A 比較好</button><button class="b" data-p="B">B 比較好</button><button data-p="=">差不多</button><button data-p="x">都不好</button>
+</div></div>
+<div class="lb" id="lb"><canvas id="lbc"></canvas><div class="lbbar"><button data-v="A" class="on">A</button><button data-v="B">B</button><button data-v="0">原圖</button><button data-v="close">✕ 關閉</button></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const POOL=[["tsc","1120","A0002404"],["tsc","1120","A0000848"],["tsc","1120","A0003140"],["tsc","1120","A0009156"],["tsc","1120","A0000219"],["tsc","1120","A0000496"],["tsc","1120","A0009419"],["tsc","1120","A0009026"],["tsc","1120","A0000577"],["tsc","1120","A0003042"],["tsc","1120","A0009064"],["tsc","1120","A0000267"],["tsc","1120","A0008979"],["tsc","1120","A0001304"],["tsc","1120","A0000185"],["tsc","1120","A0000559"],["tsc","1120","A0003316"],["tsc","1120","A0003272"],["tsc","1120","A0000487"],["tsc","1120","A0001583"],["tsc","1120","A0000571"],["tsc","1120","A0009037"],["tsc","1120","A0003290"],["tsc","1120","A0000344"],["tsc","1120","A0009047"],["tsc","1120","A0000778"],["tsc","1120","A0001330"],["tsc","1120","A0009129"],["tsc","1120","A0009128"],["tsc","1120","A0009447"],["tsc","1120","A0000347"],["tsc","1120","A0009059"],["tsc","1120","A0009070"],["tsc","1120","A0003144"],["tsc","1120","A0000245"],["tsc","1120","A0001326"],["tsc","1120","A0000210"],["tsc","1120","A0009041"],["tsc","1120","A0000796"],["tsc","1120","A0002132"],["tsc","1120","A0009412"],["tsc","1120","A0000826"],["tsc","1120","A0009028"],["tsc","1120","A0000737"],["tsc","1120","A0009052"],["citycup","1114","A0001404"],["citycup","1115","A0005443"],["citycup","1114","A0001965"],["citycup","1115","A0004275"],["citycup","1114","A0001707"],["citycup","1115","A0005300"],["citycup","1114","A0000767"],["citycup","1115","A0004751"],["citycup","1114","A0002025"],["citycup","1115","A0008639"],["citycup","1114","A0000518"],["citycup","1115","A0008508"],["citycup","1114","A0001787"],["citycup","1115","A0005578"],["citycup","1114","A0003407"],["citycup","1115","A0005065"],["citycup","1114","A0003112"],["citycup","1115","A0004230"],["citycup","1114","A0000517"],["citycup","1115","A0004377"],["citycup","1114","A0002167"],["citycup","1115","A0005288"],["citycup","1114","A0001749"],["citycup","1115","A0005176"],["citycup","1114","A0004074"],["citycup","1115","A0004807"],["citycup","1114","A0001663"],["citycup","1115","A0004635"],["citycup","1114","A0004018"],["citycup","1115","A0004268"],["citycup","1114","A0000669"],["citycup","1115","A0004741"],["citycup","1114","A0000811"],["citycup","1115","A0008698"],["citycup","1114","A0001513"],["citycup","1115","A0005331"],["citycup","1114","A0000793"],["citycup","1115","A0008754"],["citycup","1114","A0000740"],["citycup","1115","A0004796"],["citycup","1114","A0001596"],["citycup","1115","A0004217"],["citycup","1114","A0001620"],["citycup","1115","A0005045"],["citycup","1114","A0000578"],["yangliu","1122","A0008156"],["yangliu","1122","A0008180"],["yangliu","1122","A0007813"],["yangliu","1122","A0007184"],["yangliu","1122","A0008252"],["yangliu","1122","A0007507"],["yangliu","1122","A0008237"],["yangliu","1122","A0007467"],["yangliu","1122","A0007428"],["yangliu","1122","A0008806"],["yangliu","1122","A0008591"],["yangliu","1122","A0008042"],["yangliu","1122","A0008309"],["yangliu","1122","A0007512"],["yangliu","1122","A0007479"],["yangliu","1122","A0007190"],["yangliu","1122","A0007360"],["yangliu","1122","A0008540"],["yangliu","1122","A0007486"],["yangliu","1122","A0008168"],["yangliu","1122","A0007404"],["yangliu","1122","A0008582"],["yangliu","1122","A0008054"],["yangliu","1122","A0008426"],["yangliu","1122","A0007528"],["yangliu","1122","A0007492"],["yangliu","1122","A0007986"],["yangliu","1122","A0007914"],["yangliu","1122","A0008701"],["yangliu","1122","A0008456"]];
+// 調整項目：名稱、說明、單位、起始步幅、最小步幅、範圍
+const DIMS={
+ k:{n:"色溫",d:"偏藍 ↔ 偏黃",st:700,min:120,lo:-2500,hi:2500,u:"K"},
+ t:{n:"冷暖微調",d:"紅 ↔ 藍",st:14,min:3,lo:-30,hi:30},
+ g:{n:"色調",d:"綠 ↔ 洋紅",st:14,min:3,lo:-30,hi:30},
+ s:{n:"飽和度",d:"淡 ↔ 鮮豔",st:22,min:4,lo:-40,hi:40},
+ b:{n:"整體亮度",d:"暗 ↔ 亮",st:14,min:3,lo:-30,hi:30},
+ sh:{n:"陰影",d:"暗部壓深 ↔ 拉亮",st:24,min:5,lo:-40,hi:40},
+ hl:{n:"亮部",d:"亮處壓回 ↔ 提亮",st:24,min:5,lo:-40,hi:40},
+ kh:{n:"膚色色相",d:"偏黃 ↔ 偏紅",st:16,min:3,lo:-30,hi:30},
+ ks:{n:"膚色飽和",d:"淡 ↔ 濃",st:22,min:4,lo:-40,hi:40},
+ kl:{n:"膚色亮度",d:"暗 ↔ 亮",st:14,min:3,lo:-30,hi:30}};
+const DK=Object.keys(DIMS);
+const SCN={cool:"冷藍舞台光",warm:"暖黃燈光",pink:"粉紫燈光",day:"自然光／日光"};
+const K0=5500;
+function kRGB(K){const T=K/100;let r,g,b;if(T<=66){r=255;g=99.4708025861*Math.log(T)-161.1195681661;b=T<=19?0:138.5177312231*Math.log(T-10)-305.0447927307}else{r=329.698727446*Math.pow(T-60,-.1332047592);g=288.1221695283*Math.pow(T-60,-.0755148492);b=255}return[r/g,1,b/g]}
+// 與網站後台調色面板同一套公式
+function aPix(d,v){const kk=K0+(v.k||0),k0=kRGB(K0),k1=kRGB(kk),fr=k0[0]/k1[0],fb=k0[2]/k1[2];const t=(v.t||0)/100,g=(v.g||0)/100,s=(v.s||0)/100,b=(v.b||0)/100,sh=(v.sh||0)/100,hl=(v.hl||0)/100,kh=(v.kh||0)/100,ks=(v.ks||0)/100,kl=(v.kl||0)/100;
+ for(let i=0;i<d.length;i+=4){let r=d[i]/255,G=d[i+1]/255,B=d[i+2]/255;
+  const mx=Math.max(r,G,B),mn=Math.min(r,G,B),c=mx-mn;let h=0;if(c>1e-6){h=mx===r?((G-B)/c)%6:mx===G?(B-r)/c+2:(r-G)/c+4;h*=60;if(h<0)h+=360}
+  const sat=mx>0?c/mx:0;let w=0;if(h<55&&sat>.12&&sat<.7&&mx>.22){w=Math.min(1,(55-h)/15)*Math.min(1,(sat-.12)/.1)*Math.min(1,(.7-sat)/.15)*Math.min(1,(mx-.22)/.15)}
+  r*=fr*(1+t*.6);B*=fb*(1-t*.6);G*=1-g*.5;
+  let y=.299*r+.587*G+.114*B;r=y+(r-y)*(1+s);G=y+(G-y)*(1+s);B=y+(B-y)*(1+s);
+  const f=(1+b)*(1+sh*.9*Math.pow(1-Math.min(y,1),3))*(1+hl*.6*Math.pow(Math.min(y,1),2));r*=f;G*=f;B*=f;
+  if(w>0){r*=1+kh*.25*w;G*=1-kh*.12*w;B*=1-kh*.05*w;y=.299*r+.587*G+.114*B;const k=1+ks*w;r=y+(r-y)*k;G=y+(G-y)*k;B=y+(B-y)*k;const L=1+kl*.6*w;r*=L;G*=L;B*=L}
+  d[i]=r*255;d[i+1]=G*255;d[i+2]=B*255}}
+// 照片特徵：分場景用
+function stats(id){const d=id.data;let n=0,R=0,G=0,B=0,L=0,S=0,sk=0,pk=0;
+ for(let i=0;i<d.length;i+=16){const r=d[i]/255,g=d[i+1]/255,b=d[i+2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),c=mx-mn;let h=0;if(c>1e-6){h=mx===r?((g-b)/c)%6:mx===g?(b-r)/c+2:(r-g)/c+4;h*=60;if(h<0)h+=360}
+  const s=mx>0?c/mx:0;n++;R+=r;G+=g;B+=b;L+=.299*r+.587*g+.114*b;S+=s;if(h<50&&s>.15&&s<.6&&mx>.3)sk++;if(h>285&&h<345&&s>.15)pk++}
+ R/=n;G/=n;B/=n;const o={L:+(L/n).toFixed(3),rg:+(R/G).toFixed(3),bg:+(B/G).toFixed(3),sat:+(S/n).toFixed(3),skin:+(sk/n).toFixed(3),pink:+(pk/n).toFixed(3)};
+ o.sc=o.pink>.12?"pink":o.bg>1.08?"cool":o.rg>1.15&&o.L<.5?"warm":"day";return o}
+// 狀態
+const KEY="jf_colorlab_v1";let ST;try{ST=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
+if(!ST)ST={trials:[],est:{},sent:0};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ST))}catch(e){}};
+// est[sc][dim]={mu,step,rev,last,n}
+function E(sc,dm){ST.est[sc]=ST.est[sc]||{};return ST.est[sc][dm]=ST.est[sc][dm]||{mu:0,step:DIMS[dm].st,rev:0,last:0,n:0}}
+const $=s=>document.querySelector(s);
+let cur=null,img=null,base=null,W=0,H=0;const cache={};
+async function loadImg(p){const u=`../photos/${p[1]}/${p[2]}.jpg`;if(cache[u])return cache[u];const im=new Image();im.crossOrigin="anonymous";im.src=u;await im.decode();
+ const w=Math.min(1000,im.naturalWidth),h=Math.round(im.naturalHeight*w/im.naturalWidth);const cv=document.createElement("canvas");cv.width=w;cv.height=h;const x=cv.getContext("2d",{willReadFrequently:true});x.drawImage(im,0,0,w,h);
+ const id=x.getImageData(0,0,w,h);return cache[u]={id,w,h,st:stats(id)}}
+function render(cv,v){const c=cache[cur.u];cv.width=c.w;cv.height=c.h;const x=cv.getContext("2d");const id=new ImageData(new Uint8ClampedArray(c.id.data),c.w,c.h);if(v)aPix(id.data,v);x.putImageData(id,0,0)}
+// 選題：優先選做得少、步幅還大的維度
+function pickDim(sc){const sc_=DK.map(d=>{const e=E(sc,d);return[d,(e.step/DIMS[d].min)*(1/(1+e.n*.15))+Math.random()*.6]});sc_.sort((a,b)=>b[1]-a[1]);
+ // 膚色項目只在有人臉皮膚的照片出
+ return sc_.find(([d])=>!(d[0]==="k"&&d.length===2)||cache[cur.u].st.skin>.02)[0]}
+let order=[];function nextPhoto(){if(!order.length){order=POOL.map((p,i)=>i).sort(()=>Math.random()-.5)}return POOL[order.pop()]}
+async function next(){$("#pair").innerHTML='<div class="load">照片載入中…</div>';
+ const p=nextPhoto();const u=`../photos/${p[1]}/${p[2]}.jpg`;try{await loadImg(p)}catch(e){return next()}
+ cur={p,u};const st=cache[u].st;const dm=pickDim(st.sc);const e=E(st.sc,dm),D=DIMS[dm];
+ const clamp=v=>Math.max(D.lo,Math.min(D.hi,v));const lo=clamp(e.mu-e.step),hi=clamp(e.mu+e.step);
+ const swap=Math.random()<.5;cur.dm=dm;cur.sc=st.sc;cur.A=swap?hi:lo;cur.B=swap?lo:hi;cur.mu=e.mu;cur.step=e.step;
+ $("#scene").textContent=SCN[st.sc];
+ $("#q").innerHTML=`第 ${ST.trials.length+1} 題 · 只改 <span class="dim">${D.n}</span>（${D.d}）· 哪張比較好？`;
+ $("#pair").innerHTML=["A","B"].map(k=>`<div class="card" data-k="${k}"><canvas></canvas><span class="tag">${k}</span><span class="zoom">⤢ 放大比較</span></div>`).join("");
+ render($('.card[data-k="A"] canvas'),{[dm]:cur.A});render($('.card[data-k="B"] canvas'),{[dm]:cur.B});
+ const n=ST.trials.length;$("#cnt").textContent=n+" 題";$("#prog").style.width=((n%20)/20*100)+"%"}
+function answer(p){if(!cur)return;const e=E(cur.sc,cur.dm);const prev=JSON.parse(JSON.stringify(e));
+ const win=p==="A"?cur.A:p==="B"?cur.B:null;
+ if(win!==null){const dir=Math.sign(win-e.mu);if(e.last&&dir&&dir!==e.last){e.rev++;e.step=Math.max(DIMS[cur.dm].min,e.step*.6)}e.mu=e.mu+dir*e.step*.5;e.last=dir||e.last}
+ else if(p==="="){e.step=Math.max(DIMS[cur.dm].min,e.step*.75)}
+ else{e.step=Math.min(DIMS[cur.dm].st*1.6,e.step*1.3)}
+ e.n++;
+ ST.trials.push({t:Date.now(),id:`L${cur.p[1]}-${cur.p[2]}`,ev:cur.p[0],sc:cur.sc,st:cache[cur.u].st,dim:cur.dm,A:cur.A,B:cur.B,pick:p,mu0:cur.mu,step0:cur.step,prev});
+ save();$("#intro").style.display="none";const n=ST.trials.length;if(n%20===0){showSum();toast(`完成 ${n} 題！下面是目前學到的口味`)}next()}
+function undo(){const t=ST.trials.pop();if(!t)return;ST.est[t.sc][t.dim]=t.prev;save();toast("已退回上一題");next()}
+function fmt(dm,v){const D=DIMS[dm];if(Math.abs(v)<D.min*.6)return"跟現在差不多";const s=v>0?"+":"";return`${s}${Math.round(v)}${D.u||""}`}
+function words(dm,v){const D=DIMS[dm];if(Math.abs(v)<D.min*.6)return"維持";const [l,r]=D.d.split(" ↔ ");return v>0?"再"+r:"再"+l}
+function showSum(){const box=$("#sum");box.style.display="block";let h=`<h3>目前學到的口味（共 ${ST.trials.length} 題）</h3><p style="color:var(--mute);margin:0 0 8px">數值是「比網站上現在的版本」再往哪邊調。題數越多越準，每格至少 5 題才可信。</p>`;
+ for(const sc of Object.keys(SCN)){const es=ST.est[sc];if(!es)continue;const rows=DK.filter(d=>es[d]&&es[d].n).map(d=>`<tr><td>${DIMS[d].n}</td><td>${words(d,es[d].mu)}</td><td>${fmt(d,es[d].mu)}</td><td>${es[d].n} 題${es[d].n<5?" ⚠":""}</td></tr>`).join("");
+  if(rows)h+=`<b>${SCN[sc]}</b><table><tr><th>項目</th><th>你的口味</th><th>調整量</th><th>題數</th></tr>${rows}</table><br>`}
+ box.innerHTML=h;box.scrollIntoView({behavior:"smooth"})}
+function toast(s){const t=$("#toast");t.textContent=s;t.style.display="block";clearTimeout(t._t);t._t=setTimeout(()=>t.style.display="none",2200)}
+// 送出：有權杖直接寫進 repo，沒有就複製
+const GH="https://api.github.com/repos/jay0916746661/jimframe-site/contents/colorlab/answers.json";
+const tok=()=>{try{return localStorage.getItem("jf_gh_token")||""}catch(e){return""}};
+async function send(){const out={device:navigator.userAgent.slice(0,80),sentAt:new Date().toISOString(),est:ST.est,trials:ST.trials.slice(ST.sent)};
+ if(!out.trials.length){toast("沒有新的題目要送");return}
+ if(!tok()){try{await navigator.clipboard.writeText("調色口味 "+JSON.stringify(out))}catch(e){}toast("已複製，貼給 Claude 就好");return}
+ toast("送出中…");try{const H={Authorization:`Bearer ${tok()}`,Accept:"application/vnd.github+json"};
+  const r0=await fetch(GH+"?ref=main&t="+Date.now(),{headers:H,cache:"no-store"});let J={batches:[]},sha;
+  if(r0.ok){const j=await r0.json();sha=j.sha;J=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\s/g,"")))))}
+  J.batches.push(out);const body={message:`調色口味 +${out.trials.length} 題`,content:btoa(unescape(encodeURIComponent(JSON.stringify(J)))),branch:"main"};if(sha)body.sha=sha;
+  const r=await fetch(GH,{method:"PUT",headers:H,body:JSON.stringify(body)});if(!r.ok)throw new Error(r.status);ST.sent=ST.trials.length;save();toast(`已送出 ${out.trials.length} 題 ✓`)}
+ catch(e){try{await navigator.clipboard.writeText("調色口味 "+JSON.stringify(out))}catch(_){}toast("送出失敗，已改成複製，貼給 Claude")}}
+// 事件
+document.querySelector(".btns").addEventListener("click",e=>{const b=e.target.closest("button");if(b)answer(b.dataset.p)});
+$("#pair").addEventListener("click",e=>{const c=e.target.closest(".card");if(!c)return;openLB(c.dataset.k)});
+function openLB(k){$("#lb").classList.add("on");setLB(k)}
+function setLB(k){document.querySelectorAll(".lbbar button").forEach(b=>b.classList.toggle("on",b.dataset.v===k));render($("#lbc"),k==="0"?null:{[cur.dm]:cur[k]})}
+$(".lbbar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.v==="close"){$("#lb").classList.remove("on");return}setLB(b.dataset.v)});
+$("#send").onclick=send;$("#showsum").onclick=showSum;$("#undo").onclick=undo;
+$("#reset").onclick=()=>{if(confirm("清除所有作答？（已送出的不受影響）")){ST={trials:[],est:{},sent:0};save();$("#sum").style.display="none";next()}};
+document.addEventListener("keydown",e=>{if($("#lb").classList.contains("on")){if(e.key==="Escape")$("#lb").classList.remove("on");if(e.key==="a"||e.key==="ArrowLeft")setLB("A");if(e.key==="b"||e.key==="ArrowRight")setLB("B");return}
+ const m={a:"A",ArrowLeft:"A",b:"B",ArrowRight:"B","=":"=",x:"x"}[e.key];if(m)answer(m)});
+if(ST.trials.length)$("#intro").style.display="none";
+next();
+</script>
+</body>
+</html>
