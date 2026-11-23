@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>顏色二選一 · City Cup</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#111;color:#eee;font:15px/1.4 -apple-system,"PingFang TC","Noto Sans TC",sans-serif;overflow-x:hidden}
+header{position:sticky;top:0;z-index:2;background:#111e;padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #333}
+header b{flex:1}#bar{height:4px;background:#333;margin:0 12px}#bar i{display:block;height:100%;background:#e9b44c;width:0}
+main{padding:10px 12px 90px;max-width:1300px;margin:auto}
+.pair{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:900px){.pair{grid-template-columns:1fr 1fr}}
+.c{position:relative;border:3px solid transparent;border-radius:10px;overflow:hidden;cursor:pointer;background:#000}
+.c img{display:block;width:100%;height:auto}
+.c span{position:absolute;left:8px;top:8px;background:#000a;padding:2px 10px;border-radius:12px;font-weight:700}
+.c:active,.c.on{border-color:#e9b44c}
+.ctl{position:fixed;left:0;right:0;bottom:0;background:#111;border-top:1px solid #333;padding:10px 12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+button{background:#2a2a2a;color:#eee;border:1px solid #444;border-radius:20px;padding:9px 16px;font-size:15px}
+button.p{background:#e9b44c;color:#111;border-color:#e9b44c;font-weight:700}
+#done{display:none;text-align:center;padding:30px 10px}#done pre{white-space:pre-wrap;word-break:break-all;background:#222;padding:10px;border-radius:8px;text-align:left;font-size:12px;max-height:200px;overflow:auto}
+.hint{color:#999;font-size:13px;text-align:center;margin:6px 0 10px}
+</style></head><body>
+<header><b>哪一張顏色比較好？</b><span id="n"></span></header>
+<div id="bar"><i></i></div>
+<main>
+<div class="hint">點比較喜歡的那張（左右／上下每題隨機）。電腦可按 1、2，差不多按 0，上一題按 ←</div>
+<div id="q" class="pair">
+ <div class="c" data-k="0"><span>1</span><img id="i0" alt=""></div>
+ <div class="c" data-k="1"><span>2</span><img id="i1" alt=""></div>
+</div>
+<div id="done"><h2>完成了，謝謝！</h2><p id="msg"></p><button class="p" id="send">送出結果</button><p class="hint">沒有送出鈕權限時，按「複製結果」貼給 Claude</p><button id="copy">複製結果</button><pre id="out"></pre></div>
+</main>
+<div class="ctl" id="ctl"><button id="back">← 上一題</button><button id="same">差不多</button><button id="skip">看不出來／跳過</button></div>
+<script>
+const KEY="jf_cc_colorpick";let L=[],ans={},sw={},idx=0;
+try{ans=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ans))}catch(e){}};
+const $=s=>document.querySelector(s);
+function seed(i){let h=0;for(const c of i)h=(h*31+c.charCodeAt(0))|0;return (h>>>3)&1}
+function show(){
+  if(idx>=L.length){finish();return}
+  const id=L[idx];sw[id]=seed(id);
+  const nw="n/"+id+"?v=1",od="../../photos/1114/"+id+"?v=old1";
+  $("#i0").src=sw[id]?od:nw;$("#i1").src=sw[id]?nw:od;
+  document.querySelectorAll(".c").forEach(c=>c.classList.toggle("on",false));
+  const a=ans[id];if(a&&a!=="same"&&a!=="skip"){const k=(a==="new")===!sw[id]?0:1;document.querySelector(`.c[data-k="${k}"]`).classList.add("on")}
+  $("#n").textContent=(idx+1)+" / "+L.length;$("#bar i").style.width=(100*idx/L.length)+"%";
+  if(idx+1<L.length){const n=L[idx+1];new Image().src="n/"+n+"?v=1";new Image().src="../../photos/1114/"+n+"?v=old1"}
+  scrollTo(0,0)
+}
+function pick(v){const id=L[idx];ans[id]=v;save();idx++;show()}
+function choose(k){const id=L[idx];const isNew=(k===0)!==!!sw[id];pick(isNew?"new":"old")}
+document.querySelectorAll(".c").forEach(c=>c.onclick=()=>choose(+c.dataset.k));
+$("#same").onclick=()=>pick("same");$("#skip").onclick=()=>pick("skip");
+$("#back").onclick=()=>{if(idx>0){idx--;$("#done").style.display="none";$("#q").style.display="";$("#ctl").style.display="";show()}};
+addEventListener("keydown",e=>{if($("#done").style.display==="block")return;if(e.key==="1")choose(0);else if(e.key==="2")choose(1);else if(e.key==="0")pick("same");else if(e.key==="ArrowLeft")$("#back").onclick()});
+function result(){return JSON.stringify({t:new Date().toISOString(),ans},null,0)}
+function finish(){
+  $("#q").style.display="none";$("#ctl").style.display="none";$("#done").style.display="block";$("#bar i").style.width="100%";
+  const v=Object.values(ans);const c=k=>v.filter(x=>x===k).length;
+  $("#msg").textContent=`選新版 ${c("new")}、選舊版 ${c("old")}、差不多 ${c("same")}、跳過 ${c("skip")}`;$("#out").textContent=result()
+}
+$("#copy").onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(result());$("#copy").textContent="已複製"};
+$("#send").onclick=async()=>{
+  let tok="";try{tok=localStorage.getItem("jf_gh_token")||""}catch(e){}
+  if(!tok){$("#send").textContent="這支手機沒有權杖，請按複製結果";return}
+  const U="https://api.github.com/repos/jay0916746661/jimframe-site/contents/citycup/pick/result.json",H={Authorization:"Bearer "+tok,Accept:"application/vnd.github+json"};
+  $("#send").textContent="送出中…";
+  try{let sha;const r0=await fetch(U+"?ref=main&t="+Date.now(),{headers:H,cache:"no-store"});if(r0.ok)sha=(await r0.json()).sha;
+    const body=btoa(unescape(encodeURIComponent(result())));
+    const r=await fetch(U,{method:"PUT",headers:H,body:JSON.stringify({message:"City Cup 顏色二選一結果",content:body,sha,branch:"main"})});
+    $("#send").textContent=r.ok?"已送出 ✓ 跟 Claude 說一聲":"送出失敗（"+r.status+"），請按複製結果"}catch(e){$("#send").textContent="送出失敗，請按複製結果"}
+};
+fetch("list.json?t="+Date.now()).then(r=>r.json()).then(j=>{
+  L=j.slice();let s=7;for(let i=L.length-1;i>0;i--){s=(s*9301+49297)%233280;const k=Math.floor(s/233280*(i+1));[L[i],L[k]]=[L[k],L[i]]}
+  idx=L.findIndex(i=>!ans[i]);if(idx<0)idx=L.length;show()});
+</script>
+</body></html>
