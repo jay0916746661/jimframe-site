@@ -1,20 +1,20 @@
-# IG 數據摘要（2026-11-19）
+# IG 數據摘要（2026-11-25）
 
-抓取時間：2026-11-19 01:29（台北）
+抓取時間：2026-11-25 03:13（台北）
 介面：https://graph.facebook.com/v21.0，只送 GET（不發文、不改帳號）。
-每個帳號最多抓最近 40 則。資料檔：`ig_insights_20261119.csv`。
+每個帳號最多抓最近 100 則。資料檔：`ig_insights_20261125.csv`。
 帳號來源：GET /me/accounts 的 instagram_business_account，沒有才用 connected_instagram_account。
 
-權杖看得到的 IG：12 個。
+權杖看得到的 IG：11 個。
 這次關心的帳號：jazz101tw、art101.tw、socialdance101、coffeestory101、reading.after、love.manual.tw、theguitarstory101、astro_labtw、tech101_ai、untold.trip0。
-不在關心清單、但權杖看得到：drinkstory.tw、jimframe。
+不在關心清單、但權杖看得到：drinkstory.tw。
 
-狀態：關心的帳號都找得到；略過指標 follows×207、plays×206、reach×1、saved×1、shares×1、total_interactions×1、views×1。
+狀態：關心的帳號都找得到；略過指標 follows×297、plays×296、reach×1、saved×1、shares×1、total_interactions×1、views×1。
 
 略過原因：
 
-- follows × 207（FEED、REELS）：(#100) The Media Insights API does not support the follows metric for this media product type.
-- plays × 206（REELS）：(#100) metric[0] must be one of the following values: impressions, reach, replies, saved, likes, comments, shares, total_interactions, follows, profile_visits, profile_activity, na
+- follows × 297（FEED、REELS）：(#100) The Media Insights API does not support the follows metric for this media product type.
+- plays × 296（REELS）：(#100) metric[0] must be one of the following values: impressions, reach, replies, saved, likes, comments, shares, total_interactions, follows, profile_visits, profile_activity, na
 - reach × 1（FEED）：Invalid parameter
 - saved × 1（FEED）：Invalid parameter
 - shares × 1（FEED）：Invalid parameter
@@ -26,24 +26,24 @@
 ### art101.tw
 
 - 粉專：藝術101
-- 追蹤：854
-- 貼文總數：165
-- 這次列入：40 則，其中 Reels 21 則
-- Reels 平均觀看：3,721.5（21 則有觀看數）
+- 追蹤：914
+- 貼文總數：192
+- 這次列入：100 則，其中 Reels 52 則
+- Reels 平均觀看：2,645（52 則有觀看數）
 
 觀看前 5：
 
-1. 25,308 次｜2026-11-17｜REELS/VIDEO｜他這輩子沒見過犀牛，卻畫出了歐洲人兩百多年來心中的犀牛 🦏 ▍一頭船運來的犀牛 1515年5月，一頭印度犀牛被送到葡萄牙里斯本，這是羅馬時代之後歐洲第一次見到活｜https://www.instagram.com/reel/Df148_6nNga/
-2. 21,295 次｜2026-11-14｜REELS/VIDEO｜全世界最有名的珍珠，可能是一顆玻璃。💎 ▍她是誰？沒人知道 維梅爾大約在1665年畫下這位轉頭的少女。她不是肖像，是當時荷蘭流行的人物頭像習作（tronie），｜https://www.instagram.com/reel/DfuKqOWnFCH/
-3. 6,367 次｜2026-11-15｜REELS/VIDEO｜「印象派」這三個字，一開始是罵人的。🌅 ▍一個隨口取的名字 1872年，莫內在他長大的港口勒阿弗爾畫下清晨的霧。1874年參展時被問畫名，他說畫不太像勒阿弗爾的｜https://www.instagram.com/reel/Dfw_XxkGSaS/
-4. 3,593 次｜2026-11-12｜REELS/VIDEO｜標籤上的 5/20，是什麼意思？ 作品標籤上，有時候會寫5/20。這是版次的意思。版畫、攝影、雕塑這類可以複製的作品，藝術家會限定只做幾份。 5/20，就是限量｜https://www.instagram.com/reel/DfpHShQj6fm/
-5. 3,382 次｜2026-11-13｜REELS/VIDEO｜在藝博會買畫，跟在拍賣會買畫，差在哪？ 在藝博會跟畫廊買，叫一級市場。作品通常是第一次被賣出，從藝術家到畫廊，再到你手上。在拍賣會買，叫二級市場。 是收藏家把買｜https://www.instagram.com/reel/DfquWkjtYRp/
+1. 43,492 次｜2026-11-17｜REELS/VIDEO｜他這輩子沒見過犀牛，卻畫出了歐洲人兩百多年來心中的犀牛 🦏 ▍一頭船運來的犀牛 1515年5月，一頭印度犀牛被送到葡萄牙里斯本，這是羅馬時代之後歐洲第一次見到活｜https://www.instagram.com/reel/Df148_6nNga/
+2. 22,443 次｜2026-11-14｜REELS/VIDEO｜全世界最有名的珍珠，可能是一顆玻璃。💎 ▍她是誰？沒人知道 維梅爾大約在1665年畫下這位轉頭的少女。她不是肖像，是當時荷蘭流行的人物頭像習作（tronie），｜https://www.instagram.com/reel/DfuKqOWnFCH/
+3. 6,449 次｜2026-11-15｜REELS/VIDEO｜「印象派」這三個字，一開始是罵人的。🌅 ▍一個隨口取的名字 1872年，莫內在他長大的港口勒阿弗爾畫下清晨的霧。1874年參展時被問畫名，他說畫不太像勒阿弗爾的｜https://www.instagram.com/reel/Dfw_XxkGSaS/
+4. 3,902 次｜2026-11-18｜REELS/VIDEO｜一尊少女雕像，在木箱裡被藏了將近半個世紀 🕊️ ▍台灣第一位帝展藝術家 黃土水是第一位入選日本帝展的台灣藝術家。1921年，他的大理石作品《甘露水》入選第三回帝｜https://www.instagram.com/reel/Df4dkqhAejJ/
+5. 3,614 次｜2026-11-12｜REELS/VIDEO｜標籤上的 5/20，是什麼意思？ 作品標籤上，有時候會寫5/20。這是版次的意思。版畫、攝影、雕塑這類可以複製的作品，藝術家會限定只做幾份。 5/20，就是限量｜https://www.instagram.com/reel/DfpHShQj6fm/
 
 觀看後 3：
 
-1. 88 次｜2026-11-13｜FEED/CAROUSEL_ALBUM｜第一次想買藝術品，先想這三件事。 第一，你真的喜歡它嗎？不是因為它會漲，而是你願意每天看到它。第二，你家放得下嗎？先量好牆面，再去問尺寸。第三，你的預算多少？可｜https://www.instagram.com/p/DfrXe6XjWi3/
-2. 106 次｜2026-11-17｜FEED/CAROUSEL_ALBUM｜全世界最有名的一道浪，顏料是從柏林來的。🌊 ▍一罐意外的藍 1706年前後，柏林的顏料商在做紅色染料時，意外調出一種深藍，後來叫普魯士藍。它比日本傳統的靛藍更耐｜https://www.instagram.com/p/Df1B7_MDVD1/
-3. 107 次｜2026-11-18｜FEED/CAROUSEL_ALBUM｜他這輩子沒見過犀牛，卻畫出了歐洲人兩百多年來心中的犀牛 🦏 ▍一頭船運來的犀牛 1515年5月，一頭印度犀牛被送到葡萄牙里斯本，這是羅馬時代之後歐洲第一次見到活｜https://www.instagram.com/p/Df3mf2tjeqG/
+1. 104 次｜2026-11-13｜FEED/CAROUSEL_ALBUM｜第一次想買藝術品，先想這三件事。 第一，你真的喜歡它嗎？不是因為它會漲，而是你願意每天看到它。第二，你家放得下嗎？先量好牆面，再去問尺寸。第三，你的預算多少？可｜https://www.instagram.com/p/DfrXe6XjWi3/
+2. 116 次｜2026-11-23｜FEED/CAROUSEL_ALBUM｜一個後來背上命案的畫家，最先讓羅馬記住他的，是一道光。💡 ▍先把時間講對 《聖馬太蒙召》在 1599–1600 年完成，掛進羅馬聖王路易堂的康塔雷利禮拜堂。16｜https://www.instagram.com/p/DgEegfRkjlW/
+3. 122 次｜2026-11-06｜REELS/VIDEO｜2001 年 9 月 11 日，坂本龍一剛結束巴西的錄音，人在紐約。 他抓起相機走上第七大道，買了一台 Land Rover 準備逃難，還準備了大約十個防毒面具｜https://www.instagram.com/reel/DfZuTpggYAm/
 
 ### astro_labtw
 
@@ -70,90 +70,68 @@
 ### coffeestory101
 
 - 粉專：Coffeestory101
-- 追蹤：539
-- 貼文總數：60
-- 這次列入：40 則，其中 Reels 22 則
-- Reels 平均觀看：712.5（22 則有觀看數）
+- 追蹤：756
+- 貼文總數：70
+- 這次列入：71 則，其中 Reels 39 則
+- Reels 平均觀看：710.3（39 則有觀看數）
 
 觀看前 5：
 
-1. 3,741 次｜2026-11-17｜REELS/VIDEO｜肯亞最有名的咖啡品種，祖先是一棵在乾旱裡活下來的樹。 1922 年，英國殖民政府在肯亞成立了一間農業實驗室，叫史考特實驗室。1931 年，實驗室的咖啡主管崔奇到｜https://www.instagram.com/reel/Df14sOujEkI/
-2. 3,389 次｜2026-11-03｜REELS/VIDEO｜1958 年，薩爾瓦多的科學家安排了一場咖啡相親。 一方叫帕卡斯，是在薩爾瓦多發現的波旁突變，樹矮、好照顧。另一方叫馬拉戈吉佩，是巴西的鐵比卡突變，豆子大到被叫｜https://www.instagram.com/reel/DfQ-Y71iedX/
-3. 1,498 次｜2026-11-07｜REELS/VIDEO｜法式濾壓壺，名字有法式，但讓它真正好用的，是兩個義大利人。 1852 年，兩個法國人梅耶和德爾弗吉申請了一個早期版本的專利，一個是巴黎的金屬工匠，一個是商人。不｜https://www.instagram.com/reel/DfcJBqxAX4t/
-4. 1,461 次｜2026-11-07｜REELS/VIDEO｜有一種煮咖啡的方法，看起來比較像在上化學課。 兩顆玻璃球，下面點火，水會自己往上跑，再自己流回來。它叫虹吸壺，是十九世紀歐洲人的發明。 最早的版本出現在德國，大｜https://www.instagram.com/reel/DfbR9yNDhpD/
-5. 1,364 次｜2026-11-18｜REELS/VIDEO｜很多人第一次喝曼特寧都會問：怎麼有一股土味？ 答案跟印尼的天氣有關。1696 年，荷蘭人把咖啡苗送到爪哇的巴達維亞，第一批還被洪水沖掉了。1888 年，阿拉比卡｜https://www.instagram.com/reel/Df4dMK9IHez/
+1. 8,255 次｜2026-11-17｜REELS/VIDEO｜肯亞最有名的咖啡品種，祖先是一棵在乾旱裡活下來的樹。 1922 年，英國殖民政府在肯亞成立了一間農業實驗室，叫史考特實驗室。1931 年，實驗室的咖啡主管崔奇到｜https://www.instagram.com/reel/Df14sOujEkI/
+2. 3,846 次｜2026-11-03｜REELS/VIDEO｜1958 年，薩爾瓦多的科學家安排了一場咖啡相親。 一方叫帕卡斯，是在薩爾瓦多發現的波旁突變，樹矮、好照顧。另一方叫馬拉戈吉佩，是巴西的鐵比卡突變，豆子大到被叫｜https://www.instagram.com/reel/DfQ-Y71iedX/
+3. 2,433 次｜2026-11-18｜REELS/VIDEO｜很多人第一次喝曼特寧都會問：怎麼有一股土味？ 答案跟印尼的天氣有關。1696 年，荷蘭人把咖啡苗送到爪哇的巴達維亞，第一批還被洪水沖掉了。1888 年，阿拉比卡｜https://www.instagram.com/reel/Df4dMK9IHez/
+4. 1,567 次｜2026-11-07｜REELS/VIDEO｜法式濾壓壺，名字有法式，但讓它真正好用的，是兩個義大利人。 1852 年，兩個法國人梅耶和德爾弗吉申請了一個早期版本的專利，一個是巴黎的金屬工匠，一個是商人。不｜https://www.instagram.com/reel/DfcJBqxAX4t/
+5. 1,566 次｜2026-11-07｜REELS/VIDEO｜有一種煮咖啡的方法，看起來比較像在上化學課。 兩顆玻璃球，下面點火，水會自己往上跑，再自己流回來。它叫虹吸壺，是十九世紀歐洲人的發明。 最早的版本出現在德國，大｜https://www.instagram.com/reel/DfbR9yNDhpD/
 
 觀看後 3：
 
-1. 43 次｜2026-11-04｜FEED/CAROUSEL_ALBUM｜維也納第一家咖啡館的英雄故事，很可能是一百年後才被寫出來的。 1683 年，鄂圖曼大軍包圍維也納，城裡快撐不住了。一個叫科奇茨基的人自願出城，換上土耳其服裝，穿｜https://www.instagram.com/p/DfTjv2IIEj-/
-2. 57 次｜2026-11-06｜FEED/CAROUSEL_ALBUM｜咖啡因會被發現，要感謝一位大詩人，還有一隻貓。 1819 年，德國耶拿，有個二十多歲的化學學生，叫龍格。他的老師德貝萊納跟大文豪歌德說：這學生能讓貓的瞳孔變大。｜https://www.instagram.com/p/DfZrnhDl8tO/
-3. 61 次｜2026-11-02｜FEED/CAROUSEL_ALBUM｜有一種咖啡，八成以上都被日本買走。它叫牙買加藍山。 1728 年，牙買加總督勞斯從馬丁尼克引進咖啡，就是德克利厄分水給樹苗的那座島。後來海地革命，一些懂種咖啡的｜https://www.instagram.com/p/DfPXTSWE5Ei/
+1. 39 次｜2026-10-31｜FEED/CAROUSEL_ALBUM｜巴赫寫過一首曲子，主角是一個戒不掉咖啡的女兒。 大約 1735 年，德國萊比錫。城裡有一家齊默曼咖啡館，常常有音樂演出。巴赫在這裡演了一齣小小的音樂劇，後來被叫｜https://www.instagram.com/p/DfJ1skWgu3k/
+2. 44 次｜2026-11-04｜FEED/CAROUSEL_ALBUM｜維也納第一家咖啡館的英雄故事，很可能是一百年後才被寫出來的。 1683 年，鄂圖曼大軍包圍維也納，城裡快撐不住了。一個叫科奇茨基的人自願出城，換上土耳其服裝，穿｜https://www.instagram.com/p/DfTjv2IIEj-/
+3. 48 次｜2026-10-28｜FEED/CAROUSEL_ALBUM｜付一便士，就能聽整個倫敦在吵什麼。 1652 年，倫敦第一家咖啡館開張。點一杯咖啡，就能坐下來看報紙、聽新聞、跟陌生人辯論。政治、科學、生意，什麼都聊，所以大家｜https://www.instagram.com/p/DfDjb6PE8-N/
 
 ### drinkstory.tw
 
 - 粉專：酒精的故事
-- 追蹤：28
-- 貼文總數：34
-- 這次列入：28 則，其中 Reels 22 則
-- Reels 平均觀看：201.2（22 則有觀看數）
+- 追蹤：36
+- 貼文總數：56
+- 這次列入：45 則，其中 Reels 34 則
+- Reels 平均觀看：186.3（34 則有觀看數）
 
 觀看前 5：
 
-1. 1,513 次｜2026-11-13｜REELS/VIDEO｜一個波本桶，在美國只能裝一次波本。🛢️ 用過一次的桶，大量賣到蘇格蘭，拆成木板運過去再重組。 所以蘇格蘭威士忌的香草味，很多是從美國來的。 你喝得出波本桶的香草｜https://www.instagram.com/reel/DfqxvrYEa4N/
-2. 187 次｜2026-11-11｜REELS/VIDEO｜三百年前的倫敦，有一種酒被叫做「媽媽的毀滅」。 一七三〇年，倫敦據估計有七千家小酒鋪在賣琴酒。 霍加斯的版畫《琴酒巷》，招牌寫著：一便士喝醉，兩便士爛醉。 你喝｜https://www.instagram.com/reel/DfloTx4k2HT/
-3. 174 次｜2026-11-13｜REELS/VIDEO｜雞尾酒第一次被寫下定義，只有四樣東西。🥃 一八〇六年，紐約小城的報紙回答讀者：烈酒、糖、水、苦精。 後來大家越加越多，客人才開口：照「老派」的做法來——Old ｜https://www.instagram.com/reel/Dfro_lBCKd4/
-4. 166 次｜2026-11-10｜REELS/VIDEO｜龍舌蘭瓶子裡的那隻蟲，正統龍舌蘭根本不准放。🐛 會泡蟲的其實是它的表親：梅斯卡爾。 那隻「蟲」是蛾的幼蟲，多半被認為是外銷的行銷噱頭。 你喝過有蟲的那一瓶嗎？留｜https://www.instagram.com/reel/Dfj6PW5Eh45/
-5. 164 次｜2026-11-12｜REELS/VIDEO｜威士忌放在桶裡，每年都會自己變少。👼 蘇格蘭每年大約蒸發 2%，放十二年，天使大約先喝掉兩成。 在宜蘭這種濕熱氣候，據報導一年可能跑掉一成。 你最喜歡幾年的威士｜https://www.instagram.com/reel/DfpD1amCBI8/
+1. 1,519 次｜2026-11-13｜REELS/VIDEO｜一個波本桶，在美國只能裝一次波本。🛢️ 用過一次的桶，大量賣到蘇格蘭，拆成木板運過去再重組。 所以蘇格蘭威士忌的香草味，很多是從美國來的。 你喝得出波本桶的香草｜https://www.instagram.com/reel/DfqxvrYEa4N/
+2. 209 次｜2026-11-23｜REELS/VIDEO｜野格瓶上那頭鹿，其實來自一個獵人懺悔的故事。 傳說七世紀，法蘭克貴族胡貝圖斯，整天只想打獵。 他也愛打獵，取名野格麥斯特，德文是「獵人大師」。 💡 專業點：五十｜https://www.instagram.com/reel/DgEiQZsDaLU/
+3. 205 次｜2026-11-21｜REELS/VIDEO｜台灣啤酒最早的名字，不叫台灣啤酒。 一九一九年，安部幸之助等人在台北成立高砂麥酒。 一九七五年，八德路上的工廠改名建國啤酒廠。 💡 專業點：蓬萊米是短粒稉米，跟｜https://www.instagram.com/reel/DgAPbwKAUvK/
+4. 191 次｜2026-11-11｜REELS/VIDEO｜三百年前的倫敦，有一種酒被叫做「媽媽的毀滅」。 一七三〇年，倫敦據估計有七千家小酒鋪在賣琴酒。 霍加斯的版畫《琴酒巷》，招牌寫著：一便士喝醉，兩便士爛醉。 你喝｜https://www.instagram.com/reel/DfloTx4k2HT/
+5. 179 次｜2026-11-13｜REELS/VIDEO｜雞尾酒第一次被寫下定義，只有四樣東西。🥃 一八〇六年，紐約小城的報紙回答讀者：烈酒、糖、水、苦精。 後來大家越加越多，客人才開口：照「老派」的做法來——Old ｜https://www.instagram.com/reel/Dfro_lBCKd4/
 
 觀看後 3：
 
-1. 22 次｜2026-11-18｜FEED/CAROUSEL_ALBUM｜龍舌蘭瓶子裡的那隻蟲，正統龍舌蘭根本不准放。 往左滑，6 張看完整個故事 👉 你喝過梅斯卡爾嗎？留言告訴我 👇 收藏起來，下次喝酒講給朋友聽。 🔞 未滿 18 ｜https://www.instagram.com/p/Df4bHf8D3B1/
-2. 25 次｜2026-11-15｜FEED/CAROUSEL_ALBUM｜伏特加四十度，跟門捷列夫其實沒關係。 往左滑，6 張看完整個故事 👉 你喝過伏特加嗎？留言告訴我 👇 收藏起來，下次喝酒講給朋友聽。 🔞 未滿 18 歲請勿飲酒｜https://www.instagram.com/p/Dfwaktal2Nj/
-3. 26 次｜2026-11-16｜FEED/CAROUSEL_ALBUM｜有一種酒，要等十幾年，等一個女孩長大。 往左滑，6 張看完整個故事 👉 你喝過紹興酒嗎？留言告訴我 👇 收藏起來，下次喝酒講給朋友聽。 🔞 未滿 18 歲請勿飲｜https://www.instagram.com/p/Dfy_LogF31m/
+1. 31 次｜2026-11-23｜FEED/CAROUSEL_ALBUM｜法國酒輸給美國酒，判輸的還是法國評審。 往左滑，6 張看完整個故事 👉 你喝過加州紅酒嗎？留言告訴我 👇 收藏起來，下次喝酒講給朋友聽。 🔞 未滿 18 歲請勿｜https://www.instagram.com/p/DgFAzcPjTtI/
+2. 32 次｜2026-11-16｜FEED/CAROUSEL_ALBUM｜有一種酒，要等十幾年，等一個女孩長大。 往左滑，6 張看完整個故事 👉 你喝過紹興酒嗎？留言告訴我 👇 收藏起來，下次喝酒講給朋友聽。 🔞 未滿 18 歲請勿飲｜https://www.instagram.com/p/Dfy_LogF31m/
+3. 33 次｜2026-11-19｜FEED/CAROUSEL_ALBUM｜三百年前的倫敦，有一種酒被叫做「媽媽的毀滅」。 往左滑，6 張看完整個故事 👉 你喝過琴酒嗎？留言告訴我 👇 收藏起來，下次喝酒講給朋友聽。 🔞 未滿 18 歲｜https://www.instagram.com/p/Df6t9c_E3fv/
 
 ### jazz101tw
 
 - 粉專：Jazz101
-- 追蹤：206
-- 貼文總數：74
-- 這次列入：40 則，其中 Reels 20 則
-- Reels 平均觀看：932.5（20 則有觀看數）
+- 追蹤：282
+- 貼文總數：101
+- 這次列入：89 則，其中 Reels 45 則
+- Reels 平均觀看：1,083.4（45 則有觀看數）
 
 觀看前 5：
 
-1. 2,273 次｜2026-11-17｜REELS/VIDEO｜同一段譜，為什麼爵士樂手彈起來就是會搖？🎶 秘密藏在八分音符。 譜上寫的是平均的八分音符，爵士樂手卻會彈成一長一短。 最常見的說法，是前面的音大約是後面的兩倍長｜https://www.instagram.com/reel/Df144BUCNTp/
-2. 1,840 次｜2026-11-10｜REELS/VIDEO｜被稱為爵士樂第一人的人，我們一個音都沒聽過。🎺 Buddy Bolden 是 20 世紀初紐奧良最紅的短號手。 大約 1900 到 1907 年，他的樂團在舞廳｜https://www.instagram.com/reel/Dfj3QvZASa2/
-3. 1,615 次｜2026-11-07｜REELS/VIDEO｜對小號手來說，牙齒和嘴唇就是一切。🎺 Chet Baker 是 1950 年代最紅的西岸爵士小號手。 1966 年夏天，美國加州，他演出結束後被人打了一頓，受了｜https://www.instagram.com/reel/DfcI2ySjsuO/
-4. 1,583 次｜2026-11-14｜REELS/VIDEO｜一首順手錄下的歌，變成了經典。🎷 1939 年 10 月 11 日，紐約，次中音薩克斯風手 Coleman Hawkins 剛從歐洲回來，他在那裡待了 5 年。｜https://www.instagram.com/reel/DftTOU-D2F1/
-5. 1,562 次｜2026-11-15｜REELS/VIDEO｜薩克斯風是爵士的代表樂器，但發明它的人根本沒聽過爵士。🎷 他叫 Adolphe Sax，1814 年出生在比利時。 1846 年 6 月 28 日，他為薩克斯風｜https://www.instagram.com/reel/Dfw-oC_iZqV/
+1. 6,915 次｜2026-10-31｜REELS/VIDEO｜每晚最後一首歌，燈全部關掉。 1939 年，紐約格林威治村的夜店 Café Society。 最後一首歌開始前，服務生停下所有工作，燈全部關掉，只留一盞聚光燈打｜https://www.instagram.com/reel/DfJyW2kjz8H/
+2. 2,365 次｜2026-11-17｜REELS/VIDEO｜同一段譜，為什麼爵士樂手彈起來就是會搖？🎶 秘密藏在八分音符。 譜上寫的是平均的八分音符，爵士樂手卻會彈成一長一短。 最常見的說法，是前面的音大約是後面的兩倍長｜https://www.instagram.com/reel/Df144BUCNTp/
+3. 2,303 次｜2026-10-26｜REELS/VIDEO｜爵士最有名的一把小號，是被撞彎的。🎺 1953 年 1 月 6 日，紐約一間叫 Snookie's 的俱樂部。 迪吉·葛拉斯彼幫太太 Lorraine 辦生日派｜https://www.instagram.com/reel/De8968ITFGB/
+4. 2,150 次｜2026-11-01｜REELS/VIDEO｜一片銅鈸，丟到他腳邊。 1936 年，堪薩斯城的即興演奏會。 一個十幾歲的薩克斯風手上台，吹到一半，忘了和弦走到哪裡。 鼓手 Jo Jones 把一片銅鈸拆下來｜https://www.instagram.com/reel/DfMXIQ9HAW6/
+5. 1,862 次｜2026-11-10｜REELS/VIDEO｜被稱為爵士樂第一人的人，我們一個音都沒聽過。🎺 Buddy Bolden 是 20 世紀初紐奧良最紅的短號手。 大約 1900 到 1907 年，他的樂團在舞廳｜https://www.instagram.com/reel/Dfj3QvZASa2/
 
 觀看後 3：
 
-1. 82 次｜2026-11-13｜FEED/CAROUSEL_ALBUM｜1937 年，一場鼓手決勝負的世紀音樂大戰。🥁 5 月 11 日，紐約哈林區的 Savoy Ballroom。 一邊是被稱為搖擺樂之王的 Benny Goodm｜https://www.instagram.com/p/DfrX1Qfl6qW/
-2. 115 次｜2026-11-17｜FEED/CAROUSEL_ALBUM｜同一段譜，為什麼爵士樂手彈起來就是會搖？🎶 秘密藏在八分音符。 譜上寫的是平均的八分音符，爵士樂手卻會彈成一長一短。 最常見的說法，是前面的音大約是後面的兩倍長｜https://www.instagram.com/p/Df1q6fmjZLq/
-3. 115 次｜2026-11-18｜FEED/CAROUSEL_ALBUM｜爵士史上最難忘的造型之一，屬於鋼琴家 Thelonious Monk。🎩 他的招牌是各式各樣的帽子，配上山羊鬍和墨鏡。 他的音樂跟造型一樣怪：和弦常常故意撞在一｜https://www.instagram.com/p/Df4bDOflfO2/
-
-### jimframe
-
-- 粉專：Jim
-- 追蹤：2,906
-- 貼文總數：544
-- 這次列入：40 則，其中 Reels 23 則
-- Reels 平均觀看：2,736.1（23 則有觀看數）
-
-觀看前 5：
-
-1. 8,238 次｜2025-07-27｜FEED/CAROUSEL_ALBUM｜上週五買的底片傻瓜相機瞬間就被拍完36張了 洗照片蠻快的不到一週就傳電子檔了 拍跳舞挺有趣的🕺 @flow.taipei｜https://www.instagram.com/p/DMkwPoJBnil/
-2. 6,587 次｜2025-07-09｜FEED/CAROUSEL_ALBUM｜天氣好到照片看起來像是夏天拍的 其實那天滿冷但大太陽 @evenwang_evenred｜https://www.instagram.com/p/DL49hy1ywzG/
-3. 6,397 次｜2026-01-05｜REELS/VIDEO｜2026第一支影片 沒拍什麼國風的舞 終於有機會拍到了！ Dancer:@dthsien_mob｜https://www.instagram.com/reel/DTIi4coCX2p/
-4. 4,671 次｜2025-06-07｜REELS/VIDEO｜🏖️6/7 flow Muii 體驗派對 💃🕺 @coreentseng @jacobpernell 🪩 @flow.taipei 📸 @jimframe｜https://www.instagram.com/reel/DKmKqiVO2pR/
-5. 4,415 次｜2025-06-07｜REELS/VIDEO｜@muiiswim X @flow.taipei 🌞夏日拉丁體驗課+派對｜https://www.instagram.com/reel/DKmMQLEhPqT/
-
-觀看後 3：
-
-1. 681 次｜2026-10-25｜REELS/VIDEO｜網站換上萬聖節裝了 🎃 點連結進去看看！ 萬聖節服裝還沒買....｜https://www.instagram.com/reel/De5o55ZJ9T-/
-2. 859 次｜2025-06-26｜REELS/VIDEO｜💃🕺 @ @kristy8410 🪩 @wcs.taiwan @skyco_coworking 📸 @jimframe｜https://www.instagram.com/reel/DLXUOkYvcS7/
-3. 966 次｜2026-08-06｜FEED/CAROUSEL_ALBUM｜#zouk #brazilianzouk #taipei｜https://www.instagram.com/p/Dbr_lnOEXtY/
+1. 94 次｜2026-11-13｜FEED/CAROUSEL_ALBUM｜1937 年，一場鼓手決勝負的世紀音樂大戰。🥁 5 月 11 日，紐約哈林區的 Savoy Ballroom。 一邊是被稱為搖擺樂之王的 Benny Goodm｜https://www.instagram.com/p/DfrX1Qfl6qW/
+2. 100 次｜2026-10-26｜FEED/CAROUSEL_ALBUM｜爵士最有名的一把小號，是被撞彎的。🎺 1953 年 1 月 6 日，紐約一間叫 Snookie's 的俱樂部。 迪吉·葛拉斯彼幫太太 Lorraine 辦生日派｜https://www.instagram.com/p/De89pyiE7mV/
+3. 100 次｜2026-11-01｜FEED/CAROUSEL_ALBUM｜一片銅鈸，丟到他腳邊。 1936 年，堪薩斯城的即興演奏會。 一個十幾歲的薩克斯風手上台，吹到一半，忘了和弦走到哪裡。 鼓手 Jo Jones 把一片銅鈸拆下來｜https://www.instagram.com/p/DfMJT90DkHy/
 
 ### love.manual.tw
 
@@ -180,46 +158,46 @@
 ### reading.after
 
 - 粉專：讀完之後
-- 追蹤：1
-- 貼文總數：31
-- 這次列入：31 則，其中 Reels 14 則
-- Reels 平均觀看：110.7（14 則有觀看數）
+- 追蹤：4
+- 貼文總數：50
+- 這次列入：50 則，其中 Reels 22 則
+- Reels 平均觀看：111.3（22 則有觀看數）
 
 觀看前 5：
 
-1. 247 次｜2026-11-03｜REELS/VIDEO｜離山頂只剩一小段，你會掉頭嗎？🏔️ 1996 年，聖母峰。 領隊羅伯．霍爾跟所有客人說：攻頂那天，下午一點，一定要折返。 不管你離山頂多近。 ▍他自己最清楚 前｜https://www.instagram.com/reel/DfQ-Tyej_yg/
-2. 225 次｜2026-11-01｜REELS/VIDEO｜你上次睡飽，是什麼時候？😴 《鬥陣俱樂部》的主角，失眠了好幾個月。 每一天，都像活在半夢半醒之間。 他去參加各種互助團體，只為了哭一場，換一晚好睡。 到最後，連｜https://www.instagram.com/reel/DfL0vU-lEIT/
-3. 155 次｜2026-11-02｜REELS/VIDEO｜結果不好，就代表決定是錯的嗎？🏈⚾ 2015 年超級盃，最後 26 秒。 西雅圖海鷹隊落後 4 分，球在對手的一碼線上。 所有人都以為，教練會把球交給聯盟最強的｜https://www.instagram.com/reel/DfPXWFJlAXc/
+1. 249 次｜2026-11-03｜REELS/VIDEO｜離山頂只剩一小段，你會掉頭嗎？🏔️ 1996 年，聖母峰。 領隊羅伯．霍爾跟所有客人說：攻頂那天，下午一點，一定要折返。 不管你離山頂多近。 ▍他自己最清楚 前｜https://www.instagram.com/reel/DfQ-Tyej_yg/
+2. 226 次｜2026-11-01｜REELS/VIDEO｜你上次睡飽，是什麼時候？😴 《鬥陣俱樂部》的主角，失眠了好幾個月。 每一天，都像活在半夢半醒之間。 他去參加各種互助團體，只為了哭一場，換一晚好睡。 到最後，連｜https://www.instagram.com/reel/DfL0vU-lEIT/
+3. 157 次｜2026-11-02｜REELS/VIDEO｜結果不好，就代表決定是錯的嗎？🏈⚾ 2015 年超級盃，最後 26 秒。 西雅圖海鷹隊落後 4 分，球在對手的一碼線上。 所有人都以為，教練會把球交給聯盟最強的｜https://www.instagram.com/reel/DfPXWFJlAXc/
 4. 155 次｜2026-10-26｜REELS/VIDEO｜你真的認識身邊的人嗎？｜讀《情緒賽局》× 看《謎中謎》 1963 年的電影《謎中謎》，奧黛麗赫本演一個剛失去丈夫的女人。 她在整理遺物時發現，丈夫留下了四本護照｜https://www.instagram.com/reel/De8dIeoA48i/
-5. 128 次｜2026-11-04｜REELS/VIDEO｜練到手流血，就會變強嗎？🥁 電影《進擊的鼓手》裡，主角練鼓練到雙手流血， 老師在他耳邊吼：不是我要的速度。 很多人以為，這就是天才的養成方式。 ▍一間只有一個室｜https://www.instagram.com/reel/DfUg-vZkfFK/
+5. 141 次｜2026-11-20｜REELS/VIDEO｜心煩的時候，試試叫自己的名字。 《強大內心的自我對話習慣》伊森．克洛斯： 書裡叫這招「抽離式自我對話」。 腦波實驗顯示，1 秒內就開始有效。 💬 留言「讀」，我｜https://www.instagram.com/reel/Df8we2uG-UI/
 
 觀看後 3：
 
-1. 1 次｜2026-11-18｜FEED/CAROUSEL_ALBUM｜收藏起來，3 分鐘讀完一本書。 【免費閱讀｜《原子習慣》詹姆斯．克利爾】 多數人從結果開始：我要瘦 5 公斤、我要讀 20 本書。作者建議從身分開始：我是一個會｜https://www.instagram.com/p/Df4bcQQD4jx/
-2. 2 次｜2026-11-02｜FEED/CAROUSEL_ALBUM｜結果不好，就代表決定是錯的嗎？🏈⚾ 2015 年超級盃，最後 26 秒。 西雅圖海鷹隊落後 4 分，球在對手的一碼線上。 所有人都以為，教練會把球交給聯盟最強的｜https://www.instagram.com/p/DfO72flD-im/
-3. 2 次｜2026-11-18｜FEED/CAROUSEL_ALBUM｜收藏起來，3 分鐘讀完一本書。 【免費閱讀｜《隨他們去》梅爾．羅賓斯】 很多疲累，來自想控制別人：同事的態度、朋友沒約你、家人的決定。作者的方法只有兩步。第一步｜https://www.instagram.com/p/Df3K-jDDFAE/
+1. 0 次｜2026-11-21｜FEED/CAROUSEL_ALBUM｜收藏起來，3 分鐘讀完一本書。 【免費閱讀｜《Rewire 神經可塑性》妮可．維諾拉】 大腦會被重複的想法改寫：一起放電的神經元，會連在一起。書裡的奶昔實驗，兩｜https://www.instagram.com/p/Df-5ldoDWXN/
+2. 0 次｜2026-11-22｜FEED/CAROUSEL_ALBUM｜收藏起來，3 分鐘讀完一本書。 【免費閱讀｜《納瓦爾寶典》艾瑞克．喬根森】 納瓦爾把「財富」和「金錢」分開：金錢是交換的工具，財富是你睡覺時也能幫你賺錢的資產。｜https://www.instagram.com/p/DgBeDIPDakt/
+3. 0 次｜2026-11-23｜FEED/CAROUSEL_ALBUM｜內耗的時候，先別逼自己振作，翻一本書就好。 01《隨他們去》別人的事，交給別人。 02《強大內心的自我對話習慣》心煩時，叫自己的名字。 03《我可能錯了》吵架前｜https://www.instagram.com/p/DgFBHzWDsNk/
 
 ### socialdance101
 
 - 粉專：Social Dance 101
-- 追蹤：37
-- 貼文總數：36
-- 這次列入：36 則，其中 Reels 23 則
-- Reels 平均觀看：170.9（23 則有觀看數）
+- 追蹤：95
+- 貼文總數：44
+- 這次列入：44 則，其中 Reels 31 則
+- Reels 平均觀看：313.4（31 則有觀看數）
 
 觀看前 5：
 
-1. 662 次｜2026-10-25｜REELS/VIDEO｜Bachata 曾經被電台封殺。 你今晚在舞池跳的那首歌，60 年前在多明尼加只有一家電台肯放。 它跟窮人、酒館綁在一起，上流社會叫它「沒價值的音樂」。直到 1｜https://www.instagram.com/reel/De7JjH0MENw/
-2. 376 次｜2026-10-30｜REELS/VIDEO｜Hustle 這支舞，是一群青少年發明的。 1972 年底，紐約南布朗克斯的波多黎各青少年，在家庭派對裡跳出這支舞。從地下室舞會開始，1974 年跳進紐約的夜店｜https://www.instagram.com/reel/DfHzSrfDw7H/
-3. 339 次｜2026-10-31｜REELS/VIDEO｜有一種比賽，你上場前不知道舞伴是誰，也不知道會放哪首歌。 它叫 Jack and Jill。1950 年代初，南加州 Norwalk 一間叫 Hank and ｜https://www.instagram.com/reel/DfJ5MRzjDiW/
-4. 306 次｜2026-10-29｜REELS/VIDEO｜Salsa 不是一種音樂，是一個名字。 1971 年 8 月 26 日，紐約 Cheetah 俱樂部辦了一場拉丁之夜。Fania All-Stars 上台，台下｜https://www.instagram.com/reel/DfEWYpkPzHj/
-5. 289 次｜2026-11-02｜REELS/VIDEO｜Lambada 退流行之後，舞者沒有停下來。 1990 年代初，巴西的舞者改用法屬加勒比海的 Zouk 音樂繼續跳。Zouk 原本是一種音樂，來自法屬加勒比海的｜https://www.instagram.com/reel/DfOgc3DFXe0/
+1. 2,979 次｜2026-11-24｜REELS/VIDEO｜搖擺舞＝紅衛兵？差了四十年，也差了半個地球 🎷 最近有人說，跳搖擺舞的人看起來像紅衛兵。 我們把兩支舞的歷史攤開來比。 ▍搖擺舞 1920 年代誕生在紐約 Ha｜https://www.instagram.com/reel/DgHIXbiDXi1/
+2. 1,161 次｜2026-11-24｜REELS/VIDEO｜搖擺舞、接案、立場：一次講清楚 🎷 這幾天舞圈很熱鬧。一支搖擺舞團在選舉活動上表演，網路上有人說像紅衛兵，圈內也吵成兩派：接這種案子，是不是就代表選邊站？ 我想｜https://www.instagram.com/reel/DgHSyu5CSgs/
+3. 796 次｜2026-10-25｜REELS/VIDEO｜Bachata 曾經被電台封殺。 你今晚在舞池跳的那首歌，60 年前在多明尼加只有一家電台肯放。 它跟窮人、酒館綁在一起，上流社會叫它「沒價值的音樂」。直到 1｜https://www.instagram.com/reel/De7JjH0MENw/
+4. 596 次｜2026-11-22｜REELS/VIDEO｜💃 這集的舞｜戒嚴時期：一男一女摟著跳的社交舞被禁 「不准動！搞色情啊？」警察衝進舞池大喊。 這是戒嚴時期，偷跳社交舞的下場。當時官方允許的，是土風舞、民族舞和｜https://www.instagram.com/reel/DgCzczdAE7E/
+5. 391 次｜2026-10-30｜REELS/VIDEO｜Hustle 這支舞，是一群青少年發明的。 1972 年底，紐約南布朗克斯的波多黎各青少年，在家庭派對裡跳出這支舞。從地下室舞會開始，1974 年跳進紐約的夜店｜https://www.instagram.com/reel/DfHzSrfDw7H/
 
 觀看後 3：
 
-1. 16 次｜2026-11-15｜REELS/VIDEO｜💃 這集的舞｜扭扭舞：讓舞伴第一次放開手的流行舞 雞肉工廠裡，有個年輕人邊工作邊唱歌。 他後來翻唱的歌，原本只是 Hank Ballard 的 B 面。Dick｜https://www.instagram.com/reel/Dfw-hoZlL9t/
-2. 19 次｜2026-11-16｜REELS/VIDEO｜💃 這集的舞｜Norma Miller：人稱搖擺女王的林迪舞舞者 1932 年復活節，Savoy 舞廳門外。 一個 12 歲女孩，穿著上教堂的衣服。她年紀太小進｜https://www.instagram.com/reel/DfzTznND-Rw/
-3. 28 次｜2026-11-17｜REELS/VIDEO｜💃 這集的舞｜Castle 夫妻：二十世紀初最紅的社交舞搭檔 1910 年代的美國，新式舞蹈被當成不正經。 一對夫妻檔，改寫了這件事。Vernon 是英國人，I｜https://www.instagram.com/reel/Df14zNsjzGe/
+1. 30 次｜2026-11-01｜FEED/CAROUSEL_ALBUM｜紅遍全世界的 Lambada，其實是一首借來的歌。 1981 年，玻利維亞樂團 Los Kjarkas 錄了一首歌〈Llorando se fue〉，意思是哭著｜https://www.instagram.com/p/DfMro-HHWOf/
+2. 33 次｜2026-11-15｜REELS/VIDEO｜💃 這集的舞｜扭扭舞：讓舞伴第一次放開手的流行舞 雞肉工廠裡，有個年輕人邊工作邊唱歌。 他後來翻唱的歌，原本只是 Hank Ballard 的 B 面。Dick｜https://www.instagram.com/reel/Dfw-hoZlL9t/
+3. 39 次｜2026-11-02｜FEED/CAROUSEL_ALBUM｜Kizomba 這個字，意思就是派對。 它來自安哥拉的金本杜語。1970 年代末到 80 年代，Kizomba 在安哥拉出現，把安哥拉的 Semba 混進法屬加｜https://www.instagram.com/p/DfPQbpoCbkG/
 
 ### tech101_ai
 
@@ -246,40 +224,40 @@
 ### theguitarstory101
 
 - 粉專：Guitarstory101
-- 追蹤：64
-- 貼文總數：39
-- 這次列入：39 則，其中 Reels 19 則
-- Reels 平均觀看：1,201.1（19 則有觀看數）
+- 追蹤：89
+- 貼文總數：51
+- 這次列入：51 則，其中 Reels 25 則
+- Reels 平均觀看：1,414.2（25 則有觀看數）
 
 觀看前 5：
 
-1. 9,864 次｜2026-11-03｜REELS/VIDEO｜范海倫最有名的吉他，是用 50 美元的瑕疵品拼出來的。⚡️ 1977 年，Eddie Van Halen 買了一塊有木節的瑕疵琴身，只要 50 美元。 再花 8｜https://www.instagram.com/reel/DfR8KxAG7gn/
-2. 4,603 次｜2026-11-02｜REELS/VIDEO｜第一把實心電吉他的原型，叫做「木頭」。🪵 1940 年，Les Paul（萊斯．保羅）晚上留在紐約的 Epiphone 工廠，偷偷做實驗。 他拿一根四吋見方的木｜https://www.instagram.com/reel/DfOuNSLFJHt/
-3. 1,645 次｜2026-11-09｜REELS/VIDEO｜公認第一把賣得成功的電吉他，長得像一支平底鍋。🍳 1930 年代初，美國很流行夏威夷音樂，主角是平放在腿上彈的滑音吉他。 問題是，放進樂團裡，它實在太小聲了。 ｜https://www.instagram.com/reel/DfhO3M4EXdO/
-4. 1,319 次｜2026-11-12｜REELS/VIDEO｜有一把傳奇的古典吉他，背板和側板是用紙做的。📜 他叫安東尼奧．托雷斯，西班牙製琴師，被稱為現代古典吉他之父。 十九世紀，他在西班牙南部的塞維亞做琴。 1862 ｜https://www.instagram.com/reel/Dfo9AKmGZRe/
-5. 1,261 次｜2026-11-10｜REELS/VIDEO｜比 Fender 早兩年，就有人把 6 個弦鈕，全排在琴頭的同一邊。🎸 他叫保羅．比斯比，原本是賽摩托車、做機車零件的人。 1948 年，鄉村歌手梅爾．崔維斯，｜https://www.instagram.com/reel/DfjzaRojBJN/
+1. 10,643 次｜2026-11-03｜REELS/VIDEO｜范海倫最有名的吉他，是用 50 美元的瑕疵品拼出來的。⚡️ 1977 年，Eddie Van Halen 買了一塊有木節的瑕疵琴身，只要 50 美元。 再花 8｜https://www.instagram.com/reel/DfR8KxAG7gn/
+2. 4,974 次｜2026-11-02｜REELS/VIDEO｜第一把實心電吉他的原型，叫做「木頭」。🪵 1940 年，Les Paul（萊斯．保羅）晚上留在紐約的 Epiphone 工廠，偷偷做實驗。 他拿一根四吋見方的木｜https://www.instagram.com/reel/DfOuNSLFJHt/
+3. 3,857 次｜2026-11-20｜REELS/VIDEO｜有一把吉他掛著 Les Paul 的名字，可是 Les Paul 本人不喜歡它。😈 1961 年，Gibson 把又厚又重的 Les Paul，整個改頭換面。 ｜https://www.instagram.com/reel/Df9n7CwlSPW/
+4. 2,790 次｜2026-11-23｜REELS/VIDEO｜有一把電吉他，沒有琴頭，看起來像一支板球拍。✂️ 設計它的人叫奈德．史坦伯格，大學念雕塑，本來在設計家具。 1970 年代末，他開始用石墨跟碳纖維做樂器的原型。｜https://www.instagram.com/reel/DgFWPx-FR-A/
+5. 2,118 次｜2026-11-21｜REELS/VIDEO｜世界上最貴的木吉他之一，是一個牛仔歌手訂做的。🤠 1933 年，唱西部歌曲的吉恩．奧崔，跟 Martin 訂了一把最大、最華麗的吉他。 Martin 用大號的 ｜https://www.instagram.com/reel/DgANo04inDM/
 
 觀看後 3：
 
 1. 10 次｜2026-10-30｜FEED/CAROUSEL_ALBUM｜你家那把木吉他，名字可能來自一艘戰艦。⚓🎸 1906 年，英國海軍造了 HMS Dreadnought（無畏號）。 它的大砲和速度超越當時所有戰艦，其他戰艦一下｜https://www.instagram.com/p/DfHUXV7DZ7f/
 2. 15 次｜2026-10-30｜FEED/CAROUSEL_ALBUM｜鄉村音樂最有名的一把木吉他，上面有一個洞。🎸 1969 年，Willie Nelson 在德州一場演出後，一個喝醉的人踩壞了他的吉他。 團員把琴送去納許維爾找修｜https://www.instagram.com/p/DfGrJRlD5lz/
-3. 29 次｜2026-11-17｜FEED/CAROUSEL_ALBUM｜一把 12 弦電吉他，催生了一整種新的搖滾。🎶 1964 年二月，披頭四第一次到美國。 2 月 8 號，Rickenbacker 的老闆在紐約的飯店，拿了幾把新｜https://www.instagram.com/p/Df1B-_iDUDn/
+3. 35 次｜2026-11-01｜FEED/CAROUSEL_ALBUM｜爵士吉他史上最強的獨奏，是用兩根手指彈的。🔥 1928 年，18 歲的 Django Reinhardt 住在一台大篷車裡。 一根蠟燭，點著了太太做假花用的賽璐｜https://www.instagram.com/p/DfMd61pAimO/
 
 ### untold.trip0
 
 - 粉專：觀光客沒說的事
-- 追蹤：2
-- 貼文總數：31
-- 這次列入：31 則，其中 Reels 15 則
-- Reels 平均觀看：144.1（15 則有觀看數）
+- 追蹤：6
+- 貼文總數：42
+- 這次列入：42 則，其中 Reels 21 則
+- Reels 平均觀看：320.6（21 則有觀看數）
 
 觀看前 5：
 
-1. 236 次｜2026-11-06｜REELS/VIDEO｜每兩個去韓國的台灣人，就有一個去了釜山。 你得了釜山病嗎？ 完整數字整理在今天的輪播，收藏起來出發前再看。 照片：Basile Morin、Christophe｜https://www.instagram.com/reel/DfZseOBGdZl/
-2. 194 次｜2026-11-05｜REELS/VIDEO｜2018 年，菲律賓把長灘島整個關掉六個月。 天堂會被玩壞，也可以被救回來。 你覺得台灣哪個景點，也該這樣整頓？ 完整數字整理在今天的輪播，收藏起來出發前再看。｜https://www.instagram.com/reel/DfXF4GaDr0o/
-3. 189 次｜2026-11-04｜REELS/VIDEO｜你泡的泳池 villa 水，可能是當地農夫的灌溉水。 少換一次毛巾，就是幫當地人留水。 你住飯店時，會在意自己用了多少水嗎？ 完整數字整理在今天的輪播，收藏起來｜https://www.instagram.com/reel/DfUg7Y0jRdr/
-4. 169 次｜2026-11-07｜REELS/VIDEO｜住京都，從今年三月開始變貴了。 你覺得住宿稅漲十倍，合理嗎？ 完整數字整理在今天的輪播，收藏起來出發前再看。 照片：Ilya Grigorik、Sergiy G｜https://www.instagram.com/reel/DfcPyIsDis6/
-5. 168 次｜2026-11-03｜REELS/VIDEO｜峇里島，正在被自己的垃圾淹沒。 你在 IG 上看到的峇里島，跟當地人每天聞到的，可能是兩個地方。 你去的時候，有注意到路邊的垃圾嗎？ 完整數字整理在今天的輪播，｜https://www.instagram.com/reel/DfRoE0tDbBE/
+1. 2,832 次｜2026-11-22｜REELS/VIDEO｜越南河內火車街，兩旁咖啡廳老闆每天都在看警察臉色。 為了拍一張火車貼臉照，你願意冒這個險嗎？ 現場狀況整理在今天的輪播，收藏起來出發前再看。 照片：AnAwes｜https://www.instagram.com/reel/DgC3fzDkp7i/
+2. 1,289 次｜2026-11-24｜REELS/VIDEO｜義大利羅馬特雷維噴泉，整修期間水池裡一滴水都沒有。 如果去羅馬遇到噴泉沒水，你還會排隊丟硬幣嗎？ 現場狀況整理在今天的輪播，收藏起來出發前再看。 照片：Wilf｜https://www.instagram.com/reel/DgIA30iDuhG/
+3. 237 次｜2026-11-06｜REELS/VIDEO｜每兩個去韓國的台灣人，就有一個去了釜山。 你得了釜山病嗎？ 完整數字整理在今天的輪播，收藏起來出發前再看。 照片：Basile Morin、Christophe｜https://www.instagram.com/reel/DfZseOBGdZl/
+4. 194 次｜2026-11-05｜REELS/VIDEO｜2018 年，菲律賓把長灘島整個關掉六個月。 天堂會被玩壞，也可以被救回來。 你覺得台灣哪個景點，也該這樣整頓？ 完整數字整理在今天的輪播，收藏起來出發前再看。｜https://www.instagram.com/reel/DfXF4GaDr0o/
+5. 189 次｜2026-11-04｜REELS/VIDEO｜你泡的泳池 villa 水，可能是當地農夫的灌溉水。 少換一次毛巾，就是幫當地人留水。 你住飯店時，會在意自己用了多少水嗎？ 完整數字整理在今天的輪播，收藏起來｜https://www.instagram.com/reel/DfUg7Y0jRdr/
 
 觀看後 3：
 
