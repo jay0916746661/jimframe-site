@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 
 API = "https://graph.facebook.com/v21.0"
 IG_API = "https://graph.instagram.com/v21.0"
+KNOWN_IG = {"perfume101tw": "17841463784968757"}  # 開發者後台看到的 IG 帳號編號
 DIAG = []  # Instagram 登入權杖的診斷訊息（不含權杖）
 HOST = {}  # token -> API base；Instagram 登入的權杖走 graph.instagram.com
 TOKEN = os.environ.get("META_USER_TOKEN", "").strip()
@@ -44,16 +45,35 @@ def ig_login_accounts():
     for line in raw.replace(",", "\n").splitlines():
         if "=" not in line:
             continue
-        name, tok = (x.strip() for x in line.split("=", 1))
+        name, tok = (x.strip().strip('"\'') for x in line.split("=", 1))
+        tok = "".join(tok.split())  # 去掉複製時混進來的空白、換行
         if not tok:
             continue
+        errs = []
+        # 1) Instagram 登入權杖（IGAA…）走 graph.instagram.com
         HOST[tok] = IG_API
         try:
             me = get("me", tok, fields="user_id,username")
             out[me.get("username") or name] = (me.get("user_id") or me["id"], tok)
+            continue
         except Exception as e:  # noqa: BLE001
-            print(f"{name}：Instagram 登入權杖無效（{str(e)[:120]}）")
-            DIAG.append(f"{name} 權杖無效：{str(e)[:120]}")
+            errs.append(f"IG：{str(e)[:80]}")
+        # 2) 統一登入產生的權杖（EAA…）走 graph.facebook.com，用 IG 帳號編號查
+        HOST[tok] = API
+        igid = KNOWN_IG.get(name)
+        try:
+            if igid:
+                info = get(igid, tok, fields="id,username")
+                out[info.get("username") or name] = (info["id"], tok)
+                continue
+            me = get("me", tok, fields="id,username")
+            out[me.get("username") or name] = (me["id"], tok)
+            continue
+        except Exception as e:  # noqa: BLE001
+            errs.append(f"FB：{str(e)[:80]}")
+        kind = tok[:4] + "…" if len(tok) > 8 else "太短"
+        print(f"{name}：權杖無效（開頭 {kind}，長度 {len(tok)}）")
+        DIAG.append(f"{name} 權杖無效（開頭 {kind}，長度 {len(tok)}）：{'／'.join(errs)}")
     return out
 
 
