@@ -123,7 +123,7 @@ def main():
         acc = accounts()
         for r in due[:4]:
             if r["account"] not in acc:
-                r["status"], r["note"] = "失敗", "找不到這個 IG 帳號"
+                r["status"], r["note"] = "失敗", "找不到這個 IG 帳號" + (f"（{'；'.join(meta.DIAG)}）" if meta.DIAG else "")
                 continue
             igid, tok = acc[r["account"]]
             try:

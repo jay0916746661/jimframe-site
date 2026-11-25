@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 
 API = "https://graph.facebook.com/v21.0"
 IG_API = "https://graph.instagram.com/v21.0"
+DIAG = []  # Instagram 登入權杖的診斷訊息（不含權杖）
 HOST = {}  # token -> API base；Instagram 登入的權杖走 graph.instagram.com
 TOKEN = os.environ.get("META_USER_TOKEN", "").strip()
 
@@ -34,7 +35,13 @@ def pages():
 def ig_login_accounts():
     """IG_LOGIN_TOKENS：每行「帳號=權杖」，給沒綁粉專、改用 Instagram 登入的帳號。回傳 {帳號: (ig_user_id, 權杖)}"""
     out = {}
-    for line in os.environ.get("IG_LOGIN_TOKENS", "").replace(",", "\n").splitlines():
+    DIAG.clear()
+    raw = os.environ.get("IG_LOGIN_TOKENS", "")
+    if not raw.strip():
+        DIAG.append("IG_LOGIN_TOKENS 沒讀到（Secret 名稱不對或是空的）")
+    elif "=" not in raw:
+        DIAG.append("IG_LOGIN_TOKENS 格式不對，要寫成 帳號=權杖")
+    for line in raw.replace(",", "\n").splitlines():
         if "=" not in line:
             continue
         name, tok = (x.strip() for x in line.split("=", 1))
@@ -46,6 +53,7 @@ def ig_login_accounts():
             out[me.get("username") or name] = (me.get("user_id") or me["id"], tok)
         except Exception as e:  # noqa: BLE001
             print(f"{name}：Instagram 登入權杖無效（{str(e)[:120]}）")
+            DIAG.append(f"{name} 權杖無效：{str(e)[:120]}")
     return out
 
 
