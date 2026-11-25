@@ -5,12 +5,14 @@ import os, sys, requests
 from datetime import datetime, timezone
 
 API = "https://graph.facebook.com/v21.0"
+IG_API = "https://graph.instagram.com/v21.0"
+HOST = {}  # token -> API base；Instagram 登入的權杖走 graph.instagram.com
 TOKEN = os.environ.get("META_USER_TOKEN", "").strip()
 
 
 def get(path, token=TOKEN, **params):
     params["access_token"] = token
-    r = requests.get(f"{API}/{path}", params=params, timeout=60)
+    r = requests.get(f"{HOST.get(token, API)}/{path}", params=params, timeout=60)
     body = r.json()
     if "error" in body:
         msg = body["error"].get("message", "")
@@ -26,6 +28,24 @@ def pages():
     while data.get("paging", {}).get("next"):
         data = requests.get(data["paging"]["next"], timeout=60).json()
         out += data.get("data", [])
+    return out
+
+
+def ig_login_accounts():
+    """IG_LOGIN_TOKENS：每行「帳號=權杖」，給沒綁粉專、改用 Instagram 登入的帳號。回傳 {帳號: (ig_user_id, 權杖)}"""
+    out = {}
+    for line in os.environ.get("IG_LOGIN_TOKENS", "").replace(",", "\n").splitlines():
+        if "=" not in line:
+            continue
+        name, tok = (x.strip() for x in line.split("=", 1))
+        if not tok:
+            continue
+        HOST[tok] = IG_API
+        try:
+            me = get("me", tok, fields="user_id,username")
+            out[me.get("username") or name] = (me.get("user_id") or me["id"], tok)
+        except Exception as e:  # noqa: BLE001
+            print(f"{name}：Instagram 登入權杖無效（{str(e)[:120]}）")
     return out
 
 
@@ -52,7 +72,7 @@ def check():
 
 def post(path, token, **data):
     data["access_token"] = token
-    r = requests.post(f"{API}/{path}", data=data, timeout=120)
+    r = requests.post(f"{HOST.get(token, API)}/{path}", data=data, timeout=120)
     body = r.json()
     if "error" in body:
         e = body["error"]

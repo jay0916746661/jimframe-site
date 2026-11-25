@@ -29,6 +29,7 @@ def accounts():
         ig = p.get("instagram_business_account") or {}
         if ig.get("username"):
             out[ig["username"]] = (ig["id"], p["access_token"])
+    out.update(meta.ig_login_accounts())  # 沒綁粉專、改用 Instagram 登入的帳號（例：perfume101tw）
     return out
 
 

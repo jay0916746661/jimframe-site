@@ -36,6 +36,7 @@ jobs:
         timeout-minutes: 330
         env:
           META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
+          IG_LOGIN_TOKENS: ${{ secrets.IG_LOGIN_TOKENS }}
         run: |
           git config user.name "ig-poster"
           git config user.email "ig-poster@users.noreply.github.com"
