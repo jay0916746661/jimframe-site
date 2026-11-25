@@ -70,7 +70,33 @@ def ig_login_accounts():
             out[me.get("username") or name] = (me["id"], tok)
             continue
         except Exception as e:  # noqa: BLE001
-            errs.append(f"FB：{str(e)[:80]}")
+            errs.append(f"FB：{str(e)[:60]}")
+        # 3) 從權杖能管的粉專找綁定的 IG，並記下權杖身分與權限給診斷用
+        try:
+            who = get("me", tok, fields="id,name")
+            errs.append(f"權杖身分：{who.get('name','?')}")
+        except Exception as e:  # noqa: BLE001
+            errs.append(f"me：{str(e)[:40]}")
+        try:
+            perms = get("me/permissions", tok).get("data", [])
+            ok = [x["permission"] for x in perms if x.get("status") == "granted"]
+            errs.append("權限：" + ",".join(p for p in ok if "instagram" in p or "pages" in p) or "權限：無 IG/粉專權限")
+        except Exception:  # noqa: BLE001
+            pass
+        found = False
+        try:
+            pages = get("me/accounts", tok, fields="name,access_token,instagram_business_account{id,username}").get("data", [])
+            errs.append("粉專：" + ("、".join(f"{pg.get('name')}" + ("→IG " + pg['instagram_business_account'].get('username', '') if pg.get('instagram_business_account') else "（沒綁IG）") for pg in pages) or "一個都沒有"))
+            for pg in pages:
+                iba = pg.get("instagram_business_account")
+                if iba and (iba.get("username") == name or iba.get("id") == igid):
+                    HOST[pg["access_token"]] = API
+                    out[iba.get("username") or name] = (iba["id"], pg["access_token"])
+                    found = True
+        except Exception as e:  # noqa: BLE001
+            errs.append(f"粉專：{str(e)[:40]}")
+        if found:
+            continue
         kind = tok[:4] + "…" if len(tok) > 8 else "太短"
         print(f"{name}：權杖無效（開頭 {kind}，長度 {len(tok)}）")
         DIAG.append(f"{name} 權杖無效（開頭 {kind}，長度 {len(tok)}）：{'／'.join(errs)}")
