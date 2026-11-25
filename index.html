@@ -1106,36 +1106,101 @@ html.tsc .app > section.hero-b { min-height: 0; display: block; }
 html.tsc .hero-b::after { bottom: auto; height: clamp(240px, 62vw, 440px); background: linear-gradient(180deg, rgba(11,8,18,.7) 0%, rgba(11,8,18,0) 22%, rgba(11,8,18,0) 70%, #0B0812 100%); }
 html.tsc .hero-b-title { font-size: clamp(30px, 5.6vw, 56px); }
 html.tsc .hero-b-body { padding-top: 6px; padding-bottom: 96px; gap: 8px; }
-/* 聖誕限定版（2026）：只換首頁主面板與配色；12/31 後自動回到常駐版，?season=off 可關 */
-html.xmas, html.xmas[data-theme="dark"] { --bg: #08110D; --surface: #12201A; --separator: #22382D; --tint: #E23B4E; --tint-soft: rgba(226, 59, 78, 0.15); --bar: rgba(8, 17, 13, 0.86); --on-tint: #FFFFFF; --eyebrow: #E9C46A; --tint-deep: #3A0E16; --tint-pale: #F6A9B4; --segment: #22382D; }
+/* 聖誕限定版（2026）：只換首頁主面板與配色；12/31 後自動回到常駐版，?season=off 可關、?advent=open 預覽全部月曆 */
+html.xmas, html.xmas[data-theme="dark"] { --bg: #07100C; --surface: #11201A; --separator: #22382D; --tint: #E23B4E; --tint-soft: rgba(226, 59, 78, 0.15); --bar: rgba(7, 16, 12, 0.86); --on-tint: #FFFFFF; --eyebrow: #E9C46A; --tint-deep: #3A0E16; --tint-pale: #F6A9B4; --segment: #22382D; }
 html.xmas body { background: radial-gradient(ellipse at 50% 0%, rgba(233, 196, 106, 0.07), transparent 60%), var(--bg); }
-html.xmas .app > section.hero-b { min-height: 0; display: block; }
-html.xmas .hero-b::after { bottom: auto; height: clamp(240px, 62vw, 440px); background: linear-gradient(180deg, rgba(8,17,13,.72) 0%, rgba(8,17,13,0) 24%, rgba(8,17,13,0) 66%, #08110D 100%), radial-gradient(ellipse at 15% 100%, rgba(226,59,78,.28), transparent 55%), radial-gradient(ellipse at 85% 100%, rgba(31,122,76,.30), transparent 55%); }
-html.xmas .hero-b-title { font-size: clamp(30px, 5.6vw, 56px); }
-html.xmas .hero-b-body { position: relative; z-index: 2; padding-top: 6px; padding-bottom: 96px; gap: 8px; }
+html.xmas .app > section.hero-b { min-height: 0; display: block; padding: 92px 0 0; background: radial-gradient(ellipse at 72% 38%, rgba(233, 196, 106, 0.16), transparent 46%), radial-gradient(ellipse at 10% 90%, rgba(226, 59, 78, 0.20), transparent 50%), radial-gradient(ellipse at 95% 95%, rgba(31, 122, 76, 0.26), transparent 50%), linear-gradient(180deg, #0B1A13 0%, #07100C 100%); }
+html.xmas .hero-b::after { display: none; }
+.xmas-wrap { position: relative; z-index: 2; width: min(100% - 2 * var(--gutter), var(--content)); margin-inline: auto; display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 24px; padding-bottom: 70px; }
+.xmas-text { display: grid; gap: 12px; }
 html.xmas .hero-b-eyebrow { color: #E9C46A; text-shadow: 0 0 14px rgba(233, 196, 106, 0.45); }
-html.xmas .hero-b-title { text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5); }
-html.xmas .xmas-mosaic img { filter: saturate(1.05) sepia(0.12) brightness(0.92); }
-.xmas-lights { position: absolute; top: calc(clamp(240px, 62vw, 440px) - 30px); left: 0; right: 0; z-index: 1; height: 34px; display: flex; justify-content: space-around; pointer-events: none; }
-.xmas-lights::before { content: ""; position: absolute; left: -2%; right: -2%; top: -14px; height: 30px; border-bottom: 1.5px solid rgba(20, 40, 30, 0.9); border-radius: 0 0 50% 50% / 0 0 100% 100%; }
-.xmas-lights i { position: relative; top: 12px; width: 9px; height: 13px; border-radius: 50% 50% 45% 45%; background: #E23B4E; box-shadow: 0 0 10px 2px rgba(226, 59, 78, 0.75); animation: xmas-twinkle 1.6s ease-in-out infinite alternate; }
-.xmas-lights i:nth-child(3n+2) { background: #E9C46A; box-shadow: 0 0 10px 2px rgba(233, 196, 106, 0.8); animation-delay: .5s; }
-.xmas-lights i:nth-child(3n) { background: #3DBB7A; box-shadow: 0 0 10px 2px rgba(61, 187, 122, 0.75); animation-delay: 1s; }
-.xmas-lights i:nth-child(n+11) { display: none; }
-@media (min-width: 760px) { .xmas-lights i:nth-child(n+11) { display: block; } }
-@keyframes xmas-twinkle { from { opacity: 1; } to { opacity: .35; } }
-.xmas-snow { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-.xmas-snow i { position: absolute; top: -10px; border-radius: 50%; background: #fff; animation-name: xmas-fall, xmas-sway; animation-timing-function: linear, ease-in-out; animation-iteration-count: infinite, infinite; animation-direction: normal, alternate; }
-@keyframes xmas-fall { to { transform: translateY(min(900px, 110vh)); } }
-@keyframes xmas-sway { from { margin-left: -12px; } to { margin-left: 12px; } }
-.xmas-chips a { padding: 6px 12px; border: 1px solid rgba(233, 196, 106, 0.45); border-radius: 999px; background: rgba(8, 17, 13, 0.55); font-size: 12px; font-weight: 700; color: var(--label); text-decoration: none; }
+html.xmas .hero-b-title { font-size: clamp(32px, 5vw, 60px); line-height: 1.22; text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5); }
+.xmas-gold { background: linear-gradient(100deg, #B8862F 0%, #F7E3A1 30%, #E9C46A 45%, #FFF4CF 55%, #C9973A 75%, #F7E3A1 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; animation: xmas-shine 5s linear infinite; }
+@keyframes xmas-shine { to { background-position: -220% 0; } }
+.xmas-count { justify-self: start; margin: 0; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(233, 196, 106, 0.5); background: rgba(58, 14, 22, 0.55); color: #F6ECD6; font-size: 13px; font-weight: 650; }
+.xmas-count b { color: #E9C46A; font-size: 17px; margin: 0 2px; }
+.xmas-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.xmas-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 46px; padding: 0 20px; border-radius: 999px; background: linear-gradient(180deg, #EE4A5D, #C62639); color: #fff; font-weight: 750; font-size: 15px; text-decoration: none; box-shadow: 0 8px 24px rgba(226, 59, 78, 0.38), inset 0 1px 0 rgba(255,255,255,.25); }
+.xmas-btn.is-ghost { background: rgba(233, 196, 106, 0.10); color: #F3DFA6; border: 1px solid rgba(233, 196, 106, 0.5); box-shadow: none; }
+.xmas-chips a { padding: 6px 12px; border: 1px solid rgba(233, 196, 106, 0.4); border-radius: 999px; background: rgba(7, 16, 12, 0.55); font-size: 12px; font-weight: 700; color: var(--label); text-decoration: none; }
 .xmas-chips a:hover { border-color: #E9C46A; color: #E9C46A; }
-html.xmas #finder .finder-card { background: rgba(18, 32, 26, 0.92); }
+/* 照片聖誕樹 */
+.xmas-tree { --o: clamp(48px, 13.5vw, 82px); position: relative; display: flex; flex-direction: column; align-items: center; padding-top: calc(var(--o) * 0.95); }
+.xmas-cone { position: absolute; z-index: 0; top: calc(var(--o) * 0.75); left: 50%; width: calc(var(--o) * 6.6); height: calc(var(--o) * 5.35); transform: translateX(-50%); clip-path: polygon(50% 0, 100% 100%, 0 100%); background: radial-gradient(ellipse at 50% 30%, rgba(80, 170, 110, 0.35), transparent 60%), repeating-linear-gradient(160deg, rgba(255,255,255,0.025) 0 6px, transparent 6px 14px), linear-gradient(180deg, #1F6B43, #0F3D26 70%, #0A2B1B); filter: drop-shadow(0 0 30px rgba(61, 187, 122, 0.25)); }
+.xmas-star { position: absolute; z-index: 3; top: 0; left: 50%; width: calc(var(--o) * 1.35); transform: translate(-50%, -14%); fill: #F2CF6B; filter: drop-shadow(0 0 10px rgba(242, 207, 107, 0.9)) drop-shadow(0 0 26px rgba(242, 207, 107, 0.5)); }
+.xmas-rays { fill: rgba(255, 236, 170, 0.55); transform-origin: 50px 50px; animation: xmas-spin 14s linear infinite; }
+@keyframes xmas-spin { to { transform: rotate(360deg); } }
+.xmas-row { position: relative; z-index: 2; display: flex; gap: calc(var(--o) * 0.12); margin-top: calc(var(--o) * -0.16); }
+.xmas-orn { position: relative; width: var(--o); height: var(--o); transform-origin: 50% -8px; animation: xmas-swing 3.2s ease-in-out infinite alternate; animation-delay: calc(var(--d) * -1); }
+.xmas-orn::before { content: ""; position: absolute; z-index: 1; top: -6px; left: 50%; width: 12px; height: 8px; transform: translateX(-50%); border-radius: 3px 3px 1px 1px; background: linear-gradient(180deg, #F7E3A1, #B8862F); }
+.xmas-orn img { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: 50%; border: 2px solid #E9C46A; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45), 0 0 0 3px rgba(233, 196, 106, 0.15), inset 0 0 0 1px rgba(255,255,255,.2); background: #14251D; }
+.xmas-orn::after { content: ""; position: absolute; inset: 2px; border-radius: 50%; background: radial-gradient(circle at 32% 26%, rgba(255,255,255,0.45), transparent 32%); pointer-events: none; }
+.xmas-orn.is-red img { border-color: #E23B4E; }
+@keyframes xmas-swing { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+.xmas-garland { position: relative; z-index: 3; display: flex; justify-content: space-between; height: 14px; margin-top: -4px; padding: 0 6%; width: calc(var(--o) * 1.15 * var(--n, 1)); }
+.xmas-garland::before { content: ""; position: absolute; left: 0; right: 0; top: -6px; height: 12px; border-bottom: 1.5px solid rgba(233, 196, 106, 0.55); border-radius: 0 0 50% 50% / 0 0 100% 100%; }
+.xmas-garland i { position: relative; width: 7px; height: 9px; border-radius: 50% 50% 45% 45%; background: #FFD66B; box-shadow: 0 0 9px 2px rgba(255, 214, 107, 0.85); animation: xmas-twinkle 1.4s ease-in-out infinite alternate; }
+.xmas-garland i:nth-child(3n+2) { background: #FF5A6E; box-shadow: 0 0 9px 2px rgba(255, 90, 110, 0.8); animation-delay: .45s; }
+.xmas-garland i:nth-child(3n) { background: #6EE7A8; box-shadow: 0 0 9px 2px rgba(110, 231, 168, 0.75); animation-delay: .9s; }
+.xmas-garland i:nth-child(even) { top: 3px; }
+@keyframes xmas-twinkle { from { opacity: 1; } to { opacity: .3; } }
+.xmas-trunk { position: relative; z-index: 1; width: calc(var(--o) * 0.7); height: calc(var(--o) * 0.45); margin-top: -4px; border-radius: 0 0 6px 6px; background: linear-gradient(90deg, #3B2414, #6A4325, #3B2414); }
+.xmas-gifts { position: relative; z-index: 2; display: flex; align-items: flex-end; gap: 8px; margin-top: calc(var(--o) * -0.42); }
+.xmas-gifts span { position: relative; display: block; border-radius: 4px; box-shadow: 0 6px 14px rgba(0,0,0,.4); }
+.xmas-gifts span::before, .xmas-gifts span::after { content: ""; position: absolute; }
+.xmas-gifts span::before { left: 50%; top: 0; bottom: 0; width: 18%; transform: translateX(-50%); background: var(--r); }
+.xmas-gifts span::after { top: 32%; left: 0; right: 0; height: 18%; background: var(--r); }
+.xmas-gifts .g1 { width: calc(var(--o) * .78); height: calc(var(--o) * .62); background: #C62639; --r: #F2CF6B; margin-right: calc(var(--o) * 1.1); }
+.xmas-gifts .g2 { width: calc(var(--o) * .56); height: calc(var(--o) * .46); background: #E9C46A; --r: #C62639; }
+.xmas-gifts .g3 { width: calc(var(--o) * .66); height: calc(var(--o) * .78); background: #1F7A4C; --r: #F6ECD6; }
+/* 背景光斑、雪、雪地 */
+.xmas-bokeh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.xmas-bokeh i { position: absolute; border-radius: 50%; filter: blur(2px); opacity: .22; background: radial-gradient(circle, rgba(255, 220, 140, .9), rgba(255, 220, 140, 0) 70%); animation: xmas-float 9s ease-in-out infinite alternate; }
+.xmas-bokeh i:nth-child(1) { left: 4%; top: 18%; width: 90px; height: 90px; } .xmas-bokeh i:nth-child(2) { left: 18%; top: 62%; width: 60px; height: 60px; animation-delay: -2s; }
+.xmas-bokeh i:nth-child(3) { left: 33%; top: 12%; width: 40px; height: 40px; animation-delay: -4s; } .xmas-bokeh i:nth-child(4) { left: 46%; top: 70%; width: 110px; height: 110px; animation-delay: -1s; }
+.xmas-bokeh i:nth-child(5) { left: 58%; top: 8%; width: 70px; height: 70px; animation-delay: -6s; } .xmas-bokeh i:nth-child(6) { left: 72%; top: 52%; width: 50px; height: 50px; animation-delay: -3s; }
+.xmas-bokeh i:nth-child(7) { left: 86%; top: 20%; width: 120px; height: 120px; animation-delay: -5s; } .xmas-bokeh i:nth-child(8) { left: 92%; top: 74%; width: 44px; height: 44px; animation-delay: -7s; }
+.xmas-bokeh i:nth-child(3n) { background: radial-gradient(circle, rgba(255, 90, 110, .9), rgba(255, 90, 110, 0) 70%); }
+.xmas-bokeh i:nth-child(4n) { background: radial-gradient(circle, rgba(110, 231, 168, .8), rgba(110, 231, 168, 0) 70%); }
+.xmas-bokeh i:nth-child(n+9) { left: calc(var(--x, 50) * 1%); width: 26px; height: 26px; }
+.xmas-bokeh i:nth-child(9) { --x: 10; top: 40%; } .xmas-bokeh i:nth-child(10) { --x: 26; top: 30%; } .xmas-bokeh i:nth-child(11) { --x: 52; top: 40%; } .xmas-bokeh i:nth-child(12) { --x: 66; top: 84%; } .xmas-bokeh i:nth-child(13) { --x: 80; top: 6%; } .xmas-bokeh i:nth-child(14) { --x: 38; top: 88%; }
+@keyframes xmas-float { from { transform: translateY(0) scale(1); } to { transform: translateY(-18px) scale(1.12); } }
+.xmas-snow { position: absolute; inset: 0; z-index: 4; overflow: hidden; pointer-events: none; }
+.xmas-snow i { position: absolute; top: -10px; border-radius: 50%; background: #fff; animation-name: xmas-fall, xmas-sway; animation-timing-function: linear, ease-in-out; animation-iteration-count: infinite, infinite; animation-direction: normal, alternate; }
+@keyframes xmas-fall { to { transform: translateY(1400px); } }
+@keyframes xmas-sway { from { margin-left: -14px; } to { margin-left: 14px; } }
+.xmas-ground { position: absolute; z-index: 3; left: 0; bottom: -1px; width: 100%; height: 46px; fill: #EEF4F0; filter: drop-shadow(0 -4px 10px rgba(255,255,255,.18)); }
+/* 倒數月曆 */
+.xmas-advent { padding-top: 28px; }
+#advent { order: 1; }
+.xmas-adv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); gap: 8px; }
+.xmas-day { position: relative; aspect-ratio: 1; border: 0; border-radius: 12px; overflow: hidden; display: grid; place-content: center; text-align: center; color: #fff; font: inherit; cursor: pointer; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+.xmas-day.c-red { background: linear-gradient(90deg, transparent 44%, #F2CF6B 44% 56%, transparent 56%), linear-gradient(0deg, transparent 44%, #F2CF6B 44% 56%, transparent 56%), #B82235; }
+.xmas-day.c-green { background: linear-gradient(90deg, transparent 44%, #F6ECD6 44% 56%, transparent 56%), linear-gradient(0deg, transparent 44%, #F6ECD6 44% 56%, transparent 56%), #1B6B42; }
+.xmas-day.c-gold { background: linear-gradient(90deg, transparent 44%, #B82235 44% 56%, transparent 56%), linear-gradient(0deg, transparent 44%, #B82235 44% 56%, transparent 56%), #D9B04F; }
+.xmas-day b { position: relative; z-index: 1; display: grid; place-items: center; width: 34px; height: 34px; margin: auto; border-radius: 50%; background: rgba(7, 16, 12, 0.78); font: 800 15px/1 var(--font-latin, inherit); color: #F7E3A1; }
+.xmas-day small { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 10px; font-weight: 700; color: rgba(255,255,255,.85); text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+.xmas-day.is-open img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.xmas-day.is-open b { position: absolute; top: 5px; left: 5px; width: 24px; height: 24px; font-size: 12px; margin: 0; }
+.xmas-day.is-today { outline: 2px solid #F2CF6B; outline-offset: 2px; animation: xmas-glow 1.8s ease-in-out infinite alternate; }
+@keyframes xmas-glow { from { box-shadow: 0 0 0 rgba(242, 207, 107, 0); } to { box-shadow: 0 0 22px rgba(242, 207, 107, 0.7); } }
+.xmas-day.is-shake { animation: xmas-shake .45s ease; }
+@keyframes xmas-shake { 0%,100% { transform: rotate(0); } 20% { transform: rotate(-7deg); } 40% { transform: rotate(6deg); } 60% { transform: rotate(-4deg); } 80% { transform: rotate(3deg); } }
+.xmas-adv-msg { min-height: 1.4em; margin-top: 10px; color: #F3DFA6; }
+html.xmas #finder .finder-card { background: rgba(17, 32, 26, 0.92); }
 html.xmas #finder .finder-add:first-child { background: #1B2F25; }
 html.xmas #finder .finder-scope .segmented { background: #0B1712; }
 html.xmas #finder .finder-scope .segmented button.is-selected { background: #22382D; }
 html.xmas #finder [data-face-search] { box-shadow: 0 10px 28px rgba(226, 59, 78, 0.32); }
-@media (prefers-reduced-motion: reduce) { .xmas-lights i { animation: none; } .xmas-snow { display: none; } }
+@media (max-width: 759px) {
+  html.xmas .app > section.hero-b { padding-top: 78px; }
+  .xmas-wrap { grid-template-columns: 1fr; gap: 18px; padding-bottom: 56px; }
+  .xmas-tree { order: -1; }
+  .xmas-text { text-align: left; }
+  .xmas-adv-grid { grid-template-columns: repeat(5, 1fr); gap: 7px; }
+  .xmas-day b { width: 30px; height: 30px; font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .xmas-garland i, .xmas-orn, .xmas-rays, .xmas-gold, .xmas-bokeh i, .xmas-day.is-today { animation: none; } .xmas-snow { display: none; } }
 .tsc-fold-pics { flex: none; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; width: 76px; height: 76px; border-radius: 14px; overflow: hidden; }
 .tsc-fold-pics img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .tsc-fold-pics img:first-child { grid-row: span 2; }
@@ -1918,7 +1983,6 @@ const TSC_HERO_PHOTO="./photos/1120/A0001173.jpg"; // TSC 11/20 現場照
 const TSC_MOSAIC=["A0000245","A0001173","A0000602","A0002265","A0003297","A0003224","A0000005","A0003404","A0002778","A0001583"]; // TSC 首屏拼貼（多張綜合）
 // 聖誕限定版：現在到 2026-12-31 自動啟用，只換首頁主面板與配色；TSC 專區、各活動頁照常。?season=christmas 強制、?season=off 關閉
 const XMAS_ON=(()=>{let q="";try{q=new URLSearchParams(location.search).get("season")||"";}catch{}if(q==="christmas"||q==="xmas")return true;if(q)return false;return Date.now()<Date.UTC(2026,11,31,16);})();
-const XMAS_MOSAIC=["./photos/1120/t/A0001173.jpg","./photos/1031/A0009034.jpg","./photos/1120/t/A0000602.jpg","./photos/1016/A0006906.jpg","./photos/1120/t/A0002265.jpg","./photos/1120/t/A0003297.jpg","./photos/1031/A0008994.jpg","./photos/1120/t/A0000245.jpg","./photos/1120/t/A0003404.jpg","./photos/1120/t/A0003224.jpg"]; // 聖誕首屏拼貼：今年各場精選
 document.documentElement.classList.toggle("tsc",TSC_ON&&!XMAS_ON);
 document.documentElement.classList.toggle("xmas",XMAS_ON);
 const promo=document.createElement("section");promo.className="hero-b";promo.id="crush";
@@ -1931,16 +1995,56 @@ function renderPromo(){
   ${TSC_ON?`<div class="hero-b-chips">${L(["週五 11.20","週六 11.21","週日 11.22"],["Fri 11.20","Sat 11.21","Sun 11.22"],["금 11.20","토 11.21","일 11.22"],["金 11.20","土 11.21","日 11.22"]).map(x=>`<span>${x}</span>`).join("")}</div>`:""}</div>`;
 }
 const _promoBase=renderPromo;
+const XMAS_TREE=["1120/t/A0001179","1122/t/A0008806","1120/t/A0002464","1122/t/A0007446","1120/t/A0001089","1122/t/A0008437","1120/t/A0009980","1120/t/A0000568","1122/t/A0007226","1120/t/A0009132","1122/t/A0007375","1120/t/A0003483","1122/t/A0008740","1120/t/A0009103","1120/t/A0001190"]; // 聖誕樹上的照片吊飾（由上到下）
+const XMAS_ADVENT=[...XMAS_TREE,"1120/t/A0009987","1122/t/A0007930","1120/t/A0002396","1122/t/A0008400","1120/t/A0001737","1122/t/A0007264","1120/t/A0001173","1122/t/A0008057","1120/t/A0000602","1122/t/A0007807"]; // 倒數月曆 12/1–12/25 每天一張
+const xmasNow=()=>{const d=new Date(Date.now()+8*36e5);return{y:d.getUTCFullYear(),m:d.getUTCMonth()+1,d:d.getUTCDate()};};
+const xmasAllOpen=(()=>{try{return new URLSearchParams(location.search).get("advent")==="open";}catch{return false;}})();
+const xmasAdv=document.createElement("section");xmasAdv.className="section xmas-advent";xmasAdv.id="advent";xmasAdv.hidden=!XMAS_ON;
+function xmasCountdown(){
+ const t=xmasNow();const today=Date.UTC(t.y,t.m-1,t.d),eve=Date.UTC(2026,11,24),n=Math.round((eve-today)/864e5);
+ if(n>0)return L(`距離平安夜還有 <b>${n}</b> 天`,`<b>${n}</b> days until Christmas Eve`,`크리스마스 이브까지 <b>${n}</b>일`,`クリスマスイブまで あと <b>${n}</b> 日`);
+ if(n===0)return L("今晚就是平安夜 ✨","It's Christmas Eve tonight ✨","오늘 밤은 크리스마스 이브 ✨","今夜はクリスマスイブ ✨");
+ if(n===-1)return L("聖誕快樂！今天就是聖誕節 🎄","Merry Christmas — it's today 🎄","메리 크리스마스! 오늘이에요 🎄","メリークリスマス！今日がその日 🎄");
+ return L("新年快樂，2027 舞池見","Happy New Year — see you on the floor in 2027","새해 복 많이 받으세요, 2027년에 만나요","よいお年を。2027年もフロアで");
+}
+function renderAdvent(){
+ if(!XMAS_ON)return;
+ if(xmasAdv.previousElementSibling!==promo)promo.after(xmasAdv);
+ const t=xmasNow();const opened=k=>xmasAllOpen||t.y>2026||(t.m===12&&t.d>=k);const isToday=k=>t.y===2026&&t.m===12&&t.d===k;
+ xmasAdv.innerHTML=`<div class="section-head"><div><h2 class="title2">${L("聖誕倒數月曆","Advent calendar","어드벤트 캘린더","アドベントカレンダー")}</h2><p class="footnote">${L("12/1 起每天打開一格，裡面是今年舞池裡的一個瞬間。","From Dec 1, open one box a day — a moment from this year's dance floors.","12월 1일부터 하루 한 칸씩, 올해 댄스 플로어의 한 순간.","12/1から毎日ひとつ。今年のダンスフロアの一瞬が入っています。")}</p></div></div>
+ <div class="xmas-adv-grid">${XMAS_ADVENT.map((src,i)=>{const k=i+1,o=opened(k);const href=src.startsWith("1122")?"./yangliu/":"./tsc/";
+  return o?`<a class="xmas-day is-open${isToday(k)?" is-today":""}" href="${href}"><img src="./photos/${src}.jpg" alt="" loading="lazy"><b>${k}</b></a>`
+  :`<button type="button" class="xmas-day${isToday(k)?" is-today":""}${k%3===1?" c-red":k%3===2?" c-green":" c-gold"}" data-day="${k}"><b>${k}</b><small>12/${k}</small></button>`;}).join("")}</div>
+ <p class="footnote xmas-adv-msg" aria-live="polite"></p>`;
+ const msg=xmasAdv.querySelector(".xmas-adv-msg");
+ xmasAdv.querySelectorAll("button.xmas-day").forEach(b=>b.addEventListener("click",()=>{b.classList.remove("is-shake");void b.offsetWidth;b.classList.add("is-shake");const k=+b.dataset.day;const now=xmasNow();const n=Math.round((Date.UTC(2026,11,k)-Date.UTC(now.y,now.m-1,now.d))/864e5);msg.innerHTML=L(`🎁 12/${k} 才能打開，再等 ${n} 天`,`🎁 Opens on Dec ${k} — ${n} more day${n>1?"s":""}`,`🎁 12/${k}에 열려요 · ${n}일 남음`,`🎁 12/${k} に開きます · あと ${n} 日`);}));
+}
 renderPromo=function(){
  if(!XMAS_ON)return _promoBase();
+ let k=0;const rows=[1,2,3,4,5].map(r=>`<div class="xmas-row">${Array.from({length:r},()=>{const src=XMAS_TREE[k++];return `<span class="xmas-orn${k%2?"":" is-red"}" style="--d:${(k*0.37%2.4).toFixed(2)}s"><img src="./photos/${src}.jpg" alt="" ${k<4?'fetchpriority="high"':'loading="lazy"'}></span>`;}).join("")}</div><div class="xmas-garland" style="--n:${r+0.6}">${"<i></i>".repeat(r*2+2)}</div>`).join("");
  const chips=[["./tsc/","TSC 2026"],["./citycup/","Asia City Cup"],["./yangliu/",L("洋流嘉年華","Yangliu Carnival","양류 카니발","洋流カーニバル")],["./recap/#halloween",L("萬聖節","Halloween","할로윈","ハロウィン")]];
- promo.innerHTML=`<div class="hero-mosaic xmas-mosaic" aria-hidden="true">${XMAS_MOSAIC.map((src,i)=>`<img src="${src}" alt=""${i<6?' fetchpriority="high"':' loading="lazy"'}>`).join("")}</div><div class="xmas-lights" aria-hidden="true">${"<i></i>".repeat(18)}</div><div class="xmas-snow" aria-hidden="true"></div><div class="hero-b-body">
-  <p class="hero-b-eyebrow">MERRY CHRISTMAS · 2026</p>
-  <h1 class="hero-b-title">${L("聖誕快樂，<br>舞池裡的你都在這裡。","Merry Christmas.<br>Your dance floor moments, all here.","메리 크리스마스,<br>댄스 플로어 위의 당신이 여기에.","メリークリスマス。<br>ダンスフロアのあなたが、ここに。")}</h1>
-  <p class="hero-b-sub">${L("今年每一場舞會、比賽與表演，都替你收好了。找到自己的照片，下載、分享，當作送給自己的聖誕禮物。","Every party, competition and show this year, kept for you. Find your photos, download and share — a little Christmas gift to yourself.","올해의 모든 파티, 대회, 공연을 담아 두었습니다. 내 사진을 찾아 저장하고 공유하세요 — 나에게 주는 크리스마스 선물.","今年のパーティー、大会、ショーをすべてここに。自分の写真を見つけて、保存してシェア。自分へのクリスマスプレゼントに。")}</p>
-  <div class="hero-b-chips xmas-chips">${chips.map(([h,t])=>`<a href="${h}">${t}</a>`).join("")}</div></div>`;
+ promo.innerHTML=`<div class="xmas-bokeh" aria-hidden="true">${"<i></i>".repeat(14)}</div><div class="xmas-snow" aria-hidden="true"></div>
+ <div class="xmas-wrap">
+  <div class="xmas-text">
+   <p class="hero-b-eyebrow">MERRY CHRISTMAS · JIMFRAME 2026</p>
+   <p class="xmas-count">${xmasCountdown()}</p>
+   <h1 class="hero-b-title"><span class="xmas-gold">${L("聖誕快樂，","Merry Christmas.","메리 크리스마스,","メリークリスマス。")}</span><br>${L("舞池裡的你<br>都掛在樹上了。","Your dance floor moments<br>are on the tree.","댄스 플로어 위의 당신,<br>트리에 걸어 두었어요.","ダンスフロアのあなたを<br>ツリーに飾りました。")}</h1>
+   <p class="hero-b-sub">${L("今年每一場舞會、比賽與表演，都替你收好了。找到自己的照片，下載、分享，當作送給自己的聖誕禮物。","Every party, competition and show this year, kept for you. Find your photos, download and share — a little Christmas gift to yourself.","올해의 모든 파티, 대회, 공연을 담아 두었습니다. 내 사진을 찾아 저장하고 공유하세요 — 나에게 주는 크리스마스 선물.","今年のパーティー、大会、ショーをすべてここに。自分の写真を見つけて、保存してシェア。自分へのクリスマスプレゼントに。")}</p>
+   <div class="xmas-cta"><a class="xmas-btn" href="#finder">🎁 ${L("找到我的照片","Find my photos","내 사진 찾기","自分の写真を探す")}</a><a class="xmas-btn is-ghost" href="#advent">📅 ${L("倒數月曆","Advent calendar","어드벤트 캘린더","アドベント")}</a></div>
+   <div class="hero-b-chips xmas-chips">${chips.map(([h,t])=>`<a href="${h}">${t}</a>`).join("")}</div>
+  </div>
+  <div class="xmas-tree" aria-hidden="true">
+   <svg class="xmas-star" viewBox="0 0 100 100"><g class="xmas-rays">${Array.from({length:12},(_,i)=>`<rect x="49" y="0" width="2" height="22" rx="1" transform="rotate(${i*30} 50 50)"/>`).join("")}</g><path d="M50 18l9.4 19.1 21.1 3.1-15.3 14.9 3.6 21L50 66.2 31.2 76.1l3.6-21L19.5 40.2l21.1-3.1z"/></svg>
+   <div class="xmas-cone"></div>
+   ${rows}
+   <div class="xmas-trunk"></div>
+   <div class="xmas-gifts"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
+  </div>
+ </div>
+ <svg class="xmas-ground" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 34 C120 14 220 40 340 26 S560 8 700 28 S940 44 1060 22 S1180 20 1200 26 V60 H0Z"/></svg>`;
  const sn=promo.querySelector(".xmas-snow");
- if(sn&&!matchMedia("(prefers-reduced-motion: reduce)").matches){const n=innerWidth<720?28:56;let h="";for(let i=0;i<n;i++){const z=2+Math.random()*4;h+=`<i style="left:${(Math.random()*100).toFixed(1)}%;width:${z.toFixed(1)}px;height:${z.toFixed(1)}px;opacity:${(.35+Math.random()*.55).toFixed(2)};animation-duration:${(7+Math.random()*9).toFixed(1)}s,${(3+Math.random()*3).toFixed(1)}s;animation-delay:-${(Math.random()*14).toFixed(1)}s,-${(Math.random()*3).toFixed(1)}s"></i>`;}sn.innerHTML=h;}
+ if(sn&&!matchMedia("(prefers-reduced-motion: reduce)").matches){const n=innerWidth<720?34:70;let h="";for(let i=0;i<n;i++){const z=2+Math.random()*4.5;h+=`<i style="left:${(Math.random()*100).toFixed(1)}%;width:${z.toFixed(1)}px;height:${z.toFixed(1)}px;opacity:${(.35+Math.random()*.6).toFixed(2)};animation-duration:${(8+Math.random()*10).toFixed(1)}s,${(3+Math.random()*3).toFixed(1)}s;animation-delay:-${(Math.random()*18).toFixed(1)}s,-${(Math.random()*3).toFixed(1)}s"></i>`;}sn.innerHTML=h;}
+ renderAdvent();
 };
 const tscZone=document.createElement("section");tscZone.className="section";tscZone.id="tsc";tscZone.hidden=!TSC_ON;
 function renderTsc(){
