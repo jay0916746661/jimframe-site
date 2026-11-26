@@ -95,6 +95,25 @@ def ig_login_accounts():
                     found = True
         except Exception as e:  # noqa: BLE001
             errs.append(f"粉專：{str(e)[:40]}")
+        if not found:
+            # 4) 系統使用者權杖：從它所屬的商家組合找被分享的 IG 帳號
+            try:
+                biz = get("me/businesses", tok, fields="id,name").get("data", [])
+                errs.append("組合：" + ("、".join(b.get("name", "?") for b in biz) or "沒有"))
+                for b in biz:
+                    for edge in ("owned_instagram_accounts", "instagram_accounts", "client_instagram_accounts"):
+                        try:
+                            igs = get(f"{b['id']}/{edge}", tok, fields="id,username").get("data", [])
+                        except Exception:  # noqa: BLE001
+                            continue
+                        for ig in igs:
+                            if ig.get("username") == name or ig.get("id") == igid:
+                                out[ig.get("username") or name] = (ig["id"], tok)
+                                found = True
+                        if igs:
+                            errs.append(f"{b.get('name')}/{edge}：" + "、".join(i.get("username", i["id"]) for i in igs))
+            except Exception as e:  # noqa: BLE001
+                errs.append(f"組合：{str(e)[:40]}")
         if found:
             continue
         kind = tok[:4] + "…" if len(tok) > 8 else "太短"
