@@ -1,7 +1,7 @@
 """IG／FB 粉專 API 工具。token 只從環境變數 META_USER_TOKEN 讀，不寫進任何檔案、不印出來。
 python meta.py --check   列出這個權杖能管的粉專和 IG 帳號、已授權的權限
 """
-import os, sys, requests
+import json, os, sys, requests
 from datetime import datetime, timezone
 
 API = "https://graph.facebook.com/v21.0"
@@ -126,6 +126,10 @@ def check():
 
 def post(path, token, **data):
     data["access_token"] = token
+    # 表單編碼沒辦法帶巢狀物件，嵌套參數（例如 trial_params）要先序列化成 JSON 字串
+    for k, v in list(data.items()):
+        if isinstance(v, (dict, list)):
+            data[k] = json.dumps(v, ensure_ascii=False)
     r = requests.post(f"{HOST.get(token, API)}/{path}", data=data, timeout=120)
     body = r.json()
     if "error" in body:

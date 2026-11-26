@@ -18,10 +18,19 @@ import requests
 API = "https://graph.threads.net/v1.0"
 TPE = timezone(timedelta(hours=8))
 QUEUE = Path(__file__).with_name("queue.csv")
-FIELDS = ["id", "account", "publish_at", "text", "image_url", "topic_tag", "status", "post_id", "note"]
+FIELDS = ["id", "account", "publish_at", "text", "image_url", "topic_tag", "status", "post_id", "note", "retry"]
 MAX_LEN = 500
 DAILY_CAP = 8      # 每帳號每天最多發幾則（程式自己的上限）
 PER_RUN_CAP = 6    # 每次執行最多發幾則
+MAX_RETRY = 3      # 暫時性錯誤重試到第幾次才真的標失敗
+BLOCK_WINDOW = timedelta(hours=24)  # 只有這段時間內的失敗列會擋住帳號
+# Meta／Threads 這幾種錯誤是暫時性的，訊息自己就寫「請稍後再試」，不該讓整個帳號停擺
+TRANSIENT = ("2207085", "內部錯誤", "請稍後再試", "rate limit", "please try again", "temporarily")
+
+
+def is_transient(msg):
+    m = str(msg).lower()
+    return any(k.lower() in m for k in TRANSIENT)
 
 
 def load_tokens():
@@ -224,7 +233,20 @@ def main():
         if r["status"] == "已發" and r["note"].startswith(today):
             sent_today[r["account"]] = sent_today.get(r["account"], 0) + 1
 
-    blocked = {r["account"] for r in rows if r["status"] == "失敗"}  # 有失敗的帳號先停，等 Jim 處理
+    # 只有 24 小時內的失敗列才擋帳號；更舊的只提醒，不然一筆陳年失敗會永久卡死整個帳號
+    blocked, stale = {}, []
+    for r in rows:
+        if r["status"] != "失敗":
+            continue
+        acct0 = r["account"].lstrip("@")
+        try:
+            at = datetime.strptime(r["publish_at"], "%Y-%m-%d %H:%M").replace(tzinfo=TPE)
+        except ValueError:
+            at = now  # 時間格式壞掉的當成剛剛，寧可擋住也不要漏掉
+        if now - at <= BLOCK_WINDOW:
+            blocked.setdefault(acct0, r)
+        else:
+            stale.append(r)
     sent = 0
     sent_this_run = set()  # 每次執行每個帳號最多發 1 則，補發時才不會一口氣全擠在同一分鐘
     for r in sorted(rows, key=lambda x: x["publish_at"]):
@@ -242,14 +264,15 @@ def main():
             continue
         if len(r["text"]) > MAX_LEN:
             r["status"], r["note"] = "失敗", f"超過 {MAX_LEN} 字（{len(r['text'])} 字）"
-            blocked.add(acct)
+            blocked[acct] = r
             continue
         if acct not in tokens:
             resolve_names(tokens)
         if acct not in tokens:
             # 不標失敗：可能是這次執行還沒讀到新加的權杖，留著「待發」等下一輪
             print(f"[略過] {r['id']} {acct}：這次執行讀不到它的權杖，保留待發")
-            blocked.add(acct)
+            # 用副本記進封鎖清單，讓結尾的報告有話可說，又不會把說明寫進 csv
+            blocked[acct] = dict(r, note="這次執行讀不到它的權杖，保留待發")
             continue
         if dry:
             print(f"[會發] {r['id']} {acct} {r['publish_at']} {r['text'][:30]}…")
@@ -275,11 +298,34 @@ def main():
             sent_this_run.add(acct)
             print(f"[已發] {r['id']} {acct} → {pid}")
         except Exception as e:  # noqa: BLE001
-            r["status"], r["note"] = "失敗", scrub(e, tokens)
-            blocked.add(acct)
-            print(f"[失敗] {r['id']} {acct}: {r['note']}")
+            msg = scrub(e, tokens)
+            n = int(r.get("retry") or 0) + 1
+            r["retry"] = str(n)
+            stamp = f"{datetime.now(TPE):%m-%d %H:%M}"
+            if is_transient(msg) and n < MAX_RETRY:
+                # 維持待發，下一輪自動再試；不標失敗，整個帳號照常發
+                r["note"] = f"{stamp} 第 {n} 次暫時性失敗，保持待發：{msg}"[:300]
+                print(f"[暫時性失敗 第 {n}/{MAX_RETRY} 次，保持待發] {r['id']} {acct}: {msg}")
+            else:
+                r["status"] = "失敗"
+                r["note"] = f"{stamp} 第 {n} 次失敗：{msg}"[:300]
+                blocked[acct] = r
+                print(f"[失敗] {r['id']} {acct}: {r['note']}")
         sent += 1
         time.sleep(10)
+
+    # 被擋住的帳號要講清楚是哪一列、什麼錯、連累幾則待發
+    if blocked:
+        pend = {}
+        for r in rows:
+            if r["status"] == "待發":
+                a = r["account"].lstrip("@")
+                pend[a] = pend.get(a, 0) + 1
+        for a, r in sorted(blocked.items()):
+            print(f"[封鎖] {a}：{r['publish_at']} 的 {r['id']}（{r['status']}）"
+                  f" → {(r['note'] or '')[:100]}；連累 {pend.get(a, 0)} 則待發發不出去")
+    for r in stale:
+        print(f"[舊失敗 不擋帳號] {r['account']} {r['publish_at']} {r['id']}：{(r['note'] or '')[:80]}")
 
     if not dry:
         write_queue(rows)

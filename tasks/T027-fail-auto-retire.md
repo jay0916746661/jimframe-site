@@ -1,12 +1,16 @@
 ---
 id: T027
 title: 失敗列自動重試與退場，不要再卡死整個帳號
-status: backlog
+status: review
 size: S
 ---
 
 ## 為什麼
-`ig_publish.py` 以 `status == "失敗"` 判定封鎖整個帳號，而 Meta 最常見的
+**更正（2026-11-26 查證）**：封鎖邏輯其實在 `tools/threads-poster/poster.py:227`，
+不在 `ig_publish.py`。IG 那支根本沒有封鎖機制，它的問題不同：失敗永不重試，
+那一則就這樣被丟掉。兩邊都要改，但症狀不一樣。
+
+Threads 的 `poster.py` 以 `status == "失敗"` 判定封鎖整個帳號，而 Meta 最常見的
 `2207085 一般內部錯誤` 是暫時性的，它的訊息本身就寫「請稍後再試」。
 
 實際發生的事：觀光客沒說的事從 11/07 起卡了 12 天，113 則待發全部發不出去。
@@ -14,7 +18,8 @@ size: S
 一天內就再犯一次。這不是偶發，是設計缺陷。
 
 ## 要做什麼
-在 `tools/meta-poster/ig_publish.py`（Threads 的 publish 腳本同樣處理）：
+在 `tools/threads-poster/poster.py`（封鎖邏輯在這）與
+`tools/meta-poster/ig_publish.py`（只需要重試，它沒有封鎖）：
 
 1. **暫時性錯誤自動重試**
    - 新增 `retry` 欄位到兩個佇列 csv（沒有的列視為 0）。
@@ -32,12 +37,13 @@ size: S
    - 目前的輸出看不出「一筆失敗擋住 111 則」這件事。
 
 ## 驗收標準
-- [ ] 模擬一個 2207085 失敗：該列維持待發、retry 變成 1、帳號沒有被擋
-- [ ] 同一列連續失敗 3 次後才變成失敗
-- [ ] 佇列裡有一筆 25 小時前的失敗列時，該帳號仍然正常發文
-- [ ] 有帳號被擋住時，輸出有寫出被連累的待發則數
-- [ ] 兩個佇列 csv 既有的欄位與資料不變，只新增 retry 欄
-- [ ] `node scripts/smoke.mjs` 通過
+- [x] 模擬一個 2207085 失敗：該列維持待發、retry 變成 1、帳號沒有被擋
+- [x] 同一列連續失敗 3 次後才變成失敗
+- [x] 非暫時性錯誤（例如 Invalid OAuth token）第一次就標失敗，不浪費重試
+- [x] 佇列裡有一筆 25 小時前的失敗列時，該帳號仍然正常發文
+- [x] 有帳號被擋住時，輸出有寫出被連累的待發則數
+- [x] 兩個佇列 csv 既有的欄位與資料不變，只新增 retry 欄
+- [x] `node scripts/smoke.mjs` 通過
 
 ## 不要動
 - 既有列的 `status`、`publish_at`、`caption`、`media` 內容
@@ -45,4 +51,13 @@ size: S
 - 不要新增任何 secret
 
 ## 實作紀錄
-（Codex 完成後填寫）
+2026-11-26 Claude 直接實作（Jim 說「你做」），未派給 Codex。
+
+- 封鎖邏輯改在 `poster.py`：`blocked` 由 set 改成 dict（帳號 → 那一列），
+  只收 `publish_at` 在 24 小時內的失敗列；更舊的進 `stale`，只印提醒不擋。
+- 兩支腳本共用同一組暫時性錯誤判斷：`2207085`、`內部錯誤`、`請稍後再試`、
+  `rate limit`、`please try again`、`temporarily`。
+- 佇列 csv **沒有手動改**。`retry` 欄由程式下一次寫入時自動補上，
+  避免跟每天的「IG 發文結果」commit 撞在一起。讀取時缺欄位視為空字串。
+- 驗收用 `test_t027_t029.py` 跑 22 項（含 T029），全部通過；不連網，
+  publish 與帳號解析都換成假的。
