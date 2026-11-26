@@ -1,1 +1,354 @@
-{"videos":[{"k":"V1120-01","day":"1120","n":"01","t":"LeFa Salsa Salon Junior","at":"","id":"1UK1CU04CtmuhSLf9m50vscapY5Lsr0Uw","mb":185,"cat":"show"},{"k":"V1120-02","day":"1120","n":"02","t":"One+ Mambo Junior Team","at":"","id":"1EdEbZp8T1JDAz8wHvSQnwkGC102_TxDO","mb":137,"cat":"show"},{"k":"V1120-03","day":"1120","n":"03","t":"Corazon Latino","at":"","id":"1tipLlVrvzlTm7_0eKZQvTK7bv6ThiBbu","mb":215,"cat":"show"},{"k":"V1120-04","day":"1120","n":"04","t":"Grupo EBay","at":"","id":"1BNgfoiSHyaSeT8SQvnpdBzunNMzVhu9o","mb":170,"cat":"show"},{"k":"V1120-05","day":"1120","n":"05","t":"Shweta Solo","at":"","id":"164Kik7F_gx--jW-r7QnVMv3cWqAEYYKh","mb":128,"cat":"show"},{"k":"V1120-06","day":"1120","n":"06","t":"DanceMos","at":"","id":"1oAHejYg6E6WbjIIgWmD5S4bwRisGmIYC","mb":136,"cat":"show"},{"k":"V1120-07","day":"1120","n":"07","t":"Lucia Solo","at":"","id":"1LQlmoXP8CURPRTVBQ9Eku3RvqPMKl2dw","mb":115,"cat":"show"},{"k":"V1120-08","day":"1120","n":"08","t":"KRB66","at":"","id":"17ABumhM35A9OtneUPDn4MkfJ2CsJ8Pja","mb":158,"cat":"show"},{"k":"V1120-09","day":"1120","n":"09","t":"iPhone 5","at":"","id":"1eobtBV2E7jVYSLzNDFU243Mcu06vQmV_","mb":145,"cat":"show"},{"k":"V1120-10","day":"1120","n":"10","t":"LeFa Salsa Salon","at":"","id":"1jBIqDUQEzLH_qWLHgt9e7_z21Ix_o8is","mb":155,"cat":"show"},{"k":"V1120-11","day":"1120","n":"11","t":"A&K Salsa Project","at":"","id":"1-4H0kU075bBfQn-Iq259FQJNujvCbkS_","mb":131,"cat":"show"},{"k":"V1120-16","day":"1120","n":"16","t":"Ventus from Korea, Jeju Island","at":"","id":"1dcJnI2hVCBZOJ7BQqQR8Dr40Tn3k9cYG","mb":145,"cat":"show"},{"k":"V1120-17","day":"1120","n":"17","t":"Iroko Ladies Taipei","at":"","id":"1-RZ4tvbj0P-d-9D7wGVUZ1Nl8tGc3KQQ","mb":158,"cat":"show"},{"k":"V1120-18","day":"1120","n":"18","t":"Marcia and Mayu","at":"","id":"1DOFj8gcgRffjOE7A5F7PyidRnjMXhVt6","mb":91,"cat":"show"},{"k":"V1120-19","day":"1120","n":"19","t":"Alien Solo","at":"","id":"1gezKuMMQjYfnUl_Mgkn-JpOU9WKpjaTi","mb":123,"cat":"show"}]}
+{
+ "videos": [
+  {
+   "k": "V1120-01",
+   "day": "1120",
+   "n": "01",
+   "t": "LeFa Salsa Salon Junior",
+   "at": "",
+   "id": "1UK1CU04CtmuhSLf9m50vscapY5Lsr0Uw",
+   "mb": 185,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-02",
+   "day": "1120",
+   "n": "02",
+   "t": "One+ Mambo Junior Team",
+   "at": "",
+   "id": "1EdEbZp8T1JDAz8wHvSQnwkGC102_TxDO",
+   "mb": 137,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-03",
+   "day": "1120",
+   "n": "03",
+   "t": "Corazon Latino",
+   "at": "",
+   "id": "1tipLlVrvzlTm7_0eKZQvTK7bv6ThiBbu",
+   "mb": 215,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-04",
+   "day": "1120",
+   "n": "04",
+   "t": "Grupo EBay",
+   "at": "",
+   "id": "1BNgfoiSHyaSeT8SQvnpdBzunNMzVhu9o",
+   "mb": 170,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-05",
+   "day": "1120",
+   "n": "05",
+   "t": "Shweta Solo",
+   "at": "",
+   "id": "164Kik7F_gx--jW-r7QnVMv3cWqAEYYKh",
+   "mb": 128,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-06",
+   "day": "1120",
+   "n": "06",
+   "t": "DanceMos",
+   "at": "",
+   "id": "1oAHejYg6E6WbjIIgWmD5S4bwRisGmIYC",
+   "mb": 136,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-07",
+   "day": "1120",
+   "n": "07",
+   "t": "Lucia Solo",
+   "at": "",
+   "id": "1LQlmoXP8CURPRTVBQ9Eku3RvqPMKl2dw",
+   "mb": 115,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-08",
+   "day": "1120",
+   "n": "08",
+   "t": "KRB66",
+   "at": "",
+   "id": "17ABumhM35A9OtneUPDn4MkfJ2CsJ8Pja",
+   "mb": 158,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-09",
+   "day": "1120",
+   "n": "09",
+   "t": "iPhone 5",
+   "at": "",
+   "id": "1eobtBV2E7jVYSLzNDFU243Mcu06vQmV_",
+   "mb": 145,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-10",
+   "day": "1120",
+   "n": "10",
+   "t": "LeFa Salsa Salon",
+   "at": "",
+   "id": "1jBIqDUQEzLH_qWLHgt9e7_z21Ix_o8is",
+   "mb": 155,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-11",
+   "day": "1120",
+   "n": "11",
+   "t": "A&K Salsa Project",
+   "at": "",
+   "id": "1-4H0kU075bBfQn-Iq259FQJNujvCbkS_",
+   "mb": 131,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-16",
+   "day": "1120",
+   "n": "16",
+   "t": "Ventus from Korea, Jeju Island",
+   "at": "",
+   "id": "1dcJnI2hVCBZOJ7BQqQR8Dr40Tn3k9cYG",
+   "mb": 145,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-17",
+   "day": "1120",
+   "n": "17",
+   "t": "Iroko Ladies Taipei",
+   "at": "",
+   "id": "1-RZ4tvbj0P-d-9D7wGVUZ1Nl8tGc3KQQ",
+   "mb": 158,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-18",
+   "day": "1120",
+   "n": "18",
+   "t": "Marcia and Mayu",
+   "at": "",
+   "id": "1DOFj8gcgRffjOE7A5F7PyidRnjMXhVt6",
+   "mb": 91,
+   "cat": "show"
+  },
+  {
+   "k": "V1120-19",
+   "day": "1120",
+   "n": "19",
+   "t": "Alien Solo",
+   "at": "",
+   "id": "1gezKuMMQjYfnUl_Mgkn-JpOU9WKpjaTi",
+   "mb": 123,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-01",
+   "day": "1121",
+   "n": "01",
+   "t": "The Funky Bachateros",
+   "at": "",
+   "id": "1EFxff8Xwo-xljMkh-K2jf0qp1pUiMJ4o",
+   "mb": 129,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-02",
+   "day": "1121",
+   "n": "02",
+   "t": "SP Salsa Students",
+   "at": "",
+   "id": "1ygJrRC70ZudXv2lKIbq96Ek7aO4R8k8B",
+   "mb": 179,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-03",
+   "day": "1121",
+   "n": "03",
+   "t": "Amelia by Peko",
+   "at": "",
+   "id": "1-WsP6TQGJWaSRBQ8JCPmroKdSecCKEzu",
+   "mb": 131,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-04",
+   "day": "1121",
+   "n": "04",
+   "t": "Mamboyage",
+   "at": "",
+   "id": "1s1RjkLnwguXGXxRIzon7XtLKjENO2Vti",
+   "mb": 151,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-05",
+   "day": "1121",
+   "n": "05",
+   "t": "Yuko Akiba Salsa Star-letto",
+   "at": "",
+   "id": "12-5JF9psIz16N-QwDQ2NJDkfBbVqNsIm",
+   "mb": 163,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-06",
+   "day": "1121",
+   "n": "06",
+   "t": "Mandy's Timba Crew",
+   "at": "",
+   "id": "1KTqumNfiBTN496uTFwI2yX1J9igMZ8_t",
+   "mb": 146,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-07",
+   "day": "1121",
+   "n": "07",
+   "t": "Soul Star Dancers",
+   "at": "",
+   "id": "1xTY92aHqwbiAMUQDQ5myqUvT_GVXa-z1",
+   "mb": 150,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-08",
+   "day": "1121",
+   "n": "08",
+   "t": "One+ Mambo Team",
+   "at": "",
+   "id": "1wOaN8RSNhoRUy79467I_wFVFEEXVNIbZ",
+   "mb": 146,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-10",
+   "day": "1121",
+   "n": "10",
+   "t": "HIDE & PEKO Dance Company",
+   "at": "",
+   "id": "15nrdyRvWsBODMrpAhELC544CYyfPMXtt",
+   "mb": 122,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-11",
+   "day": "1121",
+   "n": "11",
+   "t": "JF Evolution Bachata",
+   "at": "",
+   "id": "1zgzVyZnyMi-LMHafiaUef1-oSBZ1Rmsx",
+   "mb": 201,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-12",
+   "day": "1121",
+   "n": "12",
+   "t": "Bailalo Dance Company",
+   "at": "",
+   "id": "1dEGta961BGABB8Ri2iW8s8lSNRsWd9CK",
+   "mb": 155,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-13",
+   "day": "1121",
+   "n": "13",
+   "t": "Teatro Muse Ladies",
+   "at": "",
+   "id": "1epgThSFK8cyZhz42u2wGOIqhwnrYUxp_",
+   "mb": 124,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-14",
+   "day": "1121",
+   "n": "14",
+   "t": "S Men",
+   "at": "",
+   "id": "18y7ajKx_jFzJczhUUaVAaN8Er1dRty1d",
+   "mb": 133,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-15",
+   "day": "1121",
+   "n": "15",
+   "t": "POL Team from Latin Style",
+   "at": "",
+   "id": "1MoXozLHdV4q3tbGCUoPaqYk2s5CHwzNL",
+   "mb": 161,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-16",
+   "day": "1121",
+   "n": "16",
+   "t": "Enova by MariYOGO",
+   "at": "",
+   "id": "1CnZtfdaF-Rcn4jzmtLPN_aegf4DkPRY1",
+   "mb": 141,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-17",
+   "day": "1121",
+   "n": "17",
+   "t": "Caliente Mongte",
+   "at": "",
+   "id": "1v-IO80W1n-WEBxVOUA9Qtln-2x_1VWS5",
+   "mb": 141,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-18",
+   "day": "1121",
+   "n": "18",
+   "t": "Al Fuego",
+   "at": "",
+   "id": "1CM05QhsFj84CT_taOGh0iEvJ1efUIDaH",
+   "mb": 117,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-19",
+   "day": "1121",
+   "n": "19",
+   "t": "HIDE & PEKO",
+   "at": "",
+   "id": "1bzzdKW4935NevWAF1X0HGS8SST1dn9Ur",
+   "mb": 127,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-20",
+   "day": "1121",
+   "n": "20",
+   "t": "Maria y Vincenze",
+   "at": "",
+   "id": "1yvivV0508a8sYkh9c_KnnF90DITxM00a",
+   "mb": 103,
+   "cat": "show"
+  },
+  {
+   "k": "V1121-21",
+   "day": "1121",
+   "n": "21",
+   "t": "Jhoana Palhua",
+   "at": "",
+   "id": "1kWcz3EHAjPnVeEQPodS2K7rQTEVOYmgI",
+   "mb": 81,
+   "cat": "show"
+  }
+ ]
+}
