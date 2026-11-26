@@ -6,7 +6,9 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 
-const url = process.argv[2] || "http://localhost:8000/";
+const baseUrl = process.argv[2] || "http://localhost:8000/";
+const rootUrl = new URL("./", baseUrl).href;
+const portfolioUrl = new URL("portfolio/", rootUrl).href;
 const sizes = [
   { name: "桌機", width: 1280, height: 900 },
   { name: "手機", width: 390, height: 844 },
@@ -26,7 +28,7 @@ for (const s of sizes) {
     errors.push(`console: ${t}`);
   });
 
-  await page.goto(url, { waitUntil: "domcontentloaded" });
+  await page.goto(rootUrl, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(2500);
 
   const albums = await page.evaluate(() => document.querySelectorAll("#albums > *").length);
@@ -42,6 +44,35 @@ for (const s of sizes) {
     problems.forEach((p) => console.log("   - " + p));
   } else {
     console.log(`✓ ${s.name}（${s.width}px）：相簿 ${albums} 項`);
+  }
+  await page.close();
+}
+
+for (const s of sizes) {
+  const page = await browser.newPage({ viewport: { width: s.width, height: s.height } });
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
+  page.on("console", (m) => {
+    if (m.type() === "error") errors.push(`console: ${m.text()}`);
+  });
+
+  await page.goto(portfolioUrl, { waitUntil: "networkidle" });
+
+  const cases = await page.locator("#cases > article").count();
+  const others = await page.locator("#others > a").count();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+
+  const problems = [...errors];
+  if (cases !== 3) problems.push(`案例卡數量應為 3，目前為 ${cases}`);
+  if (others !== 6) problems.push(`其他工具數量應為 6，目前為 ${others}`);
+  if (overflow > 1) problems.push(`水平捲動 ${overflow}px`);
+
+  if (problems.length) {
+    failed++;
+    console.log(`✗ 作品集 ${s.name}（${s.width}px）`);
+    problems.forEach((p) => console.log("   - " + p));
+  } else {
+    console.log(`✓ 作品集 ${s.name}（${s.width}px）：${cases} 個案例、${others} 個工具`);
   }
   await page.close();
 }
