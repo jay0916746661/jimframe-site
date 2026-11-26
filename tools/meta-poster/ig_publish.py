@@ -6,7 +6,10 @@ python ig_publish.py --check   只檢查權限與帳號，寫 ig_status.txt
 
 規則
 - publish_at 是台北時間。超過預定時間 3 小時還沒發的，標「逾時」不發，等 Jim 決定。
-- 失敗標「失敗」並寫原因，不會重試；要重發把狀態改回「待發」。
+- 暫時性錯誤（2207085、內部錯誤、請稍後再試、rate limit）保持「待發」並累加 retry，
+  下一輪自動再試；retry 滿 3 次才標「失敗」。其他錯誤直接標「失敗」。
+- trial 欄填 MANUAL 或 SS_PERFORMANCE 就發成試用 Reel（只給非粉絲看，不推主頁）；
+  留空＝照舊的正式 Reel。只對 type=reel 有效。
 - 每次最多發 4 則。
 - media 是 repo 內的相對路徑，用 GitHub Pages 網址給 IG 抓（push 後約 1–2 分鐘才生效）。
 """
@@ -21,6 +24,15 @@ HERE = pathlib.Path(__file__).parent
 QUEUE = HERE / "ig_queue.csv"
 STATUS = HERE / "ig_status.txt"
 LATE = timedelta(hours=3)
+FIELDS = ["id", "account", "publish_at", "type", "media", "caption", "status", "post_id", "note", "retry", "trial"]
+MAX_RETRY = 3      # 暫時性錯誤重試到第幾次才真的標失敗
+# Meta 這幾種錯誤是暫時性的，訊息自己就寫「請稍後再試」，標成失敗等於白白丟掉一則
+TRANSIENT = ("2207085", "內部錯誤", "請稍後再試", "rate limit", "please try again", "temporarily")
+
+
+def is_transient(msg):
+    m = str(msg).lower()
+    return any(k.lower() in m for k in TRANSIENT)
 
 
 def accounts():
@@ -51,7 +63,14 @@ def publish(row, igid, tok):
         extra = {}
         if len(urls) > 1 and urls[1].lower().endswith((".jpg", ".jpeg", ".png")):
             extra["cover_url"] = urls[1]  # media 第二個是圖片＝Reel 封面
-        c = meta.post(f"{igid}/media", tok, media_type="REELS", video_url=urls[0], caption=cap, share_to_feed="true", **extra)
+        trial = (row.get("trial") or "").strip().upper()
+        if trial:
+            # 試用 Reel 只發給非粉絲，所以不能同時推到主頁（share_to_feed）
+            # graduation_strategy：MANUAL＝自己在 App 裡決定要不要轉正式；SS_PERFORMANCE＝表現好就自動轉
+            extra["trial_params"] = {"graduation_strategy": trial if trial == "SS_PERFORMANCE" else "MANUAL"}
+        else:
+            extra["share_to_feed"] = "true"
+        c = meta.post(f"{igid}/media", tok, media_type="REELS", video_url=urls[0], caption=cap, **extra)
         wait_ready(c["id"], tok)
         cid = c["id"]
     elif row["type"] == "carousel":
@@ -78,13 +97,19 @@ def publish(row, igid, tok):
 
 def read():
     with QUEUE.open(encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+        rows = list(csv.DictReader(f))
+    for r in rows:
+        for k in ("retry", "trial"):
+            r[k] = (r.get(k) or "").strip()
+    return rows
 
 
 def write(rows):
     with QUEUE.open("w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()), quoting=csv.QUOTE_ALL)
-        w.writeheader(); w.writerows(rows)
+        w = csv.DictWriter(f, fieldnames=FIELDS, quoting=csv.QUOTE_ALL)
+        w.writeheader()
+        for r in rows:
+            w.writerow({k: r.get(k, "") for k in FIELDS})
 
 
 def check():
@@ -130,7 +155,16 @@ def main():
                 r["post_id"] = publish(r, igid, tok)
                 r["status"], r["note"] = "已發", f"{datetime.now(TPE):%m-%d %H:%M} 發出"
             except Exception as e:  # noqa: BLE001
-                r["status"], r["note"] = "失敗", str(e)[:200]
+                msg = str(e)
+                n = int(r.get("retry") or 0) + 1
+                r["retry"] = str(n)
+                stamp = f"{datetime.now(TPE):%m-%d %H:%M}"
+                if is_transient(msg) and n < MAX_RETRY:
+                    # 維持待發，下一輪自動再試
+                    r["note"] = f"{stamp} 第 {n} 次暫時性失敗，保持待發：{msg}"[:200]
+                else:
+                    r["status"] = "失敗"
+                    r["note"] = f"{stamp} 第 {n} 次失敗：{msg}"[:200]
             print(f"{r['id']}：{r['status']} {r['note']}")
     write(rows)
     return 0
