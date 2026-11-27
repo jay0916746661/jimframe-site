@@ -85,9 +85,22 @@ def api(method, path, token, **params):
     return body
 
 
+def live_url(url):
+    """Pages 部署失敗（網站 >1GB）時新素材會 404，改用 raw.githubusercontent.com 的同一個檔。"""
+    base = "https://jay0916746661.github.io/jimframe-site/"
+    if not url.startswith(base):
+        return url
+    try:
+        if requests.head(url, timeout=20, allow_redirects=True).status_code == 200:
+            return url
+    except Exception:  # noqa: BLE001
+        pass
+    return "https://raw.githubusercontent.com/jay0916746661/jimframe-site/main/" + url[len(base):]
+
+
 def publish(token, text, image_url="", topic_tag=""):
     """image_url 可放多張，用 | 隔開：1 張＝單圖，2–20 張＝輪播。"""
-    urls = [u.strip() for u in (image_url or "").split("|") if u.strip()][:20]
+    urls = [live_url(u.strip()) for u in (image_url or "").split("|") if u.strip()][:20]
     params = {"text": text}
     if len(urls) >= 2:
         kids = []

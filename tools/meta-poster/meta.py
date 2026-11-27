@@ -12,6 +12,24 @@ HOST = {}  # token -> API base；Instagram 登入的權杖走 graph.instagram.co
 TOKEN = os.environ.get("META_USER_TOKEN", "").strip()
 
 
+
+PAGES_BASE = "https://jay0916746661.github.io/jimframe-site/"
+RAW_BASE = "https://raw.githubusercontent.com/jay0916746661/jimframe-site/main/"
+
+
+def live_url(url):
+    """GitHub Pages 網站太大常部署失敗（>1GB），新素材在 Pages 上會 404。
+    Pages 網址打不開時，改用同一個檔案在 raw.githubusercontent.com 的網址（直接讀 repo，不靠部署）。"""
+    if not url.startswith(PAGES_BASE):
+        return url
+    try:
+        if requests.head(url, timeout=20, allow_redirects=True).status_code == 200:
+            return url
+    except Exception:  # noqa: BLE001
+        pass
+    return RAW_BASE + url[len(PAGES_BASE):]
+
+
 def get(path, token=TOKEN, **params):
     params["access_token"] = token
     r = requests.get(f"{HOST.get(token, API)}/{path}", params=params, timeout=60)

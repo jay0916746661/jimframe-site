@@ -59,7 +59,7 @@ def media_urls(media):
         if part.startswith(("https://", "http://")):
             out.append(part)
         else:
-            out.append(BASE + part.lstrip("/"))
+            out.append(meta.live_url(BASE + part.lstrip("/")))
     return out
 
 

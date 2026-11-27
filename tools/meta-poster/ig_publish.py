@@ -57,7 +57,7 @@ def wait_ready(cid, tok, tries=40):
 
 
 def publish(row, igid, tok):
-    urls = [BASE + m for m in row["media"].split()]
+    urls = [meta.live_url(BASE + m) for m in row["media"].split()]
     cap = row["caption"]
     if row["type"] == "reel":
         extra = {}
