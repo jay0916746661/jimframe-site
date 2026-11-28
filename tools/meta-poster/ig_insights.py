@@ -31,6 +31,7 @@ INTEREST = (
     "theguitarstory101",
     "astro_labtw",
     "tech101_ai",
+    "philosophy101.tw",
     "untold.trip0",
 )
 PAGE_FIELDS = "id,name,access_token,instagram_business_account{id,username},connected_instagram_account{id,username}"

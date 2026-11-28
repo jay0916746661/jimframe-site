@@ -42,7 +42,13 @@ def accounts():
         if ig.get("username"):
             out[ig["username"]] = (ig["id"], p["access_token"])
     out.update(meta.ig_login_accounts())  # 沒綁粉專、改用 Instagram 登入的帳號（例：perfume101tw）
+    # 改過帳號名稱的：新舊名稱都認得（2026-11-28 tech101_ai 改名 philosophy101.tw）
+    for new, old in RENAMED.items():
+        if new in out and old not in out: out[old] = out[new]
+        if old in out and new not in out: out[new] = out[old]
     return out
+
+RENAMED = {"philosophy101.tw": "tech101_ai"}
 
 
 def wait_ready(cid, tok, tries=40):
