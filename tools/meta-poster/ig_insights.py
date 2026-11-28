@@ -30,6 +30,7 @@ INTEREST = (
     "love.manual.tw",
     "theguitarstory101",
     "astro_labtw",
+    "taipei.weekendmap",
     "tech101_ai",
     "philosophy101.tw",
     "untold.trip0",

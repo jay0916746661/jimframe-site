@@ -48,7 +48,7 @@ def accounts():
         if old in out and new not in out: out[new] = out[old]
     return out
 
-RENAMED = {"philosophy101.tw": "tech101_ai"}
+RENAMED = {"philosophy101.tw": "tech101_ai", "taipei.weekendmap": "astro_labtw"}  # 11/28 astro_labtw 改名 taipei.weekendmap（雙北週末地圖）
 
 
 def wait_ready(cid, tok, tries=40):
