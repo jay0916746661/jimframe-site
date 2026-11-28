@@ -1,0 +1,16 @@
+{
+  "coffee101":     {"name": "咖啡101",           "accounts": ["coffeestory101"]},
+  "jazz101":       {"name": "爵士101",           "accounts": ["jazz101tw"]},
+  "art101":        {"name": "藝術101",           "accounts": ["art101.tw"]},
+  "guitar101":     {"name": "六弦101（The Guitar Story 101）", "accounts": ["theguitarstory101"]},
+  "sd101":         {"name": "Social Dance 101",  "accounts": ["socialdance101"], "min_chars": 100, "max_chars": 150},
+  "perfume101":    {"name": "香水101",           "accounts": ["perfume101tw"]},
+  "drink":         {"name": "酒精的故事",         "accounts": ["drinkstory.tw"]},
+  "untold":        {"name": "觀光客沒說的事",      "accounts": ["untold.trip0"]},
+  "reading":       {"name": "讀完之後",           "accounts": ["reading.after"]},
+  "philosophy101": {"name": "哲學101",           "accounts": ["philosophy101.tw", "tech101_ai"]},
+  "psychology101": {"name": "心理學101（跟哲學101 同帳號）", "accounts": ["philosophy101.tw", "tech101_ai"]},
+  "weekendmap":    {"name": "雙北週末地圖",        "accounts": ["taipei.weekendmap", "astro_labtw"]},
+  "mountainsea":   {"name": "台灣山與海",          "accounts": ["taiwan.mountainsea", "love.manual.tw"]},
+  "jimframe":      {"name": "JimFrame 拍照這件事",  "accounts": ["jimframe"], "min_chars": 100, "max_chars": 160}
+}

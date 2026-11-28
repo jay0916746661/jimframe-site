@@ -1,12 +1,15 @@
 name: IG 數據抓取（只讀）
 
-# 手動抓 IG 成效。只打 Graph API GET，只提交 social/insights/。
-# 不要加 schedule，也不要加 push／pull_request 觸發。
+# 抓 IG 成效。只打 Graph API GET，只提交 social/insights/。
+# 2026-11-28 起：每週日台北 21:13 自動跑一次，給週一 09:03 的「IG 週報」用最新數據（Jim 要求降級後不用 Claude 也能出週報）。
+# 不要加 push／pull_request 觸發。
 # 權杖沿用 META_USER_TOKEN，需要 pages_show_list、pages_read_engagement、
 # instagram_basic（或 instagram_business_basic）、
 # instagram_manage_insights（或 instagram_business_manage_insights）。
 
 on:
+  schedule:
+    - cron: "13 13 * * 0"   # UTC 週日 13:13 = 台北週日 21:13
   workflow_dispatch:
     inputs:
       limit:

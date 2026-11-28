@@ -1,0 +1,112 @@
+name: Gemini 寫稿（手動）
+
+# 取代「叫 Claude 寫稿」：在 Actions 頁按 Run workflow，選頻道、選種類、填題目，Gemini 寫好的草稿會存進 drafts/<頻道>/。
+# 需要 Secret：GEMINI_API_KEY（Google AI Studio 申請，Jim 自己貼）。可選 Variable：GEMINI_MODEL（不填用 gemini-flash-latest）。
+# 只寫 drafts/，不改佇列、不發文、不刪檔。勾「順便配音」才會呼叫 ElevenLabs（會扣點數，一次只配第一集）。
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "頻道"
+        required: true
+        type: choice
+        options: [coffee101, jazz101, art101, guitar101, sd101, perfume101, drink, untold, reading, philosophy101, psychology101, weekendmap, mountainsea, jimframe]
+      kind:
+        description: "種類"
+        required: true
+        type: choice
+        default: 選題
+        options: [選題, 單集稿, 文案, Threads]
+      topic:
+        description: "題目（單集稿必填；多集用 ；分隔，一次最多 10 集）"
+        required: false
+        default: ""
+        type: string
+      count:
+        description: "選題要幾個／Threads 要幾則"
+        required: false
+        default: "10"
+        type: string
+      search:
+        description: "開 Google 搜尋查證（附真的出處網址）"
+        required: false
+        default: true
+        type: boolean
+      tts:
+        description: "順便配音（只配第一集口白，會扣 ElevenLabs 點數）"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: gemini-write
+  cancel-in-progress: false
+
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/gemini-writer/
+            /tools/meta-poster/ig_queue.csv
+            /tools/threads-poster/queue.csv
+            /drafts/
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Gemini 寫稿
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          IN_CHANNEL: ${{ inputs.channel }}
+          IN_KIND: ${{ inputs.kind }}
+          IN_TOPIC: ${{ inputs.topic }}
+          IN_COUNT: ${{ inputs.count }}
+          IN_SEARCH: ${{ inputs.search }}
+        run: |
+          extra=""; [ "$IN_SEARCH" = "false" ] && extra="--no-search"
+          python3 tools/gemini-writer/write.py --channel "$IN_CHANNEL" --kind "$IN_KIND" \
+            --topic "$IN_TOPIC" --count "${IN_COUNT:-10}" --list-file /tmp/made.txt $extra
+          for f in $(cat /tmp/made.txt); do echo "### $f" >> "$GITHUB_STEP_SUMMARY"; cat "$f" >> "$GITHUB_STEP_SUMMARY"; echo >> "$GITHUB_STEP_SUMMARY"; done
+
+      - name: 只把 drafts 存回 repo
+        run: |
+          set -euo pipefail
+          git config user.name "gemini-writer"
+          git config user.email "gemini-writer@users.noreply.github.com"
+          git sparse-checkout add /drafts/
+          git add -- drafts
+          bad=$(git diff --cached --name-only | grep -v '^drafts/' || true)
+          if [ -n "$bad" ]; then echo "拒絕提交 drafts 以外的檔案：$bad"; exit 1; fi
+          if git diff --cached --quiet; then echo "沒有新草稿"; exit 0; fi
+          git commit -q -m "Gemini 草稿：${{ inputs.channel }} ${{ inputs.kind }} $(TZ=Asia/Taipei date +%F)"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0; sleep 15; done
+          exit 1
+
+      - name: 順便配音（觸發 ElevenLabs TTS，模型 eleven_v4）
+        if: ${{ inputs.tts && inputs.kind == '單集稿' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          f=$(grep '_口白.txt$' /tmp/made.txt | head -1 || true)
+          if [ -z "$f" ]; then echo "找不到口白檔，不配音"; exit 0; fi
+          python3 - "$f" > /tmp/body.json <<'PY'
+          import json, sys
+          t = open(sys.argv[1], encoding="utf-8").read().strip()
+          print(json.dumps({"ref": "main", "inputs": {"text": t, "voice_id": "", "model_id": "eleven_v4"}}, ensure_ascii=False))
+          PY
+          gh api -X POST "repos/${{ github.repository }}/actions/workflows/elevenlabs-tts.yml/dispatches" --input /tmp/body.json
+          echo "已觸發配音。到 Actions →「ElevenLabs TTS（手動）」最新一次執行，下載 artifact 裡的 speech.mp3。" >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,43 @@
+name: 失敗即時通知
+
+# 下面這些 workflow 只要跑失敗，馬上在 Issue〈🚨 系統需要處理〉留言 @Jim。
+# 不需要 Claude、不需要額外金鑰。發文機本身會把單則失敗寫進佇列，那部分由「系統健康日報」每天整理。
+
+on:
+  workflow_run:
+    workflows:
+      - "IG 定時發文"
+      - "Threads 自動發文"
+      - "FB 粉專定時發文"
+      - "網站部署（Pages，精簡包）"
+      - "素材發出即刪"
+      - "IG 數據抓取（只讀）"
+      - "IG 週報（每週一）"
+      - "ElevenLabs TTS（手動）"
+      - "Gemini 寫稿（手動）"
+      - "系統健康日報（每天，有新問題才通知）"
+    types: [completed]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  alert:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/watchdog
+      - name: 通知
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RUN_NAME: ${{ github.event.workflow_run.name }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_EVENT: ${{ github.event.workflow_run.event }}
+        run: |
+          printf '🛑 **%s** 跑失敗了（觸發方式：%s）\n\n- 紀錄：%s\n- 先看紀錄最後 20 行的錯誤訊息；常見原因與修法在 docs/自動駕駛手冊.md 的「壞了怎麼修」。\n- 不確定怎麼修：把錯誤訊息貼給 Gemini（Antigravity），請它照手冊修，回件再給 Claude 驗收。\n' \
+            "$RUN_NAME" "$RUN_EVENT" "$RUN_URL" > /tmp/msg.md
+          python tools/watchdog/notify.py --title "🚨 系統需要處理" --body-file /tmp/msg.md

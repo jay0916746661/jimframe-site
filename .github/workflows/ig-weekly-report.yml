@@ -1,9 +1,11 @@
 name: IG 週報（每週一）
 
 # 每週一 09:03（台北）用 repo 裡最新的 insights 快照產生週報。
-# 不打任何 API、不需要金鑰、不需要 Claude。
+# 不打 Meta API、不需要 Claude。
 # 只讀 social/insights/ 與 tools/meta-poster/ig_queue.csv，只提交 social/reports/。
-# 不會改佇列、不會刪檔。數據要新，請在週日先手動跑「IG 數據抓取（只讀）」。
+# 不會改佇列、不會刪檔。數據由週日 21:13 自動跑的「IG 數據抓取（只讀）」提供。
+# 2026-11-28 加：有 Secret GEMINI_API_KEY 就請 Gemini 在週報最上面加「白話結論」（沒有金鑰就跳過）；
+# 週報做好後在 Issue〈📊 IG 週報〉留言 @Jim，手機就會收到通知。
 
 on:
   schedule:
@@ -12,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: ig-weekly-report
@@ -32,6 +35,8 @@ jobs:
             /tools/meta-poster/ig_queue.csv
             /social/insights/
             /social/reports/
+            /tools/gemini-writer/
+            /tools/watchdog/
 
       - uses: actions/setup-python@v5
         with:
@@ -46,6 +51,16 @@ jobs:
 
       - name: 產生週報
         run: python3 tools/insights-report/report.py --out social/reports
+
+      - name: Gemini 白話結論（有金鑰才跑）
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: |
+          if [ -z "${GEMINI_API_KEY}" ]; then echo "沒有 GEMINI_API_KEY，跳過"; exit 0; fi
+          f=$(ls -t social/reports/週報_*.md | head -1)
+          python3 tools/gemini-writer/summarize_report.py "$f"
 
       - name: 只把 social/reports 存回 repo
         run: |
@@ -67,3 +82,13 @@ jobs:
         run: |
           f=$(ls -t social/reports/週報_*.md 2>/dev/null | head -1 || true)
           [ -n "$f" ] && cat "$f" >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: 通知 Jim（Issue 留言）
+        if: success()
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          f=$(ls -t social/reports/週報_*.md | head -1)
+          { echo "**$(TZ=Asia/Taipei date +%m/%d) IG 週報出爐**：[${f}](../blob/main/${f})"; echo; head -c 60000 "$f"; } > /tmp/weekly.md
+          python3 tools/watchdog/notify.py --title "📊 IG 週報" --body-file /tmp/weekly.md

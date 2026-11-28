@@ -1,0 +1,104 @@
+name: 系統健康日報（每天，有新問題才通知）
+
+# 每天台北 08:13 自動檢查：庫存、發文失敗／逾時、卡住沒發、素材不見、權杖、到期提醒、昨天失敗的 Actions。
+# 有「新」問題 → 在 Issue〈🚨 系統需要處理〉留言並 @Jim（GitHub 會寄 Email／推播 App）。
+# 全部正常 → 自動關掉那個 Issue。不需要 Claude，不需要額外金鑰（權杖只拿來做唯讀檢查）。
+# 只提交 tools/watchdog/status.md、tools/watchdog/state.json、tools/stock/report.md；不改佇列、不刪檔。
+
+on:
+  schedule:
+    - cron: "13 0 * * *"   # UTC 00:13 = 台北 08:13
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  actions: read
+
+concurrency:
+  group: watchdog
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      WATCHDOG_TMP: /tmp/watchdog
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/
+            /.github/
+            /docs/
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -q requests && mkdir -p /tmp/watchdog
+
+      - name: IG 權杖檢查（唯讀）
+        continue-on-error: true
+        env:
+          META_USER_TOKEN: ${{ secrets.META_USER_TOKEN }}
+          IG_LOGIN_TOKENS: ${{ secrets.IG_LOGIN_TOKENS }}
+        run: |
+          cd tools/meta-poster
+          python ig_publish.py --check || true
+          cp ig_status.txt /tmp/watchdog/ig_status.txt || true
+          git checkout -- ig_status.txt || true   # 不跟發文機搶這個檔
+
+      - name: Threads 權杖檢查（唯讀）
+        continue-on-error: true
+        env:
+          THREADS_TOKENS: ${{ secrets.THREADS_TOKENS }}
+          THREADS_TOKENS_EXTRA: ${{ secrets.THREADS_TOKENS_EXTRA }}
+          THREADS_TOKENS_DRINK: ${{ secrets.THREADS_TOKENS_DRINK }}
+          THREADS_TOKENS_PERFUME: ${{ secrets.THREADS_TOKENS_PERFUME }}
+        run: cd tools/threads-poster && (python poster.py --check || true) > /tmp/watchdog/threads_check.txt 2>&1; cat /tmp/watchdog/threads_check.txt
+
+      - name: 抓最近 26 小時失敗的 Actions
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          since=$(date -u -d '26 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+          gh api "repos/${{ github.repository }}/actions/runs?status=failure&per_page=100&created=>=${since}" \
+            --jq '[.workflow_runs[] | {id, name, created_at, html_url}]' > /tmp/watchdog/runs_failed.json || echo '[]' > /tmp/watchdog/runs_failed.json
+          cat /tmp/watchdog/runs_failed.json
+
+      - name: 產生日報
+        run: |
+          python tools/watchdog/watchdog.py
+          python tools/stock/stock.py > /dev/null
+          cat tools/watchdog/status.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 有新問題 → 通知；全部正常 → 關掉警報
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f /tmp/watchdog/alert.md ]; then
+            python tools/watchdog/notify.py --title "🚨 系統需要處理" --body-file /tmp/watchdog/alert.md
+          elif [ "$(cat /tmp/watchdog/all_clear.flag)" = "1" ]; then
+            python tools/watchdog/notify.py --title "🚨 系統需要處理" --close --body "$(TZ=Asia/Taipei date +%m/%d) 檢查全部正常，自動關閉。"
+          else
+            echo "沒有新問題（舊問題還在，已在 status.md）"
+          fi
+
+      - name: 只把日報存回 repo
+        run: |
+          set -euo pipefail
+          git config user.name "watchdog"
+          git config user.email "watchdog@users.noreply.github.com"
+          git add -- tools/watchdog/status.md tools/watchdog/state.json tools/stock/report.md
+          bad=$(git diff --cached --name-only | grep -vE '^(tools/watchdog/(status\.md|state\.json)|tools/stock/report\.md)$' || true)
+          if [ -n "$bad" ]; then echo "拒絕提交其他檔案：$bad"; exit 1; fi
+          if git diff --cached --quiet; then echo "沒有變動"; exit 0; fi
+          git commit -q -m "系統健康日報 $(TZ=Asia/Taipei date +%F)"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0; sleep 15; done
+          exit 1

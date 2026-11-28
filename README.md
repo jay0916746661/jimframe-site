@@ -1,3 +1,35 @@
+# jimframe-site｜Jim 的總部 repo
+
+> 📘 中文說明書（2026-11-28 整理）｜狀態：🟢 每天都在跑，**不要封存**
+> 全部 29 個 repo 的總表：[docs/repo地圖與封存建議.md](docs/repo地圖與封存建議.md)
+> 降級後怎麼讓它自己跑：**[docs/自動駕駛手冊.md](docs/自動駕駛手冊.md)**（先讀這份）
+
+## 這是什麼
+所有頻道的發文系統都在這裡：IG／Threads／FB 佇列 → GitHub Actions 定時用 Meta 官方 API 發出去。另外還有 ElevenLabs 配音、IG 數據與週報、庫存、系統健康日報、Gemini 寫稿、影片引擎、JimFrame 攝影網站和各頻道的舊網頁。
+
+## 最常用的位置
+| 位置 | 做什麼 |
+|---|---|
+| `tools/meta-poster/ig_queue.csv` | IG 發文佇列（一列一則；狀態「待發」才會發） |
+| `tools/threads-poster/queue.csv` | Threads 發文佇列 |
+| `social/media/<頻道>/` | 要發的影片與圖片（發出 2 天後自動刪） |
+| `tools/watchdog/status.md` | 每天 08:13 更新的系統健康日報＋各頻道庫存 |
+| `social/reports/週報_*.md` | 每週一 IG 週報 |
+| `drafts/<頻道>/` | Gemini 寫好的草稿 |
+| `tools/gemini-writer/channels/` | 各頻道寫稿規則（改這裡就能調整 Gemini 的寫法） |
+| `tools/video-engine/` | 影片渲染引擎與製作 SOP |
+| `.github/workflows/` | 13 個自動化（清單見自動駕駛手冊第 2 節） |
+
+## 怎麼修
+1. 收到 Issue〈🚨 系統需要處理〉→ 照 [自動駕駛手冊第 4 節](docs/自動駕駛手冊.md#4-壞了怎麼修) 的表處理。
+2. 改佇列 CSV：一定用 QUOTE_ALL（每個欄位都有引號）；push 前先 `git pull`；**不要 `git add -A`**（10/18 曾因此刪掉 3,051 個檔）。
+3. 不會改就交給 Antigravity，第一句貼：「先讀 README.md 和 docs/自動駕駛手冊.md，照裡面的規則做，回件給我檔案清單與不確定的地方。」
+4. 權杖、金鑰只放 GitHub Secrets，永遠不要寫進檔案。
+
+---
+
+## 原本的 README（保留原文）
+
 # Jim Lin Photography
 
 台北舞蹈與活動攝影 Jim Lin（[@jimframe](https://www.instagram.com/jimframe/)）的活動相簿，GitHub Pages 靜態版本。

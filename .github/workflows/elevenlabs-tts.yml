@@ -18,9 +18,9 @@ on:
         default: ""
         type: string
       model_id:
-        description: "model_id，空白就用 eleven_multilingual_v2"
+        description: "model_id（預設 eleven_v4，SOP 15 規定；清空就用 tts.py 內建預設）"
         required: false
-        default: ""
+        default: "eleven_v4"
         type: string
 
 permissions:

@@ -5,7 +5,7 @@
 ## 先讀
 1. `AGENTS.md`：網站硬規則（單一靜態頁、只用 cdnjs、繁體中文、390px 不橫捲、不放金鑰）。
 2. `tasks/README.md`：任務板流程（Claude 寫卡 → Codex 開 PR → Claude 審 → Jim 合併；同時最多 2 個 open）。
-3. `brain/`（T014 建好後）：共同大腦，00 我是誰、01 專案總表、02 規則、03 決策日誌。只有 Claude 改，每週五同步。
+3. `brain/`（**11/28 確認還不存在**，T014 建好後）：共同大腦，00 我是誰、01 專案總表、02 規則、03 決策日誌。只有 Claude 改，每週五同步。
 4. 雲端 Google Drive「AI 共同大腦」資料夾有人讀的版本與各 AI 角色附錄。
 
 ## Claude 在這個 repo 該做的
@@ -21,12 +21,16 @@
 - 公司原始資料（品牌名、客戶名、金額）不進這個 repo，一律代碼與指數。
 - 不從不完整的 checkout commit（10/18 曾因此刪掉 3,051 個檔）。commit 前 `git status` 確認只有預期的變動。
 - 不合併 PR、不 force push、不動 `photos/` `videos/` 的既有檔。
-- 21:30 後不派新任務；凌晨收到訊息回「明天再說」。
+- ~~21:30 後不派新任務；凌晨收到訊息回「明天再說」。~~（2026-11-27 Jim 已取消這條規則，任何時間都照常做）
 
 ## 網站部署（2026-11-28 起）
 - Pages 不再整包發布 repo（repo 約 11GB，上限 1GB）。`.github/workflows/pages.yml` 用 `tools/pages-build/build.py` 組精簡包：`photos/` `videos/` 不進包，網頁裡指向它們的網址在包裡自動改成 `raw.githubusercontent.com/.../main/`；`social/media/` 只放前 12 小時～後 48 小時要發的素材，每 6 小時重建。
 - 照片影片照舊放 `photos/` `videos/`，網頁照舊寫相對路徑（`../photos/...`），不用自己改網址。
 - 網站包超過 950MB 部署會自己停下；新增的大型媒體不要放在 `photos/` `videos/` `social/media/` 以外的目錄。
+
+## 降級後（2026-12-13 起 Claude Pro）
+- 先讀 `docs/自動駕駛手冊.md`：13 個 workflow 都不需要 Claude；寫稿用 `gemini-write.yml`；健康日報 `watchdog.yml` 有新問題才在 Issue 通知 Jim。
+- Claude 只做判斷與驗收（每週三收 Gemini／Antigravity 回件、週五看週報結論）。
 
 ## 驗證
 ```bash

@@ -1,0 +1,5 @@
+date,item,warn_days,how
+2026-12-13,Claude 從 Max 降到 Pro,7,照 Drive「20 美金操作手冊」第七節把降級前準備做完
+2026-12-22,Meta 長效權杖快到期（12/29 前要換）,7,照 Drive SOP 06 重新產生 META_USER_TOKEN，整份覆蓋 GitHub Secret；換完跑一次「IG／FB 發文」check
+2026-12-29,Meta 權杖到期日,3,還沒換的話今天一定要換，否則 IG 全部停發
+2027-01-20,Threads 權杖約 60 天到期（日期為估計，換新後請改這列）,10,照 SOP 06 更新 THREADS_TOKENS 系列 Secret；換完跑 Threads 自動發文 check
