@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 API = "https://graph.facebook.com/v21.0"
 IG_API = "https://graph.instagram.com/v21.0"
-KNOWN_IG = {"perfume101tw": "17841463784968757", "jimframe": "17841409075863983"}  # 開發者後台看到的 IG 帳號編號
+KNOWN_IG = {"perfume101tw": "17841463784968737", "jimframe": "17841409075863983"}  # 開發者後台看到的 IG 帳號編號
 DIAG = []  # Instagram 登入權杖的診斷訊息（不含權杖）
 HOST = {}  # token -> API base；Instagram 登入的權杖走 graph.instagram.com
 TOKEN = os.environ.get("META_USER_TOKEN", "").strip()
