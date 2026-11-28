@@ -23,6 +23,11 @@
 - 不合併 PR、不 force push、不動 `photos/` `videos/` 的既有檔。
 - 21:30 後不派新任務；凌晨收到訊息回「明天再說」。
 
+## 網站部署（2026-11-28 起）
+- Pages 不再整包發布 repo（repo 約 11GB，上限 1GB）。`.github/workflows/pages.yml` 用 `tools/pages-build/build.py` 組精簡包：`photos/` `videos/` 不進包，網頁裡指向它們的網址在包裡自動改成 `raw.githubusercontent.com/.../main/`；`social/media/` 只放前 12 小時～後 48 小時要發的素材，每 6 小時重建。
+- 照片影片照舊放 `photos/` `videos/`，網頁照舊寫相對路徑（`../photos/...`），不用自己改網址。
+- 網站包超過 950MB 部署會自己停下；新增的大型媒體不要放在 `photos/` `videos/` `social/media/` 以外的目錄。
+
 ## 驗證
 ```bash
 python3 -m http.server 8000   # repo 根目錄，開 http://localhost:8000/<目錄>/

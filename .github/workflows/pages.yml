@@ -1,0 +1,59 @@
+name: 網站部署（Pages，精簡包）
+
+# repo 約 11GB，Pages 上限 1GB。這裡不再整包發布，而是用 tools/pages-build/build.py 組一個精簡包：
+# - photos/ videos/ 不進包，網頁裡的網址改成 raw.githubusercontent.com（照片影片照樣放在 repo，流程不變）
+# - social/media/ 只放前 12 小時～後 48 小時要發的素材，所以每 6 小時重建一次
+# 需要：Settings → Pages → Build and deployment → Source 選「GitHub Actions」。
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "photos/**"
+      - "videos/**"
+  schedule:
+    - cron: "41 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 取出程式與頁面（不下載 photos／videos／social/media）
+        uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/photos/
+            !/videos/
+            !/social/media/
+      - name: 補抓時間窗內要發的 social 素材
+        run: |
+          python3 tools/pages-build/build.py --list-social > /tmp/social.txt
+          echo "要放進包的素材：$(wc -l < /tmp/social.txt) 個"
+          if [ -s /tmp/social.txt ]; then
+            { printf '/*\n!/photos/\n!/videos/\n!/social/media/\n'; sed 's#^#/#' /tmp/social.txt; } \
+              | git sparse-checkout set --no-cone --stdin
+          fi
+      - name: 組網站包
+        run: python3 tools/pages-build/build.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
